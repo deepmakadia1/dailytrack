@@ -1,0 +1,66 @@
+import 'package:dailytrack/core/database/app_database.dart';
+import 'package:dailytrack/core/module/tracker_module.dart';
+import 'package:dailytrack/core/notifications/notification_service.dart';
+import 'package:dailytrack/core/reset/domain/app_reset_service.dart';
+
+/// [AppResetService] over the Drift database (feature 007 data-model §6).
+///
+/// Step 1 is all-or-nothing: one transaction deletes every row of every
+/// table, settings and unlocks included. Rows are deleted rather than the
+/// file, so live Drift streams keep working. Steps 2–4 cannot bring any data
+/// back, so a failure there is ignored: with the settings rows gone the lock
+/// is already off, and the next PIN set overwrites a leftover credential.
+final class DriftAppResetService implements AppResetService {
+  new({
+    required this._db,
+    required this._modules,
+    required this._read,
+    required this._notifications,
+    required this._resetLock,
+    required this._afterErase,
+  });
+
+  final AppDatabase _db;
+
+  /// Every registered module, enabled or not.
+  final List<TrackerModule> _modules;
+  final ProviderReader _read;
+  final NotificationService _notifications;
+
+  /// Deletes every `lock.*` secure entry.
+  final Future<void> Function() _resetLock;
+
+  /// Resets the lock session and runs startup again (it reseeds the
+  /// defaults and lands on onboarding).
+  final void Function() _afterErase;
+
+  @override
+  Future<void> eraseAll() async {
+    await _db.transaction(() async {
+      // Foreign keys are checked at commit, when every table is empty.
+      await _db.customStatement('PRAGMA defer_foreign_keys = ON');
+      for (final table in _db.allTables) {
+        await _db.delete(table).go();
+      }
+    });
+
+    for (final module in _modules) {
+      try {
+        await module.onEraseAll(_read);
+      } on Object {
+        // One module never blocks the others.
+      }
+    }
+    try {
+      await _notifications.cancelAll();
+    } on Object {
+      // Best effort.
+    }
+    try {
+      await _resetLock();
+    } on Object {
+      // Best effort; see the class comment.
+    }
+    _afterErase();
+  }
+}

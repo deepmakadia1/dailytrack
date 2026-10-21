@@ -1,0 +1,697 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'app_settings.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
+T _$identity<T>(T value) => value;
+/// @nodoc
+mixin _$AppSettings {
+
+/// `en`, `hi`, `gu`, or null to follow the device.
+ String? get locale; String get currencyCode; String get themeMode; String get selectedTheme;/// 1 = Monday … 7 = Sunday.
+ int get firstDayOfWeek; bool get lockEnabled; bool get biometricEnabled;/// Enabled module ids. Order is ignored; see [moduleOrder].
+ List<String> get enabledModules;/// Every registered module id, in the user's order (SET-06).
+ List<String> get moduleOrder; bool get onboardingDone; String? get adConsentStatus;/// UTC epoch milliseconds.
+ int? get lastBackupAt; bool get removeAdsPurchased;/// Notifications master switch (SET-01 toggle in T3.1).
+ bool get notificationsEnabled;/// "Budget alerts" setting (SET-01 toggle in T3.1, FR-018).
+ bool get budgetAlertsEnabled;/// "Habit reminders" setting (SET-01 toggle in T3.1, feature 005 R17).
+ bool get habitRemindersEnabled;/// Dev-flavor "Unlock all features (debug)". Ignored in prod (FR-041).
+ bool get debugUnlockAll;/// The latest time the app has seen, UTC epoch milliseconds. Only ever
+/// raised, so moving the clock back never revives an expired unlock
+/// (FR-038).
+ int? get latestSeenAt;/// Local `yyyy-MM-dd` day of the stored DSH-01 insight pick. Written
+/// together with [dailyInsightId] (feature 006 research R6).
+ String? get dailyInsightDate;/// Rule id of the stored DSH-01 insight pick.
+ String? get dailyInsightId;/// The DSH-01 Coming soon card was dismissed for good.
+ bool get homeComingSoonDismissed;/// Full-date format, one of [dateFormatIds] (SET-01, feature 007 R13).
+ String get dateFormat;/// Daily summary reminder time, local `HH:mm` (SET-01). Stored only
+/// until T3.4 schedules the reminder.
+ String get dailySummaryTime;/// SET-05 "Lock after", one of [lockAfterOptions] (seconds).
+ int get lockAfterSeconds;/// SET-05 "Hide app content in recents" (`FLAG_SECURE` app-wide).
+ bool get hideInRecents;/// SET-04 font size, one of [fontSizeIds].
+ String get fontSize;
+/// Create a copy of AppSettings
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AppSettingsCopyWith<AppSettings> get copyWith => _$AppSettingsCopyWithImpl<AppSettings>(this as AppSettings, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as AppSettings;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.locale, _this.locale) || other.locale == _this.locale)&&(identical(other.currencyCode, _this.currencyCode) || other.currencyCode == _this.currencyCode)&&(identical(other.themeMode, _this.themeMode) || other.themeMode == _this.themeMode)&&(identical(other.selectedTheme, _this.selectedTheme) || other.selectedTheme == _this.selectedTheme)&&(identical(other.firstDayOfWeek, _this.firstDayOfWeek) || other.firstDayOfWeek == _this.firstDayOfWeek)&&(identical(other.lockEnabled, _this.lockEnabled) || other.lockEnabled == _this.lockEnabled)&&(identical(other.biometricEnabled, _this.biometricEnabled) || other.biometricEnabled == _this.biometricEnabled)&&const DeepCollectionEquality().equals(other.enabledModules, _this.enabledModules)&&const DeepCollectionEquality().equals(other.moduleOrder, _this.moduleOrder)&&(identical(other.onboardingDone, _this.onboardingDone) || other.onboardingDone == _this.onboardingDone)&&(identical(other.adConsentStatus, _this.adConsentStatus) || other.adConsentStatus == _this.adConsentStatus)&&(identical(other.lastBackupAt, _this.lastBackupAt) || other.lastBackupAt == _this.lastBackupAt)&&(identical(other.removeAdsPurchased, _this.removeAdsPurchased) || other.removeAdsPurchased == _this.removeAdsPurchased)&&(identical(other.notificationsEnabled, _this.notificationsEnabled) || other.notificationsEnabled == _this.notificationsEnabled)&&(identical(other.budgetAlertsEnabled, _this.budgetAlertsEnabled) || other.budgetAlertsEnabled == _this.budgetAlertsEnabled)&&(identical(other.habitRemindersEnabled, _this.habitRemindersEnabled) || other.habitRemindersEnabled == _this.habitRemindersEnabled)&&(identical(other.debugUnlockAll, _this.debugUnlockAll) || other.debugUnlockAll == _this.debugUnlockAll)&&(identical(other.latestSeenAt, _this.latestSeenAt) || other.latestSeenAt == _this.latestSeenAt)&&(identical(other.dailyInsightDate, _this.dailyInsightDate) || other.dailyInsightDate == _this.dailyInsightDate)&&(identical(other.dailyInsightId, _this.dailyInsightId) || other.dailyInsightId == _this.dailyInsightId)&&(identical(other.homeComingSoonDismissed, _this.homeComingSoonDismissed) || other.homeComingSoonDismissed == _this.homeComingSoonDismissed)&&(identical(other.dateFormat, _this.dateFormat) || other.dateFormat == _this.dateFormat)&&(identical(other.dailySummaryTime, _this.dailySummaryTime) || other.dailySummaryTime == _this.dailySummaryTime)&&(identical(other.lockAfterSeconds, _this.lockAfterSeconds) || other.lockAfterSeconds == _this.lockAfterSeconds)&&(identical(other.hideInRecents, _this.hideInRecents) || other.hideInRecents == _this.hideInRecents)&&(identical(other.fontSize, _this.fontSize) || other.fontSize == _this.fontSize));
+}
+
+
+@override
+int get hashCode {
+  final _this = this as AppSettings;
+  return Object.hashAll([runtimeType,_this.locale,_this.currencyCode,_this.themeMode,_this.selectedTheme,_this.firstDayOfWeek,_this.lockEnabled,_this.biometricEnabled,const DeepCollectionEquality().hash(_this.enabledModules),const DeepCollectionEquality().hash(_this.moduleOrder),_this.onboardingDone,_this.adConsentStatus,_this.lastBackupAt,_this.removeAdsPurchased,_this.notificationsEnabled,_this.budgetAlertsEnabled,_this.habitRemindersEnabled,_this.debugUnlockAll,_this.latestSeenAt,_this.dailyInsightDate,_this.dailyInsightId,_this.homeComingSoonDismissed,_this.dateFormat,_this.dailySummaryTime,_this.lockAfterSeconds,_this.hideInRecents,_this.fontSize]);
+}
+
+@override
+String toString() {
+  final _this = this as AppSettings;
+  return 'AppSettings(locale: ${_this.locale}, currencyCode: ${_this.currencyCode}, themeMode: ${_this.themeMode}, selectedTheme: ${_this.selectedTheme}, firstDayOfWeek: ${_this.firstDayOfWeek}, lockEnabled: ${_this.lockEnabled}, biometricEnabled: ${_this.biometricEnabled}, enabledModules: ${_this.enabledModules}, moduleOrder: ${_this.moduleOrder}, onboardingDone: ${_this.onboardingDone}, adConsentStatus: ${_this.adConsentStatus}, lastBackupAt: ${_this.lastBackupAt}, removeAdsPurchased: ${_this.removeAdsPurchased}, notificationsEnabled: ${_this.notificationsEnabled}, budgetAlertsEnabled: ${_this.budgetAlertsEnabled}, habitRemindersEnabled: ${_this.habitRemindersEnabled}, debugUnlockAll: ${_this.debugUnlockAll}, latestSeenAt: ${_this.latestSeenAt}, dailyInsightDate: ${_this.dailyInsightDate}, dailyInsightId: ${_this.dailyInsightId}, homeComingSoonDismissed: ${_this.homeComingSoonDismissed}, dateFormat: ${_this.dateFormat}, dailySummaryTime: ${_this.dailySummaryTime}, lockAfterSeconds: ${_this.lockAfterSeconds}, hideInRecents: ${_this.hideInRecents}, fontSize: ${_this.fontSize})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AppSettingsCopyWith<$Res>  {
+  factory $AppSettingsCopyWith(AppSettings value, $Res Function(AppSettings) _then) = _$AppSettingsCopyWithImpl;
+@useResult
+$Res call({
+ String? locale, String currencyCode, String themeMode, String selectedTheme, int firstDayOfWeek, bool lockEnabled, bool biometricEnabled, List<String> enabledModules, List<String> moduleOrder, bool onboardingDone, String? adConsentStatus, int? lastBackupAt, bool removeAdsPurchased, bool notificationsEnabled, bool budgetAlertsEnabled, bool habitRemindersEnabled, bool debugUnlockAll, int? latestSeenAt, String? dailyInsightDate, String? dailyInsightId, bool homeComingSoonDismissed, String dateFormat, String dailySummaryTime, int lockAfterSeconds, bool hideInRecents, String fontSize
+});
+
+
+
+
+}
+/// @nodoc
+class _$AppSettingsCopyWithImpl<$Res>
+    implements $AppSettingsCopyWith<$Res> {
+  _$AppSettingsCopyWithImpl(this._self, this._then);
+
+  final AppSettings _self;
+  final $Res Function(AppSettings) _then;
+
+/// Create a copy of AppSettings
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? locale = freezed,Object? currencyCode = null,Object? themeMode = null,Object? selectedTheme = null,Object? firstDayOfWeek = null,Object? lockEnabled = null,Object? biometricEnabled = null,Object? enabledModules = null,Object? moduleOrder = null,Object? onboardingDone = null,Object? adConsentStatus = freezed,Object? lastBackupAt = freezed,Object? removeAdsPurchased = null,Object? notificationsEnabled = null,Object? budgetAlertsEnabled = null,Object? habitRemindersEnabled = null,Object? debugUnlockAll = null,Object? latestSeenAt = freezed,Object? dailyInsightDate = freezed,Object? dailyInsightId = freezed,Object? homeComingSoonDismissed = null,Object? dateFormat = null,Object? dailySummaryTime = null,Object? lockAfterSeconds = null,Object? hideInRecents = null,Object? fontSize = null,}) {
+  return _then(AppSettings(
+locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
+as String?,currencyCode: null == currencyCode ? _self.currencyCode : currencyCode // ignore: cast_nullable_to_non_nullable
+as String,themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
+as String,selectedTheme: null == selectedTheme ? _self.selectedTheme : selectedTheme // ignore: cast_nullable_to_non_nullable
+as String,firstDayOfWeek: null == firstDayOfWeek ? _self.firstDayOfWeek : firstDayOfWeek // ignore: cast_nullable_to_non_nullable
+as int,lockEnabled: null == lockEnabled ? _self.lockEnabled : lockEnabled // ignore: cast_nullable_to_non_nullable
+as bool,biometricEnabled: null == biometricEnabled ? _self.biometricEnabled : biometricEnabled // ignore: cast_nullable_to_non_nullable
+as bool,enabledModules: null == enabledModules ? _self.enabledModules : enabledModules // ignore: cast_nullable_to_non_nullable
+as List<String>,moduleOrder: null == moduleOrder ? _self.moduleOrder : moduleOrder // ignore: cast_nullable_to_non_nullable
+as List<String>,onboardingDone: null == onboardingDone ? _self.onboardingDone : onboardingDone // ignore: cast_nullable_to_non_nullable
+as bool,adConsentStatus: freezed == adConsentStatus ? _self.adConsentStatus : adConsentStatus // ignore: cast_nullable_to_non_nullable
+as String?,lastBackupAt: freezed == lastBackupAt ? _self.lastBackupAt : lastBackupAt // ignore: cast_nullable_to_non_nullable
+as int?,removeAdsPurchased: null == removeAdsPurchased ? _self.removeAdsPurchased : removeAdsPurchased // ignore: cast_nullable_to_non_nullable
+as bool,notificationsEnabled: null == notificationsEnabled ? _self.notificationsEnabled : notificationsEnabled // ignore: cast_nullable_to_non_nullable
+as bool,budgetAlertsEnabled: null == budgetAlertsEnabled ? _self.budgetAlertsEnabled : budgetAlertsEnabled // ignore: cast_nullable_to_non_nullable
+as bool,habitRemindersEnabled: null == habitRemindersEnabled ? _self.habitRemindersEnabled : habitRemindersEnabled // ignore: cast_nullable_to_non_nullable
+as bool,debugUnlockAll: null == debugUnlockAll ? _self.debugUnlockAll : debugUnlockAll // ignore: cast_nullable_to_non_nullable
+as bool,latestSeenAt: freezed == latestSeenAt ? _self.latestSeenAt : latestSeenAt // ignore: cast_nullable_to_non_nullable
+as int?,dailyInsightDate: freezed == dailyInsightDate ? _self.dailyInsightDate : dailyInsightDate // ignore: cast_nullable_to_non_nullable
+as String?,dailyInsightId: freezed == dailyInsightId ? _self.dailyInsightId : dailyInsightId // ignore: cast_nullable_to_non_nullable
+as String?,homeComingSoonDismissed: null == homeComingSoonDismissed ? _self.homeComingSoonDismissed : homeComingSoonDismissed // ignore: cast_nullable_to_non_nullable
+as bool,dateFormat: null == dateFormat ? _self.dateFormat : dateFormat // ignore: cast_nullable_to_non_nullable
+as String,dailySummaryTime: null == dailySummaryTime ? _self.dailySummaryTime : dailySummaryTime // ignore: cast_nullable_to_non_nullable
+as String,lockAfterSeconds: null == lockAfterSeconds ? _self.lockAfterSeconds : lockAfterSeconds // ignore: cast_nullable_to_non_nullable
+as int,hideInRecents: null == hideInRecents ? _self.hideInRecents : hideInRecents // ignore: cast_nullable_to_non_nullable
+as bool,fontSize: null == fontSize ? _self.fontSize : fontSize // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [AppSettings].
+extension AppSettingsPatterns on AppSettings {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AppSettings value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AppSettings() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AppSettings value)  $default,){
+final _that = this;
+switch (_that) {
+case _AppSettings():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AppSettings value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AppSettings() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? locale,  String currencyCode,  String themeMode,  String selectedTheme,  int firstDayOfWeek,  bool lockEnabled,  bool biometricEnabled,  List<String> enabledModules,  List<String> moduleOrder,  bool onboardingDone,  String? adConsentStatus,  int? lastBackupAt,  bool removeAdsPurchased,  bool notificationsEnabled,  bool budgetAlertsEnabled,  bool habitRemindersEnabled,  bool debugUnlockAll,  int? latestSeenAt,  String? dailyInsightDate,  String? dailyInsightId,  bool homeComingSoonDismissed,  String dateFormat,  String dailySummaryTime,  int lockAfterSeconds,  bool hideInRecents,  String fontSize)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AppSettings() when $default != null:
+return $default(_that.locale,_that.currencyCode,_that.themeMode,_that.selectedTheme,_that.firstDayOfWeek,_that.lockEnabled,_that.biometricEnabled,_that.enabledModules,_that.moduleOrder,_that.onboardingDone,_that.adConsentStatus,_that.lastBackupAt,_that.removeAdsPurchased,_that.notificationsEnabled,_that.budgetAlertsEnabled,_that.habitRemindersEnabled,_that.debugUnlockAll,_that.latestSeenAt,_that.dailyInsightDate,_that.dailyInsightId,_that.homeComingSoonDismissed,_that.dateFormat,_that.dailySummaryTime,_that.lockAfterSeconds,_that.hideInRecents,_that.fontSize);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? locale,  String currencyCode,  String themeMode,  String selectedTheme,  int firstDayOfWeek,  bool lockEnabled,  bool biometricEnabled,  List<String> enabledModules,  List<String> moduleOrder,  bool onboardingDone,  String? adConsentStatus,  int? lastBackupAt,  bool removeAdsPurchased,  bool notificationsEnabled,  bool budgetAlertsEnabled,  bool habitRemindersEnabled,  bool debugUnlockAll,  int? latestSeenAt,  String? dailyInsightDate,  String? dailyInsightId,  bool homeComingSoonDismissed,  String dateFormat,  String dailySummaryTime,  int lockAfterSeconds,  bool hideInRecents,  String fontSize)  $default,) {final _that = this;
+switch (_that) {
+case _AppSettings():
+return $default(_that.locale,_that.currencyCode,_that.themeMode,_that.selectedTheme,_that.firstDayOfWeek,_that.lockEnabled,_that.biometricEnabled,_that.enabledModules,_that.moduleOrder,_that.onboardingDone,_that.adConsentStatus,_that.lastBackupAt,_that.removeAdsPurchased,_that.notificationsEnabled,_that.budgetAlertsEnabled,_that.habitRemindersEnabled,_that.debugUnlockAll,_that.latestSeenAt,_that.dailyInsightDate,_that.dailyInsightId,_that.homeComingSoonDismissed,_that.dateFormat,_that.dailySummaryTime,_that.lockAfterSeconds,_that.hideInRecents,_that.fontSize);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? locale,  String currencyCode,  String themeMode,  String selectedTheme,  int firstDayOfWeek,  bool lockEnabled,  bool biometricEnabled,  List<String> enabledModules,  List<String> moduleOrder,  bool onboardingDone,  String? adConsentStatus,  int? lastBackupAt,  bool removeAdsPurchased,  bool notificationsEnabled,  bool budgetAlertsEnabled,  bool habitRemindersEnabled,  bool debugUnlockAll,  int? latestSeenAt,  String? dailyInsightDate,  String? dailyInsightId,  bool homeComingSoonDismissed,  String dateFormat,  String dailySummaryTime,  int lockAfterSeconds,  bool hideInRecents,  String fontSize)?  $default,) {final _that = this;
+switch (_that) {
+case _AppSettings() when $default != null:
+return $default(_that.locale,_that.currencyCode,_that.themeMode,_that.selectedTheme,_that.firstDayOfWeek,_that.lockEnabled,_that.biometricEnabled,_that.enabledModules,_that.moduleOrder,_that.onboardingDone,_that.adConsentStatus,_that.lastBackupAt,_that.removeAdsPurchased,_that.notificationsEnabled,_that.budgetAlertsEnabled,_that.habitRemindersEnabled,_that.debugUnlockAll,_that.latestSeenAt,_that.dailyInsightDate,_that.dailyInsightId,_that.homeComingSoonDismissed,_that.dateFormat,_that.dailySummaryTime,_that.lockAfterSeconds,_that.hideInRecents,_that.fontSize);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _AppSettings implements AppSettings {
+  const _AppSettings({this.locale, this.currencyCode = 'INR', this.themeMode = 'system', this.selectedTheme = 'default', this.firstDayOfWeek = 1, this.lockEnabled = false, this.biometricEnabled = false,  List<String> enabledModules = const ['expense', 'habit'],  List<String> moduleOrder = const ['expense', 'habit'], this.onboardingDone = false, this.adConsentStatus, this.lastBackupAt, this.removeAdsPurchased = false, this.notificationsEnabled = true, this.budgetAlertsEnabled = true, this.habitRemindersEnabled = true, this.debugUnlockAll = false, this.latestSeenAt, this.dailyInsightDate, this.dailyInsightId, this.homeComingSoonDismissed = false, this.dateFormat = 'dMMMy', this.dailySummaryTime = '21:00', this.lockAfterSeconds = 60, this.hideInRecents = false, this.fontSize = 'default'}): _enabledModules = enabledModules,_moduleOrder = moduleOrder;
+  
+
+/// `en`, `hi`, `gu`, or null to follow the device.
+@override final  String? locale;
+@override@JsonKey() final  String currencyCode;
+@override@JsonKey() final  String themeMode;
+@override@JsonKey() final  String selectedTheme;
+/// 1 = Monday … 7 = Sunday.
+@override@JsonKey() final  int firstDayOfWeek;
+@override@JsonKey() final  bool lockEnabled;
+@override@JsonKey() final  bool biometricEnabled;
+/// Enabled module ids. Order is ignored; see [moduleOrder].
+ final  List<String> _enabledModules;
+/// Enabled module ids. Order is ignored; see [moduleOrder].
+@override@JsonKey() List<String> get enabledModules {
+  if (_enabledModules is EqualUnmodifiableListView) return _enabledModules;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_enabledModules);
+}
+
+/// Every registered module id, in the user's order (SET-06).
+ final  List<String> _moduleOrder;
+/// Every registered module id, in the user's order (SET-06).
+@override@JsonKey() List<String> get moduleOrder {
+  if (_moduleOrder is EqualUnmodifiableListView) return _moduleOrder;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_moduleOrder);
+}
+
+@override@JsonKey() final  bool onboardingDone;
+@override final  String? adConsentStatus;
+/// UTC epoch milliseconds.
+@override final  int? lastBackupAt;
+@override@JsonKey() final  bool removeAdsPurchased;
+/// Notifications master switch (SET-01 toggle in T3.1).
+@override@JsonKey() final  bool notificationsEnabled;
+/// "Budget alerts" setting (SET-01 toggle in T3.1, FR-018).
+@override@JsonKey() final  bool budgetAlertsEnabled;
+/// "Habit reminders" setting (SET-01 toggle in T3.1, feature 005 R17).
+@override@JsonKey() final  bool habitRemindersEnabled;
+/// Dev-flavor "Unlock all features (debug)". Ignored in prod (FR-041).
+@override@JsonKey() final  bool debugUnlockAll;
+/// The latest time the app has seen, UTC epoch milliseconds. Only ever
+/// raised, so moving the clock back never revives an expired unlock
+/// (FR-038).
+@override final  int? latestSeenAt;
+/// Local `yyyy-MM-dd` day of the stored DSH-01 insight pick. Written
+/// together with [dailyInsightId] (feature 006 research R6).
+@override final  String? dailyInsightDate;
+/// Rule id of the stored DSH-01 insight pick.
+@override final  String? dailyInsightId;
+/// The DSH-01 Coming soon card was dismissed for good.
+@override@JsonKey() final  bool homeComingSoonDismissed;
+/// Full-date format, one of [dateFormatIds] (SET-01, feature 007 R13).
+@override@JsonKey() final  String dateFormat;
+/// Daily summary reminder time, local `HH:mm` (SET-01). Stored only
+/// until T3.4 schedules the reminder.
+@override@JsonKey() final  String dailySummaryTime;
+/// SET-05 "Lock after", one of [lockAfterOptions] (seconds).
+@override@JsonKey() final  int lockAfterSeconds;
+/// SET-05 "Hide app content in recents" (`FLAG_SECURE` app-wide).
+@override@JsonKey() final  bool hideInRecents;
+/// SET-04 font size, one of [fontSizeIds].
+@override@JsonKey() final  String fontSize;
+
+/// Create a copy of AppSettings
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AppSettingsCopyWith<_AppSettings> get copyWith => __$AppSettingsCopyWithImpl<_AppSettings>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.locale, locale) || other.locale == locale)&&(identical(other.currencyCode, currencyCode) || other.currencyCode == currencyCode)&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.selectedTheme, selectedTheme) || other.selectedTheme == selectedTheme)&&(identical(other.firstDayOfWeek, firstDayOfWeek) || other.firstDayOfWeek == firstDayOfWeek)&&(identical(other.lockEnabled, lockEnabled) || other.lockEnabled == lockEnabled)&&(identical(other.biometricEnabled, biometricEnabled) || other.biometricEnabled == biometricEnabled)&&const DeepCollectionEquality().equals(other.enabledModules, _enabledModules)&&const DeepCollectionEquality().equals(other.moduleOrder, _moduleOrder)&&(identical(other.onboardingDone, onboardingDone) || other.onboardingDone == onboardingDone)&&(identical(other.adConsentStatus, adConsentStatus) || other.adConsentStatus == adConsentStatus)&&(identical(other.lastBackupAt, lastBackupAt) || other.lastBackupAt == lastBackupAt)&&(identical(other.removeAdsPurchased, removeAdsPurchased) || other.removeAdsPurchased == removeAdsPurchased)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.budgetAlertsEnabled, budgetAlertsEnabled) || other.budgetAlertsEnabled == budgetAlertsEnabled)&&(identical(other.habitRemindersEnabled, habitRemindersEnabled) || other.habitRemindersEnabled == habitRemindersEnabled)&&(identical(other.debugUnlockAll, debugUnlockAll) || other.debugUnlockAll == debugUnlockAll)&&(identical(other.latestSeenAt, latestSeenAt) || other.latestSeenAt == latestSeenAt)&&(identical(other.dailyInsightDate, dailyInsightDate) || other.dailyInsightDate == dailyInsightDate)&&(identical(other.dailyInsightId, dailyInsightId) || other.dailyInsightId == dailyInsightId)&&(identical(other.homeComingSoonDismissed, homeComingSoonDismissed) || other.homeComingSoonDismissed == homeComingSoonDismissed)&&(identical(other.dateFormat, dateFormat) || other.dateFormat == dateFormat)&&(identical(other.dailySummaryTime, dailySummaryTime) || other.dailySummaryTime == dailySummaryTime)&&(identical(other.lockAfterSeconds, lockAfterSeconds) || other.lockAfterSeconds == lockAfterSeconds)&&(identical(other.hideInRecents, hideInRecents) || other.hideInRecents == hideInRecents)&&(identical(other.fontSize, fontSize) || other.fontSize == fontSize));
+}
+
+
+@override
+int get hashCode {
+    return Object.hashAll([runtimeType,locale,currencyCode,themeMode,selectedTheme,firstDayOfWeek,lockEnabled,biometricEnabled,const DeepCollectionEquality().hash(_enabledModules),const DeepCollectionEquality().hash(_moduleOrder),onboardingDone,adConsentStatus,lastBackupAt,removeAdsPurchased,notificationsEnabled,budgetAlertsEnabled,habitRemindersEnabled,debugUnlockAll,latestSeenAt,dailyInsightDate,dailyInsightId,homeComingSoonDismissed,dateFormat,dailySummaryTime,lockAfterSeconds,hideInRecents,fontSize]);
+}
+
+@override
+String toString() {
+    return 'AppSettings(locale: $locale, currencyCode: $currencyCode, themeMode: $themeMode, selectedTheme: $selectedTheme, firstDayOfWeek: $firstDayOfWeek, lockEnabled: $lockEnabled, biometricEnabled: $biometricEnabled, enabledModules: $enabledModules, moduleOrder: $moduleOrder, onboardingDone: $onboardingDone, adConsentStatus: $adConsentStatus, lastBackupAt: $lastBackupAt, removeAdsPurchased: $removeAdsPurchased, notificationsEnabled: $notificationsEnabled, budgetAlertsEnabled: $budgetAlertsEnabled, habitRemindersEnabled: $habitRemindersEnabled, debugUnlockAll: $debugUnlockAll, latestSeenAt: $latestSeenAt, dailyInsightDate: $dailyInsightDate, dailyInsightId: $dailyInsightId, homeComingSoonDismissed: $homeComingSoonDismissed, dateFormat: $dateFormat, dailySummaryTime: $dailySummaryTime, lockAfterSeconds: $lockAfterSeconds, hideInRecents: $hideInRecents, fontSize: $fontSize)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AppSettingsCopyWith<$Res> implements $AppSettingsCopyWith<$Res> {
+  factory _$AppSettingsCopyWith(_AppSettings value, $Res Function(_AppSettings) _then) = __$AppSettingsCopyWithImpl;
+@override @useResult
+$Res call({
+ String? locale, String currencyCode, String themeMode, String selectedTheme, int firstDayOfWeek, bool lockEnabled, bool biometricEnabled, List<String> enabledModules, List<String> moduleOrder, bool onboardingDone, String? adConsentStatus, int? lastBackupAt, bool removeAdsPurchased, bool notificationsEnabled, bool budgetAlertsEnabled, bool habitRemindersEnabled, bool debugUnlockAll, int? latestSeenAt, String? dailyInsightDate, String? dailyInsightId, bool homeComingSoonDismissed, String dateFormat, String dailySummaryTime, int lockAfterSeconds, bool hideInRecents, String fontSize
+});
+
+
+
+
+}
+/// @nodoc
+class __$AppSettingsCopyWithImpl<$Res>
+    implements _$AppSettingsCopyWith<$Res> {
+  __$AppSettingsCopyWithImpl(this._self, this._then);
+
+  final _AppSettings _self;
+  final $Res Function(_AppSettings) _then;
+
+/// Create a copy of AppSettings
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? locale = freezed,Object? currencyCode = null,Object? themeMode = null,Object? selectedTheme = null,Object? firstDayOfWeek = null,Object? lockEnabled = null,Object? biometricEnabled = null,Object? enabledModules = null,Object? moduleOrder = null,Object? onboardingDone = null,Object? adConsentStatus = freezed,Object? lastBackupAt = freezed,Object? removeAdsPurchased = null,Object? notificationsEnabled = null,Object? budgetAlertsEnabled = null,Object? habitRemindersEnabled = null,Object? debugUnlockAll = null,Object? latestSeenAt = freezed,Object? dailyInsightDate = freezed,Object? dailyInsightId = freezed,Object? homeComingSoonDismissed = null,Object? dateFormat = null,Object? dailySummaryTime = null,Object? lockAfterSeconds = null,Object? hideInRecents = null,Object? fontSize = null,}) {
+  return _then(_AppSettings(
+locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
+as String?,currencyCode: null == currencyCode ? _self.currencyCode : currencyCode // ignore: cast_nullable_to_non_nullable
+as String,themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
+as String,selectedTheme: null == selectedTheme ? _self.selectedTheme : selectedTheme // ignore: cast_nullable_to_non_nullable
+as String,firstDayOfWeek: null == firstDayOfWeek ? _self.firstDayOfWeek : firstDayOfWeek // ignore: cast_nullable_to_non_nullable
+as int,lockEnabled: null == lockEnabled ? _self.lockEnabled : lockEnabled // ignore: cast_nullable_to_non_nullable
+as bool,biometricEnabled: null == biometricEnabled ? _self.biometricEnabled : biometricEnabled // ignore: cast_nullable_to_non_nullable
+as bool,enabledModules: null == enabledModules ? _self._enabledModules : enabledModules // ignore: cast_nullable_to_non_nullable
+as List<String>,moduleOrder: null == moduleOrder ? _self._moduleOrder : moduleOrder // ignore: cast_nullable_to_non_nullable
+as List<String>,onboardingDone: null == onboardingDone ? _self.onboardingDone : onboardingDone // ignore: cast_nullable_to_non_nullable
+as bool,adConsentStatus: freezed == adConsentStatus ? _self.adConsentStatus : adConsentStatus // ignore: cast_nullable_to_non_nullable
+as String?,lastBackupAt: freezed == lastBackupAt ? _self.lastBackupAt : lastBackupAt // ignore: cast_nullable_to_non_nullable
+as int?,removeAdsPurchased: null == removeAdsPurchased ? _self.removeAdsPurchased : removeAdsPurchased // ignore: cast_nullable_to_non_nullable
+as bool,notificationsEnabled: null == notificationsEnabled ? _self.notificationsEnabled : notificationsEnabled // ignore: cast_nullable_to_non_nullable
+as bool,budgetAlertsEnabled: null == budgetAlertsEnabled ? _self.budgetAlertsEnabled : budgetAlertsEnabled // ignore: cast_nullable_to_non_nullable
+as bool,habitRemindersEnabled: null == habitRemindersEnabled ? _self.habitRemindersEnabled : habitRemindersEnabled // ignore: cast_nullable_to_non_nullable
+as bool,debugUnlockAll: null == debugUnlockAll ? _self.debugUnlockAll : debugUnlockAll // ignore: cast_nullable_to_non_nullable
+as bool,latestSeenAt: freezed == latestSeenAt ? _self.latestSeenAt : latestSeenAt // ignore: cast_nullable_to_non_nullable
+as int?,dailyInsightDate: freezed == dailyInsightDate ? _self.dailyInsightDate : dailyInsightDate // ignore: cast_nullable_to_non_nullable
+as String?,dailyInsightId: freezed == dailyInsightId ? _self.dailyInsightId : dailyInsightId // ignore: cast_nullable_to_non_nullable
+as String?,homeComingSoonDismissed: null == homeComingSoonDismissed ? _self.homeComingSoonDismissed : homeComingSoonDismissed // ignore: cast_nullable_to_non_nullable
+as bool,dateFormat: null == dateFormat ? _self.dateFormat : dateFormat // ignore: cast_nullable_to_non_nullable
+as String,dailySummaryTime: null == dailySummaryTime ? _self.dailySummaryTime : dailySummaryTime // ignore: cast_nullable_to_non_nullable
+as String,lockAfterSeconds: null == lockAfterSeconds ? _self.lockAfterSeconds : lockAfterSeconds // ignore: cast_nullable_to_non_nullable
+as int,hideInRecents: null == hideInRecents ? _self.hideInRecents : hideInRecents // ignore: cast_nullable_to_non_nullable
+as bool,fontSize: null == fontSize ? _self.fontSize : fontSize // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+mixin _$OnboardingChoices {
+
+ String? get locale; String get currencyCode; List<String> get moduleOrder; List<String> get enabledModules;
+/// Create a copy of OnboardingChoices
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$OnboardingChoicesCopyWith<OnboardingChoices> get copyWith => _$OnboardingChoicesCopyWithImpl<OnboardingChoices>(this as OnboardingChoices, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as OnboardingChoices;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingChoices&&(identical(other.locale, _this.locale) || other.locale == _this.locale)&&(identical(other.currencyCode, _this.currencyCode) || other.currencyCode == _this.currencyCode)&&const DeepCollectionEquality().equals(other.moduleOrder, _this.moduleOrder)&&const DeepCollectionEquality().equals(other.enabledModules, _this.enabledModules));
+}
+
+
+@override
+int get hashCode {
+  final _this = this as OnboardingChoices;
+  return Object.hash(runtimeType,_this.locale,_this.currencyCode,const DeepCollectionEquality().hash(_this.moduleOrder),const DeepCollectionEquality().hash(_this.enabledModules));
+}
+
+@override
+String toString() {
+  final _this = this as OnboardingChoices;
+  return 'OnboardingChoices(locale: ${_this.locale}, currencyCode: ${_this.currencyCode}, moduleOrder: ${_this.moduleOrder}, enabledModules: ${_this.enabledModules})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $OnboardingChoicesCopyWith<$Res>  {
+  factory $OnboardingChoicesCopyWith(OnboardingChoices value, $Res Function(OnboardingChoices) _then) = _$OnboardingChoicesCopyWithImpl;
+@useResult
+$Res call({
+ String? locale, String currencyCode, List<String> moduleOrder, List<String> enabledModules
+});
+
+
+
+
+}
+/// @nodoc
+class _$OnboardingChoicesCopyWithImpl<$Res>
+    implements $OnboardingChoicesCopyWith<$Res> {
+  _$OnboardingChoicesCopyWithImpl(this._self, this._then);
+
+  final OnboardingChoices _self;
+  final $Res Function(OnboardingChoices) _then;
+
+/// Create a copy of OnboardingChoices
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? locale = freezed,Object? currencyCode = null,Object? moduleOrder = null,Object? enabledModules = null,}) {
+  return _then(OnboardingChoices(
+locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
+as String?,currencyCode: null == currencyCode ? _self.currencyCode : currencyCode // ignore: cast_nullable_to_non_nullable
+as String,moduleOrder: null == moduleOrder ? _self.moduleOrder : moduleOrder // ignore: cast_nullable_to_non_nullable
+as List<String>,enabledModules: null == enabledModules ? _self.enabledModules : enabledModules // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [OnboardingChoices].
+extension OnboardingChoicesPatterns on OnboardingChoices {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _OnboardingChoices value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _OnboardingChoices() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _OnboardingChoices value)  $default,){
+final _that = this;
+switch (_that) {
+case _OnboardingChoices():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _OnboardingChoices value)?  $default,){
+final _that = this;
+switch (_that) {
+case _OnboardingChoices() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? locale,  String currencyCode,  List<String> moduleOrder,  List<String> enabledModules)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _OnboardingChoices() when $default != null:
+return $default(_that.locale,_that.currencyCode,_that.moduleOrder,_that.enabledModules);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? locale,  String currencyCode,  List<String> moduleOrder,  List<String> enabledModules)  $default,) {final _that = this;
+switch (_that) {
+case _OnboardingChoices():
+return $default(_that.locale,_that.currencyCode,_that.moduleOrder,_that.enabledModules);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? locale,  String currencyCode,  List<String> moduleOrder,  List<String> enabledModules)?  $default,) {final _that = this;
+switch (_that) {
+case _OnboardingChoices() when $default != null:
+return $default(_that.locale,_that.currencyCode,_that.moduleOrder,_that.enabledModules);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _OnboardingChoices implements OnboardingChoices {
+  const _OnboardingChoices({required this.locale, required this.currencyCode, required  List<String> moduleOrder, required  List<String> enabledModules}): _moduleOrder = moduleOrder,_enabledModules = enabledModules;
+  
+
+@override final  String? locale;
+@override final  String currencyCode;
+ final  List<String> _moduleOrder;
+@override List<String> get moduleOrder {
+  if (_moduleOrder is EqualUnmodifiableListView) return _moduleOrder;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_moduleOrder);
+}
+
+ final  List<String> _enabledModules;
+@override List<String> get enabledModules {
+  if (_enabledModules is EqualUnmodifiableListView) return _enabledModules;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_enabledModules);
+}
+
+
+/// Create a copy of OnboardingChoices
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$OnboardingChoicesCopyWith<_OnboardingChoices> get copyWith => __$OnboardingChoicesCopyWithImpl<_OnboardingChoices>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingChoices&&(identical(other.locale, locale) || other.locale == locale)&&(identical(other.currencyCode, currencyCode) || other.currencyCode == currencyCode)&&const DeepCollectionEquality().equals(other.moduleOrder, _moduleOrder)&&const DeepCollectionEquality().equals(other.enabledModules, _enabledModules));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,locale,currencyCode,const DeepCollectionEquality().hash(_moduleOrder),const DeepCollectionEquality().hash(_enabledModules));
+}
+
+@override
+String toString() {
+    return 'OnboardingChoices(locale: $locale, currencyCode: $currencyCode, moduleOrder: $moduleOrder, enabledModules: $enabledModules)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$OnboardingChoicesCopyWith<$Res> implements $OnboardingChoicesCopyWith<$Res> {
+  factory _$OnboardingChoicesCopyWith(_OnboardingChoices value, $Res Function(_OnboardingChoices) _then) = __$OnboardingChoicesCopyWithImpl;
+@override @useResult
+$Res call({
+ String? locale, String currencyCode, List<String> moduleOrder, List<String> enabledModules
+});
+
+
+
+
+}
+/// @nodoc
+class __$OnboardingChoicesCopyWithImpl<$Res>
+    implements _$OnboardingChoicesCopyWith<$Res> {
+  __$OnboardingChoicesCopyWithImpl(this._self, this._then);
+
+  final _OnboardingChoices _self;
+  final $Res Function(_OnboardingChoices) _then;
+
+/// Create a copy of OnboardingChoices
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? locale = freezed,Object? currencyCode = null,Object? moduleOrder = null,Object? enabledModules = null,}) {
+  return _then(_OnboardingChoices(
+locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
+as String?,currencyCode: null == currencyCode ? _self.currencyCode : currencyCode // ignore: cast_nullable_to_non_nullable
+as String,moduleOrder: null == moduleOrder ? _self._moduleOrder : moduleOrder // ignore: cast_nullable_to_non_nullable
+as List<String>,enabledModules: null == enabledModules ? _self._enabledModules : enabledModules // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+
+}
+
+// dart format on

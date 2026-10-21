@@ -1,0 +1,3891 @@
+{
+  "@@locale": "en",
+  "appName": "DailyTrack",
+  "@appName": {
+    "description": "App name; not translated."
+  },
+  "common_next": "Next",
+  "@common_next": {
+    "description": "Button: go to next step."
+  },
+  "common_back": "Back",
+  "@common_back": {
+    "description": "Button: go to previous step."
+  },
+  "common_skip": "Skip",
+  "@common_skip": {
+    "description": "Button: skip onboarding with defaults."
+  },
+  "common_retry": "Retry",
+  "@common_retry": {
+    "description": "Button: retry a failed action."
+  },
+  "common_tryAgain": "Try again",
+  "@common_tryAgain": {
+    "description": "Default ErrorState button label."
+  },
+  "common_comingSoon": "Coming soon",
+  "@common_comingSoon": {
+    "description": "Label for modules not yet available."
+  },
+  "common_placeholderMessage": "Coming in a later update",
+  "@common_placeholderMessage": {
+    "description": "Placeholder screen message."
+  },
+  "common_previousMonth": "Previous month",
+  "@common_previousMonth": {
+    "description": "PeriodSelector back arrow label."
+  },
+  "common_nextMonth": "Next month",
+  "@common_nextMonth": {
+    "description": "PeriodSelector forward arrow label."
+  },
+  "common_undo": "Undo",
+  "@common_undo": {
+    "description": "Snackbar undo action."
+  },
+  "common_cancel": "Cancel",
+  "@common_cancel": {
+    "description": "ConfirmDialog cancel button."
+  },
+  "keypad_backspace": "Delete",
+  "@keypad_backspace": {
+    "description": "NumericKeypad backspace key label."
+  },
+  "keypad_done": "Done",
+  "@keypad_done": {
+    "description": "NumericKeypad done key."
+  },
+  "premium_lockedLabel": "Pro feature, locked",
+  "@premium_lockedLabel": {
+    "description": "LockedFeatureOverlay lock badge semantic label."
+  },
+  "nav_home": "Home",
+  "@nav_home": {
+    "description": "Bottom nav: Home tab."
+  },
+  "nav_expenses": "Expenses",
+  "@nav_expenses": {
+    "description": "Bottom nav: Expenses tab."
+  },
+  "nav_habits": "Habits",
+  "@nav_habits": {
+    "description": "Bottom nav: Habits tab."
+  },
+  "nav_more": "More",
+  "@nav_more": {
+    "description": "Bottom nav: More tab."
+  },
+  "splash_errorMessage": "Couldn't open your data. Try again.",
+  "@splash_errorMessage": {
+    "description": "SYS-01 error when local storage fails to open."
+  },
+  "onboarding_welcomeTitle": "Track money and habits in one place",
+  "@onboarding_welcomeTitle": {
+    "description": "SYS-02 step 1 headline."
+  },
+  "onboarding_languageLabel": "Choose your language",
+  "@onboarding_languageLabel": {
+    "description": "SYS-02 step 1 language chips label."
+  },
+  "onboarding_currencyTitle": "Choose your currency",
+  "@onboarding_currencyTitle": {
+    "description": "SYS-02 step 2 title."
+  },
+  "onboarding_currencySearchHint": "Search currency",
+  "@onboarding_currencySearchHint": {
+    "description": "SYS-02 step 2 search field hint."
+  },
+  "onboarding_noMatches": "No matches",
+  "@onboarding_noMatches": {
+    "description": "SYS-02 currency search empty result."
+  },
+  "onboarding_clearSearch": "Clear search",
+  "@onboarding_clearSearch": {
+    "description": "SYS-02 button to clear the currency search."
+  },
+  "onboarding_modulesTitle": "What do you want to track?",
+  "@onboarding_modulesTitle": {
+    "description": "SYS-02 step 3 title."
+  },
+  "onboarding_atLeastOneModule": "Keep at least one tracker on",
+  "@onboarding_atLeastOneModule": {
+    "description": "SYS-02 message when the user tries to turn off the last module."
+  },
+  "onboarding_privacyTitle": "Your data stays with you",
+  "@onboarding_privacyTitle": {
+    "description": "SYS-02 step 4 title."
+  },
+  "onboarding_privacyBody": "Everything you log is stored only on this device. Nothing is uploaded unless you choose to back it up.",
+  "@onboarding_privacyBody": {
+    "description": "SYS-02 step 4 privacy explanation."
+  },
+  "onboarding_allowNotifications": "Allow notifications",
+  "@onboarding_allowNotifications": {
+    "description": "SYS-02 step 4 button."
+  },
+  "onboarding_notificationsGranted": "Notifications are on",
+  "@onboarding_notificationsGranted": {
+    "description": "Shown after permission is granted."
+  },
+  "onboarding_notificationsDenied": "Notifications are off. You can turn them on later in Settings.",
+  "@onboarding_notificationsDenied": {
+    "description": "Shown after permission is denied."
+  },
+  "onboarding_getStarted": "Get started",
+  "@onboarding_getStarted": {
+    "description": "SYS-02 primary button on the last step."
+  },
+  "onboarding_saveError": "Couldn't save your choices. Try again.",
+  "@onboarding_saveError": {
+    "description": "SYS-02 error when saving onboarding settings fails."
+  },
+  "onboarding_stepLabel": "Step {current} of {total}",
+  "@onboarding_stepLabel": {
+    "description": "SYS-02 progress label.",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "modules_title": "Modules",
+  "@modules_title": {
+    "description": "SET-06 screen title."
+  },
+  "modules_expense": "Expense",
+  "@modules_expense": {
+    "description": "Expense module name."
+  },
+  "modules_habit": "Habit",
+  "@modules_habit": {
+    "description": "Habit module name."
+  },
+  "modules_water": "Water",
+  "@modules_water": {
+    "description": "Water module name (coming soon)."
+  },
+  "modules_period": "Period",
+  "@modules_period": {
+    "description": "Period module name (coming soon)."
+  },
+  "modules_atLeastOne": "At least one module must stay on",
+  "@modules_atLeastOne": {
+    "description": "SET-06 message when the user tries to turn off the last module."
+  },
+  "modules_errorMessage": "Couldn't load or save your modules. Try again.",
+  "@modules_errorMessage": {
+    "description": "SET-06 error state when settings cannot be read or written."
+  },
+  "modules_reorderHandle": "Reorder {name}",
+  "@modules_reorderHandle": {
+    "description": "Semantic label for a module drag handle.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "more_modulesEntry": "Modules",
+  "@more_modulesEntry": {
+    "description": "More tab entry that opens SET-06."
+  },
+  "lock_title": "DailyTrack is locked",
+  "@lock_title": {
+    "description": "SYS-03 placeholder title."
+  },
+  "lock_placeholderMessage": "Unlock is coming in a later update",
+  "@lock_placeholderMessage": {
+    "description": "SYS-03 placeholder message."
+  },
+  "premium_watchAd": "Watch an ad",
+  "@premium_watchAd": {
+    "description": "LockedFeatureOverlay action."
+  },
+  "premium_getPro": "Get Pro",
+  "@premium_getPro": {
+    "description": "LockedFeatureOverlay action."
+  },
+  "language_en": "English",
+  "@language_en": {
+    "description": "Language name in its own script."
+  },
+  "language_hi": "हिन्दी",
+  "@language_hi": {
+    "description": "Language name in its own script."
+  },
+  "language_gu": "ગુજરાતી",
+  "@language_gu": {
+    "description": "Language name in its own script."
+  },
+  "expense_cat_food": "Food",
+  "@expense_cat_food": {
+    "description": "Default expense category."
+  },
+  "expense_cat_groceries": "Groceries",
+  "@expense_cat_groceries": {
+    "description": "Default expense category."
+  },
+  "expense_cat_transport": "Transport",
+  "@expense_cat_transport": {
+    "description": "Default expense category."
+  },
+  "expense_cat_fuel": "Fuel",
+  "@expense_cat_fuel": {
+    "description": "Default expense category."
+  },
+  "expense_cat_shopping": "Shopping",
+  "@expense_cat_shopping": {
+    "description": "Default expense category."
+  },
+  "expense_cat_bills": "Bills",
+  "@expense_cat_bills": {
+    "description": "Default expense category."
+  },
+  "expense_cat_rent": "Rent",
+  "@expense_cat_rent": {
+    "description": "Default expense category."
+  },
+  "expense_cat_health": "Health",
+  "@expense_cat_health": {
+    "description": "Default expense category."
+  },
+  "expense_cat_education": "Education",
+  "@expense_cat_education": {
+    "description": "Default expense category."
+  },
+  "expense_cat_entertainment": "Entertainment",
+  "@expense_cat_entertainment": {
+    "description": "Default expense category."
+  },
+  "expense_cat_travel": "Travel",
+  "@expense_cat_travel": {
+    "description": "Default expense category."
+  },
+  "expense_cat_other": "Other",
+  "@expense_cat_other": {
+    "description": "Default expense category."
+  },
+  "income_cat_salary": "Salary",
+  "@income_cat_salary": {
+    "description": "Default income category."
+  },
+  "income_cat_business": "Business",
+  "@income_cat_business": {
+    "description": "Default income category."
+  },
+  "income_cat_gift": "Gift",
+  "@income_cat_gift": {
+    "description": "Default income category."
+  },
+  "income_cat_interest": "Interest",
+  "@income_cat_interest": {
+    "description": "Default income category."
+  },
+  "income_cat_other": "Other income",
+  "@income_cat_other": {
+    "description": "Default income category."
+  },
+  "expense_account_cash": "Cash",
+  "@expense_account_cash": {
+    "description": "Default account."
+  },
+  "common_previousDay": "Previous day",
+  "@common_previousDay": {
+    "description": "PeriodSelector back arrow (day)."
+  },
+  "common_nextDay": "Next day",
+  "@common_nextDay": {
+    "description": "PeriodSelector forward arrow (day)."
+  },
+  "common_previousWeek": "Previous week",
+  "@common_previousWeek": {
+    "description": "PeriodSelector back arrow (week)."
+  },
+  "common_nextWeek": "Next week",
+  "@common_nextWeek": {
+    "description": "PeriodSelector forward arrow (week)."
+  },
+  "common_previousYear": "Previous year",
+  "@common_previousYear": {
+    "description": "PeriodSelector back arrow (year)."
+  },
+  "common_nextYear": "Next year",
+  "@common_nextYear": {
+    "description": "PeriodSelector forward arrow (year)."
+  },
+  "common_today": "Today",
+  "@common_today": {
+    "description": "Relative day label."
+  },
+  "common_yesterday": "Yesterday",
+  "@common_yesterday": {
+    "description": "Relative day label."
+  },
+  "common_periodTitle": "Choose a period",
+  "@common_periodTitle": {
+    "description": "PeriodPickerSheet title."
+  },
+  "common_periodDay": "Day",
+  "@common_periodDay": {
+    "description": "Period kind."
+  },
+  "common_periodWeek": "Week",
+  "@common_periodWeek": {
+    "description": "Period kind."
+  },
+  "common_periodMonth": "Month",
+  "@common_periodMonth": {
+    "description": "Period kind."
+  },
+  "common_periodYear": "Year",
+  "@common_periodYear": {
+    "description": "Period kind."
+  },
+  "common_periodCustom": "Custom range",
+  "@common_periodCustom": {
+    "description": "Period kind."
+  },
+  "expense_typeExpense": "Expense",
+  "@expense_typeExpense": {
+    "description": "Transaction type."
+  },
+  "expense_typeIncome": "Income",
+  "@expense_typeIncome": {
+    "description": "Transaction type."
+  },
+  "expense_typeTransfer": "Transfer",
+  "@expense_typeTransfer": {
+    "description": "Transaction type."
+  },
+  "expense_payCash": "Cash",
+  "@expense_payCash": {
+    "description": "Payment mode."
+  },
+  "expense_payUpi": "UPI",
+  "@expense_payUpi": {
+    "description": "Payment mode."
+  },
+  "expense_payCard": "Card",
+  "@expense_payCard": {
+    "description": "Payment mode."
+  },
+  "expense_payNetBanking": "Net banking",
+  "@expense_payNetBanking": {
+    "description": "Payment mode."
+  },
+  "expense_payOther": "Other",
+  "@expense_payOther": {
+    "description": "Payment mode."
+  },
+  "expense_accountTypeCash": "Cash",
+  "@expense_accountTypeCash": {
+    "description": "Account type."
+  },
+  "expense_accountTypeBank": "Bank",
+  "@expense_accountTypeBank": {
+    "description": "Account type."
+  },
+  "expense_accountTypeUpi": "UPI wallet",
+  "@expense_accountTypeUpi": {
+    "description": "Account type."
+  },
+  "expense_accountTypeCard": "Card",
+  "@expense_accountTypeCard": {
+    "description": "Account type."
+  },
+  "expense_accountTypeWallet": "Wallet",
+  "@expense_accountTypeWallet": {
+    "description": "Account type."
+  },
+  "expense_saved": "Saved",
+  "@expense_saved": {
+    "description": "Snackbar after saving a transaction."
+  },
+  "expense_deleted": "Transaction deleted",
+  "@expense_deleted": {
+    "description": "Snackbar after deleting a transaction."
+  },
+  "expense_loadError": "Couldn't load your transactions. Try again.",
+  "@expense_loadError": {
+    "description": "Error state of expense screens."
+  },
+  "expense_saveError": "Couldn't save. Your changes are still here. Try again.",
+  "@expense_saveError": {
+    "description": "EXP-02 save failure."
+  },
+  "expense_spentToday": "Spent today",
+  "@expense_spentToday": {
+    "description": "Home Expense card."
+  },
+  "expense_thisMonth": "This month",
+  "@expense_thisMonth": {
+    "description": "Home Expense card."
+  },
+  "expense_quickAdd": "Add expense",
+  "@expense_quickAdd": {
+    "description": "Global quick-add action."
+  },
+  "expense_addTitle": "Add transaction",
+  "@expense_addTitle": {
+    "description": "EXP-02 title (new)."
+  },
+  "expense_editTitle": "Edit transaction",
+  "@expense_editTitle": {
+    "description": "EXP-02 title (edit)."
+  },
+  "expense_saveExpense": "Save expense",
+  "@expense_saveExpense": {
+    "description": "EXP-02 save button."
+  },
+  "expense_saveIncome": "Save income",
+  "@expense_saveIncome": {
+    "description": "EXP-02 save button."
+  },
+  "expense_saveTransfer": "Save transfer",
+  "@expense_saveTransfer": {
+    "description": "EXP-02 save button."
+  },
+  "expense_saveAndAddAnother": "Save and add another",
+  "@expense_saveAndAddAnother": {
+    "description": "EXP-02 long-press save option."
+  },
+  "expense_fromAccount": "From {account}",
+  "@expense_fromAccount": {
+    "description": "EXP-02 transfer source chip.",
+    "placeholders": {
+      "account": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_toAccount": "To {account}",
+  "@expense_toAccount": {
+    "description": "EXP-02 transfer destination chip.",
+    "placeholders": {
+      "account": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_chooseToAccount": "Choose where to move it",
+  "@expense_chooseToAccount": {
+    "description": "EXP-02 empty transfer destination chip."
+  },
+  "expense_account": "Account",
+  "@expense_account": {
+    "description": "Account picker title."
+  },
+  "expense_paymentMode": "Payment mode",
+  "@expense_paymentMode": {
+    "description": "EXP-02 section label."
+  },
+  "expense_category": "Category",
+  "@expense_category": {
+    "description": "EXP-02 section label."
+  },
+  "expense_amount": "Amount",
+  "@expense_amount": {
+    "description": "EXP-02 amount field label."
+  },
+  "expense_pickDate": "Pick date",
+  "@expense_pickDate": {
+    "description": "EXP-02 date chip."
+  },
+  "expense_pickTime": "Pick time",
+  "@expense_pickTime": {
+    "description": "EXP-02 time chip."
+  },
+  "expense_noteLabel": "Note (optional)",
+  "@expense_noteLabel": {
+    "description": "EXP-02 note field."
+  },
+  "expense_noteLimit": "{count}/200",
+  "@expense_noteLimit": {
+    "description": "EXP-02 note counter.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "expense_attachReceipt": "Attach receipt",
+  "@expense_attachReceipt": {
+    "description": "EXP-02 receipt section."
+  },
+  "expense_camera": "Camera",
+  "@expense_camera": {
+    "description": "EXP-02 receipt source."
+  },
+  "expense_gallery": "Gallery",
+  "@expense_gallery": {
+    "description": "EXP-02 receipt source."
+  },
+  "expense_removeReceipt": "Remove receipt",
+  "@expense_removeReceipt": {
+    "description": "EXP-02 remove receipt."
+  },
+  "expense_receiptError": "Couldn't attach the photo. Try again.",
+  "@expense_receiptError": {
+    "description": "EXP-02 receipt failure."
+  },
+  "expense_newCategory": "New",
+  "@expense_newCategory": {
+    "description": "EXP-02 category grid '+ New' tile."
+  },
+  "expense_noCategories": "No categories yet. Add one to continue",
+  "@expense_noCategories": {
+    "description": "EXP-02 empty state."
+  },
+  "expense_discardTitle": "Discard changes?",
+  "@expense_discardTitle": {
+    "description": "EXP-02 back with changes."
+  },
+  "expense_discardBody": "Your changes to this transaction will be lost.",
+  "@expense_discardBody": {
+    "description": "EXP-02 discard dialog body."
+  },
+  "expense_discardConfirm": "Discard",
+  "@expense_discardConfirm": {
+    "description": "EXP-02 discard dialog button."
+  },
+  "expense_errAmountRequired": "Enter an amount",
+  "@expense_errAmountRequired": {
+    "description": "EXP-02 validation."
+  },
+  "expense_errAmountTooLarge": "Amount can be at most {max}",
+  "@expense_errAmountTooLarge": {
+    "description": "EXP-02 validation.",
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_errAmountInvalid": "Check the calculation",
+  "@expense_errAmountInvalid": {
+    "description": "EXP-02 validation."
+  },
+  "expense_errCategoryRequired": "Choose a category",
+  "@expense_errCategoryRequired": {
+    "description": "EXP-02 validation."
+  },
+  "expense_errToAccountRequired": "Choose an account to move money to",
+  "@expense_errToAccountRequired": {
+    "description": "EXP-02 validation."
+  },
+  "expense_errSameAccount": "Choose two different accounts",
+  "@expense_errSameAccount": {
+    "description": "EXP-02 validation."
+  },
+  "expense_errNoteTooLong": "Notes can be up to 200 characters",
+  "@expense_errNoteTooLong": {
+    "description": "EXP-02 validation."
+  },
+  "expense_noLongerExists": "This transaction no longer exists",
+  "@expense_noLongerExists": {
+    "description": "Entry deleted elsewhere."
+  },
+  "expense_deleteAction": "Delete transaction",
+  "@expense_deleteAction": {
+    "description": "Delete icon label."
+  },
+  "expense_listTitle": "Expenses",
+  "@expense_listTitle": {
+    "description": "EXP-01 title."
+  },
+  "expense_search": "Search transactions",
+  "@expense_search": {
+    "description": "EXP-01 search."
+  },
+  "expense_closeSearch": "Close search",
+  "@expense_closeSearch": {
+    "description": "EXP-01 close search."
+  },
+  "expense_filter": "Filter",
+  "@expense_filter": {
+    "description": "EXP-01 filter action."
+  },
+  "expense_menuCategories": "Categories",
+  "@expense_menuCategories": {
+    "description": "EXP-01 overflow item."
+  },
+  "expense_menuAccounts": "Accounts",
+  "@expense_menuAccounts": {
+    "description": "EXP-01 overflow item."
+  },
+  "expense_income": "Income",
+  "@expense_income": {
+    "description": "Summary strip."
+  },
+  "expense_expense": "Expense",
+  "@expense_expense": {
+    "description": "Summary strip."
+  },
+  "expense_net": "Net",
+  "@expense_net": {
+    "description": "Summary strip."
+  },
+  "expense_emptyPeriod": "No transactions in {period}",
+  "@expense_emptyPeriod": {
+    "description": "EXP-01 empty period.",
+    "placeholders": {
+      "period": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_addExpense": "Add expense",
+  "@expense_addExpense": {
+    "description": "EXP-01 empty action and FAB."
+  },
+  "expense_noMatches": "No matches",
+  "@expense_noMatches": {
+    "description": "EXP-01 filtered empty."
+  },
+  "expense_clearFilters": "Clear filters",
+  "@expense_clearFilters": {
+    "description": "EXP-01 filtered empty action."
+  },
+  "expense_duplicate": "Duplicate",
+  "@expense_duplicate": {
+    "description": "Row and detail action."
+  },
+  "expense_delete": "Delete",
+  "@expense_delete": {
+    "description": "Row action."
+  },
+  "expense_transferLabel": "{from} → {to}",
+  "@expense_transferLabel": {
+    "description": "Transfer row title.",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_detailTitle": "Transaction",
+  "@expense_detailTitle": {
+    "description": "EXP-03 title."
+  },
+  "expense_edit": "Edit",
+  "@expense_edit": {
+    "description": "EXP-03 action."
+  },
+  "expense_share": "Share",
+  "@expense_share": {
+    "description": "EXP-03 action."
+  },
+  "expense_receipt": "Receipt",
+  "@expense_receipt": {
+    "description": "EXP-03 receipt label."
+  },
+  "expense_receiptMissing": "Receipt not available",
+  "@expense_receiptMissing": {
+    "description": "Missing receipt file."
+  },
+  "expense_close": "Close",
+  "@expense_close": {
+    "description": "Close the receipt viewer."
+  },
+  "expense_shareText": "{type}: {amount}\n{category} · {account}\n{date}",
+  "@expense_shareText": {
+    "description": "EXP-03 share text.",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "category": {
+        "type": "String"
+      },
+      "account": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_shareNote": "Note: {note}",
+  "@expense_shareNote": {
+    "description": "EXP-03 share text note line.",
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_filterTitle": "Filter transactions",
+  "@expense_filterTitle": {
+    "description": "Filter sheet title."
+  },
+  "expense_filterType": "Type",
+  "@expense_filterType": {
+    "description": "Filter sheet section."
+  },
+  "expense_filterAmountMin": "Min amount",
+  "@expense_filterAmountMin": {
+    "description": "Filter sheet field."
+  },
+  "expense_filterAmountMax": "Max amount",
+  "@expense_filterAmountMax": {
+    "description": "Filter sheet field."
+  },
+  "expense_applyFilters": "Apply filters",
+  "@expense_applyFilters": {
+    "description": "Filter sheet button."
+  },
+  "expense_removeFilter": "Remove filter {name}",
+  "@expense_removeFilter": {
+    "description": "Filter chip delete label.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_amountAtLeast": "≥ {amount}",
+  "@expense_amountAtLeast": {
+    "description": "Amount filter chip.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_amountAtMost": "≤ {amount}",
+  "@expense_amountAtMost": {
+    "description": "Amount filter chip.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_amountBetween": "{min} – {max}",
+  "@expense_amountBetween": {
+    "description": "Amount filter chip.",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_accountAndMode": "{account} · {mode}",
+  "@expense_accountAndMode": {
+    "description": "EXP-01 row subtitle: account and payment mode.",
+    "placeholders": {
+      "account": {
+        "type": "String"
+      },
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_amountValue": "Amount: {amount}",
+  "@expense_amountValue": {
+    "description": "EXP-02 amount spoken label.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "common_colorLabel": "Color {index} of {total}",
+  "@common_colorLabel": {
+    "description": "ColorPickerRow swatch label.",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "common_iconPicker": "Choose an icon",
+  "@common_iconPicker": {
+    "description": "IconPickerGrid label."
+  },
+  "common_colorPicker": "Choose a color",
+  "@common_colorPicker": {
+    "description": "ColorPickerRow label."
+  },
+  "expense_categoriesTitle": "Categories",
+  "@expense_categoriesTitle": {
+    "description": "EXP-04 title."
+  },
+  "expense_newCategoryTitle": "New category",
+  "@expense_newCategoryTitle": {
+    "description": "EXP-05 title (new)."
+  },
+  "expense_editCategoryTitle": "Edit category",
+  "@expense_editCategoryTitle": {
+    "description": "EXP-05 title (edit)."
+  },
+  "expense_hiddenSection": "Hidden",
+  "@expense_hiddenSection": {
+    "description": "EXP-04 hidden section."
+  },
+  "expense_hide": "Hide",
+  "@expense_hide": {
+    "description": "EXP-04 action."
+  },
+  "expense_unhide": "Show again",
+  "@expense_unhide": {
+    "description": "EXP-04 action."
+  },
+  "expense_rename": "Rename",
+  "@expense_rename": {
+    "description": "EXP-04 action."
+  },
+  "expense_deleteCategory": "Delete category",
+  "@expense_deleteCategory": {
+    "description": "EXP-04 action."
+  },
+  "expense_categoryDeleted": "Category deleted",
+  "@expense_categoryDeleted": {
+    "description": "EXP-04 snackbar."
+  },
+  "expense_categoryHidden": "Category hidden",
+  "@expense_categoryHidden": {
+    "description": "EXP-04 snackbar."
+  },
+  "expense_categoryShown": "Category shown again",
+  "@expense_categoryShown": {
+    "description": "EXP-04 snackbar."
+  },
+  "expense_moveTitle": "Choose a new category",
+  "@expense_moveTitle": {
+    "description": "Replacement sheet title."
+  },
+  "expense_moveBody": "{count, plural, one{Move 1 transaction to the category you choose.} other{Move {count} transactions to the category you choose.}}",
+  "@expense_moveBody": {
+    "description": "Replacement sheet body.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "expense_moveConfirm": "Move and delete",
+  "@expense_moveConfirm": {
+    "description": "Replacement sheet button."
+  },
+  "expense_categoryName": "Name",
+  "@expense_categoryName": {
+    "description": "EXP-05 name field."
+  },
+  "expense_nameLimit": "Up to 30 characters",
+  "@expense_nameLimit": {
+    "description": "EXP-05 name hint."
+  },
+  "expense_errNameRequired": "Enter a name",
+  "@expense_errNameRequired": {
+    "description": "EXP-05 validation."
+  },
+  "expense_errNameTooLong": "Names can be up to 30 characters",
+  "@expense_errNameTooLong": {
+    "description": "EXP-05 validation."
+  },
+  "expense_errNameDuplicate": "A category with this name already exists",
+  "@expense_errNameDuplicate": {
+    "description": "EXP-05 validation."
+  },
+  "expense_errNameReserved": "Choose a different name",
+  "@expense_errNameReserved": {
+    "description": "EXP-05 validation."
+  },
+  "expense_icon": "Icon",
+  "@expense_icon": {
+    "description": "EXP-05/07 section."
+  },
+  "expense_color": "Color",
+  "@expense_color": {
+    "description": "EXP-05/07 section."
+  },
+  "expense_type": "Type",
+  "@expense_type": {
+    "description": "EXP-05/07 section."
+  },
+  "expense_saveCategory": "Save category",
+  "@expense_saveCategory": {
+    "description": "EXP-05 button."
+  },
+  "expense_reorderHandle": "Drag to reorder {name}",
+  "@expense_reorderHandle": {
+    "description": "EXP-04 drag handle label.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_reorderError": "Couldn't save the new order. Try again.",
+  "@expense_reorderError": {
+    "description": "EXP-04 reorder failure."
+  },
+  "expense_noCategoriesHere": "No categories here yet",
+  "@expense_noCategoriesHere": {
+    "description": "EXP-04 empty tab."
+  },
+  "expense_addCategory": "Add category",
+  "@expense_addCategory": {
+    "description": "EXP-04 FAB and empty action."
+  },
+  "expense_loadDataError": "Couldn't load this screen. Try again.",
+  "@expense_loadDataError": {
+    "description": "Generic load error (categories, accounts, Home card)."
+  },
+  "expense_accountsTitle": "Accounts",
+  "@expense_accountsTitle": {
+    "description": "EXP-06 title."
+  },
+  "expense_newAccountTitle": "New account",
+  "@expense_newAccountTitle": {
+    "description": "EXP-07 title (new)."
+  },
+  "expense_editAccountTitle": "Edit account",
+  "@expense_editAccountTitle": {
+    "description": "EXP-07 title (edit)."
+  },
+  "expense_totalBalance": "Total balance",
+  "@expense_totalBalance": {
+    "description": "EXP-06 total card."
+  },
+  "expense_archivedSection": "Archived",
+  "@expense_archivedSection": {
+    "description": "EXP-06 archived section."
+  },
+  "expense_archive": "Archive",
+  "@expense_archive": {
+    "description": "EXP-06 action."
+  },
+  "expense_unarchive": "Restore",
+  "@expense_unarchive": {
+    "description": "EXP-06 action."
+  },
+  "expense_accountArchived": "Account archived",
+  "@expense_accountArchived": {
+    "description": "EXP-06 snackbar."
+  },
+  "expense_accountRestored": "Account restored",
+  "@expense_accountRestored": {
+    "description": "EXP-06 snackbar."
+  },
+  "expense_deleteAccount": "Delete account",
+  "@expense_deleteAccount": {
+    "description": "EXP-06 action."
+  },
+  "expense_accountDeleted": "Account deleted",
+  "@expense_accountDeleted": {
+    "description": "EXP-06 snackbar."
+  },
+  "expense_lastAccountHelp": "You need at least one active account",
+  "@expense_lastAccountHelp": {
+    "description": "EXP-06 last-active guard (Q3)."
+  },
+  "expense_accountHasTransactions": "Accounts with transactions can be archived, not deleted",
+  "@expense_accountHasTransactions": {
+    "description": "EXP-06 delete explanation."
+  },
+  "expense_accountName": "Name",
+  "@expense_accountName": {
+    "description": "EXP-07 name field."
+  },
+  "expense_accountType": "Type",
+  "@expense_accountType": {
+    "description": "EXP-07 type."
+  },
+  "expense_openingBalance": "Opening balance",
+  "@expense_openingBalance": {
+    "description": "EXP-07 opening balance."
+  },
+  "expense_balancePositive": "Positive balance",
+  "@expense_balancePositive": {
+    "description": "EXP-07 sign toggle (+)."
+  },
+  "expense_balanceNegative": "Negative balance, for example a card you owe on",
+  "@expense_balanceNegative": {
+    "description": "EXP-07 sign toggle (−)."
+  },
+  "expense_saveAccount": "Save account",
+  "@expense_saveAccount": {
+    "description": "EXP-07 button."
+  },
+  "expense_errAccountNameRequired": "Enter a name",
+  "@expense_errAccountNameRequired": {
+    "description": "EXP-07 validation."
+  },
+  "expense_errAccountNameTooLong": "Names can be up to 40 characters",
+  "@expense_errAccountNameTooLong": {
+    "description": "EXP-07 validation."
+  },
+  "expense_errBalanceRange": "Balance must be between {min} and {max}",
+  "@expense_errBalanceRange": {
+    "description": "EXP-07 validation.",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_addAccount": "Add account",
+  "@expense_addAccount": {
+    "description": "EXP-06 FAB and empty action."
+  },
+  "expense_noAccounts": "No accounts yet",
+  "@expense_noAccounts": {
+    "description": "EXP-06 empty state."
+  },
+  "expense_cardEmpty": "Add your first expense",
+  "@expense_cardEmpty": {
+    "description": "Home Expense card empty action."
+  },
+  "common_iconGroup_food": "Food",
+  "@common_iconGroup_food": {
+    "description": "IconPickerGrid group heading."
+  },
+  "common_iconGroup_transport": "Transport",
+  "@common_iconGroup_transport": {
+    "description": "IconPickerGrid group heading."
+  },
+  "common_iconGroup_home": "Home and bills",
+  "@common_iconGroup_home": {
+    "description": "IconPickerGrid group heading."
+  },
+  "common_iconGroup_shopping": "Shopping",
+  "@common_iconGroup_shopping": {
+    "description": "IconPickerGrid group heading."
+  },
+  "common_iconGroup_health": "Health",
+  "@common_iconGroup_health": {
+    "description": "IconPickerGrid group heading."
+  },
+  "common_iconGroup_education": "Education",
+  "@common_iconGroup_education": {
+    "description": "IconPickerGrid group heading."
+  },
+  "common_iconGroup_leisure": "Leisure",
+  "@common_iconGroup_leisure": {
+    "description": "IconPickerGrid group heading."
+  },
+  "common_iconGroup_travel": "Travel",
+  "@common_iconGroup_travel": {
+    "description": "IconPickerGrid group heading."
+  },
+  "common_iconGroup_money": "Money",
+  "@common_iconGroup_money": {
+    "description": "IconPickerGrid group heading."
+  },
+  "common_iconGroup_other": "Other",
+  "@common_iconGroup_other": {
+    "description": "IconPickerGrid group heading."
+  },
+  "icon_restaurant": "Restaurant",
+  "@icon_restaurant": {
+    "description": "Semantic label of the 'restaurant' icon."
+  },
+  "icon_local_grocery_store": "Groceries",
+  "@icon_local_grocery_store": {
+    "description": "Semantic label of the 'local_grocery_store' icon."
+  },
+  "icon_local_cafe": "Cafe",
+  "@icon_local_cafe": {
+    "description": "Semantic label of the 'local_cafe' icon."
+  },
+  "icon_fastfood": "Fast food",
+  "@icon_fastfood": {
+    "description": "Semantic label of the 'fastfood' icon."
+  },
+  "icon_bakery_dining": "Bakery",
+  "@icon_bakery_dining": {
+    "description": "Semantic label of the 'bakery_dining' icon."
+  },
+  "icon_local_bar": "Drinks",
+  "@icon_local_bar": {
+    "description": "Semantic label of the 'local_bar' icon."
+  },
+  "icon_icecream": "Ice cream",
+  "@icon_icecream": {
+    "description": "Semantic label of the 'icecream' icon."
+  },
+  "icon_lunch_dining": "Meal",
+  "@icon_lunch_dining": {
+    "description": "Semantic label of the 'lunch_dining' icon."
+  },
+  "icon_directions_bus": "Bus",
+  "@icon_directions_bus": {
+    "description": "Semantic label of the 'directions_bus' icon."
+  },
+  "icon_local_gas_station": "Fuel",
+  "@icon_local_gas_station": {
+    "description": "Semantic label of the 'local_gas_station' icon."
+  },
+  "icon_directions_car": "Car",
+  "@icon_directions_car": {
+    "description": "Semantic label of the 'directions_car' icon."
+  },
+  "icon_two_wheeler": "Two-wheeler",
+  "@icon_two_wheeler": {
+    "description": "Semantic label of the 'two_wheeler' icon."
+  },
+  "icon_local_taxi": "Taxi",
+  "@icon_local_taxi": {
+    "description": "Semantic label of the 'local_taxi' icon."
+  },
+  "icon_train": "Train",
+  "@icon_train": {
+    "description": "Semantic label of the 'train' icon."
+  },
+  "icon_electric_rickshaw": "Auto rickshaw",
+  "@icon_electric_rickshaw": {
+    "description": "Semantic label of the 'electric_rickshaw' icon."
+  },
+  "icon_local_parking": "Parking",
+  "@icon_local_parking": {
+    "description": "Semantic label of the 'local_parking' icon."
+  },
+  "icon_home": "Home",
+  "@icon_home": {
+    "description": "Semantic label of the 'home' icon."
+  },
+  "icon_receipt": "Bills",
+  "@icon_receipt": {
+    "description": "Semantic label of the 'receipt' icon."
+  },
+  "icon_bolt": "Electricity",
+  "@icon_bolt": {
+    "description": "Semantic label of the 'bolt' icon."
+  },
+  "icon_water_drop": "Water",
+  "@icon_water_drop": {
+    "description": "Semantic label of the 'water_drop' icon."
+  },
+  "icon_wifi": "Internet",
+  "@icon_wifi": {
+    "description": "Semantic label of the 'wifi' icon."
+  },
+  "icon_phone_android": "Mobile",
+  "@icon_phone_android": {
+    "description": "Semantic label of the 'phone_android' icon."
+  },
+  "icon_build": "Repairs",
+  "@icon_build": {
+    "description": "Semantic label of the 'build' icon."
+  },
+  "icon_cleaning_services": "Cleaning",
+  "@icon_cleaning_services": {
+    "description": "Semantic label of the 'cleaning_services' icon."
+  },
+  "icon_shopping_bag": "Shopping",
+  "@icon_shopping_bag": {
+    "description": "Semantic label of the 'shopping_bag' icon."
+  },
+  "icon_shopping_cart": "Cart",
+  "@icon_shopping_cart": {
+    "description": "Semantic label of the 'shopping_cart' icon."
+  },
+  "icon_checkroom": "Clothes",
+  "@icon_checkroom": {
+    "description": "Semantic label of the 'checkroom' icon."
+  },
+  "icon_devices": "Electronics",
+  "@icon_devices": {
+    "description": "Semantic label of the 'devices' icon."
+  },
+  "icon_chair": "Furniture",
+  "@icon_chair": {
+    "description": "Semantic label of the 'chair' icon."
+  },
+  "icon_redeem": "Gift",
+  "@icon_redeem": {
+    "description": "Semantic label of the 'redeem' icon."
+  },
+  "icon_local_florist": "Flowers",
+  "@icon_local_florist": {
+    "description": "Semantic label of the 'local_florist' icon."
+  },
+  "icon_pets": "Pets",
+  "@icon_pets": {
+    "description": "Semantic label of the 'pets' icon."
+  },
+  "icon_medical_services": "Medical",
+  "@icon_medical_services": {
+    "description": "Semantic label of the 'medical_services' icon."
+  },
+  "icon_local_pharmacy": "Pharmacy",
+  "@icon_local_pharmacy": {
+    "description": "Semantic label of the 'local_pharmacy' icon."
+  },
+  "icon_fitness_center": "Fitness",
+  "@icon_fitness_center": {
+    "description": "Semantic label of the 'fitness_center' icon."
+  },
+  "icon_spa": "Self-care",
+  "@icon_spa": {
+    "description": "Semantic label of the 'spa' icon."
+  },
+  "icon_favorite": "Wellbeing",
+  "@icon_favorite": {
+    "description": "Semantic label of the 'favorite' icon."
+  },
+  "icon_child_care": "Child care",
+  "@icon_child_care": {
+    "description": "Semantic label of the 'child_care' icon."
+  },
+  "icon_school": "School",
+  "@icon_school": {
+    "description": "Semantic label of the 'school' icon."
+  },
+  "icon_menu_book": "Books",
+  "@icon_menu_book": {
+    "description": "Semantic label of the 'menu_book' icon."
+  },
+  "icon_computer": "Computer",
+  "@icon_computer": {
+    "description": "Semantic label of the 'computer' icon."
+  },
+  "icon_science": "Science",
+  "@icon_science": {
+    "description": "Semantic label of the 'science' icon."
+  },
+  "icon_edit": "Stationery",
+  "@icon_edit": {
+    "description": "Semantic label of the 'edit' icon."
+  },
+  "icon_movie": "Movies",
+  "@icon_movie": {
+    "description": "Semantic label of the 'movie' icon."
+  },
+  "icon_sports_esports": "Games",
+  "@icon_sports_esports": {
+    "description": "Semantic label of the 'sports_esports' icon."
+  },
+  "icon_music_note": "Music",
+  "@icon_music_note": {
+    "description": "Semantic label of the 'music_note' icon."
+  },
+  "icon_sports_cricket": "Cricket",
+  "@icon_sports_cricket": {
+    "description": "Semantic label of the 'sports_cricket' icon."
+  },
+  "icon_celebration": "Celebration",
+  "@icon_celebration": {
+    "description": "Semantic label of the 'celebration' icon."
+  },
+  "icon_theater_comedy": "Events",
+  "@icon_theater_comedy": {
+    "description": "Semantic label of the 'theater_comedy' icon."
+  },
+  "icon_subscriptions": "Subscriptions",
+  "@icon_subscriptions": {
+    "description": "Semantic label of the 'subscriptions' icon."
+  },
+  "icon_flight": "Flight",
+  "@icon_flight": {
+    "description": "Semantic label of the 'flight' icon."
+  },
+  "icon_hotel": "Hotel",
+  "@icon_hotel": {
+    "description": "Semantic label of the 'hotel' icon."
+  },
+  "icon_luggage": "Luggage",
+  "@icon_luggage": {
+    "description": "Semantic label of the 'luggage' icon."
+  },
+  "icon_beach_access": "Holiday",
+  "@icon_beach_access": {
+    "description": "Semantic label of the 'beach_access' icon."
+  },
+  "icon_map": "Trip",
+  "@icon_map": {
+    "description": "Semantic label of the 'map' icon."
+  },
+  "icon_payments": "Salary",
+  "@icon_payments": {
+    "description": "Semantic label of the 'payments' icon."
+  },
+  "icon_storefront": "Business",
+  "@icon_storefront": {
+    "description": "Semantic label of the 'storefront' icon."
+  },
+  "icon_savings": "Savings",
+  "@icon_savings": {
+    "description": "Semantic label of the 'savings' icon."
+  },
+  "icon_attach_money": "Money",
+  "@icon_attach_money": {
+    "description": "Semantic label of the 'attach_money' icon."
+  },
+  "icon_account_balance": "Bank",
+  "@icon_account_balance": {
+    "description": "Semantic label of the 'account_balance' icon."
+  },
+  "icon_credit_card": "Credit card",
+  "@icon_credit_card": {
+    "description": "Semantic label of the 'credit_card' icon."
+  },
+  "icon_wallet": "Wallet",
+  "@icon_wallet": {
+    "description": "Semantic label of the 'wallet' icon."
+  },
+  "icon_currency_rupee": "Rupee",
+  "@icon_currency_rupee": {
+    "description": "Semantic label of the 'currency_rupee' icon."
+  },
+  "icon_trending_up": "Investment",
+  "@icon_trending_up": {
+    "description": "Semantic label of the 'trending_up' icon."
+  },
+  "icon_request_quote": "Tax",
+  "@icon_request_quote": {
+    "description": "Semantic label of the 'request_quote' icon."
+  },
+  "icon_volunteer_activism": "Donation",
+  "@icon_volunteer_activism": {
+    "description": "Semantic label of the 'volunteer_activism' icon."
+  },
+  "icon_work": "Work",
+  "@icon_work": {
+    "description": "Semantic label of the 'work' icon."
+  },
+  "icon_category": "Category",
+  "@icon_category": {
+    "description": "Semantic label of the 'category' icon."
+  },
+  "icon_star": "Star",
+  "@icon_star": {
+    "description": "Semantic label of the 'star' icon."
+  },
+  "icon_label": "Label",
+  "@icon_label": {
+    "description": "Semantic label of the 'label' icon."
+  },
+  "icon_more_horiz": "Other",
+  "@icon_more_horiz": {
+    "description": "Semantic label of the 'more_horiz' icon."
+  },
+  "expense_menuBudgets": "Budgets",
+  "@expense_menuBudgets": {
+    "description": "EXP-01 overflow item that opens EXP-08."
+  },
+  "expense_budgetsTitle": "Budgets",
+  "@expense_budgetsTitle": {
+    "description": "EXP-08 screen title."
+  },
+  "expense_budgetOverall": "Overall",
+  "@expense_budgetOverall": {
+    "description": "EXP-08/09: the budget that covers all expense categories."
+  },
+  "expense_budgetCategoryBudgets": "Category budgets",
+  "@expense_budgetCategoryBudgets": {
+    "description": "EXP-08 section heading."
+  },
+  "expense_budgetWithoutBudget": "Categories without budget",
+  "@expense_budgetWithoutBudget": {
+    "description": "EXP-08 section heading."
+  },
+  "expense_budgetSet": "Set budget",
+  "@expense_budgetSet": {
+    "description": "EXP-08 row button and EXP-09 title and primary button."
+  },
+  "expense_budgetSetMonthly": "Set monthly budget",
+  "@expense_budgetSetMonthly": {
+    "description": "EXP-08 empty state button."
+  },
+  "expense_budgetCopyLastMonth": "Copy last month's budgets",
+  "@expense_budgetCopyLastMonth": {
+    "description": "EXP-08 overflow action."
+  },
+  "expense_budgetCopied": "{count, plural, =0{Nothing to copy} =1{Copied 1 budget} other{Copied {count} budgets}}",
+  "@expense_budgetCopied": {
+    "description": "EXP-08 snackbar after Copy last month's budgets.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "expense_budgetPerDayLeft": "{amount} per day left for {days, plural, =1{1 day} other{{days} days}}",
+  "@expense_budgetPerDayLeft": {
+    "description": "EXP-08 overall card, current month. days counts today.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "expense_budgetNoneLeft": "No budget left this month",
+  "@expense_budgetNoneLeft": {
+    "description": "EXP-08 overall card when remaining is 0 or less."
+  },
+  "expense_budgetUnderBy": "Under budget by {amount}",
+  "@expense_budgetUnderBy": {
+    "description": "EXP-08 overall card, past month result.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_budgetOverBy": "Over budget by {amount}",
+  "@expense_budgetOverBy": {
+    "description": "EXP-08 over-budget amount.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_budgetFuturePerDay": "{amount} per day for {days, plural, =1{1 day} other{{days} days}}",
+  "@expense_budgetFuturePerDay": {
+    "description": "EXP-08 overall card, future month.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "expense_budgetLeft": "{amount} left",
+  "@expense_budgetLeft": {
+    "description": "EXP-08 remaining amount when under the limit.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_budgetSpentOfLimit": "{spent} of {limit}",
+  "@expense_budgetSpentOfLimit": {
+    "description": "EXP-08 spent / limit.",
+    "placeholders": {
+      "spent": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_budgetLevelUnder": "On track",
+  "@expense_budgetLevelUnder": {
+    "description": "EXP-08 level label under 80%."
+  },
+  "expense_budgetLevelWarning": "Almost used",
+  "@expense_budgetLevelWarning": {
+    "description": "EXP-08 level label 80–100%."
+  },
+  "expense_budgetLevelOver": "Over budget",
+  "@expense_budgetLevelOver": {
+    "description": "EXP-08 level label over 100%."
+  },
+  "expense_budgetLevelLine": "{level} · {percent}% used",
+  "@expense_budgetLevelLine": {
+    "description": "EXP-08 progress label: level text and percentage used.",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "expense_budgetEmptyTitle": "Plan your month",
+  "@expense_budgetEmptyTitle": {
+    "description": "EXP-08 empty state title."
+  },
+  "expense_budgetEmptyBody": "Set a monthly budget to see how much you can still spend each day.",
+  "@expense_budgetEmptyBody": {
+    "description": "EXP-08 empty state explanation."
+  },
+  "expense_budgetRepeatMonthly": "Repeat every month",
+  "@expense_budgetRepeatMonthly": {
+    "description": "EXP-09 toggle."
+  },
+  "expense_budgetDelete": "Delete budget",
+  "@expense_budgetDelete": {
+    "description": "EXP-09 delete button."
+  },
+  "expense_budgetDeleted": "Budget deleted",
+  "@expense_budgetDeleted": {
+    "description": "EXP-08 snackbar after delete."
+  },
+  "expense_budgetRestoreFailed": "Couldn't restore the budget because one is already set.",
+  "@expense_budgetRestoreFailed": {
+    "description": "EXP-08 snackbar when Undo finds the slot taken."
+  },
+  "expense_budgetSlotTaken": "This category already has a budget this month.",
+  "@expense_budgetSlotTaken": {
+    "description": "EXP-09 inline error."
+  },
+  "expense_budgetHidden": "Hidden",
+  "@expense_budgetHidden": {
+    "description": "EXP-08 marker for a budget whose category is hidden or deleted."
+  },
+  "expense_budgetAmountMissing": "Enter an amount",
+  "@expense_budgetAmountMissing": {
+    "description": "EXP-09 inline error."
+  },
+  "expense_budgetAmountTooLarge": "Amount is too large",
+  "@expense_budgetAmountTooLarge": {
+    "description": "EXP-09 inline error."
+  },
+  "expense_budgetSetOverallPrompt": "Set an overall budget",
+  "@expense_budgetSetOverallPrompt": {
+    "description": "EXP-08 overall card with no Overall budget."
+  },
+  "notif_channelBudgetAlerts": "Budget alerts",
+  "@notif_channelBudgetAlerts": {
+    "description": "Android notification channel name (spec §12)."
+  },
+  "notif_channelBudgetAlertsDescription": "When a budget reaches 80% or 100%",
+  "@notif_channelBudgetAlertsDescription": {
+    "description": "Android notification channel description."
+  },
+  "notif_budget80Title": "{category} budget at {percent}%",
+  "@notif_budget80Title": {
+    "description": "Budget alert title at 80%. No amounts (FR-020).",
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "notif_budget80Body": "You've used {percent}% of your {category} budget this month.",
+  "@notif_budget80Body": {
+    "description": "Budget alert body at 80%. No amounts (FR-020).",
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "notif_budget100Title": "{category} budget used up",
+  "@notif_budget100Title": {
+    "description": "Budget alert title at 100%. No amounts (FR-020).",
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "notif_budget100Body": "You've used {percent}% of your {category} budget this month.",
+  "@notif_budget100Body": {
+    "description": "Budget alert body at 100%. No amounts (FR-020).",
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "notif_overallBudget": "Overall",
+  "@notif_overallBudget": {
+    "description": "Name of the overall budget in budget alerts."
+  },
+  "expense_menuRecurring": "Recurring",
+  "@expense_menuRecurring": {
+    "description": "EXP-01 overflow item that opens EXP-10."
+  },
+  "expense_repeat": "Repeat",
+  "@expense_repeat": {
+    "description": "EXP-02 Repeat switch."
+  },
+  "expense_freqDaily": "Daily",
+  "@expense_freqDaily": {
+    "description": "Repeat frequency chip."
+  },
+  "expense_freqWeekly": "Weekly",
+  "@expense_freqWeekly": {
+    "description": "Repeat frequency chip."
+  },
+  "expense_freqMonthly": "Monthly",
+  "@expense_freqMonthly": {
+    "description": "Repeat frequency chip."
+  },
+  "expense_freqYearly": "Yearly",
+  "@expense_freqYearly": {
+    "description": "Repeat frequency chip."
+  },
+  "expense_repeatEndDate": "End date (optional)",
+  "@expense_repeatEndDate": {
+    "description": "EXP-02 Repeat end-date chip."
+  },
+  "expense_repeatEndsOn": "Ends {date}",
+  "@expense_repeatEndsOn": {
+    "description": "EXP-02 Repeat end-date chip with a date.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_repeatClearEnd": "Remove end date",
+  "@expense_repeatClearEnd": {
+    "description": "EXP-02 button that clears the end date."
+  },
+  "expense_repeatEndBeforeStart": "End date can't be before the first date",
+  "@expense_repeatEndBeforeStart": {
+    "description": "EXP-02 inline error under the Repeat section."
+  },
+  "expense_everyDay": "Every day",
+  "@expense_everyDay": {
+    "description": "Schedule in words."
+  },
+  "expense_everyWeekOn": "Every week on {weekday}",
+  "@expense_everyWeekOn": {
+    "description": "Schedule in words; weekday is a localized day name.",
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_everyMonthOn": "Every month on {suffix, select, st{{day}st} nd{{day}nd} rd{{day}rd} other{{day}th}}",
+  "@expense_everyMonthOn": {
+    "description": "Schedule in words. suffix is the English ordinal category (st, nd, rd, th), from ordinalSuffix(); hi/gu use a 'day N' form and ignore it (plan Open item 6).",
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "suffix": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_everyYearOn": "Every year on {date}",
+  "@expense_everyYearOn": {
+    "description": "Schedule in words; date is e.g. 5 Oct.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_recurringTitle": "Recurring transactions",
+  "@expense_recurringTitle": {
+    "description": "EXP-10 screen title."
+  },
+  "expense_recurringPaused": "Paused",
+  "@expense_recurringPaused": {
+    "description": "EXP-10 section heading."
+  },
+  "expense_recurringNext": "Next: {date}",
+  "@expense_recurringNext": {
+    "description": "EXP-10 row: next date.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_recurringEnded": "Ended {date}",
+  "@expense_recurringEnded": {
+    "description": "EXP-10 row of an ended rule.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_recurringPause": "Pause",
+  "@expense_recurringPause": {
+    "description": "EXP-10 swipe and menu action."
+  },
+  "expense_recurringResume": "Resume",
+  "@expense_recurringResume": {
+    "description": "EXP-10 swipe and menu action."
+  },
+  "expense_recurringDelete": "Delete",
+  "@expense_recurringDelete": {
+    "description": "EXP-10 swipe and menu action."
+  },
+  "expense_recurringDeleted": "Recurring transaction deleted",
+  "@expense_recurringDeleted": {
+    "description": "EXP-10 / EXP-02 snackbar."
+  },
+  "expense_recurringAdd": "Add recurring transaction",
+  "@expense_recurringAdd": {
+    "description": "EXP-10 FAB and empty-state button."
+  },
+  "expense_recurringEmptyTitle": "Nothing repeats yet",
+  "@expense_recurringEmptyTitle": {
+    "description": "EXP-10 empty state title."
+  },
+  "expense_recurringEmptyBody": "Add rent, salary, or bills once and they'll be logged for you.",
+  "@expense_recurringEmptyBody": {
+    "description": "EXP-10 empty state explanation."
+  },
+  "expense_recurringStaleAccount": "Account archived",
+  "@expense_recurringStaleAccount": {
+    "description": "EXP-10 warning line."
+  },
+  "expense_recurringStaleCategory": "Category hidden",
+  "@expense_recurringStaleCategory": {
+    "description": "EXP-10 warning line."
+  },
+  "expense_ruleEditTitle": "Edit recurring transaction",
+  "@expense_ruleEditTitle": {
+    "description": "EXP-02 title in rule-edit mode."
+  },
+  "expense_nextDate": "Next date",
+  "@expense_nextDate": {
+    "description": "EXP-02 date label in rule-edit mode."
+  },
+  "expense_createdFromRule": "Created from recurring rule",
+  "@expense_createdFromRule": {
+    "description": "EXP-03 link."
+  },
+  "expense_ruleDeleted": "Recurring rule deleted",
+  "@expense_ruleDeleted": {
+    "description": "EXP-03 text when the rule is deleted."
+  },
+  "expense_recurringLabel": "Recurring",
+  "@expense_recurringLabel": {
+    "description": "Semantic label of the EXP-01 repeat icon."
+  },
+  "expense_menuReports": "Reports",
+  "@expense_menuReports": {
+    "description": "EXP-01 overflow item that opens EXP-11."
+  },
+  "premium_advancedReportsMessage": "Advanced reports are part of Pro.",
+  "@premium_advancedReportsMessage": {
+    "description": "LockedFeatureOverlay explanation on EXP-11."
+  },
+  "premium_lockedPeriod": "Locked",
+  "@premium_lockedPeriod": {
+    "description": "Semantic label of a locked period option."
+  },
+  "more_developerSection": "Developer",
+  "@more_developerSection": {
+    "description": "More tab section, dev flavor only."
+  },
+  "more_debugUnlockAll": "Unlock all features (debug)",
+  "@more_debugUnlockAll": {
+    "description": "Dev-only switch (FR-041)."
+  },
+  "expense_reportsTitle": "Reports",
+  "@expense_reportsTitle": {
+    "description": "EXP-11 screen title."
+  },
+  "expense_reportTabOverview": "Overview",
+  "@expense_reportTabOverview": {
+    "description": "EXP-11 tab."
+  },
+  "expense_reportTabCategories": "Categories",
+  "@expense_reportTabCategories": {
+    "description": "EXP-11 tab."
+  },
+  "expense_reportTabTrends": "Trends",
+  "@expense_reportTabTrends": {
+    "description": "EXP-11 tab."
+  },
+  "expense_reportTabAccounts": "Accounts",
+  "@expense_reportTabAccounts": {
+    "description": "EXP-11 tab."
+  },
+  "expense_reportLockedTab": "{tab}, locked",
+  "@expense_reportLockedTab": {
+    "description": "Semantic label of a locked EXP-11 tab.",
+    "placeholders": {
+      "tab": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_reportNetSavings": "Net savings",
+  "@expense_reportNetSavings": {
+    "description": "EXP-11 Overview card."
+  },
+  "expense_reportSavingsRate": "Savings rate",
+  "@expense_reportSavingsRate": {
+    "description": "EXP-11 Overview card."
+  },
+  "expense_reportSavingsRateValue": "{percent}%",
+  "@expense_reportSavingsRateValue": {
+    "description": "EXP-11 savings rate value.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "expense_reportNoValue": "—",
+  "@expense_reportNoValue": {
+    "description": "EXP-11 value shown when it can't be computed (no income)."
+  },
+  "expense_reportAvgDaily": "Average daily spend",
+  "@expense_reportAvgDaily": {
+    "description": "EXP-11 Overview card."
+  },
+  "expense_reportTopCategories": "Top categories",
+  "@expense_reportTopCategories": {
+    "description": "EXP-11 Overview section."
+  },
+  "expense_reportIncomeVsExpense": "Income vs expense",
+  "@expense_reportIncomeVsExpense": {
+    "description": "EXP-11 Overview chart title."
+  },
+  "expense_reportShare": "{percent}% of spending",
+  "@expense_reportShare": {
+    "description": "EXP-11 share of expense.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "expense_reportOther": "Other",
+  "@expense_reportOther": {
+    "description": "EXP-11 donut slice for small categories."
+  },
+  "expense_reportTotalSpent": "Total spent",
+  "@expense_reportTotalSpent": {
+    "description": "EXP-11 donut center label."
+  },
+  "expense_reportChartSummaryDonut": "Expense by category: {items}",
+  "@expense_reportChartSummaryDonut": {
+    "description": "Semantic summary of the donut chart.",
+    "placeholders": {
+      "items": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_reportChartSummaryItem": "{name} {percent}%",
+  "@expense_reportChartSummaryItem": {
+    "description": "One item in a chart summary.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "expense_reportChartSummaryBar": "Income {income}, expense {expense}",
+  "@expense_reportChartSummaryBar": {
+    "description": "Semantic summary of the income vs expense chart.",
+    "placeholders": {
+      "income": {
+        "type": "String"
+      },
+      "expense": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_reportEmpty": "No transactions in {period}",
+  "@expense_reportEmpty": {
+    "description": "EXP-11 empty state.",
+    "placeholders": {
+      "period": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_reportThisPeriod": "This period",
+  "@expense_reportThisPeriod": {
+    "description": "EXP-11 Trends legend: solid line."
+  },
+  "expense_reportPreviousPeriod": "Previous period",
+  "@expense_reportPreviousPeriod": {
+    "description": "EXP-11 Trends legend: dashed line."
+  },
+  "expense_reportByAccount": "By account",
+  "@expense_reportByAccount": {
+    "description": "EXP-11 Accounts chart title."
+  },
+  "expense_reportByPaymentMode": "By payment mode",
+  "@expense_reportByPaymentMode": {
+    "description": "EXP-11 Accounts chart title."
+  },
+  "expense_reportChartSummaryTrend": "Spending this period {current}, previous period {previous}",
+  "@expense_reportChartSummaryTrend": {
+    "description": "Semantic summary of the trend chart.",
+    "placeholders": {
+      "current": {
+        "type": "String"
+      },
+      "previous": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_reportChartSummaryBars": "{title}: {items}",
+  "@expense_reportChartSummaryBars": {
+    "description": "Semantic summary of a bar chart.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "items": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_reportChartSummaryBarItem": "{name} {amount}",
+  "@expense_reportChartSummaryBarItem": {
+    "description": "One bar in a chart summary.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "notif_channelHabitReminders": "Habit reminders",
+  "@notif_channelHabitReminders": {
+    "description": "Android notification channel name (spec §12)."
+  },
+  "notif_channelHabitRemindersDescription": "Reminders for your habits",
+  "@notif_channelHabitRemindersDescription": {
+    "description": "Android notification channel description."
+  },
+  "habit_title": "Habits",
+  "@habit_title": {
+    "description": "HAB-01 app bar title."
+  },
+  "habit_quickAddCheckIn": "Check in habit",
+  "@habit_quickAddCheckIn": {
+    "description": "Quick-add action label."
+  },
+  "habit_streakDays": "{count, plural, =1{1 day} other{{count} days}}",
+  "@habit_streakDays": {
+    "description": "Streak length in days.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_streakWeeks": "{count, plural, =1{1 week} other{{count} weeks}}",
+  "@habit_streakWeeks": {
+    "description": "Streak length in weeks (times per week habits).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_doneOfTotal": "{done} of {total} done",
+  "@habit_doneOfTotal": {
+    "description": "HAB-01 progress header.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_undo": "Undo",
+  "@habit_undo": {
+    "description": "Undo action."
+  },
+  "habit_loadError": "Couldn't load your habits. Try again.",
+  "@habit_loadError": {
+    "description": "HAB-01/HAB-02 error state."
+  },
+  "habit_saveError": "Couldn't save. Try again.",
+  "@habit_saveError": {
+    "description": "Snackbar when a habit write fails."
+  },
+  "habit_menuArchived": "Archived habits",
+  "@habit_menuArchived": {
+    "description": "HAB-01 overflow item."
+  },
+  "habit_menuReorder": "Reorder",
+  "@habit_menuReorder": {
+    "description": "HAB-01 overflow item."
+  },
+  "habit_reorderDone": "Done",
+  "@habit_reorderDone": {
+    "description": "HAB-01 button that ends reorder mode."
+  },
+  "habit_reorderHandle": "Reorder {name}",
+  "@habit_reorderHandle": {
+    "description": "Drag handle semantic label.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_moreOptions": "More options",
+  "@habit_moreOptions": {
+    "description": "Overflow menu tooltip."
+  },
+  "habit_addHabit": "Add habit",
+  "@habit_addHabit": {
+    "description": "HAB-01 FAB tooltip."
+  },
+  "habit_emptyTitle": "Build your first habit",
+  "@habit_emptyTitle": {
+    "description": "HAB-01 empty state title."
+  },
+  "habit_emptyBody": "Start with a template or tap + to create your own.",
+  "@habit_emptyBody": {
+    "description": "HAB-01 empty state body."
+  },
+  "habit_notScheduledToday": "Not scheduled today",
+  "@habit_notScheduledToday": {
+    "description": "HAB-01 collapsed section for today."
+  },
+  "habit_notScheduledOnDay": "Not scheduled on this day",
+  "@habit_notScheduledOnDay": {
+    "description": "HAB-01 collapsed section for a past day."
+  },
+  "habit_allDone": "All done for today",
+  "@habit_allDone": {
+    "description": "HAB-01 banner."
+  },
+  "habit_noneScheduled": "Nothing scheduled on this day",
+  "@habit_noneScheduled": {
+    "description": "HAB-01 when no habit is due on the selected day."
+  },
+  "habit_menuEdit": "Edit",
+  "@habit_menuEdit": {
+    "description": "HAB-01 card menu item."
+  },
+  "habit_menuAddNote": "Add note for today",
+  "@habit_menuAddNote": {
+    "description": "HAB-01 card menu item."
+  },
+  "habit_menuAddNoteDay": "Add note for this day",
+  "@habit_menuAddNoteDay": {
+    "description": "HAB-01 card menu item on a past day."
+  },
+  "habit_menuSkipToday": "Skip today",
+  "@habit_menuSkipToday": {
+    "description": "HAB-01 card menu item; uses a freeze."
+  },
+  "habit_skipTodayHint": "Uses 1 of your {count} freezes",
+  "@habit_skipTodayHint": {
+    "description": "Subtitle of Skip today.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_noFreezesLeft": "No freezes left",
+  "@habit_noFreezesLeft": {
+    "description": "Disabled Skip today subtitle."
+  },
+  "habit_menuArchive": "Archive",
+  "@habit_menuArchive": {
+    "description": "Menu item."
+  },
+  "habit_archived": "Habit archived",
+  "@habit_archived": {
+    "description": "Snackbar with Undo."
+  },
+  "habit_unchecked": "Check-in removed",
+  "@habit_unchecked": {
+    "description": "Snackbar with Undo."
+  },
+  "habit_skipped": "Today skipped with a freeze",
+  "@habit_skipped": {
+    "description": "Snackbar with Undo."
+  },
+  "habit_olderEditsHint": "Edit older days from the habit's page",
+  "@habit_olderEditsHint": {
+    "description": "Hint on disabled older days in the week strip."
+  },
+  "habit_futureDayHint": "Future days can't be checked in yet",
+  "@habit_futureDayHint": {
+    "description": "Hint on disabled future days."
+  },
+  "habit_dayRingLabel": "{day}, {done} of {total} done",
+  "@habit_dayRingLabel": {
+    "description": "Week strip day semantic label.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_dayRingNone": "{day}, nothing scheduled",
+  "@habit_dayRingNone": {
+    "description": "Week strip day with no due habit.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_valueEntryTitle": "Set value for {name}",
+  "@habit_valueEntryTitle": {
+    "description": "HAB-01 number entry dialog title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_valueEntryHint": "A whole number from 0 to 9,999",
+  "@habit_valueEntryHint": {
+    "description": "Number entry helper text."
+  },
+  "habit_valueEntryError": "Enter a whole number from 0 to 9,999",
+  "@habit_valueEntryError": {
+    "description": "Number entry error."
+  },
+  "habit_set": "Set",
+  "@habit_set": {
+    "description": "Dialog confirm button."
+  },
+  "habit_markDoneLabel": "Mark {name} done",
+  "@habit_markDoneLabel": {
+    "description": "Check button semantic label.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_markNotDoneLabel": "Mark {name} not done",
+  "@habit_markNotDoneLabel": {
+    "description": "Check button semantic label when done.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_addOneLabel": "Add 1 to {name}",
+  "@habit_addOneLabel": {
+    "description": "Count + button semantic label.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_countLabel": "{name}, {value} of {target} {unit}",
+  "@habit_countLabel": {
+    "description": "Count habit semantic label.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "value": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_countLabelNoUnit": "{name}, {value} of {target}",
+  "@habit_countLabelNoUnit": {
+    "description": "Count habit semantic label without a unit.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "value": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_countValue": "{value} / {target} {unit}",
+  "@habit_countValue": {
+    "description": "Count habit progress on the card.",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_countValueNoUnit": "{value} / {target}",
+  "@habit_countValueNoUnit": {
+    "description": "Count habit progress without a unit.",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_streakLabel": "Current streak: {streak}",
+  "@habit_streakLabel": {
+    "description": "Flame semantic label.",
+    "placeholders": {
+      "streak": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_statusDone": "Done",
+  "@habit_statusDone": {
+    "description": "Card status text."
+  },
+  "habit_statusFreeze": "Freeze day",
+  "@habit_statusFreeze": {
+    "description": "Card status text."
+  },
+  "habit_scheduleDaily": "Daily",
+  "@habit_scheduleDaily": {
+    "description": "Schedule text."
+  },
+  "habit_scheduleTimesPerWeek": "{times}× per week · {left} left",
+  "@habit_scheduleTimesPerWeek": {
+    "description": "Schedule text for times per week.",
+    "placeholders": {
+      "times": {
+        "type": "int"
+      },
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_scheduleTimesPerWeekMet": "{times}× per week · done",
+  "@habit_scheduleTimesPerWeekMet": {
+    "description": "Schedule text when the week is met.",
+    "placeholders": {
+      "times": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_noteTitle": "Note",
+  "@habit_noteTitle": {
+    "description": "Note dialog title."
+  },
+  "habit_noteHint": "Add a note",
+  "@habit_noteHint": {
+    "description": "Note field hint."
+  },
+  "habit_noteSave": "Save note",
+  "@habit_noteSave": {
+    "description": "Note dialog button."
+  },
+  "habit_noteSaved": "Note saved",
+  "@habit_noteSaved": {
+    "description": "Snackbar after saving a note."
+  },
+  "habit_detailTitle": "Habit",
+  "@habit_detailTitle": {
+    "description": "HAB-03 placeholder title."
+  },
+  "habit_template_drinkWater": "Drink water",
+  "@habit_template_drinkWater": {
+    "description": "Template name."
+  },
+  "habit_template_read": "Read",
+  "@habit_template_read": {
+    "description": "Template name."
+  },
+  "habit_template_walk": "Walk",
+  "@habit_template_walk": {
+    "description": "Template name."
+  },
+  "habit_template_meditate": "Meditate",
+  "@habit_template_meditate": {
+    "description": "Template name."
+  },
+  "habit_template_wakeUpEarly": "Wake up early",
+  "@habit_template_wakeUpEarly": {
+    "description": "Template name."
+  },
+  "habit_template_study": "Study",
+  "@habit_template_study": {
+    "description": "Template name."
+  },
+  "habit_unit_glasses": "glasses",
+  "@habit_unit_glasses": {
+    "description": "Template unit."
+  },
+  "habit_unit_pages": "pages",
+  "@habit_unit_pages": {
+    "description": "Template unit."
+  },
+  "habit_unit_minutes": "minutes",
+  "@habit_unit_minutes": {
+    "description": "Template unit."
+  },
+  "habit_addTitle": "New habit",
+  "@habit_addTitle": {
+    "description": "HAB-02 title (new)."
+  },
+  "habit_editTitle": "Edit habit",
+  "@habit_editTitle": {
+    "description": "HAB-02 title (edit)."
+  },
+  "habit_nameLabel": "Name",
+  "@habit_nameLabel": {
+    "description": "HAB-02 field label."
+  },
+  "habit_nameSuggestions": "Suggestions",
+  "@habit_nameSuggestions": {
+    "description": "HAB-02 template name suggestions."
+  },
+  "habit_iconLabel": "Icon",
+  "@habit_iconLabel": {
+    "description": "HAB-02 field label."
+  },
+  "habit_colorLabel": "Color",
+  "@habit_colorLabel": {
+    "description": "HAB-02 field label."
+  },
+  "habit_goalLabel": "Goal type",
+  "@habit_goalLabel": {
+    "description": "HAB-02 field label."
+  },
+  "habit_goalYesNo": "Yes / No",
+  "@habit_goalYesNo": {
+    "description": "Goal type option."
+  },
+  "habit_goalCount": "Count",
+  "@habit_goalCount": {
+    "description": "Goal type option."
+  },
+  "habit_goalLocked": "The goal type can't be changed after the habit is created",
+  "@habit_goalLocked": {
+    "description": "HAB-02 edit-mode hint."
+  },
+  "habit_targetLabel": "Target",
+  "@habit_targetLabel": {
+    "description": "HAB-02 field label."
+  },
+  "habit_unitLabel": "Unit (optional)",
+  "@habit_unitLabel": {
+    "description": "HAB-02 field label."
+  },
+  "habit_scheduleLabel": "Schedule",
+  "@habit_scheduleLabel": {
+    "description": "HAB-02 field label."
+  },
+  "habit_scheduleEveryDay": "Every day",
+  "@habit_scheduleEveryDay": {
+    "description": "Schedule option."
+  },
+  "habit_scheduleSpecificDays": "Specific days",
+  "@habit_scheduleSpecificDays": {
+    "description": "Schedule option."
+  },
+  "habit_scheduleXTimes": "X times per week",
+  "@habit_scheduleXTimes": {
+    "description": "Schedule option."
+  },
+  "habit_timesPerWeekValue": "{count}× per week",
+  "@habit_timesPerWeekValue": {
+    "description": "Times per week stepper value.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_decrease": "Decrease",
+  "@habit_decrease": {
+    "description": "Stepper button."
+  },
+  "habit_increase": "Increase",
+  "@habit_increase": {
+    "description": "Stepper button."
+  },
+  "habit_startDate": "Start date",
+  "@habit_startDate": {
+    "description": "HAB-02 field label."
+  },
+  "habit_pickDate": "Pick a date",
+  "@habit_pickDate": {
+    "description": "Date chip."
+  },
+  "habit_save": "Save habit",
+  "@habit_save": {
+    "description": "HAB-02 sticky button."
+  },
+  "habit_saved": "Habit saved",
+  "@habit_saved": {
+    "description": "Snackbar after save."
+  },
+  "habit_errNameRequired": "Enter a name",
+  "@habit_errNameRequired": {
+    "description": "HAB-02 error."
+  },
+  "habit_errNameTooLong": "Use at most 40 characters",
+  "@habit_errNameTooLong": {
+    "description": "HAB-02 error."
+  },
+  "habit_errTargetRange": "Enter a target from 1 to 9,999",
+  "@habit_errTargetRange": {
+    "description": "HAB-02 error."
+  },
+  "habit_errUnitTooLong": "Use at most 20 characters",
+  "@habit_errUnitTooLong": {
+    "description": "HAB-02 error."
+  },
+  "habit_errWeekdayRequired": "Choose at least one weekday",
+  "@habit_errWeekdayRequired": {
+    "description": "HAB-02 error (Specific days)."
+  },
+  "habit_errTimesRange": "Choose 1 to 6 times per week",
+  "@habit_errTimesRange": {
+    "description": "HAB-02 error."
+  },
+  "habit_deleteAction": "Delete",
+  "@habit_deleteAction": {
+    "description": "HAB-02 overflow item."
+  },
+  "habit_deleteTitle": "Delete habit?",
+  "@habit_deleteTitle": {
+    "description": "Delete dialog title."
+  },
+  "habit_deleteBody": "This removes {name} and all its history.",
+  "@habit_deleteBody": {
+    "description": "Delete dialog consequence.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_deleteConfirm": "Delete habit",
+  "@habit_deleteConfirm": {
+    "description": "Delete dialog confirm."
+  },
+  "habit_deleted": "Habit deleted",
+  "@habit_deleted": {
+    "description": "Snackbar after delete."
+  },
+  "habit_discardTitle": "Discard changes?",
+  "@habit_discardTitle": {
+    "description": "Discard dialog title."
+  },
+  "habit_discardBody": "Your changes to this habit will be lost.",
+  "@habit_discardBody": {
+    "description": "Discard dialog consequence."
+  },
+  "habit_discardConfirm": "Discard",
+  "@habit_discardConfirm": {
+    "description": "Discard dialog confirm."
+  },
+  "habit_notFound": "This habit no longer exists",
+  "@habit_notFound": {
+    "description": "Snackbar when an edited habit was deleted."
+  },
+  "habit_reminders": "Reminders",
+  "@habit_reminders": {
+    "description": "HAB-02 section label."
+  },
+  "habit_addReminder": "Add reminder",
+  "@habit_addReminder": {
+    "description": "HAB-02 button."
+  },
+  "habit_removeReminder": "Remove reminder at {time}",
+  "@habit_removeReminder": {
+    "description": "Reminder chip delete label.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_remindOnlyIfNotDone": "Remind me only if not done yet",
+  "@habit_remindOnlyIfNotDone": {
+    "description": "HAB-02 switch."
+  },
+  "habit_reminderLimit": "You can add up to 3 reminders",
+  "@habit_reminderLimit": {
+    "description": "HAB-02 hint and error."
+  },
+  "habit_reminderDuplicate": "This time is already added",
+  "@habit_reminderDuplicate": {
+    "description": "HAB-02 error."
+  },
+  "habit_notificationsOffHint": "Reminders need notification permission",
+  "@habit_notificationsOffHint": {
+    "description": "HAB-02 hint when notifications are denied."
+  },
+  "habit_inexactHint": "Reminders may be a few minutes late",
+  "@habit_inexactHint": {
+    "description": "HAB-02 hint without exact alarms."
+  },
+  "notif_habitReminderTitle": "{name}",
+  "@notif_habitReminderTitle": {
+    "description": "Habit reminder title: only the habit name (FR-043).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notif_habitReminderBody": "Time for {name}. You've got this.",
+  "@notif_habitReminderBody": {
+    "description": "Habit reminder body: name and encouragement only (FR-043).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_milestoneTitleDays": "{count}-day streak!",
+  "@habit_milestoneTitleDays": {
+    "description": "Milestone sheet title.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_milestoneTitleWeeks": "{count, plural, =1{1-week streak!} other{{count}-week streak!}}",
+  "@habit_milestoneTitleWeeks": {
+    "description": "Milestone sheet title (weekly habits).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_milestoneBody": "Every check-in adds up. Keep it going!",
+  "@habit_milestoneBody": {
+    "description": "Milestone encouragement, no guilt (§15.7)."
+  },
+  "habit_shareStreak": "Share streak",
+  "@habit_shareStreak": {
+    "description": "Milestone sheet button."
+  },
+  "habit_close": "Close",
+  "@habit_close": {
+    "description": "Milestone sheet button."
+  },
+  "habit_shareCardFooter": "Tracked with DailyTrack",
+  "@habit_shareCardFooter": {
+    "description": "Share card footer."
+  },
+  "habit_shareError": "Couldn't share. Try again.",
+  "@habit_shareError": {
+    "description": "Snackbar when sharing fails."
+  },
+  "common_iconGroup_habits": "Habits",
+  "@common_iconGroup_habits": {
+    "description": "IconPickerGrid group heading."
+  },
+  "icon_directions_walk": "Walk",
+  "@icon_directions_walk": {
+    "description": "Semantic label of the 'directions_walk' icon."
+  },
+  "icon_directions_run": "Run",
+  "@icon_directions_run": {
+    "description": "Semantic label of the 'directions_run' icon."
+  },
+  "icon_self_improvement": "Meditation",
+  "@icon_self_improvement": {
+    "description": "Semantic label of the 'self_improvement' icon."
+  },
+  "icon_alarm": "Alarm",
+  "@icon_alarm": {
+    "description": "Semantic label of the 'alarm' icon."
+  },
+  "icon_bedtime": "Sleep",
+  "@icon_bedtime": {
+    "description": "Semantic label of the 'bedtime' icon."
+  },
+  "habit_statCurrent": "Current streak",
+  "@habit_statCurrent": {
+    "description": "HAB-03 stat tile."
+  },
+  "habit_statBest": "Best streak",
+  "@habit_statBest": {
+    "description": "HAB-03 stat tile."
+  },
+  "habit_statRate": "Completion rate (last 30 days)",
+  "@habit_statRate": {
+    "description": "HAB-03 stat tile."
+  },
+  "habit_statTotal": "Total completions",
+  "@habit_statTotal": {
+    "description": "HAB-03 stat tile."
+  },
+  "habit_rateValue": "{percent}%",
+  "@habit_rateValue": {
+    "description": "Completion rate value.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_rateNone": "—",
+  "@habit_rateNone": {
+    "description": "Completion rate with no countable day."
+  },
+  "habit_calendarTitle": "Calendar",
+  "@habit_calendarTitle": {
+    "description": "HAB-03 section title."
+  },
+  "habit_dayDone": "{date}, done",
+  "@habit_dayDone": {
+    "description": "Calendar day semantics.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_dayPartial": "{date}, {value} of {target}",
+  "@habit_dayPartial": {
+    "description": "Calendar day semantics (count, not done).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "value": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_dayMissed": "{date}, missed",
+  "@habit_dayMissed": {
+    "description": "Calendar day semantics.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_dayFreeze": "{date}, freeze day",
+  "@habit_dayFreeze": {
+    "description": "Calendar day semantics.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_dayOther": "{date}",
+  "@habit_dayOther": {
+    "description": "Calendar day semantics (nothing to report).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_dayHasNote": "has a note",
+  "@habit_dayHasNote": {
+    "description": "Calendar day semantics hint."
+  },
+  "habit_heatmapTitle": "Last 12 months",
+  "@habit_heatmapTitle": {
+    "description": "HAB-03 heatmap title."
+  },
+  "habit_heatmapSummary": "{done} of {total} days done in the last 12 months",
+  "@habit_heatmapSummary": {
+    "description": "Heatmap semantic summary.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_heatmapMonth": "{month}: {done} of {total} days done",
+  "@habit_heatmapMonth": {
+    "description": "Heatmap per-month line for screen readers.",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_shareHeatmap": "Share",
+  "@habit_shareHeatmap": {
+    "description": "Heatmap share button."
+  },
+  "habit_weeklyChartTitle": "Completions per week",
+  "@habit_weeklyChartTitle": {
+    "description": "HAB-03 chart title."
+  },
+  "habit_weeklyChartSummary": "Completions in the last 12 weeks: {items}",
+  "@habit_weeklyChartSummary": {
+    "description": "Chart semantic summary.",
+    "placeholders": {
+      "items": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_weeklyChartItem": "week of {date} {count}",
+  "@habit_weeklyChartItem": {
+    "description": "One bar in the chart summary.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_notesTitle": "Notes",
+  "@habit_notesTitle": {
+    "description": "HAB-03 section title."
+  },
+  "habit_notesEmpty": "No notes yet",
+  "@habit_notesEmpty": {
+    "description": "HAB-03 notes empty."
+  },
+  "habit_freezeTitle": "Streak freeze",
+  "@habit_freezeTitle": {
+    "description": "HAB-03 freeze card title."
+  },
+  "habit_freezesAvailable": "Freezes available: {count}",
+  "@habit_freezesAvailable": {
+    "description": "Freeze card count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_freezeExplain": "A freeze keeps your streak when you miss a day. Use it on a missed day up to 3 days back.",
+  "@habit_freezeExplain": {
+    "description": "Freeze card explanation."
+  },
+  "habit_useFreeze": "Use a freeze",
+  "@habit_useFreeze": {
+    "description": "Freeze card button."
+  },
+  "habit_useFreezeOn": "Use a freeze on {date}",
+  "@habit_useFreezeOn": {
+    "description": "Freeze day picker item.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_noFreezeableDay": "No missed day in the last 3 days",
+  "@habit_noFreezeableDay": {
+    "description": "Freeze card when nothing can be frozen."
+  },
+  "habit_freezeUsed": "Freeze used",
+  "@habit_freezeUsed": {
+    "description": "Snackbar with Undo."
+  },
+  "habit_addFreezeDebug": "Add a freeze (debug)",
+  "@habit_addFreezeDebug": {
+    "description": "Dev-only button (FR-037)."
+  },
+  "habit_freezeCapReached": "You can keep up to 2 freezes",
+  "@habit_freezeCapReached": {
+    "description": "Freeze cap hint."
+  },
+  "habit_editDayTitle": "Edit {date}",
+  "@habit_editDayTitle": {
+    "description": "Day edit sheet title.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_dayDoneToggle": "Done",
+  "@habit_dayDoneToggle": {
+    "description": "Day edit switch for yes/no habits."
+  },
+  "habit_dayValueLabel": "Value",
+  "@habit_dayValueLabel": {
+    "description": "Day edit value field."
+  },
+  "habit_daySave": "Save",
+  "@habit_daySave": {
+    "description": "Day edit save button."
+  },
+  "habit_daySaved": "Day saved",
+  "@habit_daySaved": {
+    "description": "Snackbar after a day edit."
+  },
+  "habit_edit": "Edit",
+  "@habit_edit": {
+    "description": "HAB-03 header button."
+  },
+  "habit_previousMonth": "Previous month",
+  "@habit_previousMonth": {
+    "description": "Calendar paging."
+  },
+  "habit_nextMonth": "Next month",
+  "@habit_nextMonth": {
+    "description": "Calendar paging."
+  },
+  "habit_archivedTitle": "Archived habits",
+  "@habit_archivedTitle": {
+    "description": "HAB-04 title."
+  },
+  "habit_archivedOn": "Archived {date}",
+  "@habit_archivedOn": {
+    "description": "HAB-04 row subtitle.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_bestStreakLabel": "Best streak: {streak}",
+  "@habit_bestStreakLabel": {
+    "description": "HAB-04 row line.",
+    "placeholders": {
+      "streak": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_restore": "Restore",
+  "@habit_restore": {
+    "description": "HAB-04 action."
+  },
+  "habit_restored": "Habit restored",
+  "@habit_restored": {
+    "description": "Snackbar with Undo."
+  },
+  "habit_deletePermanently": "Delete permanently",
+  "@habit_deletePermanently": {
+    "description": "HAB-04 action."
+  },
+  "habit_archivedEmpty": "Archived habits appear here",
+  "@habit_archivedEmpty": {
+    "description": "HAB-04 empty state."
+  },
+  "habit_doneTodayRing": "{done} of {total} done today",
+  "@habit_doneTodayRing": {
+    "description": "Home card ring label.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_cardEmpty": "Create your first habit",
+  "@habit_cardEmpty": {
+    "description": "Home card empty action."
+  },
+  "habit_cardNoneToday": "Nothing scheduled today",
+  "@habit_cardNoneToday": {
+    "description": "Home card when no habit is due."
+  },
+  "habit_addOne": "+1",
+  "@habit_addOne": {
+    "description": "Count popup button."
+  },
+  "habit_customValue": "Enter value",
+  "@habit_customValue": {
+    "description": "Count popup button."
+  },
+  "habit_loadDataError": "Couldn't load habits",
+  "@habit_loadDataError": {
+    "description": "Home card error."
+  },
+  "home_greetingMorning": "Good morning",
+  "@home_greetingMorning": {
+    "description": "DSH-01 greeting, 05:00–11:59."
+  },
+  "home_greetingAfternoon": "Good afternoon",
+  "@home_greetingAfternoon": {
+    "description": "DSH-01 greeting, 12:00–16:59."
+  },
+  "home_greetingEvening": "Good evening",
+  "@home_greetingEvening": {
+    "description": "DSH-01 greeting, 17:00–04:59."
+  },
+  "home_quickAddTooltip": "Quick add",
+  "@home_quickAddTooltip": {
+    "description": "DSH-01 + button tooltip."
+  },
+  "home_insightTitle": "Tip for today",
+  "@home_insightTitle": {
+    "description": "DSH-01 insight card title."
+  },
+  "home_insightStarter": "Log something today and tips will show up here",
+  "@home_insightStarter": {
+    "description": "DSH-01 starter tip when no insight rule applies."
+  },
+  "home_comingSoonTitle": "Coming soon",
+  "@home_comingSoonTitle": {
+    "description": "DSH-01 Coming soon card title."
+  },
+  "home_comingSoonBody": "{names} trackers are on the way",
+  "@home_comingSoonBody": {
+    "description": "DSH-01 Coming soon card body; names is a localized list.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "home_listPair": "{first} and {second}",
+  "@home_listPair": {
+    "description": "Joins two names in a list.",
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
+  "home_comingSoonDismiss": "Dismiss",
+  "@home_comingSoonDismiss": {
+    "description": "DSH-01 Coming soon dismiss button."
+  },
+  "home_comingSoonDismissed": "Card hidden",
+  "@home_comingSoonDismissed": {
+    "description": "Snackbar after dismissing the Coming soon card."
+  },
+  "home_recentTitle": "Recent transactions",
+  "@home_recentTitle": {
+    "description": "DSH-01 recent transactions title."
+  },
+  "home_seeAll": "See all",
+  "@home_seeAll": {
+    "description": "DSH-01 recent transactions link to EXP-01."
+  },
+  "expense_quickAddIncome": "Add income",
+  "@expense_quickAddIncome": {
+    "description": "Quick-add action label."
+  },
+  "expense_cardAdd": "Expense",
+  "@expense_cardAdd": {
+    "description": "Home Expense card chip that adds an expense."
+  },
+  "expense_cardSetBudget": "Set budget",
+  "@expense_cardSetBudget": {
+    "description": "Home Expense card button when no overall budget exists."
+  },
+  "expense_cardMonthOfBudget": "{spent} of {limit}",
+  "@expense_cardMonthOfBudget": {
+    "description": "Home Expense card month spent of the overall budget.",
+    "placeholders": {
+      "spent": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_insightCategoryHigher": "{category} spending is {percent}% higher than last month",
+  "@expense_insightCategoryHigher": {
+    "description": "Insight: a category is up versus the same days last month.",
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "expense_insightCategoryLower": "{category} spending is {percent}% lower than last month. Nice work.",
+  "@expense_insightCategoryLower": {
+    "description": "Insight: a category is down versus the same days last month.",
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "expense_insightBudgetOnTrack": "You're on track: {amount} left for {days, plural, =1{1 day} other{{days} days}}",
+  "@expense_insightBudgetOnTrack": {
+    "description": "Insight: the overall budget is on pace.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "expense_insightBudgetNear": "You've used {percent}% of this month's budget",
+  "@expense_insightBudgetNear": {
+    "description": "Insight: the overall budget is 80–100% used.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "expense_insightBudgetOver": "You're {amount} over this month's budget. A no-spend day helps.",
+  "@expense_insightBudgetOver": {
+    "description": "Insight: the overall budget is exceeded.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_insightOpensReports": "Opens reports: {text}",
+  "@expense_insightOpensReports": {
+    "description": "Insight card semantic label, spending tip.",
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "expense_insightOpensBudgets": "Opens budgets: {text}",
+  "@expense_insightOpensBudgets": {
+    "description": "Insight card semantic label, budget tip.",
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_insightNextMilestoneDays": "You're {count, plural, =1{1 day} other{{count} days}} away from a {milestone}-day streak with {name}",
+  "@habit_insightNextMilestoneDays": {
+    "description": "Insight: a daily streak is close to a milestone.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "milestone": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_insightNextMilestoneWeeks": "You're {count, plural, =1{1 week} other{{count} weeks}} away from a {milestone}-week streak with {name}",
+  "@habit_insightNextMilestoneWeeks": {
+    "description": "Insight: a weekly streak is close to a milestone.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "milestone": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_insightBestThisWeek": "You've done {name} {count, plural, =1{1 time} other{{count} times}} this week",
+  "@habit_insightBestThisWeek": {
+    "description": "Insight: most completions this week.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_insightComebackDays": "Pick {name} up again today. Your best is {best, plural, =1{1 day} other{{best} days}}.",
+  "@habit_insightComebackDays": {
+    "description": "Insight: encourage restarting a broken daily streak.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "best": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_insightComebackWeeks": "Pick {name} up again today. Your best is {best, plural, =1{1 week} other{{best} weeks}}.",
+  "@habit_insightComebackWeeks": {
+    "description": "Insight: encourage restarting a broken weekly streak.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "best": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_insightOpensHabit": "Opens {name}: {text}",
+  "@habit_insightOpensHabit": {
+    "description": "Insight card semantic label, habit tip.",
+    "placeholders": {
+      "text": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "habit_streakBadgeLabelDays": "Best active streak: {count, plural, =1{1 day} other{{count} days}}",
+  "@habit_streakBadgeLabelDays": {
+    "description": "Home streak flame semantic label.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_streakBadgeLabelWeeks": "Best active streak: {count, plural, =1{1 week} other{{count} weeks}}",
+  "@habit_streakBadgeLabelWeeks": {
+    "description": "Home streak flame semantic label, weekly habit.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_streakBadgeWeeksShort": "{count} wk",
+  "@habit_streakBadgeWeeksShort": {
+    "description": "Home streak flame count for a weekly streak.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habit_uncheckedSnack": "{name} unchecked",
+  "@habit_uncheckedSnack": {
+    "description": "Snackbar after unchecking a habit on Home.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "modules_moveUp": "Move up",
+  "@modules_moveUp": {
+    "description": "SET-06 accessibility action."
+  },
+  "modules_moveDown": "Move down",
+  "@modules_moveDown": {
+    "description": "SET-06 accessibility action."
+  },
+  "settings_general": "General",
+  "@settings_general": {
+    "description": "SET-01 section header."
+  },
+  "settings_appearance": "Appearance",
+  "@settings_appearance": {
+    "description": "SET-01 section header."
+  },
+  "settings_modules": "Modules",
+  "@settings_modules": {
+    "description": "SET-01 section header."
+  },
+  "settings_notifications": "Notifications",
+  "@settings_notifications": {
+    "description": "SET-01 section header."
+  },
+  "settings_privacy": "Privacy",
+  "@settings_privacy": {
+    "description": "SET-01 section header."
+  },
+  "settings_about": "About",
+  "@settings_about": {
+    "description": "SET-01 section header."
+  },
+  "settings_loadError": "Couldn't load your settings.",
+  "@settings_loadError": {
+    "description": "SET-01 error state message."
+  },
+  "settings_language": "Language",
+  "@settings_language": {
+    "description": "SET-01 row."
+  },
+  "settings_languageSystem": "System default",
+  "@settings_languageSystem": {
+    "description": "SET-01 language option that follows the device."
+  },
+  "settings_currency": "Currency",
+  "@settings_currency": {
+    "description": "SET-01 row."
+  },
+  "settings_firstDayOfWeek": "First day of week",
+  "@settings_firstDayOfWeek": {
+    "description": "SET-01 row."
+  },
+  "settings_monday": "Monday",
+  "@settings_monday": {
+    "description": "First day of week option."
+  },
+  "settings_saturday": "Saturday",
+  "@settings_saturday": {
+    "description": "First day of week option."
+  },
+  "settings_sunday": "Sunday",
+  "@settings_sunday": {
+    "description": "First day of week option."
+  },
+  "settings_dateFormat": "Date format",
+  "@settings_dateFormat": {
+    "description": "SET-01 row."
+  },
+  "settings_themeEntry": "Theme and colors",
+  "@settings_themeEntry": {
+    "description": "SET-01 row that opens SET-04."
+  },
+  "settings_modulesEntry": "Enable or reorder trackers",
+  "@settings_modulesEntry": {
+    "description": "SET-01 row that opens SET-06."
+  },
+  "settings_notificationsMaster": "Notifications",
+  "@settings_notificationsMaster": {
+    "description": "SET-01 master notifications switch."
+  },
+  "settings_dailySummaryTime": "Daily summary time",
+  "@settings_dailySummaryTime": {
+    "description": "SET-01 row."
+  },
+  "settings_dailySummaryHelp": "Did you log today's expenses?",
+  "@settings_dailySummaryHelp": {
+    "description": "SET-01 daily summary row helper text (the reminder's message)."
+  },
+  "settings_budgetAlerts": "Budget alerts",
+  "@settings_budgetAlerts": {
+    "description": "SET-01 switch."
+  },
+  "settings_habitReminders": "Habit reminders",
+  "@settings_habitReminders": {
+    "description": "SET-01 switch, shown when the Habit module is on."
+  },
+  "settings_notificationsBlocked": "Notifications are blocked for DailyTrack",
+  "@settings_notificationsBlocked": {
+    "description": "SET-01 note when the OS blocks notifications."
+  },
+  "settings_openSystemSettings": "Open settings",
+  "@settings_openSystemSettings": {
+    "description": "SET-01 button that opens the system notification settings."
+  },
+  "settings_privacyPolicy": "Privacy policy",
+  "@settings_privacyPolicy": {
+    "description": "SET-01 row."
+  },
+  "settings_terms": "Terms",
+  "@settings_terms": {
+    "description": "SET-01 row."
+  },
+  "settings_rateUs": "Rate us",
+  "@settings_rateUs": {
+    "description": "SET-01 row."
+  },
+  "settings_shareApp": "Share app",
+  "@settings_shareApp": {
+    "description": "SET-01 row."
+  },
+  "settings_shareAppText": "I track my money and habits with DailyTrack: {url}",
+  "@settings_shareAppText": {
+    "description": "Text shared by Share app.",
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_sendFeedback": "Send feedback",
+  "@settings_sendFeedback": {
+    "description": "SET-01 row."
+  },
+  "settings_feedbackSubject": "DailyTrack feedback ({version})",
+  "@settings_feedbackSubject": {
+    "description": "Feedback email subject.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_feedbackBody": "Write your feedback above this line.\n\nApp version: {version} ({build})\nDevice: {device}\nAndroid: {android}\nDevice language: {language}",
+  "@settings_feedbackBody": {
+    "description": "Feedback email body with device facts only (no app data, Constitution III).",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      },
+      "android": {
+        "type": "String"
+      },
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_noEmailApp": "No email app found. Write to us at {email}",
+  "@settings_noEmailApp": {
+    "description": "Dialog when no email app exists.",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_copyEmail": "Copy email",
+  "@settings_copyEmail": {
+    "description": "Button in the no-email-app dialog."
+  },
+  "settings_emailCopied": "Email copied",
+  "@settings_emailCopied": {
+    "description": "Snackbar after copying the support email."
+  },
+  "settings_close": "Close",
+  "@settings_close": {
+    "description": "Dialog close button."
+  },
+  "settings_appVersion": "App version",
+  "@settings_appVersion": {
+    "description": "SET-01 row."
+  },
+  "settings_appVersionValue": "{version} ({build})",
+  "@settings_appVersionValue": {
+    "description": "App version and build number.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_licenses": "Open-source licenses",
+  "@settings_licenses": {
+    "description": "SET-01 row."
+  },
+  "web_loadError": "Couldn't load this page. Check your connection and try again.",
+  "@web_loadError": {
+    "description": "Web page load error."
+  },
+  "themes_title": "Theme and colors",
+  "@themes_title": {
+    "description": "SET-04 title."
+  },
+  "themes_mode": "Theme mode",
+  "@themes_mode": {
+    "description": "SET-04 section."
+  },
+  "themes_system": "System",
+  "@themes_system": {
+    "description": "Theme mode option."
+  },
+  "themes_light": "Light",
+  "@themes_light": {
+    "description": "Theme mode option."
+  },
+  "themes_dark": "Dark",
+  "@themes_dark": {
+    "description": "Theme mode option."
+  },
+  "themes_colors": "Colors",
+  "@themes_colors": {
+    "description": "SET-04 section."
+  },
+  "themes_fontSize": "Font size",
+  "@themes_fontSize": {
+    "description": "SET-04 section."
+  },
+  "themes_fontDefault": "Default",
+  "@themes_fontDefault": {
+    "description": "Font size option."
+  },
+  "themes_fontLarge": "Large",
+  "@themes_fontLarge": {
+    "description": "Font size option."
+  },
+  "themes_preview": "Preview",
+  "@themes_preview": {
+    "description": "SET-04 preview card label."
+  },
+  "themes_previewSpent": "Spent this month",
+  "@themes_previewSpent": {
+    "description": "SET-04 preview sample card title."
+  },
+  "themes_previewChip": "Groceries",
+  "@themes_previewChip": {
+    "description": "SET-04 preview sample chip."
+  },
+  "themes_pro": "Pro",
+  "@themes_pro": {
+    "description": "Badge on premium themes."
+  },
+  "themes_tileSelected": "{name}, selected",
+  "@themes_tileSelected": {
+    "description": "Theme tile semantic label when selected.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_tileLocked": "{name}, Pro, locked",
+  "@themes_tileLocked": {
+    "description": "Theme tile semantic label when locked.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_lockedMessage": "Get Pro to use this theme",
+  "@themes_lockedMessage": {
+    "description": "SET-04 locked theme overlay message."
+  },
+  "theme_default": "Default teal",
+  "@theme_default": {
+    "description": "Color theme name."
+  },
+  "theme_indigo": "Indigo",
+  "@theme_indigo": {
+    "description": "Color theme name."
+  },
+  "theme_saffron": "Saffron",
+  "@theme_saffron": {
+    "description": "Color theme name."
+  },
+  "theme_forest": "Forest",
+  "@theme_forest": {
+    "description": "Color theme name."
+  },
+  "theme_rose": "Rose",
+  "@theme_rose": {
+    "description": "Color theme name."
+  },
+  "theme_midnight": "Midnight",
+  "@theme_midnight": {
+    "description": "Color theme name."
+  },
+  "theme_ocean": "Ocean",
+  "@theme_ocean": {
+    "description": "Color theme name."
+  },
+  "theme_mono": "Mono",
+  "@theme_mono": {
+    "description": "Color theme name."
+  },
+  "settings_security": "Security",
+  "@settings_security": {
+    "description": "SET-01 section header."
+  },
+  "settings_appLockEntry": "App lock",
+  "@settings_appLockEntry": {
+    "description": "SET-01 row that opens SET-05."
+  },
+  "settings_on": "On",
+  "@settings_on": {
+    "description": "Setting state."
+  },
+  "settings_off": "Off",
+  "@settings_off": {
+    "description": "Setting state."
+  },
+  "security_title": "Security",
+  "@security_title": {
+    "description": "SET-05 title."
+  },
+  "security_appLock": "App lock",
+  "@security_appLock": {
+    "description": "SET-05 switch."
+  },
+  "security_changePin": "Change PIN",
+  "@security_changePin": {
+    "description": "SET-05 row."
+  },
+  "security_biometric": "Use fingerprint / face unlock",
+  "@security_biometric": {
+    "description": "SET-05 switch."
+  },
+  "security_needsLock": "Turn on app lock first",
+  "@security_needsLock": {
+    "description": "SET-05 note on rows that need app lock."
+  },
+  "security_biometricNotEnrolled": "Set up fingerprint or face unlock in your phone's settings",
+  "@security_biometricNotEnrolled": {
+    "description": "SET-05 biometric unavailable: nothing enrolled."
+  },
+  "security_biometricNone": "This phone doesn't support fingerprint or face unlock",
+  "@security_biometricNone": {
+    "description": "SET-05 biometric unavailable: no hardware."
+  },
+  "security_lockAfter": "Lock after",
+  "@security_lockAfter": {
+    "description": "SET-05 row."
+  },
+  "security_immediately": "Immediately",
+  "@security_immediately": {
+    "description": "Lock after option."
+  },
+  "security_after1Min": "After 1 minute",
+  "@security_after1Min": {
+    "description": "Lock after option."
+  },
+  "security_after5Min": "After 5 minutes",
+  "@security_after5Min": {
+    "description": "Lock after option."
+  },
+  "security_hideInRecents": "Hide app content in recents",
+  "@security_hideInRecents": {
+    "description": "SET-05 switch."
+  },
+  "security_hideInRecentsHelp": "Also blocks screenshots.",
+  "@security_hideInRecentsHelp": {
+    "description": "SET-05 switch helper text."
+  },
+  "security_lockOn": "App lock is on",
+  "@security_lockOn": {
+    "description": "Snackbar and onboarding status."
+  },
+  "security_lockOff": "App lock is off",
+  "@security_lockOff": {
+    "description": "Snackbar after turning the lock off."
+  },
+  "security_pinChanged": "PIN changed",
+  "@security_pinChanged": {
+    "description": "Snackbar after changing the PIN."
+  },
+  "lock_enterPin": "Enter PIN",
+  "@lock_enterPin": {
+    "description": "SYS-03 title."
+  },
+  "lock_wrongPin": "Wrong PIN",
+  "@lock_wrongPin": {
+    "description": "SYS-03/SYS-04 error."
+  },
+  "lock_attemptsLeft": "Wrong PIN. {count, plural, =1{1 attempt left} other{{count} attempts left}}",
+  "@lock_attemptsLeft": {
+    "description": "SYS-03 error from the 3rd wrong PIN.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lock_tryAgainIn": "Try again in {time}",
+  "@lock_tryAgainIn": {
+    "description": "SYS-03 lockout countdown; time is m:ss.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lock_nextLockoutWarning": "Next wrong PIN locks the app for {time}",
+  "@lock_nextLockoutWarning": {
+    "description": "SYS-03 warning after a lockout; time is m:ss.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lock_credentialUnavailable": "App lock can't be checked on this phone.",
+  "@lock_credentialUnavailable": {
+    "description": "SYS-03 when the stored PIN cannot be read."
+  },
+  "lock_biometricReason": "Unlock DailyTrack",
+  "@lock_biometricReason": {
+    "description": "System biometric prompt reason."
+  },
+  "lock_useBiometric": "Use fingerprint",
+  "@lock_useBiometric": {
+    "description": "Keypad biometric key label."
+  },
+  "lock_delete": "Delete",
+  "@lock_delete": {
+    "description": "Keypad backspace key label."
+  },
+  "lock_dotsLabel": "{count} of 4 digits entered",
+  "@lock_dotsLabel": {
+    "description": "PIN dots semantic label.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pin_enterCurrent": "Enter current PIN",
+  "@pin_enterCurrent": {
+    "description": "SYS-04 step title."
+  },
+  "pin_enterNew": "Enter new PIN",
+  "@pin_enterNew": {
+    "description": "SYS-04 step title."
+  },
+  "pin_confirmNew": "Confirm new PIN",
+  "@pin_confirmNew": {
+    "description": "SYS-04 step title."
+  },
+  "pin_mismatch": "PINs don't match. Try again.",
+  "@pin_mismatch": {
+    "description": "SYS-04 confirm mismatch."
+  },
+  "pin_offerBiometric": "Use fingerprint / face unlock",
+  "@pin_offerBiometric": {
+    "description": "SYS-04 biometric offer after first setup."
+  },
+  "pin_done": "Done",
+  "@pin_done": {
+    "description": "SYS-04 finish button."
+  },
+  "pin_saveError": "Couldn't save your PIN. Try again.",
+  "@pin_saveError": {
+    "description": "SYS-04 save failure."
+  },
+  "onboarding_setAppLock": "Set app lock",
+  "@onboarding_setAppLock": {
+    "description": "SYS-02 step 4 button."
+  },
+  "onboarding_changePin": "Change PIN",
+  "@onboarding_changePin": {
+    "description": "SYS-02 step 4 button once the lock is on."
+  },
+  "settings_data": "Data",
+  "@settings_data": {
+    "description": "SET-01 section header."
+  },
+  "settings_eraseAll": "Erase all data",
+  "@settings_eraseAll": {
+    "description": "SET-01 Data row."
+  },
+  "erase_title": "Erase all data?",
+  "@erase_title": {
+    "description": "Erase step 1 title."
+  },
+  "erase_body": "This deletes your transactions, accounts, categories, budgets, recurring entries, habits and check-ins, settings, and app lock. This can't be undone.",
+  "@erase_body": {
+    "description": "Erase step 1 consequence text."
+  },
+  "erase_continue": "Continue",
+  "@erase_continue": {
+    "description": "Erase step 1 confirm button."
+  },
+  "erase_typeTitle": "Type DELETE to confirm",
+  "@erase_typeTitle": {
+    "description": "Erase step 2 title; DELETE is not translated."
+  },
+  "erase_typeHint": "DELETE",
+  "@erase_typeHint": {
+    "description": "Erase step 2 field hint; not translated."
+  },
+  "erase_confirm": "Erase everything",
+  "@erase_confirm": {
+    "description": "Erase step 2 destructive button."
+  },
+  "erase_inProgress": "Erasing…",
+  "@erase_inProgress": {
+    "description": "Erase progress."
+  },
+  "erase_failed": "Couldn't erase your data. Nothing was deleted.",
+  "@erase_failed": {
+    "description": "Erase failure."
+  },
+  "lock_forgotPin": "Forgot PIN?",
+  "@lock_forgotPin": {
+    "description": "SYS-03 link."
+  },
+  "lock_forgotTitle": "Forgot your PIN?",
+  "@lock_forgotTitle": {
+    "description": "Forgot PIN sheet title."
+  },
+  "lock_forgotBody": "Your PIN can't be recovered. You can erase all data and start fresh.",
+  "@lock_forgotBody": {
+    "description": "Forgot PIN sheet body."
+  },
+  "currency_INR": "Indian Rupee",
+  "@currency_INR": {
+    "description": "Display name of INR (SYS-02 step 2)."
+  },
+  "currency_USD": "US Dollar",
+  "@currency_USD": {
+    "description": "Display name of USD (SYS-02 step 2)."
+  },
+  "currency_EUR": "Euro",
+  "@currency_EUR": {
+    "description": "Display name of EUR (SYS-02 step 2)."
+  },
+  "currency_GBP": "British Pound",
+  "@currency_GBP": {
+    "description": "Display name of GBP (SYS-02 step 2)."
+  },
+  "currency_AED": "UAE Dirham",
+  "@currency_AED": {
+    "description": "Display name of AED (SYS-02 step 2)."
+  },
+  "currency_SAR": "Saudi Riyal",
+  "@currency_SAR": {
+    "description": "Display name of SAR (SYS-02 step 2)."
+  },
+  "currency_QAR": "Qatari Riyal",
+  "@currency_QAR": {
+    "description": "Display name of QAR (SYS-02 step 2)."
+  },
+  "currency_KWD": "Kuwaiti Dinar",
+  "@currency_KWD": {
+    "description": "Display name of KWD (SYS-02 step 2)."
+  },
+  "currency_OMR": "Omani Rial",
+  "@currency_OMR": {
+    "description": "Display name of OMR (SYS-02 step 2)."
+  },
+  "currency_BHD": "Bahraini Dinar",
+  "@currency_BHD": {
+    "description": "Display name of BHD (SYS-02 step 2)."
+  },
+  "currency_SGD": "Singapore Dollar",
+  "@currency_SGD": {
+    "description": "Display name of SGD (SYS-02 step 2)."
+  },
+  "currency_MYR": "Malaysian Ringgit",
+  "@currency_MYR": {
+    "description": "Display name of MYR (SYS-02 step 2)."
+  },
+  "currency_THB": "Thai Baht",
+  "@currency_THB": {
+    "description": "Display name of THB (SYS-02 step 2)."
+  },
+  "currency_IDR": "Indonesian Rupiah",
+  "@currency_IDR": {
+    "description": "Display name of IDR (SYS-02 step 2)."
+  },
+  "currency_PHP": "Philippine Peso",
+  "@currency_PHP": {
+    "description": "Display name of PHP (SYS-02 step 2)."
+  },
+  "currency_JPY": "Japanese Yen",
+  "@currency_JPY": {
+    "description": "Display name of JPY (SYS-02 step 2)."
+  },
+  "currency_CNY": "Chinese Yuan",
+  "@currency_CNY": {
+    "description": "Display name of CNY (SYS-02 step 2)."
+  },
+  "currency_HKD": "Hong Kong Dollar",
+  "@currency_HKD": {
+    "description": "Display name of HKD (SYS-02 step 2)."
+  },
+  "currency_KRW": "South Korean Won",
+  "@currency_KRW": {
+    "description": "Display name of KRW (SYS-02 step 2)."
+  },
+  "currency_AUD": "Australian Dollar",
+  "@currency_AUD": {
+    "description": "Display name of AUD (SYS-02 step 2)."
+  },
+  "currency_NZD": "New Zealand Dollar",
+  "@currency_NZD": {
+    "description": "Display name of NZD (SYS-02 step 2)."
+  },
+  "currency_CAD": "Canadian Dollar",
+  "@currency_CAD": {
+    "description": "Display name of CAD (SYS-02 step 2)."
+  },
+  "currency_CHF": "Swiss Franc",
+  "@currency_CHF": {
+    "description": "Display name of CHF (SYS-02 step 2)."
+  },
+  "currency_SEK": "Swedish Krona",
+  "@currency_SEK": {
+    "description": "Display name of SEK (SYS-02 step 2)."
+  },
+  "currency_NOK": "Norwegian Krone",
+  "@currency_NOK": {
+    "description": "Display name of NOK (SYS-02 step 2)."
+  },
+  "currency_DKK": "Danish Krone",
+  "@currency_DKK": {
+    "description": "Display name of DKK (SYS-02 step 2)."
+  },
+  "currency_ZAR": "South African Rand",
+  "@currency_ZAR": {
+    "description": "Display name of ZAR (SYS-02 step 2)."
+  },
+  "currency_NPR": "Nepalese Rupee",
+  "@currency_NPR": {
+    "description": "Display name of NPR (SYS-02 step 2)."
+  },
+  "currency_BDT": "Bangladeshi Taka",
+  "@currency_BDT": {
+    "description": "Display name of BDT (SYS-02 step 2)."
+  },
+  "currency_LKR": "Sri Lankan Rupee",
+  "@currency_LKR": {
+    "description": "Display name of LKR (SYS-02 step 2)."
+  }
+}

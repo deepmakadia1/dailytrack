@@ -1,0 +1,5 @@
+tags:
+  golden:
+    description: Golden (screenshot) tests. Baselines are generated and compared on Linux only.
+  perf:
+    description: Performance proxies over large in-memory data sets (SC-004). Run in CI; exclude locally with --exclude-tags perf.
