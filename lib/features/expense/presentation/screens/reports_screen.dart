@@ -7,6 +7,7 @@ import 'package:dailytrack/core/theme/app_icons.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
 import 'package:dailytrack/core/utils/date_keys.dart';
+import 'package:dailytrack/core/utils/period.dart';
 import 'package:dailytrack/core/widgets/amount_text.dart';
 import 'package:dailytrack/core/widgets/app_scaffold.dart';
 import 'package:dailytrack/core/widgets/category_avatar.dart';
@@ -43,7 +44,8 @@ String _tabLabel(AppLocalizations l10n, ReportTab t) => switch (t) {
 /// selector (Week, Month, Year, Custom; no Day) and the Overview,
 /// Categories, Trends and Accounts tabs. Locked content is shown blurred
 /// under `LockedFeatureOverlay` with sample data, never the user's numbers.
-/// No ads (the banner slot stays empty) and no "Export this report".
+/// No ads (the banner slot stays empty). "Export this report" opens SET-03
+/// with this period (feature 008, FR-033).
 class ReportsScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -105,6 +107,21 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen>
 
     return AppScaffold(
       title: l10n.expense_reportsTitle,
+      actions: [
+        IconButton(
+          key: const Key('reports_export'),
+          tooltip: l10n.export_reportAction,
+          icon: Icon(Icons.ios_share, semanticLabel: l10n.export_reportAction),
+          onPressed: () => unawaited(
+            context.push(
+              Routes.exportPath(
+                dataset: 'transactions',
+                period: periodToQuery(state.period),
+              ),
+            ),
+          ),
+        ),
+      ],
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

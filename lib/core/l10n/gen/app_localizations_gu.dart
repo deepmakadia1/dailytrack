@@ -2631,6 +2631,643 @@ class AppLocalizationsGu extends AppLocalizations {
       'તમારો PIN પાછો મેળવી શકાતો નથી. તમે બધો ડેટા ભૂંસીને નવેસરથી શરૂ કરી શકો છો.';
 
   @override
+  String get backup_title => 'બેકઅપ અને રિસ્ટોર';
+
+  @override
+  String get backup_lastBackupTitle => 'છેલ્લું બેકઅપ';
+
+  @override
+  String get backup_noBackupYet => 'હજી સુધી કોઈ બેકઅપ નથી';
+
+  @override
+  String backup_lastBackupDetail(String date, String location, String size) {
+    return '$date · $location · $size';
+  }
+
+  @override
+  String get backup_locationDevice => 'આ ડિવાઇસ';
+
+  @override
+  String get backup_locationDrive => 'Google Drive';
+
+  @override
+  String backup_lastBackupSubtitle(String date) {
+    return 'છેલ્લું બેકઅપ: $date';
+  }
+
+  @override
+  String get backup_notBackedUp => 'હજી સુધી બેકઅપ લેવાયું નથી';
+
+  @override
+  String get backup_localTitle => 'બેકઅપ ફાઇલ';
+
+  @override
+  String get backup_localBody =>
+      'તમારો બધો ડેટા આ ફોન પર એક ફાઇલ તરીકે સેવ કરો, અથવા કોઈ ફાઇલમાંથી રિસ્ટોર કરો.';
+
+  @override
+  String get backup_saveFile => 'બેકઅપ ફાઇલ સેવ કરો';
+
+  @override
+  String get backup_restoreFile => 'ફાઇલમાંથી રિસ્ટોર કરો';
+
+  @override
+  String get backup_saved => 'બેકઅપ સેવ થઈ ગયું';
+
+  @override
+  String get backup_share => 'શેર કરો';
+
+  @override
+  String get backup_working => 'બેકઅપ બનાવી રહ્યા છીએ…';
+
+  @override
+  String get backup_optionsTitle => 'વિકલ્પો';
+
+  @override
+  String get backup_encrypt => 'બેકઅપ એન્ક્રિપ્ટ કરો';
+
+  @override
+  String get backup_encryptHelp => 'બેકઅપ ફાઇલોને પાસવર્ડથી સુરક્ષિત કરે છે';
+
+  @override
+  String get backup_changePassword => 'પાસવર્ડ બદલો';
+
+  @override
+  String get backup_includeReceipts => 'રસીદના ફોટા સામેલ કરો';
+
+  @override
+  String get backup_includeReceiptsHelp => 'આનાથી બેકઅપ ફાઇલ મોટી થાય છે';
+
+  @override
+  String backup_countTransactions(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString વ્યવહારો',
+      one: '1 વ્યવહાર',
+      zero: 'કોઈ વ્યવહાર નથી',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String backup_countHabits(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString આદતો',
+      one: '1 આદત',
+      zero: 'કોઈ આદત નથી',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get backup_passwordTitle => 'બેકઅપ પાસવર્ડ સેટ કરો';
+
+  @override
+  String get backup_passwordChangeTitle => 'બેકઅપ પાસવર્ડ બદલો';
+
+  @override
+  String get backup_passwordField => 'પાસવર્ડ';
+
+  @override
+  String get backup_passwordConfirm => 'પાસવર્ડની પુષ્ટિ કરો';
+
+  @override
+  String get backup_passwordWarning =>
+      'જો તમે આ પાસવર્ડ ભૂલી જશો, તો તેનાથી બનેલા બેકઅપ રિસ્ટોર થઈ શકશે નહીં. તેને પાછો મેળવી શકાતો નથી.';
+
+  @override
+  String get backup_passwordMismatch => 'પાસવર્ડ મેળ ખાતા નથી';
+
+  @override
+  String get backup_passwordSave => 'પાસવર્ડ સેવ કરો';
+
+  @override
+  String get restore_passwordTitle => 'બેકઅપ પાસવર્ડ દાખલ કરો';
+
+  @override
+  String get restore_open => 'બેકઅપ ખોલો';
+
+  @override
+  String get restore_previewTitle => 'આ બેકઅપ રિસ્ટોર કરીએ?';
+
+  @override
+  String restore_previewCreated(String date) {
+    return '$date એ બનાવેલ';
+  }
+
+  @override
+  String restore_previewVersion(String version) {
+    return 'એપ વર્ઝન $version';
+  }
+
+  @override
+  String restore_previewReceipts(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString રસીદના ફોટા સામેલ છે',
+      one: '1 રસીદનો ફોટો સામેલ છે',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get restore_previewSkipped =>
+      'આ બેકઅપનો થોડો ડેટા એવી સુવિધાનો છે જે આ વર્ઝનમાં નથી. તેને છોડી દેવામાં આવશે.';
+
+  @override
+  String get restore_continue => 'આગળ વધો';
+
+  @override
+  String get restore_confirmTitle => 'હાલનો ડેટા બદલીએ?';
+
+  @override
+  String get restore_confirmBody =>
+      'તમારા હાલના બધા વ્યવહારો, ખાતાં, શ્રેણીઓ, બજેટ, પુનરાવર્તિત એન્ટ્રી, આદતો, ચેક-ઇન અને પસંદગીઓ આ બેકઅપથી બદલાઈ જશે. આને પૂર્વવત્ કરી શકાતું નથી.';
+
+  @override
+  String get restore_confirmAction => 'ડેટા બદલો';
+
+  @override
+  String get restore_inProgress => 'રિસ્ટોર થઈ રહ્યું છે…';
+
+  @override
+  String get restore_done => 'બેકઅપ રિસ્ટોર થઈ ગયું';
+
+  @override
+  String get restore_doneMissingReceipts =>
+      'બેકઅપ રિસ્ટોર થઈ ગયું, પણ કેટલાક રસીદના ફોટા કૉપિ થઈ શક્યા નહીં.';
+
+  @override
+  String get restore_failedTitle => 'રિસ્ટોર થઈ શક્યું નહીં';
+
+  @override
+  String get backup_failedTitle => 'બેકઅપ થઈ શક્યું નહીં';
+
+  @override
+  String get backup_errNotRecognized =>
+      'આ DailyTrack બેકઅપ નથી. કંઈ બદલાયું નથી.';
+
+  @override
+  String get backup_errDamaged =>
+      'આ બેકઅપ ફાઇલ ખરાબ છે અને વાંચી શકાતી નથી. કંઈ બદલાયું નથી.';
+
+  @override
+  String get backup_errInvalid =>
+      'આ બેકઅપમાં એવો ડેટા છે જે DailyTrack વાપરી શકતું નથી. કંઈ બદલાયું નથી.';
+
+  @override
+  String get backup_errTooNew => 'આ બેકઅપ રિસ્ટોર કરવા DailyTrack અપડેટ કરો.';
+
+  @override
+  String get backup_errWrongPassword => 'ખોટો પાસવર્ડ અથવા ખરાબ ફાઇલ.';
+
+  @override
+  String get backup_errNeedsPassword =>
+      'એન્ક્રિપ્ટેડ બેકઅપ બનાવતા રહેવા માટે તમારો બેકઅપ પાસવર્ડ ફરીથી સેટ કરો.';
+
+  @override
+  String get backup_errTooLarge =>
+      'આ બેકઅપ એન્ક્રિપ્ટ કરવા માટે ખૂબ મોટું છે. રસીદના ફોટા બંધ કરીને ફરી પ્રયાસ કરો.';
+
+  @override
+  String get backup_errBusy =>
+      'એક બેકઅપ અથવા રિસ્ટોર પહેલેથી ચાલી રહ્યું છે. થોડી વાર પછી ફરી પ્રયાસ કરો.';
+
+  @override
+  String get backup_errStorage =>
+      'આ ફોનમાં પૂરતી જગ્યા નથી. થોડી જગ્યા ખાલી કરીને ફરી પ્રયાસ કરો.';
+
+  @override
+  String get backup_errGeneric => 'કંઈક ખોટું થયું. કંઈ બદલાયું નથી.';
+
+  @override
+  String get backup_driveTitle => 'Google Drive';
+
+  @override
+  String get backup_driveBody =>
+      'તમારી પોતાની Google Drive પર બેકઅપ લો. બેકઅપ એક ખાનગી એપ ફોલ્ડરમાં રાખવામાં આવે છે, જે તમને તમારી Drive ફાઇલોમાં દેખાશે નહીં.';
+
+  @override
+  String get backup_driveUnavailable => 'આ બિલ્ડમાં Google Drive ઉપલબ્ધ નથી.';
+
+  @override
+  String get backup_connect => 'Google ખાતું જોડો';
+
+  @override
+  String backup_connected(String email) {
+    return '$email તરીકે જોડાયેલું છે';
+  }
+
+  @override
+  String get backup_backUpNow => 'હમણાં બેકઅપ લો';
+
+  @override
+  String get backup_uploading => 'Google Drive પર બેકઅપ થઈ રહ્યું છે…';
+
+  @override
+  String get backup_driveSaved => 'Google Drive પર બેકઅપ થઈ ગયું';
+
+  @override
+  String get backup_disconnect => 'ડિસ્કનેક્ટ કરો';
+
+  @override
+  String get backup_disconnectTitle => 'Google ખાતું ડિસ્કનેક્ટ કરીએ?';
+
+  @override
+  String get backup_disconnectBody =>
+      'ઑટોમેટિક બેકઅપ બંધ થઈ જશે. Google Drive માં પહેલેથી રહેલા બેકઅપ રાખવામાં આવશે.';
+
+  @override
+  String get backup_autoTitle => 'ઑટો બેકઅપ';
+
+  @override
+  String get backup_autoOff => 'બંધ';
+
+  @override
+  String get backup_autoDaily => 'રોજ';
+
+  @override
+  String get backup_autoWeekly => 'દર અઠવાડિયે';
+
+  @override
+  String get backup_wifiOnly => 'ફક્ત Wi-Fi પર';
+
+  @override
+  String get backup_wifiOnlyHelp => 'બેકઅપ પહેલાં Wi-Fi ની રાહ જુએ છે';
+
+  @override
+  String get backup_driveListTitle => 'Google Drive માંથી રિસ્ટોર કરો';
+
+  @override
+  String get backup_driveListEmpty => 'Google Drive માં હજી સુધી કોઈ બેકઅપ નથી';
+
+  @override
+  String get backup_driveListError =>
+      'તમારા Google Drive બેકઅપ લોડ થઈ શક્યા નહીં.';
+
+  @override
+  String backup_driveEntry(String date, String size) {
+    return '$date · $size';
+  }
+
+  @override
+  String get backup_kindManual => 'મેન્યુઅલ';
+
+  @override
+  String get backup_kindAuto => 'ઑટો';
+
+  @override
+  String get backup_delete => 'કાઢી નાખો';
+
+  @override
+  String get backup_deleteTitle => 'આ બેકઅપ કાઢી નાખીએ?';
+
+  @override
+  String get backup_deleteBody =>
+      'તેને Google Drive માંથી દૂર કરવામાં આવશે. આને પૂર્વવત્ કરી શકાતું નથી.';
+
+  @override
+  String get backup_deleteAction => 'બેકઅપ કાઢી નાખો';
+
+  @override
+  String get backup_moreActions => 'આ બેકઅપ માટે વધુ વિકલ્પો';
+
+  @override
+  String get backup_listLoading => 'તમારા બેકઅપ લોડ થઈ રહ્યા છે…';
+
+  @override
+  String get backup_downloading => 'બેકઅપ ડાઉનલોડ થઈ રહ્યું છે…';
+
+  @override
+  String get backup_errAuth => 'તમારું Google ખાતું ફરીથી જોડવું પડશે.';
+
+  @override
+  String get backup_reconnect => 'Google ખાતું ફરીથી જોડો';
+
+  @override
+  String get backup_errQuota =>
+      'તમારી Google Drive ભરાઈ ગઈ છે. Drive માં જગ્યા ખાલી કરીને ફરી પ્રયાસ કરો.';
+
+  @override
+  String get backup_errOffline =>
+      'Google Drive સુધી પહોંચી શક્યા નહીં. તમારું કનેક્શન તપાસો અને ફરી પ્રયાસ કરો.';
+
+  @override
+  String get backup_errDrive =>
+      'Google Drive હાલમાં જવાબ આપતી નથી. પછીથી ફરી પ્રયાસ કરો.';
+
+  @override
+  String get notif_channelBackup => 'બેકઅપ';
+
+  @override
+  String get notif_channelBackupDescription =>
+      'ઑટોમેટિક બેકઅપ વારંવાર નિષ્ફળ જાય ત્યારે જણાવે છે';
+
+  @override
+  String get notif_backupFailingTitle => 'ઑટોમેટિક બેકઅપ કામ કરતું નથી';
+
+  @override
+  String get notif_backupFailingBody =>
+      'Google Drive પર તમારા છેલ્લા 3 બેકઅપ નિષ્ફળ ગયા. તપાસવા ટૅપ કરો.';
+
+  @override
+  String get lock_forgotBodyRestore =>
+      'તમારો PIN પાછો મેળવી શકાતો નથી. તમે Google Drive બેકઅપમાંથી તમારો ડેટા રિસ્ટોર કરી શકો છો, અથવા બધો ડેટા ભૂંસીને નવેસરથી શરૂ કરી શકો છો.';
+
+  @override
+  String get lock_restoreFromDrive => 'Google Drive બેકઅપમાંથી રિસ્ટોર કરો';
+
+  @override
+  String get export_title => 'ડેટા એક્સપોર્ટ કરો';
+
+  @override
+  String get export_settingsHelp => 'CSV અથવા PDF';
+
+  @override
+  String get export_dataType => 'ડેટા';
+
+  @override
+  String get export_transactions => 'વ્યવહારો';
+
+  @override
+  String get export_habits => 'આદતો';
+
+  @override
+  String get export_period => 'સમયગાળો';
+
+  @override
+  String get export_format => 'ફોર્મેટ';
+
+  @override
+  String get export_csv => 'CSV';
+
+  @override
+  String get export_pdf => 'PDF';
+
+  @override
+  String get export_filtersTitle => 'ફિલ્ટર';
+
+  @override
+  String get export_accounts => 'ખાતાં';
+
+  @override
+  String get export_categories => 'શ્રેણીઓ';
+
+  @override
+  String get export_all => 'બધા';
+
+  @override
+  String export_selected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count પસંદ કર્યા',
+      one: '1 પસંદ કર્યું',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get export_filterDone => 'લાગુ કરો';
+
+  @override
+  String get export_button => 'એક્સપોર્ટ કરો';
+
+  @override
+  String get export_working => 'તમારી ફાઇલ બની રહી છે…';
+
+  @override
+  String get export_locked =>
+      'એક્સપોર્ટ DailyTrack Pro નો ભાગ છે. તેમને અનલૉક કરવાનું ટૂંક સમયમાં આવી રહ્યું છે.';
+
+  @override
+  String get export_nothing => 'આ સમયગાળા માટે એક્સપોર્ટ કરવા જેવું કંઈ નથી';
+
+  @override
+  String get export_failedTitle => 'એક્સપોર્ટ થઈ શક્યું નહીં';
+
+  @override
+  String get export_failed =>
+      'ફાઇલ બની શકી નહીં. કંઈ શેર કરાયું નથી. ફરી પ્રયાસ કરો.';
+
+  @override
+  String get export_reportAction => 'આ રિપોર્ટ એક્સપોર્ટ કરો';
+
+  @override
+  String get export_colDate => 'તારીખ';
+
+  @override
+  String get export_colTime => 'સમય';
+
+  @override
+  String get export_colType => 'પ્રકાર';
+
+  @override
+  String get export_colCategory => 'શ્રેણી';
+
+  @override
+  String get export_colAccount => 'ખાતું';
+
+  @override
+  String get export_colPaymentMode => 'ચુકવણીની રીત';
+
+  @override
+  String get export_colAmount => 'રકમ';
+
+  @override
+  String get export_colNote => 'નોંધ';
+
+  @override
+  String get export_colHabit => 'આદત';
+
+  @override
+  String get export_colValue => 'મૂલ્ય';
+
+  @override
+  String get export_colTarget => 'લક્ષ્ય';
+
+  @override
+  String get export_colUnit => 'એકમ';
+
+  @override
+  String get export_colStatus => 'સ્થિતિ';
+
+  @override
+  String get export_statusDone => 'પૂર્ણ';
+
+  @override
+  String get export_statusPartial => 'આંશિક';
+
+  @override
+  String get export_statusFreeze => 'ફ્રીઝ';
+
+  @override
+  String get export_totalIncome => 'કુલ આવક';
+
+  @override
+  String get export_totalExpense => 'કુલ ખર્ચ';
+
+  @override
+  String get export_net => 'ચોખ્ખું';
+
+  @override
+  String get export_count => 'એન્ટ્રી';
+
+  @override
+  String export_percent(int percent) {
+    return '$percent% પૂર્ણ';
+  }
+
+  @override
+  String export_filterAccounts(String names) {
+    return 'ખાતાં: $names';
+  }
+
+  @override
+  String export_filterCategories(String names) {
+    return 'શ્રેણીઓ: $names';
+  }
+
+  @override
+  String export_transfer(String from, String to) {
+    return '$from → $to';
+  }
+
+  @override
+  String get export_chartTitle => 'શ્રેણી મુજબ ખર્ચ';
+
+  @override
+  String get export_other => 'અન્ય';
+
+  @override
+  String get export_summaryTitle => 'સારાંશ';
+
+  @override
+  String export_pdfHeader(String title, String period) {
+    return 'DailyTrack · $title · $period';
+  }
+
+  @override
+  String export_page(int page, int pages) {
+    return 'પેજ $page / $pages';
+  }
+
+  @override
+  String get notif_channelDailySummary => 'દૈનિક સારાંશ';
+
+  @override
+  String get notif_channelDailySummaryDescription =>
+      'દિવસનો તમારો ખર્ચ અને આદતો';
+
+  @override
+  String get notif_dailySummaryTitle => 'આજે DailyTrack માં';
+
+  @override
+  String notif_dailySummaryBoth(String amount, int done, int total) {
+    return 'આજે $amount ખર્ચ · $done/$total આદતો પૂર્ણ';
+  }
+
+  @override
+  String notif_dailySummarySpend(String amount) {
+    return 'આજે $amount ખર્ચ';
+  }
+
+  @override
+  String notif_dailySummaryHabits(int done, int total) {
+    return '$done/$total આદતો પૂર્ણ';
+  }
+
+  @override
+  String get notif_actionMarkDone => 'પૂર્ણ કરો';
+
+  @override
+  String get notif_actionSnooze => '1 કલાક પછી';
+
+  @override
+  String get settings_exactNote => 'રિમાઇન્ડર થોડી મિનિટ મોડા આવી શકે છે';
+
+  @override
+  String get settings_exactAllow => 'ચોક્કસ સમયની મંજૂરી આપો';
+
+  @override
+  String get security_showWidgetData => 'વિજેટ પર ડેટા બતાવો';
+
+  @override
+  String get security_showWidgetDataHelp =>
+      'તમારી હોમ સ્ક્રીન પર રકમ અને આદતોનાં નામ બતાવે છે';
+
+  @override
+  String get widget_label => 'DailyTrack આજે';
+
+  @override
+  String get widget_description => 'આજનો ખર્ચ, બજેટ અને આદતોની તપાસ';
+
+  @override
+  String get widget_open => 'DailyTrack ખોલો';
+
+  @override
+  String get widget_spentToday => 'આજનો ખર્ચ';
+
+  @override
+  String widget_spentTodayA11y(String amount) {
+    return 'આજનો ખર્ચ, $amount';
+  }
+
+  @override
+  String widget_monthBudget(String month) {
+    return '$month નું બજેટ';
+  }
+
+  @override
+  String widget_budgetText(int percent, String spent, String limit) {
+    return '$percent% વપરાયું · $limit માંથી $spent';
+  }
+
+  @override
+  String get widget_noBudget => 'કોઈ બજેટ સેટ નથી';
+
+  @override
+  String widget_progress(int value, int target) {
+    return '$value / $target';
+  }
+
+  @override
+  String widget_progressUnit(int value, int target, String unit) {
+    return '$value / $target $unit';
+  }
+
+  @override
+  String widget_habitDoneA11y(String name) {
+    return '$name, પૂર્ણ';
+  }
+
+  @override
+  String widget_habitTodoA11y(String name) {
+    return '$name, પૂર્ણ નથી. પૂર્ણ કરવા માટે બે વાર ટૅપ કરો';
+  }
+
+  @override
+  String widget_habitCountA11y(String name, String progress) {
+    return '$name, $progress. એક ઉમેરવા માટે બે વાર ટૅપ કરો';
+  }
+
+  @override
   String get currency_INR => 'ભારતીય રૂપિયો';
 
   @override

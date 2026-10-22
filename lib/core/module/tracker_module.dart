@@ -1,17 +1,27 @@
 import 'package:dailytrack/core/background/background_scheduler.dart';
+import 'package:dailytrack/core/backup/backup_section.dart';
 import 'package:dailytrack/core/database/seeding.dart';
+import 'package:dailytrack/core/export/export_dataset.dart';
+import 'package:dailytrack/core/module/app_action.dart';
 import 'package:dailytrack/core/module/dashboard_section.dart';
 import 'package:dailytrack/core/module/insight_source.dart';
 import 'package:dailytrack/core/module/provider_reader.dart';
+import 'package:dailytrack/core/widget/domain/home_glance.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 export 'package:dailytrack/core/background/background_scheduler.dart'
     show BackgroundTask;
+export 'package:dailytrack/core/backup/backup_section.dart';
+export 'package:dailytrack/core/export/export_dataset.dart';
+export 'package:dailytrack/core/export/export_document.dart';
+export 'package:dailytrack/core/module/app_action.dart'
+    show AppAction, AppActionSource;
 export 'package:dailytrack/core/module/dashboard_section.dart';
 export 'package:dailytrack/core/module/insight.dart';
 export 'package:dailytrack/core/module/insight_source.dart';
 export 'package:dailytrack/core/module/provider_reader.dart';
+export 'package:dailytrack/core/widget/domain/home_glance.dart';
 
 /// Extended by every tracker (Expense, Habit; later Water, Period).
 /// See specs/006-home-dashboard/contracts/tracker_module.md. Home, SET-06
@@ -65,8 +75,28 @@ abstract class TrackerModule {
   /// and tap target, or null for none. Shown in module order.
   Widget? appBarBadge(BuildContext context) => null;
 
-  /// Export/import of the module's own tables. Null until T3.2.
+  /// Export/import of the module's own tables (SET-02, feature 008 research
+  /// R5), or null for a module with no data.
   BackupSection? backupSection();
+
+  /// What SET-03 can export from this module (feature 008 research R14),
+  /// e.g. Expense's transactions. Settings never imports a module.
+  List<ExportDataset> exportDatasets() => const [];
+
+  /// Adds the module's part of the home screen widget and the daily
+  /// summary for the local day of [nowLocal] (feature 008 research R19).
+  /// Runs in background isolates too; reads only local data.
+  Future<void> contributeGlance(
+    GlanceBuilder b,
+    ProviderReader read,
+    DateTime nowLocal,
+  ) async {}
+
+  /// Handles a notification button, widget check, or system action the
+  /// module owns (research R17, R20). Returns true when handled, even if
+  /// nothing had to change.
+  Future<bool> handleAction(AppAction action, ProviderReader read) async =>
+      false;
 
   /// Run once each by SeedRunner, whether or not the module is enabled.
   List<Seeder> get seeders;
@@ -107,9 +137,6 @@ final class QuickAddAction {
   final IconData icon;
   final String location;
 }
-
-/// Defined in T3.2 (backup). Declared now so the contract is complete.
-abstract interface class BackupSection;
 
 /// A display-only "Coming soon" row (SYS-02 step 3, SET-06).
 final class ComingSoonModule {

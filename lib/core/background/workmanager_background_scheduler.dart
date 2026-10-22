@@ -26,6 +26,25 @@ final class WorkmanagerBackgroundScheduler implements BackgroundScheduler {
       );
 
   @override
+  Future<void> ensurePeriodic(
+    String uniqueName, {
+    required Duration every,
+    NetworkRequirement network = NetworkRequirement.none,
+  }) => Workmanager().registerPeriodicTask(
+    uniqueName,
+    uniqueName,
+    frequency: every,
+    constraints: Constraints(
+      networkType: switch (network) {
+        NetworkRequirement.none => NetworkType.notRequired,
+        NetworkRequirement.connected => NetworkType.connected,
+        NetworkRequirement.unmetered => NetworkType.unmetered,
+      },
+    ),
+    existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
+  );
+
+  @override
   Future<void> cancel(String uniqueName) =>
       Workmanager().cancelByUniqueName(uniqueName);
 }

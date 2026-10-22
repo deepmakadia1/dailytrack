@@ -1,16 +1,20 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 → 1.0.1 (PATCH: two clarifying exceptions to existing rules; no principle
-  added, removed, or redefined)
+- Version change: 1.0.1 → 1.0.2 (PATCH: two clarifications to existing Principle III rules; no
+  principle added, removed, or redefined)
 - Modified principles:
-  - III. Data Integrity and Privacy (NON-NEGOTIABLE): soft delete applies to ordinary deletes; the
-    user-confirmed "Erase all data" (SET-01, SYS-03) MUST remove every row permanently
-  - V. Offline-First, Fast, and Accessible UX: screens whose content is a fixed set of controls
-    (settings, keypads) MAY omit the empty state if the feature plan says so
+  - III. Data Integrity and Privacy (NON-NEGOTIABLE):
+    - soft delete: a second user-confirmed exception, restoring a backup (SET-02, SYS-03, SYS-01),
+      which replaces all module rows with the backup's rows in one transaction
+    - data egress: data may leave the device only through actions the user starts or schedules
+      (Google Drive backups, manual or auto, to the user's own account; backup or export files the
+      user saves or shares); the ad, crash, and analytics SDK ban is unchanged
 - Added sections: none
 - Removed sections: none
-- Source: specs/007-settings-themes-app-lock analysis findings C1 and C3
+- Source: specs/008-backup-export-notifications-widget analysis findings C1 and C2
 - Templates: none need changes (plan-template's Constitution Check reads the principles at runtime)
+- Guidance files: docs/CLAUDE.md "Data rules" must name both soft-delete exceptions (Governance:
+  update affected guidance files in the same change)
 - Follow-up TODOs: none
 -->
 
@@ -55,11 +59,15 @@ addition rather than modification.
 - Timestamps MUST be stored as UTC epoch milliseconds; habit days MUST use local `yyyy-MM-dd`
   date keys.
 - User data tables MUST soft-delete via `deletedAt` for ordinary deletes (so undo and backups stay
-  consistent). The single exception is the user-confirmed "Erase all data" (SET-01, SYS-03), which
-  MUST remove every row permanently.
+  consistent). There are two exceptions, both confirmed by the user: "Erase all data" (SET-01,
+  SYS-03) MUST remove every row permanently, and restoring a backup (SET-02, SYS-03, SYS-01) MUST
+  replace all module rows with the backup's rows, including the backup's soft-deleted rows, in one
+  transaction.
 - Every schema change MUST ship with a Drift migration and a migration test.
 - User-entered data (transactions, habits, notes, settings) MUST NOT leave the device except
-  through a user-initiated Google Drive backup. Financial or habit data MUST NOT be sent to ad,
+  through actions the user starts or schedules: Google Drive backups (manual, or auto backup the
+  user turned on) to the user's own account, and backup or export files the user saves or shares.
+  Financial or habit data MUST NOT be sent to ad,
   crash, or analytics SDKs, including as event parameters or targeting keywords.
 - The PIN MUST be stored only as a salted hash (PBKDF2 or Argon2) in `flutter_secure_storage`;
   the plain PIN MUST never be stored.
@@ -161,4 +169,4 @@ agents.
 - Versioning follows semantic versioning: MAJOR for removing or redefining a principle, MINOR for
   adding a principle or materially expanding guidance, PATCH for clarifications and wording.
 
-**Version**: 1.0.1 | **Ratified**: 2026-10-13 | **Last Amended**: 2026-10-21
+**Version**: 1.0.2 | **Ratified**: 2026-10-13 | **Last Amended**: 2026-10-21

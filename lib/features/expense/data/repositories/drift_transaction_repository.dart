@@ -44,6 +44,11 @@ final class DriftTransactionRepository implements TransactionRepository {
       .guardStorage();
 
   @override
+  Future<List<TransactionView>> listForExport(TxnQuery query) => guardStorage(
+    () async => [for (final r in await _dao.listMatching(query)) r.toView()],
+  );
+
+  @override
   Stream<PeriodLedger> watchLedger(TxnQuery query) =>
       _dao.watchLedgerRows(query).map(foldLedger).guardStorage();
 

@@ -2641,6 +2641,646 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your PIN can\'t be recovered. You can erase all data and start fresh.';
 
   @override
+  String get backup_title => 'Backup and restore';
+
+  @override
+  String get backup_lastBackupTitle => 'Last backup';
+
+  @override
+  String get backup_noBackupYet => 'No backup yet';
+
+  @override
+  String backup_lastBackupDetail(String date, String location, String size) {
+    return '$date · $location · $size';
+  }
+
+  @override
+  String get backup_locationDevice => 'This device';
+
+  @override
+  String get backup_locationDrive => 'Google Drive';
+
+  @override
+  String backup_lastBackupSubtitle(String date) {
+    return 'Last backup: $date';
+  }
+
+  @override
+  String get backup_notBackedUp => 'Not backed up yet';
+
+  @override
+  String get backup_localTitle => 'Backup file';
+
+  @override
+  String get backup_localBody =>
+      'Save all your data as one file on this phone, or restore from a file.';
+
+  @override
+  String get backup_saveFile => 'Save backup file';
+
+  @override
+  String get backup_restoreFile => 'Restore from file';
+
+  @override
+  String get backup_saved => 'Backup saved';
+
+  @override
+  String get backup_share => 'Share';
+
+  @override
+  String get backup_working => 'Creating backup…';
+
+  @override
+  String get backup_optionsTitle => 'Options';
+
+  @override
+  String get backup_encrypt => 'Encrypt backup';
+
+  @override
+  String get backup_encryptHelp => 'Protects backup files with a password';
+
+  @override
+  String get backup_changePassword => 'Change password';
+
+  @override
+  String get backup_includeReceipts => 'Include receipt images';
+
+  @override
+  String get backup_includeReceiptsHelp => 'Makes the backup file larger';
+
+  @override
+  String backup_countTransactions(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString transactions',
+      one: '1 transaction',
+      zero: 'No transactions',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String backup_countHabits(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString habits',
+      one: '1 habit',
+      zero: 'No habits',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get backup_passwordTitle => 'Set backup password';
+
+  @override
+  String get backup_passwordChangeTitle => 'Change backup password';
+
+  @override
+  String get backup_passwordField => 'Password';
+
+  @override
+  String get backup_passwordConfirm => 'Confirm password';
+
+  @override
+  String get backup_passwordWarning =>
+      'If you lose this password, backups made with it can\'t be restored. It can\'t be recovered.';
+
+  @override
+  String get backup_passwordMismatch => 'Passwords don\'t match';
+
+  @override
+  String get backup_passwordSave => 'Save password';
+
+  @override
+  String get restore_passwordTitle => 'Enter backup password';
+
+  @override
+  String get restore_open => 'Open backup';
+
+  @override
+  String get restore_previewTitle => 'Restore this backup?';
+
+  @override
+  String restore_previewCreated(String date) {
+    return 'Made on $date';
+  }
+
+  @override
+  String restore_previewVersion(String version) {
+    return 'App version $version';
+  }
+
+  @override
+  String restore_previewReceipts(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Includes $countString receipt images',
+      one: 'Includes 1 receipt image',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get restore_previewSkipped =>
+      'Some data in this backup is from a feature this version doesn\'t have. It will be skipped.';
+
+  @override
+  String get restore_continue => 'Continue';
+
+  @override
+  String get restore_confirmTitle => 'Replace current data?';
+
+  @override
+  String get restore_confirmBody =>
+      'All your current transactions, accounts, categories, budgets, recurring entries, habits, check-ins, and preferences will be replaced by this backup. This can\'t be undone.';
+
+  @override
+  String get restore_confirmAction => 'Replace data';
+
+  @override
+  String get restore_inProgress => 'Restoring…';
+
+  @override
+  String get restore_done => 'Backup restored';
+
+  @override
+  String get restore_doneMissingReceipts =>
+      'Backup restored, but some receipt images couldn\'t be copied.';
+
+  @override
+  String get restore_failedTitle => 'Couldn\'t restore';
+
+  @override
+  String get backup_failedTitle => 'Couldn\'t back up';
+
+  @override
+  String get backup_errNotRecognized =>
+      'This isn\'t a DailyTrack backup. Nothing was changed.';
+
+  @override
+  String get backup_errDamaged =>
+      'This backup file is damaged and can\'t be read. Nothing was changed.';
+
+  @override
+  String get backup_errInvalid =>
+      'This backup has data DailyTrack can\'t use. Nothing was changed.';
+
+  @override
+  String get backup_errTooNew => 'Update DailyTrack to restore this backup.';
+
+  @override
+  String get backup_errWrongPassword => 'Wrong password or damaged file.';
+
+  @override
+  String get backup_errNeedsPassword =>
+      'Set your backup password again to keep making encrypted backups.';
+
+  @override
+  String get backup_errTooLarge =>
+      'This backup is too large to encrypt. Turn off receipt images and try again.';
+
+  @override
+  String get backup_errBusy =>
+      'A backup or restore is already running. Try again in a moment.';
+
+  @override
+  String get backup_errStorage =>
+      'There isn\'t enough storage on this phone. Free up some space and try again.';
+
+  @override
+  String get backup_errGeneric => 'Something went wrong. Nothing was changed.';
+
+  @override
+  String get backup_driveTitle => 'Google Drive';
+
+  @override
+  String get backup_driveBody =>
+      'Back up to your own Google Drive. Backups are stored in a private app folder you won\'t see in your Drive files.';
+
+  @override
+  String get backup_driveUnavailable =>
+      'Google Drive isn\'t available in this build.';
+
+  @override
+  String get backup_connect => 'Connect Google account';
+
+  @override
+  String backup_connected(String email) {
+    return 'Connected as $email';
+  }
+
+  @override
+  String get backup_backUpNow => 'Back up now';
+
+  @override
+  String get backup_uploading => 'Backing up to Google Drive…';
+
+  @override
+  String get backup_driveSaved => 'Backed up to Google Drive';
+
+  @override
+  String get backup_disconnect => 'Disconnect';
+
+  @override
+  String get backup_disconnectTitle => 'Disconnect Google account?';
+
+  @override
+  String get backup_disconnectBody =>
+      'Automatic backup turns off. Backups already in Google Drive are kept.';
+
+  @override
+  String get backup_autoTitle => 'Auto backup';
+
+  @override
+  String get backup_autoOff => 'Off';
+
+  @override
+  String get backup_autoDaily => 'Daily';
+
+  @override
+  String get backup_autoWeekly => 'Weekly';
+
+  @override
+  String get backup_wifiOnly => 'Wi-Fi only';
+
+  @override
+  String get backup_wifiOnlyHelp => 'Waits for Wi-Fi before backing up';
+
+  @override
+  String get backup_driveListTitle => 'Restore from Google Drive';
+
+  @override
+  String get backup_driveListEmpty => 'No backups in Google Drive yet';
+
+  @override
+  String get backup_driveListError =>
+      'Couldn\'t load your Google Drive backups.';
+
+  @override
+  String backup_driveEntry(String date, String size) {
+    return '$date · $size';
+  }
+
+  @override
+  String get backup_kindManual => 'Manual';
+
+  @override
+  String get backup_kindAuto => 'Auto';
+
+  @override
+  String get backup_delete => 'Delete';
+
+  @override
+  String get backup_deleteTitle => 'Delete this backup?';
+
+  @override
+  String get backup_deleteBody =>
+      'It will be removed from Google Drive. This can\'t be undone.';
+
+  @override
+  String get backup_deleteAction => 'Delete backup';
+
+  @override
+  String get backup_moreActions => 'More actions for this backup';
+
+  @override
+  String get backup_listLoading => 'Loading your backups…';
+
+  @override
+  String get backup_downloading => 'Downloading backup…';
+
+  @override
+  String get backup_errAuth =>
+      'Your Google account needs to be connected again.';
+
+  @override
+  String get backup_reconnect => 'Reconnect Google account';
+
+  @override
+  String get backup_errQuota =>
+      'Your Google Drive is full. Free up space in Drive and try again.';
+
+  @override
+  String get backup_errOffline =>
+      'Couldn\'t reach Google Drive. Check your connection and try again.';
+
+  @override
+  String get backup_errDrive =>
+      'Google Drive isn\'t responding right now. Try again later.';
+
+  @override
+  String get notif_channelBackup => 'Backup';
+
+  @override
+  String get notif_channelBackupDescription =>
+      'Tells you when automatic backup keeps failing';
+
+  @override
+  String get notif_backupFailingTitle => 'Automatic backup isn\'t working';
+
+  @override
+  String get notif_backupFailingBody =>
+      'Your last 3 backups to Google Drive failed. Tap to check.';
+
+  @override
+  String get lock_forgotBodyRestore =>
+      'Your PIN can\'t be recovered. You can restore your data from a Google Drive backup, or erase all data and start fresh.';
+
+  @override
+  String get lock_restoreFromDrive => 'Restore from Google Drive backup';
+
+  @override
+  String get export_title => 'Export data';
+
+  @override
+  String get export_settingsHelp => 'CSV or PDF';
+
+  @override
+  String get export_dataType => 'Data';
+
+  @override
+  String get export_transactions => 'Transactions';
+
+  @override
+  String get export_habits => 'Habits';
+
+  @override
+  String get export_period => 'Period';
+
+  @override
+  String get export_format => 'Format';
+
+  @override
+  String get export_csv => 'CSV';
+
+  @override
+  String get export_pdf => 'PDF';
+
+  @override
+  String get export_filtersTitle => 'Filters';
+
+  @override
+  String get export_accounts => 'Accounts';
+
+  @override
+  String get export_categories => 'Categories';
+
+  @override
+  String get export_all => 'All';
+
+  @override
+  String export_selected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count selected',
+      one: '1 selected',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get export_filterDone => 'Apply';
+
+  @override
+  String get export_button => 'Export';
+
+  @override
+  String get export_working => 'Creating your file…';
+
+  @override
+  String get export_locked =>
+      'Exports are part of DailyTrack Pro. Unlocking them is coming soon.';
+
+  @override
+  String get export_nothing => 'Nothing to export for this period';
+
+  @override
+  String get export_failedTitle => 'Couldn\'t export';
+
+  @override
+  String get export_failed =>
+      'Couldn\'t create the file. Nothing was shared. Try again.';
+
+  @override
+  String get export_reportAction => 'Export this report';
+
+  @override
+  String get export_colDate => 'Date';
+
+  @override
+  String get export_colTime => 'Time';
+
+  @override
+  String get export_colType => 'Type';
+
+  @override
+  String get export_colCategory => 'Category';
+
+  @override
+  String get export_colAccount => 'Account';
+
+  @override
+  String get export_colPaymentMode => 'Payment mode';
+
+  @override
+  String get export_colAmount => 'Amount';
+
+  @override
+  String get export_colNote => 'Note';
+
+  @override
+  String get export_colHabit => 'Habit';
+
+  @override
+  String get export_colValue => 'Value';
+
+  @override
+  String get export_colTarget => 'Target';
+
+  @override
+  String get export_colUnit => 'Unit';
+
+  @override
+  String get export_colStatus => 'Status';
+
+  @override
+  String get export_statusDone => 'Done';
+
+  @override
+  String get export_statusPartial => 'Partial';
+
+  @override
+  String get export_statusFreeze => 'Freeze';
+
+  @override
+  String get export_totalIncome => 'Total income';
+
+  @override
+  String get export_totalExpense => 'Total expense';
+
+  @override
+  String get export_net => 'Net';
+
+  @override
+  String get export_count => 'Entries';
+
+  @override
+  String export_percent(int percent) {
+    return '$percent% done';
+  }
+
+  @override
+  String export_filterAccounts(String names) {
+    return 'Accounts: $names';
+  }
+
+  @override
+  String export_filterCategories(String names) {
+    return 'Categories: $names';
+  }
+
+  @override
+  String export_transfer(String from, String to) {
+    return '$from → $to';
+  }
+
+  @override
+  String get export_chartTitle => 'Spending by category';
+
+  @override
+  String get export_other => 'Other';
+
+  @override
+  String get export_summaryTitle => 'Summary';
+
+  @override
+  String export_pdfHeader(String title, String period) {
+    return 'DailyTrack · $title · $period';
+  }
+
+  @override
+  String export_page(int page, int pages) {
+    return 'Page $page of $pages';
+  }
+
+  @override
+  String get notif_channelDailySummary => 'Daily summary';
+
+  @override
+  String get notif_channelDailySummaryDescription =>
+      'Your spending and habits for the day';
+
+  @override
+  String get notif_dailySummaryTitle => 'Today in DailyTrack';
+
+  @override
+  String notif_dailySummaryBoth(String amount, int done, int total) {
+    return 'Spent $amount today · $done/$total habits done';
+  }
+
+  @override
+  String notif_dailySummarySpend(String amount) {
+    return 'Spent $amount today';
+  }
+
+  @override
+  String notif_dailySummaryHabits(int done, int total) {
+    return '$done/$total habits done';
+  }
+
+  @override
+  String get notif_actionMarkDone => 'Mark done';
+
+  @override
+  String get notif_actionSnooze => 'Snooze 1 h';
+
+  @override
+  String get settings_exactNote => 'Reminders may arrive a few minutes late';
+
+  @override
+  String get settings_exactAllow => 'Allow exact timing';
+
+  @override
+  String get security_showWidgetData => 'Show data on widget';
+
+  @override
+  String get security_showWidgetDataHelp =>
+      'Shows amounts and habit names on your home screen';
+
+  @override
+  String get widget_label => 'DailyTrack today';
+
+  @override
+  String get widget_description =>
+      'Today\'s spending, budget, and habit checks';
+
+  @override
+  String get widget_open => 'Open DailyTrack';
+
+  @override
+  String get widget_spentToday => 'Spent today';
+
+  @override
+  String widget_spentTodayA11y(String amount) {
+    return 'Spent today, $amount';
+  }
+
+  @override
+  String widget_monthBudget(String month) {
+    return '$month budget';
+  }
+
+  @override
+  String widget_budgetText(int percent, String spent, String limit) {
+    return '$percent% used · $spent of $limit';
+  }
+
+  @override
+  String get widget_noBudget => 'No budget set';
+
+  @override
+  String widget_progress(int value, int target) {
+    return '$value / $target';
+  }
+
+  @override
+  String widget_progressUnit(int value, int target, String unit) {
+    return '$value / $target $unit';
+  }
+
+  @override
+  String widget_habitDoneA11y(String name) {
+    return '$name, done';
+  }
+
+  @override
+  String widget_habitTodoA11y(String name) {
+    return '$name, not done. Double tap to mark done';
+  }
+
+  @override
+  String widget_habitCountA11y(String name, String progress) {
+    return '$name, $progress. Double tap to add one';
+  }
+
+  @override
   String get currency_INR => 'Indian Rupee';
 
   @override

@@ -19,6 +19,7 @@ import 'package:dailytrack/core/support/app_info_source.dart';
 import 'package:dailytrack/core/support/app_review_service.dart';
 import 'package:dailytrack/core/support/device_info_source.dart';
 import 'package:dailytrack/core/support/external_launcher.dart';
+import 'package:dailytrack/core/widget/glance_refresher.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -61,6 +62,7 @@ Future<FakeSettingsRepository> pumpTestApp(
   TestLock? lock,
   FakeSecureScreenService? secureScreen,
   FakeAppResetService? reset,
+  FakeGlanceRefresher? glance,
   bool debugTools = false,
   List<Override> overrides = const [],
   bool settle = true,
@@ -117,6 +119,10 @@ Future<FakeSettingsRepository> pumpTestApp(
         ),
         appResetServiceProvider.overrideWithValue(
           reset ?? FakeAppResetService(),
+        ),
+        // The widget refresher reads the database (feature 008).
+        glanceRefresherProvider.overrideWithValue(
+          glance ?? FakeGlanceRefresher(),
         ),
         ...overrides,
       ],

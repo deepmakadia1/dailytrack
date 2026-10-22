@@ -4,6 +4,9 @@ import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/module/root_navigator.dart';
 import 'package:dailytrack/core/module/tracker_module.dart';
 import 'package:dailytrack/core/notifications/notification_providers.dart';
+import 'package:dailytrack/features/habit/data/backup/habit_backup_section.dart';
+import 'package:dailytrack/features/habit/habit_actions.dart';
+import 'package:dailytrack/features/habit/presentation/export/habits_export_dataset.dart';
 import 'package:dailytrack/features/habit/presentation/habit_providers.dart';
 import 'package:dailytrack/features/habit/presentation/insights/habit_insight_source.dart';
 import 'package:dailytrack/features/habit/presentation/screens/archived_habits_screen.dart';
@@ -17,7 +20,8 @@ import 'package:go_router/go_router.dart';
 
 /// Habit tracker module (feature 005, contracts/routes_and_module.md): the
 /// Habits tab (HAB-01 to HAB-04), the Home card, the "Check in habit"
-/// quick add, and the reminder hooks. Backup arrives in T3.2.
+/// quick add, the reminder hooks, backup, export, and the widget and
+/// notification actions (feature 008).
 final class HabitModule extends TrackerModule {
   const new();
 
@@ -110,9 +114,27 @@ final class HabitModule extends TrackerModule {
   @override
   InsightSource? insights() => const HabitInsightSource();
 
-  /// Stub until T3.2.
+  /// SET-03 export (feature 008 research R14).
   @override
-  BackupSection? backupSection() => null;
+  List<ExportDataset> exportDatasets() => const [HabitsExportDataset()];
+
+  @override
+  BackupSection? backupSection() => const HabitBackupSection();
+
+  /// Today's habits for the home screen widget and the daily summary
+  /// (feature 008 research R19).
+  @override
+  Future<void> contributeGlance(
+    GlanceBuilder b,
+    ProviderReader read,
+    DateTime nowLocal,
+  ) => contributeHabitGlance(b, read, nowLocal);
+
+  /// Reminder "Mark done" and "Snooze 1 h", and widget checks (feature 008
+  /// research R17, R20).
+  @override
+  Future<bool> handleAction(AppAction action, ProviderReader read) =>
+      handleHabitAction(action, read);
 
   @override
   List<Seeder> get seeders => const [];

@@ -245,14 +245,14 @@ void main() {
     );
   });
 
-  testWidgets('EXP-11 US4-7 no "Export this report" and no ad of any kind', (
-    tester,
-  ) async {
+  testWidgets('EXP-11 US4-7 "Export this report" is the only action, and no '
+      'ad of any kind (feature 008 adds the export action)', (tester) async {
     await open(tester);
-    expect(find.textContaining('Export'), findsNothing);
     final scaffold = tester.widget<AppScaffold>(find.byType(AppScaffold).last);
     expect(scaffold.bannerSlot, isNull);
-    expect(scaffold.actions, isEmpty);
+    expect(scaffold.actions, hasLength(1));
+    expect(find.byKey(const Key('reports_export')), findsOneWidget);
+    expect(find.byTooltip('Export this report'), findsOneWidget);
   });
 
   testWidgets('EXP-11 loading shows a skeleton only after 300 ms; an error '

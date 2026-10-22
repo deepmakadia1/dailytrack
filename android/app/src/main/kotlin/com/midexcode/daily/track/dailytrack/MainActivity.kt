@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.view.WindowManager
+import com.midexcode.daily.track.dailytrack.system.GlanceAlarmScheduler
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -20,6 +21,16 @@ class MainActivity : FlutterFragmentActivity() {
             .setMethodCallHandler { call, result ->
                 if (call.method == "getTimeZone") {
                     result.success(TimeZone.getDefault().id)
+                } else {
+                    result.notImplemented()
+                }
+            }
+        // The home screen widget's midnight alarm (feature 008 research R21).
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "dailytrack/glance")
+            .setMethodCallHandler { call, result ->
+                if (call.method == "armMidnight") {
+                    GlanceAlarmScheduler.armMidnight(applicationContext)
+                    result.success(null)
                 } else {
                     result.notImplemented()
                 }

@@ -18,6 +18,7 @@ final class DriftAppResetService implements AppResetService {
     required this._notifications,
     required this._resetLock,
     required this._afterErase,
+    this._refreshGlance,
   });
 
   final AppDatabase _db;
@@ -33,6 +34,9 @@ final class DriftAppResetService implements AppResetService {
   /// Resets the lock session and runs startup again (it reseeds the
   /// defaults and lands on onboarding).
   final void Function() _afterErase;
+
+  /// Redraws the home screen widget, now hidden (feature 008 R19).
+  final Future<void> Function()? _refreshGlance;
 
   @override
   Future<void> eraseAll() async {
@@ -60,6 +64,11 @@ final class DriftAppResetService implements AppResetService {
       await _resetLock();
     } on Object {
       // Best effort; see the class comment.
+    }
+    try {
+      await _refreshGlance?.call();
+    } on Object {
+      // Best effort.
     }
     _afterErase();
   }

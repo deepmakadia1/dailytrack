@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/app_open_runner.dart';
+import 'package:dailytrack/app/background_entry_points.dart';
 import 'package:dailytrack/app/flavor.dart';
 import 'package:dailytrack/app/router/app_router.dart';
 import 'package:dailytrack/app/router/lock_back_button_dispatcher.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/module/root_navigator.dart';
 import 'package:dailytrack/core/notifications/notification_providers.dart';
+import 'package:dailytrack/core/notifications/notification_service.dart';
 import 'package:dailytrack/core/security/lock_session.dart';
 import 'package:dailytrack/core/security/secure_screen_service.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
@@ -17,6 +19,7 @@ import 'package:dailytrack/core/theme/color_themes.dart';
 import 'package:dailytrack/core/theme/theme_providers.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
 import 'package:dailytrack/core/utils/date_formats.dart';
+import 'package:dailytrack/core/widget/widget_providers.dart';
 import 'package:dailytrack/core/widgets/full_date_format_scope.dart';
 import 'package:dailytrack/features/lock/presentation/screens/unlock_screen.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +39,8 @@ class _DailyTrackAppState extends ConsumerState<DailyTrackApp> {
     debugLabel: 'lockOverlay',
   );
   StreamSubscription<String>? _taps;
+  StreamSubscription<String>? _widgetLaunches;
+  StreamSubscription<NotificationActionEvent>? _actions;
 
   LockSession get _session => ref.read(lockSessionProvider.notifier);
 
@@ -65,17 +70,23 @@ class _DailyTrackAppState extends ConsumerState<DailyTrackApp> {
         unawaited(ref.read(appOpenRunnerProvider).run());
       },
     );
-    // A notification tapped while the app runs opens its location; the
-    // router's redirects still apply (disabled modules). While locked it
-    // waits until after unlocking, so the screens under the lock are kept.
-    _taps = ref.read(notificationServiceProvider).taps.listen((payload) {
-      if (!payload.startsWith('/')) return;
-      if (ref.read(lockSessionProvider).locked) {
-        _session.deferLocation(payload);
-      } else {
-        ref.read(appRouterProvider).go(payload);
-      }
-    }, onError: (Object _) {});
+    // A notification or widget tapped while the app runs opens its
+    // location; the router's redirects still apply (disabled modules).
+    // While locked it waits until after unlocking, so the screens under
+    // the lock are kept (feature 008 R20 for the widget).
+    final notifications = ref.read(notificationServiceProvider);
+    _taps = notifications.taps.listen(_open, onError: (Object _) {});
+    _widgetLaunches = ref
+        .read(homeWidgetBridgeProvider)
+        .launches
+        .listen(_open, onError: (Object _) {});
+    // A reminder button tapped while the app runs: handled like in the
+    // background, with no navigation and no unlock (feature 008 R16).
+    _actions = notifications.actions.listen(
+      (e) =>
+          unawaited(handleNotificationAction(e.actionId, e.payload, ref.read)),
+      onError: (Object _) {},
+    );
     ref
       // After unlocking, open what a notification asked for.
       ..listenManual(lockSessionProvider, (previous, next) {
@@ -91,10 +102,21 @@ class _DailyTrackAppState extends ConsumerState<DailyTrackApp> {
       ..listenManual(secureScreenControllerProvider, (_, _) {});
   }
 
+  void _open(String location) {
+    if (!location.startsWith('/')) return;
+    if (ref.read(lockSessionProvider).locked) {
+      _session.deferLocation(location);
+    } else {
+      ref.read(appRouterProvider).go(location);
+    }
+  }
+
   @override
   void dispose() {
     _lifecycle.dispose();
     unawaited(_taps?.cancel());
+    unawaited(_widgetLaunches?.cancel());
+    unawaited(_actions?.cancel());
     super.dispose();
   }
 

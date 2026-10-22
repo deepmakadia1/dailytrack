@@ -2,6 +2,7 @@ import 'package:dailytrack/app/router/app_router.dart';
 import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/features/dashboard/presentation/screens/home_screen.dart';
+import 'package:dailytrack/features/expense/data/backup/expense_backup_section.dart';
 import 'package:dailytrack/features/expense/data/seed/expense_defaults_seeder.dart';
 import 'package:dailytrack/features/expense/expense_module.dart';
 import 'package:dailytrack/features/expense/presentation/expense_providers.dart';
@@ -46,16 +47,19 @@ void main() {
     });
   });
 
-  test('quick adds open EXP-02 as an expense, then as income; backup is a '
-      'stub; seeders are the first-launch defaults', () {
-    final [expense, income] = module.quickAddActions();
-    expect(expense.labelKey, 'expense_quickAdd');
-    expect(expense.location, '/expenses/add?type=expense');
-    expect(income.labelKey, 'expense_quickAddIncome');
-    expect(income.location, '/expenses/add?type=income');
-    expect(module.backupSection(), isNull);
-    expect(module.seeders.single, isA<ExpenseDefaultsSeeder>());
-  });
+  test(
+    'quick adds open EXP-02 as an expense, then as income; backup is the '
+    'expense section (feature 008); seeders are the first-launch defaults',
+    () {
+      final [expense, income] = module.quickAddActions();
+      expect(expense.labelKey, 'expense_quickAdd');
+      expect(expense.location, '/expenses/add?type=expense');
+      expect(income.labelKey, 'expense_quickAddIncome');
+      expect(income.location, '/expenses/add?type=income');
+      expect(module.backupSection(), isA<ExpenseBackupSection>());
+      expect(module.seeders.single, isA<ExpenseDefaultsSeeder>());
+    },
+  );
 
   test(
     'every route lives under /expenses; static segments come before :id',

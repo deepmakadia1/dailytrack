@@ -177,6 +177,59 @@ class SettingsRepositoryImpl implements SettingsRepository {
       _put(SettingsCodec.hideInRecents, enabled);
 
   @override
+  Future<void> setLastBackup({
+    required int at,
+    required BackupLocation location,
+    required int sizeBytes,
+  }) => _db.transaction(() async {
+    await _put(SettingsCodec.lastBackupAt, at);
+    await _put(SettingsCodec.lastBackupLocation, location.name);
+    await _put(SettingsCodec.lastBackupSizeBytes, sizeBytes);
+  });
+
+  @override
+  Future<void> setBackupEncrypt({required bool enabled}) =>
+      _put(SettingsCodec.backupEncrypt, enabled);
+
+  @override
+  Future<void> setBackupIncludeReceipts({required bool enabled}) =>
+      _put(SettingsCodec.backupIncludeReceipts, enabled);
+
+  @override
+  Future<void> setBackupAccountEmail(String? email) =>
+      _put(SettingsCodec.backupAccountEmail, email);
+
+  @override
+  Future<void> setAutoBackup({
+    required AutoBackupFrequency frequency,
+    required bool wifiOnly,
+  }) => _db.transaction(() async {
+    await _put(SettingsCodec.autoBackupFrequency, frequency.name);
+    await _put(SettingsCodec.autoBackupWifiOnly, wifiOnly);
+  });
+
+  @override
+  Future<void> setLastAutoBackupAt(int at) =>
+      _put(SettingsCodec.lastAutoBackupAt, at);
+
+  @override
+  Future<void> setAutoBackupFailures({
+    required int failures,
+    required bool notified,
+  }) => _db.transaction(() async {
+    await _put(SettingsCodec.autoBackupFailures, failures);
+    await _put(SettingsCodec.autoBackupFailureNotified, notified);
+  });
+
+  @override
+  Future<void> setShowDataOnWidget({required bool enabled}) =>
+      _put(SettingsCodec.showDataOnWidget, enabled);
+
+  @override
+  Future<void> setDeviceTimeZoneId(String id) =>
+      _put(SettingsCodec.deviceTimeZoneId, id);
+
+  @override
   Future<void> raiseLatestSeenAt(int utcMs) => _db.transaction(() async {
     final current = (await load()).latestSeenAt;
     if (current != null && current >= utcMs) return;

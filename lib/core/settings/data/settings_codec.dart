@@ -34,6 +34,20 @@ abstract final class SettingsCodec {
   static const String hideInRecents = 'hideInRecents';
   static const String fontSize = 'fontSize';
 
+  // Feature 008 (SET-02, data-model §1).
+  static const String lastBackupLocation = 'lastBackupLocation';
+  static const String lastBackupSizeBytes = 'lastBackupSizeBytes';
+  static const String backupEncrypt = 'backupEncrypt';
+  static const String backupIncludeReceipts = 'backupIncludeReceipts';
+  static const String backupAccountEmail = 'backupAccountEmail';
+  static const String autoBackupFrequency = 'autoBackupFrequency';
+  static const String autoBackupWifiOnly = 'autoBackupWifiOnly';
+  static const String lastAutoBackupAt = 'lastAutoBackupAt';
+  static const String autoBackupFailures = 'autoBackupFailures';
+  static const String autoBackupFailureNotified = 'autoBackupFailureNotified';
+  static const String showDataOnWidget = 'showDataOnWidget';
+  static const String deviceTimeZoneId = 'deviceTimeZoneId';
+
   static String seedKey(String seederId) => 'seed.$seederId';
 
   /// A module's own state, e.g. `module.expense.budgetRolloverMonth`.
@@ -87,6 +101,12 @@ abstract final class SettingsCodec {
     final rawLocale = read<String?>(locale, null);
     final rawTime = read<String?>(dailySummaryTime, null);
     final rawInsightId = read<String?>(dailyInsightId, null);
+    final rawLocation = read<String?>(lastBackupLocation, null);
+    final rawSize = read<int?>(lastBackupSizeBytes, null);
+    final rawFrequency = read<String?>(autoBackupFrequency, null);
+    final rawFailures = read<int?>(autoBackupFailures, null);
+    final rawEmail = read<String?>(backupAccountEmail, null);
+    final rawZone = read<String?>(deviceTimeZoneId, null);
     final order = [
       ...readList(moduleOrder, d.moduleOrder).where(knownModuleIds.contains),
     ];
@@ -144,6 +164,34 @@ abstract final class SettingsCodec {
       ),
       hideInRecents: read(hideInRecents, d.hideInRecents),
       fontSize: oneOf(fontSize, fontSizeIds, d.fontSize),
+      lastBackupLocation: BackupLocation.values
+          .where((l) => l.name == rawLocation)
+          .firstOrNull,
+      lastBackupSizeBytes: rawSize != null && rawSize >= 0 ? rawSize : null,
+      backupEncrypt: read(backupEncrypt, d.backupEncrypt),
+      backupIncludeReceipts: read(
+        backupIncludeReceipts,
+        d.backupIncludeReceipts,
+      ),
+      backupAccountEmail: rawEmail == null || rawEmail.isEmpty
+          ? null
+          : rawEmail,
+      autoBackupFrequency:
+          AutoBackupFrequency.values
+              .where((f) => f.name == rawFrequency)
+              .firstOrNull ??
+          d.autoBackupFrequency,
+      autoBackupWifiOnly: read(autoBackupWifiOnly, d.autoBackupWifiOnly),
+      lastAutoBackupAt: read<int?>(lastAutoBackupAt, null),
+      autoBackupFailures: rawFailures != null && rawFailures >= 0
+          ? rawFailures
+          : d.autoBackupFailures,
+      autoBackupFailureNotified: read(
+        autoBackupFailureNotified,
+        d.autoBackupFailureNotified,
+      ),
+      showDataOnWidget: read(showDataOnWidget, d.showDataOnWidget),
+      deviceTimeZoneId: rawZone == null || rawZone.isEmpty ? null : rawZone,
     );
   }
 }

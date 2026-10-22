@@ -16,6 +16,9 @@ abstract class SecurityState with _$SecurityState {
     required bool biometricEnabled,
     required int lockAfterSeconds,
     required bool hideInRecents,
+
+    /// "Show data on widget" (feature 008 FR-047).
+    @Default(false) bool showDataOnWidget,
   }) = _SecurityState;
 }
 
@@ -33,6 +36,7 @@ class SecurityController extends _$SecurityController {
       biometricEnabled: settings.biometricEnabled,
       lockAfterSeconds: settings.lockAfterSeconds,
       hideInRecents: settings.hideInRecents,
+      showDataOnWidget: settings.showDataOnWidget,
     );
   }
 
@@ -50,4 +54,10 @@ class SecurityController extends _$SecurityController {
 
   Future<void> setHideInRecents({required bool enabled}) =>
       ref.read(settingsRepositoryProvider).setHideInRecents(enabled: enabled);
+
+  /// The widget follows within a second through the glance refresher
+  /// (feature 008 R19).
+  Future<void> setShowDataOnWidget({required bool enabled}) => ref
+      .read(settingsRepositoryProvider)
+      .setShowDataOnWidget(enabled: enabled);
 }

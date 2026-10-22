@@ -72,8 +72,54 @@ abstract class AppSettings with _$AppSettings {
 
     /// SET-04 font size, one of [fontSizeIds].
     @Default('default') String fontSize,
+
+    /// Where the last backup went (SET-02 Last backup; feature 008
+    /// data-model §1). Written with [lastBackupAt].
+    BackupLocation? lastBackupLocation,
+
+    /// Size of the last backup file in bytes.
+    int? lastBackupSizeBytes,
+
+    /// SET-02 "Encrypt backup". True only while the password is stored
+    /// (feature 008 research R4).
+    @Default(false) bool backupEncrypt,
+
+    /// SET-02 "Include receipt images".
+    @Default(false) bool backupIncludeReceipts,
+
+    /// The connected Google account, for display (feature 008 research R10).
+    String? backupAccountEmail,
+
+    /// SET-02 Auto backup (FR-018). Needs [backupAccountEmail].
+    @Default(AutoBackupFrequency.off) AutoBackupFrequency autoBackupFrequency,
+
+    /// SET-02 "Wi-Fi only" for auto backup (FR-019).
+    @Default(true) bool autoBackupWifiOnly,
+
+    /// UTC ms of the last successful auto backup (catch-up, research R11).
+    int? lastAutoBackupAt,
+
+    /// Auto backups that failed in a row (FR-020).
+    @Default(0) int autoBackupFailures,
+
+    /// The "backup failing" notification was shown for this streak.
+    @Default(false) bool autoBackupFailureNotified,
+
+    /// SET-05 "Show data on widget": amounts and habit names on the home
+    /// screen widget while the app lock is on (FR-047).
+    @Default(false) bool showDataOnWidget,
+
+    /// The IANA zone seen at the last app open or time zone trigger, so a
+    /// change reschedules notifications (FR-041, research R21).
+    String? deviceTimeZoneId,
   }) = _AppSettings;
 }
+
+/// Where a backup was saved (SET-02 Last backup).
+enum BackupLocation { device, drive }
+
+/// SET-02 Auto backup options (FR-018).
+enum AutoBackupFrequency { off, daily, weekly }
 
 /// What SYS-02 saves when the user taps "Get started" or "Skip".
 @freezed

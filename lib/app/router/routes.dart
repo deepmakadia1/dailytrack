@@ -29,6 +29,31 @@ abstract final class Routes {
 
   /// Relative path of [security] under [more].
   static const String securitySegment = 'security';
+
+  /// SET-02, pushed inside the More branch (feature 008).
+  static const String backup = '/more/backup';
+
+  /// Relative path of [backup] under [more].
+  static const String backupSegment = 'backup';
+
+  /// SET-03, above the shell so EXP-11 can open it (feature 008).
+  static const String export = '/more/export';
+
+  /// Relative path of [export] under [more].
+  static const String exportSegment = 'export';
+
+  /// SET-03 prefilled: [dataset] (e.g. `transactions`) and [period], the
+  /// query from `periodToQuery` (EXP-11 "Export this report").
+  static String exportPath({
+    String? dataset,
+    Map<String, String> period = const {},
+  }) {
+    final query = {'dataset': ?dataset, ...period};
+    return query.isEmpty
+        ? export
+        : Uri(path: export, queryParameters: query).toString();
+  }
+
   static const String home = '/home';
   static const String expenses = '/expenses';
 
@@ -192,4 +217,6 @@ abstract final class RouteNames {
   static const String webPage = 'webPage';
   static const String pin = 'pin';
   static const String security = 'security';
+  static const String backup = 'backup';
+  static const String export = 'export';
 }

@@ -179,7 +179,10 @@ void main() {
       final id = withReminders(const [ReminderTime(7, 0)]);
       await scheduler.reconcile(id);
       expect(service.scheduled, isEmpty);
-      expect(service.cancelled, reminderIdsFor(id), reason: 'stops old ones');
+      expect(service.cancelled, [
+        ...reminderIdsFor(id),
+        snoozeIdFor(id),
+      ], reason: 'stops old ones, and a snoozed copy');
     });
 
     test('when "Habit reminders" is off', () async {
@@ -253,12 +256,15 @@ void main() {
     await scheduler.cancelAll();
     expect(service.cancelled, [
       ...reminderIdsFor(a),
+      snoozeIdFor(a),
       ...reminderIdsFor(archived.id),
+      snoozeIdFor(archived.id),
     ]);
   });
 
   test(
-    'FR-043: text holds only the name and encouragement; payload /habits',
+    'FR-043: text holds only the name and encouragement; payload opens '
+    'HAB-01 with the habit, time, and weekday (feature 008 data-model §7)',
     () async {
       final id = withReminders(const [ReminderTime(7, 0)], name: 'Drink water');
       f.setDay(id, '2026-10-20', note: 'secret note');
@@ -267,8 +273,66 @@ void main() {
       expect(n.title, 'Drink water');
       expect(n.body, "Time for Drink water. You've got this.");
       expect(n.body, isNot(contains('secret')));
-      expect(n.payload, '/habits');
+      expect(n.payload, '/habits?habit=$id&at=07:00&wd=0');
       expect(n.channel, NotificationChannelId.habitReminders);
     },
   );
+
+  group('feature 008 reminder actions (T105, research R17)', () {
+    test('yes/no reminders carry Mark done and Snooze 1 h', () async {
+      final id = withReminders(const [ReminderTime(7, 0)]);
+      await scheduler.reconcile(id);
+      final n = service.scheduled.values.single.notification;
+      expect(
+        [for (final a in n.actions) (a.id, a.label)],
+        [
+          (HabitActions.markDone, 'Mark done'),
+          (HabitActions.snooze, 'Snooze 1 h'),
+        ],
+      );
+    });
+
+    test('count reminders carry only Snooze 1 h', () async {
+      final id = f
+          .addHabit(
+            'Pages',
+            kind: HabitKind.count,
+            unit: 'pages',
+            schedule: const HabitSchedule(type: ScheduleType.daily, target: 20),
+            reminders: const [ReminderTime(7, 0)],
+          )
+          .id;
+      await scheduler.reconcile(id);
+      final n = service.scheduled.values.single.notification;
+      expect([for (final a in n.actions) a.id], [HabitActions.snooze]);
+    });
+
+    test('a weekly reminder payload names its weekday', () async {
+      final id = withReminders(
+        const [ReminderTime(21, 30)],
+        schedule: const HabitSchedule(
+          type: ScheduleType.specificWeekdays,
+          target: 1,
+          weekdays: {5},
+        ),
+      );
+      await scheduler.reconcile(id);
+      final n = service.scheduled.values.single.notification;
+      expect(n.payload, '/habits?habit=$id&at=21:30&wd=5');
+    });
+
+    test('done today with "only if not done": the snoozed copy is '
+        'cancelled', () async {
+      final id = withReminders(const [ReminderTime(7, 0)]);
+      f.setDay(id, '2026-10-21');
+      await scheduler.reconcile(id);
+      expect(service.cancelled, contains(snoozeIdFor(id)));
+    });
+
+    test('not done today: a snoozed copy is kept', () async {
+      final id = withReminders(const [ReminderTime(7, 0)]);
+      await scheduler.reconcile(id);
+      expect(service.cancelled, isNot(contains(snoozeIdFor(id))));
+    });
+  });
 }

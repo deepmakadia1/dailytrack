@@ -33,13 +33,29 @@ The master spec is `docs/spec.md` and is the source of truth for every feature.
   `lib/app/module_registry.dart`.
 - Home reaches modules only through `TrackerModule` (`dashboardCard`,
   `dashboardSections`, `insights`, `appBarBadge`, `quickAddActions`).
+- Backups: each module owns a `BackupSection` (codecs + validation + upgrade steps); every Drift
+  migration that changes a backed-up table adds an upgrade step.
+- Export data comes from `TrackerModule.exportDatasets()`; settings never imports modules.
+- Notification buttons and widget checks reach modules as an `AppAction` through
+  `TrackerModule.handleAction`; the widget and daily summary data come from
+  `TrackerModule.contributeGlance`.
+- Widget and daily summary refresh from `GlanceRefresher` (Drift `tableUpdates`); don't add
+  manual refresh calls in repositories.
+- Background entry points are top-level in `lib/app/background_entry_points.dart` (plus the
+  WorkManager dispatcher) and open their own container. `home_widget` is imported only there
+  and in `lib/core/widget/data/`.
 
 ## Data rules
 - Money = `int` minor units (paise). Never use `double` for money.
 - Dates = UTC epoch milliseconds. Habit days = local `yyyy-MM-dd` date keys.
-- Soft delete with `deletedAt` on user data tables for ordinary deletes. The only exception is
-  the user-confirmed "Erase all data" (SET-01, SYS-03), which removes every row permanently
-  (constitution III). Every schema change needs a Drift migration and a migration test.
+- Soft delete with `deletedAt` on user data tables for ordinary deletes. There are two
+  user-confirmed exceptions (constitution III): "Erase all data" (SET-01, SYS-03) removes every
+  row permanently, and restoring a backup (SET-02, SYS-03, SYS-01) replaces all module rows with
+  the backup's rows in one transaction. Every schema change needs a Drift migration and a
+  migration test.
+- User data leaves the device only through actions the user starts or schedules: Google Drive
+  backups (manual or auto) to their own account, and backup or export files they save or share.
+  Never send financial or habit data to ad, crash, or analytics SDKs.
 
 ## UI rules (spec §15)
 - Use only `AppTokens` and shared widgets from `lib/core/widgets/`. No hard-coded colors,

@@ -1,0 +1,26 @@
+{
+  "format": "dailytrack-backup",
+  "schemaVersion": 2,
+  "appVersion": "0.2.0+2",
+  "createdAt": 1789000000000,
+  "modules": {
+    "expense": {
+      "tables": {
+        "accounts": [
+          {"id": "acc-cash", "name": "expense_account_cash", "type": "cash", "openingBalanceMinor": 0, "iconKey": "payments", "colorHex": "#0F766E", "isArchived": false, "sortOrder": 0, "createdAt": 1789000000000, "updatedAt": 1789000000000, "deletedAt": null}
+        ],
+        "categories": [
+          {"id": "cat-food", "name": "expense_cat_food", "type": "expense", "iconKey": "restaurant", "colorHex": "#F97316", "isDefault": true, "isArchived": false, "sortOrder": 0, "createdAt": 1789000000000, "updatedAt": 1789000000000, "deletedAt": null}
+        ],
+        "transactions": [
+          {"id": "txn-1", "type": "expense", "amountMinor": 4500, "accountId": "acc-cash", "toAccountId": null, "categoryId": "cat-food", "paymentMode": "upi", "note": "સાંજનો નાસ્તો", "occurredAt": 1788990000000, "receiptPath": null, "recurringRuleId": "rule-from-v2", "createdAt": 1789000000000, "updatedAt": 1789000000000, "deletedAt": null},
+          {"id": "txn-2", "type": "expense", "amountMinor": 120000, "accountId": "acc-cash", "toAccountId": null, "categoryId": "cat-food", "paymentMode": "cash", "note": null, "occurredAt": 1788980000000, "receiptPath": null, "recurringRuleId": null, "createdAt": 1789000000000, "updatedAt": 1789000000000, "deletedAt": 1789000500000}
+        ]
+      }
+    }
+  },
+  "settings": {
+    "locale": "\"hi\"",
+    "currencyCode": "\"INR\""
+  }
+}

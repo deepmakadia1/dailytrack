@@ -3768,6 +3768,881 @@
   "@lock_forgotBody": {
     "description": "Forgot PIN sheet body."
   },
+  "backup_title": "Backup and restore",
+  "@backup_title": {
+    "description": "SET-02 title and SET-01 Data row."
+  },
+  "backup_lastBackupTitle": "Last backup",
+  "@backup_lastBackupTitle": {
+    "description": "SET-02 card title."
+  },
+  "backup_noBackupYet": "No backup yet",
+  "@backup_noBackupYet": {
+    "description": "SET-02 Last backup when none exists."
+  },
+  "backup_lastBackupDetail": "{date} · {location} · {size}",
+  "@backup_lastBackupDetail": {
+    "description": "SET-02 Last backup line: date and time, location, file size.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "location": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_locationDevice": "This device",
+  "@backup_locationDevice": {
+    "description": "Backup location."
+  },
+  "backup_locationDrive": "Google Drive",
+  "@backup_locationDrive": {
+    "description": "Backup location; product name, not translated."
+  },
+  "backup_lastBackupSubtitle": "Last backup: {date}",
+  "@backup_lastBackupSubtitle": {
+    "description": "SET-01 Data row subtitle.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_notBackedUp": "Not backed up yet",
+  "@backup_notBackedUp": {
+    "description": "SET-01 Data row subtitle when no backup exists."
+  },
+  "backup_localTitle": "Backup file",
+  "@backup_localTitle": {
+    "description": "SET-02 Local backup card title."
+  },
+  "backup_localBody": "Save all your data as one file on this phone, or restore from a file.",
+  "@backup_localBody": {
+    "description": "SET-02 Local backup card body."
+  },
+  "backup_saveFile": "Save backup file",
+  "@backup_saveFile": {
+    "description": "SET-02 primary button."
+  },
+  "backup_restoreFile": "Restore from file",
+  "@backup_restoreFile": {
+    "description": "SET-02 button."
+  },
+  "backup_saved": "Backup saved",
+  "@backup_saved": {
+    "description": "Snackbar after a successful save."
+  },
+  "backup_share": "Share",
+  "@backup_share": {
+    "description": "Snackbar action: share the saved backup file."
+  },
+  "backup_working": "Creating backup…",
+  "@backup_working": {
+    "description": "SET-02 progress while backing up."
+  },
+  "backup_optionsTitle": "Options",
+  "@backup_optionsTitle": {
+    "description": "SET-02 section title."
+  },
+  "backup_encrypt": "Encrypt backup",
+  "@backup_encrypt": {
+    "description": "SET-02 switch."
+  },
+  "backup_encryptHelp": "Protects backup files with a password",
+  "@backup_encryptHelp": {
+    "description": "SET-02 switch helper text."
+  },
+  "backup_changePassword": "Change password",
+  "@backup_changePassword": {
+    "description": "SET-02 row shown while encryption is on."
+  },
+  "backup_includeReceipts": "Include receipt images",
+  "@backup_includeReceipts": {
+    "description": "SET-02 switch."
+  },
+  "backup_includeReceiptsHelp": "Makes the backup file larger",
+  "@backup_includeReceiptsHelp": {
+    "description": "SET-02 switch helper text."
+  },
+  "backup_countTransactions": "{count, plural, =0{No transactions} =1{1 transaction} other{{count} transactions}}",
+  "@backup_countTransactions": {
+    "description": "Restore summary for the Expense module.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "backup_countHabits": "{count, plural, =0{No habits} =1{1 habit} other{{count} habits}}",
+  "@backup_countHabits": {
+    "description": "Restore summary for the Habit module.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "backup_passwordTitle": "Set backup password",
+  "@backup_passwordTitle": {
+    "description": "Password sheet title when turning encryption on."
+  },
+  "backup_passwordChangeTitle": "Change backup password",
+  "@backup_passwordChangeTitle": {
+    "description": "Password sheet title when changing it."
+  },
+  "backup_passwordField": "Password",
+  "@backup_passwordField": {
+    "description": "Password field label."
+  },
+  "backup_passwordConfirm": "Confirm password",
+  "@backup_passwordConfirm": {
+    "description": "Password confirmation field label."
+  },
+  "backup_passwordWarning": "If you lose this password, backups made with it can't be restored. It can't be recovered.",
+  "@backup_passwordWarning": {
+    "description": "Password sheet warning."
+  },
+  "backup_passwordMismatch": "Passwords don't match",
+  "@backup_passwordMismatch": {
+    "description": "Password sheet error."
+  },
+  "backup_passwordSave": "Save password",
+  "@backup_passwordSave": {
+    "description": "Password sheet primary button."
+  },
+  "restore_passwordTitle": "Enter backup password",
+  "@restore_passwordTitle": {
+    "description": "Restore: password prompt title."
+  },
+  "restore_open": "Open backup",
+  "@restore_open": {
+    "description": "Restore: password prompt button."
+  },
+  "restore_previewTitle": "Restore this backup?",
+  "@restore_previewTitle": {
+    "description": "Restore summary title."
+  },
+  "restore_previewCreated": "Made on {date}",
+  "@restore_previewCreated": {
+    "description": "Restore summary: when the backup was made.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "restore_previewVersion": "App version {version}",
+  "@restore_previewVersion": {
+    "description": "Restore summary: app version that made it.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "restore_previewReceipts": "{count, plural, =1{Includes 1 receipt image} other{Includes {count} receipt images}}",
+  "@restore_previewReceipts": {
+    "description": "Restore summary: receipts in the file.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "restore_previewSkipped": "Some data in this backup is from a feature this version doesn't have. It will be skipped.",
+  "@restore_previewSkipped": {
+    "description": "Restore summary: unknown module sections."
+  },
+  "restore_continue": "Continue",
+  "@restore_continue": {
+    "description": "Restore summary button."
+  },
+  "restore_confirmTitle": "Replace current data?",
+  "@restore_confirmTitle": {
+    "description": "Restore confirmation title."
+  },
+  "restore_confirmBody": "All your current transactions, accounts, categories, budgets, recurring entries, habits, check-ins, and preferences will be replaced by this backup. This can't be undone.",
+  "@restore_confirmBody": {
+    "description": "Restore confirmation consequence text."
+  },
+  "restore_confirmAction": "Replace data",
+  "@restore_confirmAction": {
+    "description": "Restore confirmation destructive button."
+  },
+  "restore_inProgress": "Restoring…",
+  "@restore_inProgress": {
+    "description": "Restore progress."
+  },
+  "restore_done": "Backup restored",
+  "@restore_done": {
+    "description": "Snackbar after a successful restore."
+  },
+  "restore_doneMissingReceipts": "Backup restored, but some receipt images couldn't be copied.",
+  "@restore_doneMissingReceipts": {
+    "description": "Snackbar after a restore whose receipt folder swap failed."
+  },
+  "restore_failedTitle": "Couldn't restore",
+  "@restore_failedTitle": {
+    "description": "Restore error dialog title."
+  },
+  "backup_failedTitle": "Couldn't back up",
+  "@backup_failedTitle": {
+    "description": "Backup error dialog title."
+  },
+  "backup_errNotRecognized": "This isn't a DailyTrack backup. Nothing was changed.",
+  "@backup_errNotRecognized": {
+    "description": "BackupNotRecognized message."
+  },
+  "backup_errDamaged": "This backup file is damaged and can't be read. Nothing was changed.",
+  "@backup_errDamaged": {
+    "description": "BackupDamaged message."
+  },
+  "backup_errInvalid": "This backup has data DailyTrack can't use. Nothing was changed.",
+  "@backup_errInvalid": {
+    "description": "BackupInvalid message."
+  },
+  "backup_errTooNew": "Update DailyTrack to restore this backup.",
+  "@backup_errTooNew": {
+    "description": "BackupTooNew message."
+  },
+  "backup_errWrongPassword": "Wrong password or damaged file.",
+  "@backup_errWrongPassword": {
+    "description": "BackupWrongPassword message; no hint about which."
+  },
+  "backup_errNeedsPassword": "Set your backup password again to keep making encrypted backups.",
+  "@backup_errNeedsPassword": {
+    "description": "BackupNeedsPassword message."
+  },
+  "backup_errTooLarge": "This backup is too large to encrypt. Turn off receipt images and try again.",
+  "@backup_errTooLarge": {
+    "description": "BackupTooLargeToEncrypt message."
+  },
+  "backup_errBusy": "A backup or restore is already running. Try again in a moment.",
+  "@backup_errBusy": {
+    "description": "BackupBusy message."
+  },
+  "backup_errStorage": "There isn't enough storage on this phone. Free up some space and try again.",
+  "@backup_errStorage": {
+    "description": "BackupStorageFull message."
+  },
+  "backup_errGeneric": "Something went wrong. Nothing was changed.",
+  "@backup_errGeneric": {
+    "description": "Unexpected backup or restore error."
+  },
+  "backup_driveTitle": "Google Drive",
+  "@backup_driveTitle": {
+    "description": "SET-02 card title; product name, not translated."
+  },
+  "backup_driveBody": "Back up to your own Google Drive. Backups are stored in a private app folder you won't see in your Drive files.",
+  "@backup_driveBody": {
+    "description": "SET-02 Drive card explanation."
+  },
+  "backup_driveUnavailable": "Google Drive isn't available in this build.",
+  "@backup_driveUnavailable": {
+    "description": "SET-02 Drive card when no client ID is configured."
+  },
+  "backup_connect": "Connect Google account",
+  "@backup_connect": {
+    "description": "SET-02 button."
+  },
+  "backup_connected": "Connected as {email}",
+  "@backup_connected": {
+    "description": "SET-02 connected account line.",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_backUpNow": "Back up now",
+  "@backup_backUpNow": {
+    "description": "SET-02 primary button when connected."
+  },
+  "backup_uploading": "Backing up to Google Drive…",
+  "@backup_uploading": {
+    "description": "SET-02 progress."
+  },
+  "backup_driveSaved": "Backed up to Google Drive",
+  "@backup_driveSaved": {
+    "description": "Snackbar after a Drive backup."
+  },
+  "backup_disconnect": "Disconnect",
+  "@backup_disconnect": {
+    "description": "SET-02 text button."
+  },
+  "backup_disconnectTitle": "Disconnect Google account?",
+  "@backup_disconnectTitle": {
+    "description": "Disconnect confirmation title."
+  },
+  "backup_disconnectBody": "Automatic backup turns off. Backups already in Google Drive are kept.",
+  "@backup_disconnectBody": {
+    "description": "Disconnect confirmation consequence."
+  },
+  "backup_autoTitle": "Auto backup",
+  "@backup_autoTitle": {
+    "description": "SET-02 row and choice sheet title."
+  },
+  "backup_autoOff": "Off",
+  "@backup_autoOff": {
+    "description": "Auto backup option."
+  },
+  "backup_autoDaily": "Daily",
+  "@backup_autoDaily": {
+    "description": "Auto backup option."
+  },
+  "backup_autoWeekly": "Weekly",
+  "@backup_autoWeekly": {
+    "description": "Auto backup option."
+  },
+  "backup_wifiOnly": "Wi-Fi only",
+  "@backup_wifiOnly": {
+    "description": "SET-02 switch."
+  },
+  "backup_wifiOnlyHelp": "Waits for Wi-Fi before backing up",
+  "@backup_wifiOnlyHelp": {
+    "description": "SET-02 switch helper."
+  },
+  "backup_driveListTitle": "Restore from Google Drive",
+  "@backup_driveListTitle": {
+    "description": "SET-02 section title and Drive picker title."
+  },
+  "backup_driveListEmpty": "No backups in Google Drive yet",
+  "@backup_driveListEmpty": {
+    "description": "Drive list empty state."
+  },
+  "backup_driveListError": "Couldn't load your Google Drive backups.",
+  "@backup_driveListError": {
+    "description": "Drive list error state."
+  },
+  "backup_driveEntry": "{date} · {size}",
+  "@backup_driveEntry": {
+    "description": "Drive list row: date and time, file size.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_kindManual": "Manual",
+  "@backup_kindManual": {
+    "description": "Drive list label for a backup made with Back up now."
+  },
+  "backup_kindAuto": "Auto",
+  "@backup_kindAuto": {
+    "description": "Drive list label for an automatic backup."
+  },
+  "backup_delete": "Delete",
+  "@backup_delete": {
+    "description": "Drive list row action."
+  },
+  "backup_deleteTitle": "Delete this backup?",
+  "@backup_deleteTitle": {
+    "description": "Delete confirmation title."
+  },
+  "backup_deleteBody": "It will be removed from Google Drive. This can't be undone.",
+  "@backup_deleteBody": {
+    "description": "Delete confirmation consequence."
+  },
+  "backup_deleteAction": "Delete backup",
+  "@backup_deleteAction": {
+    "description": "Delete confirmation destructive button."
+  },
+  "backup_moreActions": "More actions for this backup",
+  "@backup_moreActions": {
+    "description": "Drive list overflow button label."
+  },
+  "backup_listLoading": "Loading your backups…",
+  "@backup_listLoading": {
+    "description": "Progress while listing Drive backups."
+  },
+  "backup_downloading": "Downloading backup…",
+  "@backup_downloading": {
+    "description": "Progress while downloading a Drive backup."
+  },
+  "backup_errAuth": "Your Google account needs to be connected again.",
+  "@backup_errAuth": {
+    "description": "DriveAuthRequired message."
+  },
+  "backup_reconnect": "Reconnect Google account",
+  "@backup_reconnect": {
+    "description": "Action for an auth error."
+  },
+  "backup_errQuota": "Your Google Drive is full. Free up space in Drive and try again.",
+  "@backup_errQuota": {
+    "description": "DriveQuotaExceeded message."
+  },
+  "backup_errOffline": "Couldn't reach Google Drive. Check your connection and try again.",
+  "@backup_errOffline": {
+    "description": "DriveOffline message."
+  },
+  "backup_errDrive": "Google Drive isn't responding right now. Try again later.",
+  "@backup_errDrive": {
+    "description": "DriveUnavailable message."
+  },
+  "notif_channelBackup": "Backup",
+  "@notif_channelBackup": {
+    "description": "Android notification channel name."
+  },
+  "notif_channelBackupDescription": "Tells you when automatic backup keeps failing",
+  "@notif_channelBackupDescription": {
+    "description": "Android notification channel description."
+  },
+  "notif_backupFailingTitle": "Automatic backup isn't working",
+  "@notif_backupFailingTitle": {
+    "description": "Backup failure notification title."
+  },
+  "notif_backupFailingBody": "Your last 3 backups to Google Drive failed. Tap to check.",
+  "@notif_backupFailingBody": {
+    "description": "Backup failure notification body."
+  },
+  "lock_forgotBodyRestore": "Your PIN can't be recovered. You can restore your data from a Google Drive backup, or erase all data and start fresh.",
+  "@lock_forgotBodyRestore": {
+    "description": "Forgot PIN sheet body when Drive restore is available."
+  },
+  "lock_restoreFromDrive": "Restore from Google Drive backup",
+  "@lock_restoreFromDrive": {
+    "description": "Forgot PIN primary button."
+  },
+  "export_title": "Export data",
+  "@export_title": {
+    "description": "SET-03 title and SET-01 Data row."
+  },
+  "export_settingsHelp": "CSV or PDF",
+  "@export_settingsHelp": {
+    "description": "SET-01 Export data row subtitle."
+  },
+  "export_dataType": "Data",
+  "@export_dataType": {
+    "description": "SET-03 data type label."
+  },
+  "export_transactions": "Transactions",
+  "@export_transactions": {
+    "description": "SET-03 data type and PDF title."
+  },
+  "export_habits": "Habits",
+  "@export_habits": {
+    "description": "SET-03 data type and PDF title."
+  },
+  "export_period": "Period",
+  "@export_period": {
+    "description": "SET-03 period label."
+  },
+  "export_format": "Format",
+  "@export_format": {
+    "description": "SET-03 format label."
+  },
+  "export_csv": "CSV",
+  "@export_csv": {
+    "description": "Format name; not translated."
+  },
+  "export_pdf": "PDF",
+  "@export_pdf": {
+    "description": "Format name; not translated."
+  },
+  "export_filtersTitle": "Filters",
+  "@export_filtersTitle": {
+    "description": "SET-03 filters label."
+  },
+  "export_accounts": "Accounts",
+  "@export_accounts": {
+    "description": "SET-03 filter."
+  },
+  "export_categories": "Categories",
+  "@export_categories": {
+    "description": "SET-03 filter."
+  },
+  "export_all": "All",
+  "@export_all": {
+    "description": "SET-03 filter value when nothing is narrowed."
+  },
+  "export_selected": "{count, plural, =1{1 selected} other{{count} selected}}",
+  "@export_selected": {
+    "description": "SET-03 filter value.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "export_filterDone": "Apply",
+  "@export_filterDone": {
+    "description": "Filter sheet button."
+  },
+  "export_button": "Export",
+  "@export_button": {
+    "description": "SET-03 primary button."
+  },
+  "export_working": "Creating your file…",
+  "@export_working": {
+    "description": "SET-03 progress."
+  },
+  "export_locked": "Exports are part of DailyTrack Pro. Unlocking them is coming soon.",
+  "@export_locked": {
+    "description": "SET-03 locked overlay message until rewarded ads and Pro exist."
+  },
+  "export_nothing": "Nothing to export for this period",
+  "@export_nothing": {
+    "description": "Snackbar when the export would be empty."
+  },
+  "export_failedTitle": "Couldn't export",
+  "@export_failedTitle": {
+    "description": "Export error dialog title."
+  },
+  "export_failed": "Couldn't create the file. Nothing was shared. Try again.",
+  "@export_failed": {
+    "description": "Export error message."
+  },
+  "export_reportAction": "Export this report",
+  "@export_reportAction": {
+    "description": "EXP-11 app bar action label."
+  },
+  "export_colDate": "Date",
+  "@export_colDate": {
+    "description": "Export column."
+  },
+  "export_colTime": "Time",
+  "@export_colTime": {
+    "description": "Export column."
+  },
+  "export_colType": "Type",
+  "@export_colType": {
+    "description": "Export column."
+  },
+  "export_colCategory": "Category",
+  "@export_colCategory": {
+    "description": "Export column."
+  },
+  "export_colAccount": "Account",
+  "@export_colAccount": {
+    "description": "Export column."
+  },
+  "export_colPaymentMode": "Payment mode",
+  "@export_colPaymentMode": {
+    "description": "Export column."
+  },
+  "export_colAmount": "Amount",
+  "@export_colAmount": {
+    "description": "Export column."
+  },
+  "export_colNote": "Note",
+  "@export_colNote": {
+    "description": "Export column."
+  },
+  "export_colHabit": "Habit",
+  "@export_colHabit": {
+    "description": "Export column."
+  },
+  "export_colValue": "Value",
+  "@export_colValue": {
+    "description": "Export column."
+  },
+  "export_colTarget": "Target",
+  "@export_colTarget": {
+    "description": "Export column."
+  },
+  "export_colUnit": "Unit",
+  "@export_colUnit": {
+    "description": "Export column."
+  },
+  "export_colStatus": "Status",
+  "@export_colStatus": {
+    "description": "Export column."
+  },
+  "export_statusDone": "Done",
+  "@export_statusDone": {
+    "description": "Habit export status."
+  },
+  "export_statusPartial": "Partial",
+  "@export_statusPartial": {
+    "description": "Habit export status."
+  },
+  "export_statusFreeze": "Freeze",
+  "@export_statusFreeze": {
+    "description": "Habit export status: a streak freeze day."
+  },
+  "export_totalIncome": "Total income",
+  "@export_totalIncome": {
+    "description": "PDF summary label."
+  },
+  "export_totalExpense": "Total expense",
+  "@export_totalExpense": {
+    "description": "PDF summary label."
+  },
+  "export_net": "Net",
+  "@export_net": {
+    "description": "PDF summary label."
+  },
+  "export_count": "Entries",
+  "@export_count": {
+    "description": "PDF summary label: number of rows."
+  },
+  "export_percent": "{percent}% done",
+  "@export_percent": {
+    "description": "PDF summary: a habit's completion rate.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "export_filterAccounts": "Accounts: {names}",
+  "@export_filterAccounts": {
+    "description": "PDF filter line.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "export_filterCategories": "Categories: {names}",
+  "@export_filterCategories": {
+    "description": "PDF filter line.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "export_transfer": "{from} → {to}",
+  "@export_transfer": {
+    "description": "Export account cell of a transfer.",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "export_chartTitle": "Spending by category",
+  "@export_chartTitle": {
+    "description": "PDF chart title."
+  },
+  "export_other": "Other",
+  "@export_other": {
+    "description": "PDF chart slice for small categories."
+  },
+  "export_summaryTitle": "Summary",
+  "@export_summaryTitle": {
+    "description": "PDF section title."
+  },
+  "export_pdfHeader": "DailyTrack · {title} · {period}",
+  "@export_pdfHeader": {
+    "description": "PDF page header.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "period": {
+        "type": "String"
+      }
+    }
+  },
+  "export_page": "Page {page} of {pages}",
+  "@export_page": {
+    "description": "PDF page footer.",
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "pages": {
+        "type": "int"
+      }
+    }
+  },
+  "notif_channelDailySummary": "Daily summary",
+  "@notif_channelDailySummary": {
+    "description": "Android notification channel name."
+  },
+  "notif_channelDailySummaryDescription": "Your spending and habits for the day",
+  "@notif_channelDailySummaryDescription": {
+    "description": "Android notification channel description."
+  },
+  "notif_dailySummaryTitle": "Today in DailyTrack",
+  "@notif_dailySummaryTitle": {
+    "description": "Daily summary notification title."
+  },
+  "notif_dailySummaryBoth": "Spent {amount} today · {done}/{total} habits done",
+  "@notif_dailySummaryBoth": {
+    "description": "Daily summary body with both modules.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "notif_dailySummarySpend": "Spent {amount} today",
+  "@notif_dailySummarySpend": {
+    "description": "Daily summary body, Expense only.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "notif_dailySummaryHabits": "{done}/{total} habits done",
+  "@notif_dailySummaryHabits": {
+    "description": "Daily summary body, Habit only.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "notif_actionMarkDone": "Mark done",
+  "@notif_actionMarkDone": {
+    "description": "Habit reminder button (yes/no habits)."
+  },
+  "notif_actionSnooze": "Snooze 1 h",
+  "@notif_actionSnooze": {
+    "description": "Habit reminder button: remind again in one hour."
+  },
+  "settings_exactNote": "Reminders may arrive a few minutes late",
+  "@settings_exactNote": {
+    "description": "SET-01 note when exact alarms are not allowed."
+  },
+  "settings_exactAllow": "Allow exact timing",
+  "@settings_exactAllow": {
+    "description": "SET-01 note action: opens the system alarms page."
+  },
+  "security_showWidgetData": "Show data on widget",
+  "@security_showWidgetData": {
+    "description": "SET-05 switch."
+  },
+  "security_showWidgetDataHelp": "Shows amounts and habit names on your home screen",
+  "@security_showWidgetDataHelp": {
+    "description": "SET-05 switch helper text."
+  },
+  "widget_label": "DailyTrack today",
+  "@widget_label": {
+    "description": "Home screen widget name in the widget picker."
+  },
+  "widget_description": "Today's spending, budget, and habit checks",
+  "@widget_description": {
+    "description": "Widget picker description."
+  },
+  "widget_open": "Open DailyTrack",
+  "@widget_open": {
+    "description": "Widget text when data is hidden."
+  },
+  "widget_spentToday": "Spent today",
+  "@widget_spentToday": {
+    "description": "Widget spend label."
+  },
+  "widget_spentTodayA11y": "Spent today, {amount}",
+  "@widget_spentTodayA11y": {
+    "description": "Widget spend content description.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "widget_monthBudget": "{month} budget",
+  "@widget_monthBudget": {
+    "description": "Widget budget label.",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "widget_budgetText": "{percent}% used · {spent} of {limit}",
+  "@widget_budgetText": {
+    "description": "Widget budget text.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "spent": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "widget_noBudget": "No budget set",
+  "@widget_noBudget": {
+    "description": "Widget when there is no Overall budget."
+  },
+  "widget_progress": "{value} / {target}",
+  "@widget_progress": {
+    "description": "Widget count habit progress without a unit.",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "widget_progressUnit": "{value} / {target} {unit}",
+  "@widget_progressUnit": {
+    "description": "Widget count habit progress with its unit.",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "widget_habitDoneA11y": "{name}, done",
+  "@widget_habitDoneA11y": {
+    "description": "Widget content description of a done habit.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "widget_habitTodoA11y": "{name}, not done. Double tap to mark done",
+  "@widget_habitTodoA11y": {
+    "description": "Widget content description of a yes/no habit to check.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "widget_habitCountA11y": "{name}, {progress}. Double tap to add one",
+  "@widget_habitCountA11y": {
+    "description": "Widget content description of a count habit.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "progress": {
+        "type": "String"
+      }
+    }
+  },
   "currency_INR": "Indian Rupee",
   "@currency_INR": {
     "description": "Display name of INR (SYS-02 step 2)."

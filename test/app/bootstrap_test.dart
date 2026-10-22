@@ -6,6 +6,8 @@ import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/core/database/app_database.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
+import 'package:dailytrack/core/widget/glance_refresher.dart';
+import 'package:dailytrack/core/widget/widget_providers.dart';
 import 'package:dailytrack/features/expense/domain/enums.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
@@ -152,12 +154,15 @@ void main() {
     late FakeTrackerModule expense;
     late FakeTrackerModule habit;
     late FakeNotificationService notifications;
+    late FakeHomeWidgetBridge widget;
 
     Future<ProviderContainer> start({
       bool lockEnabled = false,
       String? payload,
+      String? widgetLaunch,
       List<String> enabled = const ['expense', 'habit'],
     }) async {
+      widget = FakeHomeWidgetBridge(launchAt: widgetLaunch);
       expense = FakeTrackerModule(id: 'expense');
       habit = FakeTrackerModule(id: 'habit');
       notifications = FakeNotificationService(payloadAtLaunch: payload);
@@ -166,6 +171,7 @@ void main() {
         ads: ads,
         registry: ModuleRegistry([expense, habit]),
         notifications: notifications,
+        overrides: [homeWidgetBridgeProvider.overrideWithValue(widget)],
       );
       await db.customStatement(
         "INSERT INTO settings VALUES ('onboardingDone', 'true', 0)",
@@ -273,6 +279,45 @@ void main() {
       final c = await start(payload: 'budget');
       final r = await boot(c);
       expect((r as BootstrapReady).initialLocation, Routes.home);
+    });
+
+    // --- 008 (T128, research R20): the home screen widget. ---
+    test('a widget tap that started the app opens Home', () async {
+      final c = await start(widgetLaunch: '/home');
+      final r = await boot(c);
+      expect((r as BootstrapReady).initialLocation, Routes.home);
+    });
+
+    test('FR-046 a widget cold start with the lock on goes through SYS-03 '
+        'first', () async {
+      final c = await start(lockEnabled: true, widgetLaunch: '/home');
+      final r = await boot(c);
+      expect(
+        (r as BootstrapReady).initialLocation,
+        Routes.lockPath(from: Routes.home),
+      );
+    });
+
+    test('a notification payload wins over the widget', () async {
+      final c = await start(
+        payload: '/expenses/budgets?month=2026-09',
+        widgetLaunch: '/home',
+      );
+      final r = await boot(c);
+      expect(
+        (r as BootstrapReady).initialLocation,
+        '/expenses/budgets?month=2026-09',
+      );
+    });
+
+    test('startup registers the widget callback, arms midnight, and starts '
+        'the glance refresher (research R19, R21)', () async {
+      final c = await start();
+      await boot(c);
+      await pumpEventQueue();
+      expect(widget.callbacks, hasLength(1));
+      expect(widget.armMidnightCalls, 1);
+      expect(c.read(glanceRefresherProvider).started, isTrue);
     });
   });
 }

@@ -40,7 +40,7 @@ final class SettingsControllerProvider
 }
 
 String _$settingsControllerHash() =>
-    r'8ad38948ed8b2cfba93545a7d80c6a43e2b9b3f0';
+    r'425ced96037b5b4f7a2fc4f41ebe710517f61145';
 
 /// SET-01 controller. Follows the settings stream, so every row shows the
 /// stored value right after a write.
@@ -143,3 +143,45 @@ final class NotificationsAllowedProvider
 
 String _$notificationsAllowedHash() =>
     r'bd2ffe0a31f2168dbcde06dbd241a6c6d7475a87';
+
+/// Whether exact alarms are allowed (SET-01 "Exact timing" note, FR-042).
+/// Refreshed on resume, like [notificationsAllowed].
+
+@ProviderFor(exactAlarmsAllowed)
+final exactAlarmsAllowedProvider = ExactAlarmsAllowedProvider._();
+
+/// Whether exact alarms are allowed (SET-01 "Exact timing" note, FR-042).
+/// Refreshed on resume, like [notificationsAllowed].
+
+final class ExactAlarmsAllowedProvider
+    extends $FunctionalProvider<AsyncValue<bool>, bool, FutureOr<bool>>
+    with $FutureModifier<bool>, $FutureProvider<bool> {
+  /// Whether exact alarms are allowed (SET-01 "Exact timing" note, FR-042).
+  /// Refreshed on resume, like [notificationsAllowed].
+  ExactAlarmsAllowedProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'exactAlarmsAllowedProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$exactAlarmsAllowedHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<bool> create(Ref ref) {
+    return exactAlarmsAllowed(ref);
+  }
+}
+
+String _$exactAlarmsAllowedHash() =>
+    r'18c08f3cec131aeefa9379dfcd2c259bf563a8e3';

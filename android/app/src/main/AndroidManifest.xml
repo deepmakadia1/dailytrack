@@ -6,6 +6,9 @@
          and use exact alarms when the user allows them. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <!-- Google Drive backup (feature 008 research R10); release builds
+         otherwise have no network access. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- allowBackup="false": Android Auto Backup would copy the database off the
          device without the user starting it, and restored secure storage is
          unreadable without its Keystore key (feature 007 research R8). -->
@@ -51,6 +54,47 @@
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
             </intent-filter>
         </receiver>
+        <!-- flutter_local_notifications: reminder buttons ("Mark done",
+             "Snooze 1 h") without opening the app (feature 008 R16). -->
+        <receiver
+            android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
+        <!-- home_widget: runs the Dart background callback for widget checks
+             and system triggers (feature 008 R20, R21). home_widget 0.10.0
+             runs it through WorkManager; its deprecated
+             HomeWidgetBackgroundService is not needed. -->
+        <receiver
+            android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="es.antonborri.home_widget.action.BACKGROUND" />
+            </intent-filter>
+        </receiver>
+        <!-- The 4×2 "today" home screen widget (feature 008 R20). -->
+        <receiver
+            android:name=".widget.TodayWidgetProvider"
+            android:exported="false"
+            android:label="@string/widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/today_widget_info" />
+        </receiver>
+        <!-- Reboot, app update, and time zone change → Dart (feature 008 R21). -->
+        <receiver
+            android:name=".system.SystemEventsReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".system.MidnightAlarmReceiver"
+            android:exported="false" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

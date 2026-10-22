@@ -6,12 +6,17 @@ import 'package:clock/clock.dart';
 import 'package:dailytrack/app/bootstrap.dart';
 import 'package:dailytrack/core/ads/ad_service.dart';
 import 'package:dailytrack/core/background/background_scheduler.dart';
+import 'package:dailytrack/core/backup/domain/backup_errors.dart';
+import 'package:dailytrack/core/backup/domain/backup_ports.dart';
+import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
 import 'package:dailytrack/core/database/seeding.dart';
 import 'package:dailytrack/core/feature_gate/domain/feature_gate.dart';
 import 'package:dailytrack/core/feature_gate/domain/feature_key.dart';
 import 'package:dailytrack/core/module/tracker_module.dart';
+import 'package:dailytrack/core/notifications/daily_summary_scheduler.dart';
 import 'package:dailytrack/core/notifications/notification_permission.dart';
 import 'package:dailytrack/core/notifications/notification_service.dart';
+import 'package:dailytrack/core/notifications/time_zone_source.dart';
 import 'package:dailytrack/core/reset/domain/app_reset_service.dart';
 import 'package:dailytrack/core/security/data/secure_lock_service.dart';
 import 'package:dailytrack/core/security/domain/biometric_authenticator.dart';
@@ -22,12 +27,15 @@ import 'package:dailytrack/core/security/lock_session.dart';
 import 'package:dailytrack/core/security/secure_screen_service.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/domain/settings_repository.dart';
+import 'package:dailytrack/core/share/file_sharer.dart';
 import 'package:dailytrack/core/share/image_sharer.dart';
 import 'package:dailytrack/core/share/text_sharer.dart';
 import 'package:dailytrack/core/support/app_info_source.dart';
 import 'package:dailytrack/core/support/app_review_service.dart';
 import 'package:dailytrack/core/support/device_info_source.dart';
 import 'package:dailytrack/core/support/external_launcher.dart';
+import 'package:dailytrack/core/widget/domain/home_widget_bridge.dart';
+import 'package:dailytrack/core/widget/glance_refresher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -275,6 +283,86 @@ class FakeSettingsRepository implements SettingsRepository {
     _count('setHideInRecents');
     _set(_settings.copyWith(hideInRecents: enabled));
   }
+
+  @override
+  Future<void> setLastBackup({
+    required int at,
+    required BackupLocation location,
+    required int sizeBytes,
+  }) async {
+    _count('setLastBackup');
+    _set(
+      _settings.copyWith(
+        lastBackupAt: at,
+        lastBackupLocation: location,
+        lastBackupSizeBytes: sizeBytes,
+      ),
+    );
+  }
+
+  @override
+  Future<void> setBackupEncrypt({required bool enabled}) async {
+    _count('setBackupEncrypt');
+    _set(_settings.copyWith(backupEncrypt: enabled));
+  }
+
+  @override
+  Future<void> setBackupIncludeReceipts({required bool enabled}) async {
+    _count('setBackupIncludeReceipts');
+    _set(_settings.copyWith(backupIncludeReceipts: enabled));
+  }
+
+  @override
+  Future<void> setBackupAccountEmail(String? email) async {
+    _count('setBackupAccountEmail');
+    _set(_settings.copyWith(backupAccountEmail: email));
+  }
+
+  @override
+  Future<void> setAutoBackup({
+    required AutoBackupFrequency frequency,
+    required bool wifiOnly,
+  }) async {
+    _count('setAutoBackup');
+    _set(
+      _settings.copyWith(
+        autoBackupFrequency: frequency,
+        autoBackupWifiOnly: wifiOnly,
+      ),
+    );
+  }
+
+  @override
+  Future<void> setLastAutoBackupAt(int at) async {
+    _count('setLastAutoBackupAt');
+    _set(_settings.copyWith(lastAutoBackupAt: at));
+  }
+
+  @override
+  Future<void> setAutoBackupFailures({
+    required int failures,
+    required bool notified,
+  }) async {
+    _count('setAutoBackupFailures');
+    _set(
+      _settings.copyWith(
+        autoBackupFailures: failures,
+        autoBackupFailureNotified: notified,
+      ),
+    );
+  }
+
+  @override
+  Future<void> setShowDataOnWidget({required bool enabled}) async {
+    _count('setShowDataOnWidget');
+    _set(_settings.copyWith(showDataOnWidget: enabled));
+  }
+
+  @override
+  Future<void> setDeviceTimeZoneId(String id) async {
+    _count('setDeviceTimeZoneId');
+    _set(_settings.copyWith(deviceTimeZoneId: id));
+  }
 }
 
 /// Stand-in for `bootstrapProvider` in widget tests: no database involved.
@@ -468,6 +556,36 @@ class FakeTrackerModule extends TrackerModule {
     eraseAllCalls++;
     await onEraseAllBody?.call();
   }
+
+  /// Actions offered to this module (feature 008 T016).
+  final List<AppAction> actions = [];
+
+  /// What [handleAction] returns.
+  bool handles = false;
+
+  /// Thrown by [handleAction] instead, when set.
+  Error? handleError;
+
+  @override
+  Future<bool> handleAction(AppAction action, ProviderReader read) async {
+    actions.add(action);
+    if (handleError case final e?) throw e;
+    return handles;
+  }
+
+  /// Fills the builder in [contributeGlance] (feature 008 T016).
+  void Function(GlanceBuilder b, DateTime nowLocal)? glance;
+  int glanceCalls = 0;
+
+  @override
+  Future<void> contributeGlance(
+    GlanceBuilder b,
+    ProviderReader read,
+    DateTime nowLocal,
+  ) async {
+    glanceCalls++;
+    glance?.call(b, nowLocal);
+  }
 }
 
 /// Records shared text instead of opening the share sheet.
@@ -544,9 +662,31 @@ class FakeNotificationService implements NotificationService {
   final List<String> cancelledTags = [];
   int initializeCalls = 0;
   final _taps = StreamController<String>.broadcast();
+  final _actions = StreamController<NotificationActionEvent>.broadcast();
 
   /// Simulates the user tapping a notification while the app runs.
   void tap(String payload) => _taps.add(payload);
+
+  /// Simulates a notification button tapped while the app runs (feature
+  /// 008 R16).
+  void tapAction(String actionId, String payload) => _actions.add(
+    NotificationActionEvent(actionId: actionId, payload: payload),
+  );
+
+  @override
+  Stream<NotificationActionEvent> get actions => _actions.stream;
+
+  int requestExactCalls = 0;
+
+  /// What [exactAllowed] becomes after [requestExactAlarms].
+  bool grantExactOnRequest = false;
+
+  @override
+  Future<bool> requestExactAlarms() async {
+    requestExactCalls++;
+    if (grantExactOnRequest) exactAllowed = true;
+    return exactAllowed;
+  }
 
   @override
   Future<void> initialize() async => initializeCalls++;
@@ -812,6 +952,257 @@ class FakeBackgroundScheduler implements BackgroundScheduler {
   @override
   Future<void> ensureDaily(String uniqueName) async => ensured.add(uniqueName);
 
+  /// Periodic jobs by name: period and network (feature 008).
+  final Map<String, (Duration, NetworkRequirement)> periodic = {};
+
+  @override
+  Future<void> ensurePeriodic(
+    String uniqueName, {
+    required Duration every,
+    NetworkRequirement network = NetworkRequirement.none,
+  }) async {
+    ensured.add(uniqueName);
+    periodic[uniqueName] = (every, network);
+  }
+
   @override
   Future<void> cancel(String uniqueName) async => cancelled.add(uniqueName);
+}
+
+/// Records shared files instead of opening the share sheet (feature 008).
+class FakeFileSharer implements FileSharer {
+  final shared = <String>[];
+
+  @override
+  Future<void> shareFile(String path, {required String mimeType}) async =>
+      shared.add(path);
+}
+
+/// The system save and open dialogs (SET-02, feature 008): [saveResult]
+/// false means the user cancelled; [picked] is what "Restore from file"
+/// returns.
+class FakeLocalBackupFiles implements LocalBackupFiles {
+  bool saveResult = true;
+  Uint8List? picked;
+  final saved = <(String, Uint8List)>[];
+
+  @override
+  Future<bool> saveAs(Uint8List bytes, {required String suggestedName}) async {
+    saved.add((suggestedName, bytes));
+    return saveResult;
+  }
+
+  @override
+  Future<Uint8List?> pick() async => picked;
+}
+
+/// The backup password in memory (feature 008 research R4).
+class FakeBackupPasswordStore implements BackupPasswordStore {
+  String? value;
+
+  @override
+  Future<String?> read() async => value;
+
+  @override
+  Future<void> write(String password) async => value = password;
+
+  @override
+  Future<void> delete() async => value = null;
+}
+
+/// The user's Drive app folder in memory (feature 008 research R10).
+/// [connectResult] is the email a connect returns, or a `BackupFailure` to
+/// throw; [failNext] makes the next call of any other method throw.
+class FakeDriveBackupStore implements DriveBackupStore {
+  Object connectResult = 'me@example.com';
+  BackupFailure? failNext;
+  final files = <DriveBackupEntry>[];
+  final contents = <String, Uint8List>{};
+  final deleted = <String>[];
+  int connects = 0;
+  int disconnects = 0;
+  int pruneCalls = 0;
+  int _next = 0;
+
+  /// Upload time for the next file (UTC ms); increases by one per upload.
+  int clockMs = 1792540800000;
+
+  void _maybeFail() {
+    final failure = failNext;
+    if (failure != null) {
+      failNext = null;
+      throw failure;
+    }
+  }
+
+  @override
+  Future<String> connect() async {
+    connects++;
+    final result = connectResult;
+    if (result is BackupFailure) throw result;
+    return result as String;
+  }
+
+  @override
+  Future<void> disconnect() async {
+    disconnects++;
+    _maybeFail();
+  }
+
+  @override
+  Future<List<DriveBackupEntry>> list() async {
+    _maybeFail();
+    return [...files]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  }
+
+  @override
+  Future<void> upload(
+    Uint8List bytes, {
+    required String fileName,
+    required BackupKind kind,
+  }) async {
+    _maybeFail();
+    final id = 'f${_next++}';
+    files.add(
+      DriveBackupEntry(
+        id: id,
+        name: fileName,
+        createdAt: clockMs++,
+        sizeBytes: bytes.length,
+        kind: kind,
+        device: 'Test phone',
+      ),
+    );
+    contents[id] = bytes;
+  }
+
+  @override
+  Future<Uint8List> download(String fileId) async {
+    _maybeFail();
+    return contents[fileId]!;
+  }
+
+  @override
+  Future<void> delete(String fileId) async {
+    _maybeFail();
+    deleted.add(fileId);
+    files.removeWhere((f) => f.id == fileId);
+    contents.remove(fileId);
+  }
+
+  /// Thrown by the next prune only.
+  BackupFailure? failPrune;
+
+  @override
+  Future<void> pruneAuto({int keep = 5}) async {
+    pruneCalls++;
+    final failure = failPrune;
+    if (failure != null) {
+      failPrune = null;
+      throw failure;
+    }
+    _maybeFail();
+    final auto = (await list()).where((f) => f.kind == BackupKind.auto);
+    for (final old in auto.skip(keep).toList()) {
+      await delete(old.id);
+    }
+  }
+}
+
+// --- 008-backup-export-notifications-widget: widget and glance (T3.4) ---
+
+/// Records widget payloads and launches instead of using `home_widget`.
+class FakeHomeWidgetBridge implements HomeWidgetBridge {
+  new({this.launchAt});
+
+  /// What [launchLocation] returns (a cold start from the widget).
+  String? launchAt;
+
+  /// Decoded `glance.v1` payloads, in order.
+  final List<Map<String, Object?>> saved = [];
+  int armMidnightCalls = 0;
+  final List<Future<void> Function(Uri?)> callbacks = [];
+  final _launches = StreamController<String>.broadcast();
+
+  /// Simulates a widget tap while the app runs.
+  void launch([String location = '/home']) => _launches.add(location);
+
+  @override
+  Future<void> save(String payloadJson) async =>
+      saved.add(jsonDecode(payloadJson) as Map<String, Object?>);
+
+  @override
+  Future<void> armMidnight() async => armMidnightCalls++;
+
+  @override
+  Future<String?> launchLocation() async => launchAt;
+
+  @override
+  Stream<String> get launches => _launches.stream;
+
+  @override
+  Future<void> registerBackgroundCallback(
+    Future<void> Function(Uri? uri) callback,
+  ) async => callbacks.add(callback);
+}
+
+/// Records daily summary reschedules.
+class FakeDailySummaryScheduler extends DailySummaryScheduler {
+  new({List<String>? log})
+    : log = log ?? [],
+      super(
+        notifications: FakeNotificationService(),
+        settings: FakeSettingsRepository(),
+        clock: Clock.fixed(DateTime(2026, 10, 21)),
+        glanceFor: (day) async => HomeGlance(date: day),
+      );
+
+  /// Shared call log, e.g. with [FakeGlanceRefresher].
+  final List<String> log;
+  final List<(HomeGlance?, HomeGlance?)> calls = [];
+
+  /// Thrown by [reschedule] when set.
+  Error? fail;
+
+  @override
+  Future<void> reschedule({HomeGlance? today, HomeGlance? next}) async {
+    calls.add((today, next));
+    log.add('summary');
+    if (fail case final e?) throw e;
+  }
+}
+
+/// Counts refreshes instead of building glances.
+class FakeGlanceRefresher implements GlanceRefresher {
+  new({List<String>? log}) : log = log ?? [];
+
+  final List<String> log;
+  int refreshCalls = 0;
+  int startCalls = 0;
+
+  /// Thrown by [refreshNow] when set.
+  Error? fail;
+
+  @override
+  Future<void> refreshNow() async {
+    refreshCalls++;
+    log.add('refresh');
+    if (fail case final e?) throw e;
+  }
+
+  @override
+  void start() => startCalls++;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+/// A fixed device zone (feature 008 R21); null when unreadable.
+class FakeTimeZoneSource implements TimeZoneSource {
+  new([this.zone = 'Asia/Kolkata']);
+
+  String? zone;
+
+  @override
+  Future<String?> deviceZoneId() async => zone;
 }

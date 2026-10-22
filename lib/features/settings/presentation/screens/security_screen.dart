@@ -148,6 +148,23 @@ class _SecurityList extends ConsumerWidget {
               onChanged: (on) =>
                   unawaited(controller.setHideInRecents(enabled: on)),
             ),
+            // Feature 008 (FR-047): only meaningful while the lock hides
+            // the widget's data.
+            SwitchListTile(
+              key: const Key('security_show_widget_data'),
+              secondary: const Icon(Icons.widgets_outlined),
+              title: Text(l10n.security_showWidgetData),
+              subtitle: Text(
+                lockOn
+                    ? l10n.security_showWidgetDataHelp
+                    : l10n.security_needsLock,
+              ),
+              value: state.showDataOnWidget,
+              onChanged: lockOn
+                  ? (on) =>
+                        unawaited(controller.setShowDataOnWidget(enabled: on))
+                  : null,
+            ),
           ],
         ),
       ],

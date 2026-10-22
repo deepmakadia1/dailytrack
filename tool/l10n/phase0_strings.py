@@ -1094,6 +1094,264 @@ S.update({
 })
 
 
+# --- 008-backup-export-notifications-widget (T3.2 backup and restore: SET-02, SET-01 row) ---
+S.update({
+    "backup_title": ("Backup and restore", "बैकअप और रीस्टोर", "બેકઅપ અને રિસ્ટોર", "SET-02 title and SET-01 Data row."),
+    "backup_lastBackupTitle": ("Last backup", "पिछला बैकअप", "છેલ્લું બેકઅપ", "SET-02 card title."),
+    "backup_noBackupYet": ("No backup yet", "अभी तक कोई बैकअप नहीं", "હજી સુધી કોઈ બેકઅપ નથી", "SET-02 Last backup when none exists."),
+    "backup_lastBackupDetail": ("{date} · {location} · {size}", "{date} · {location} · {size}", "{date} · {location} · {size}", "SET-02 Last backup line: date and time, location, file size."),
+    "backup_locationDevice": ("This device", "यह डिवाइस", "આ ડિવાઇસ", "Backup location."),
+    "backup_locationDrive": ("Google Drive", "Google Drive", "Google Drive", "Backup location; product name, not translated."),
+    "backup_lastBackupSubtitle": ("Last backup: {date}", "पिछला बैकअप: {date}", "છેલ્લું બેકઅપ: {date}", "SET-01 Data row subtitle."),
+    "backup_notBackedUp": ("Not backed up yet", "अभी तक बैकअप नहीं लिया गया", "હજી સુધી બેકઅપ લેવાયું નથી", "SET-01 Data row subtitle when no backup exists."),
+    "backup_localTitle": ("Backup file", "बैकअप फ़ाइल", "બેકઅપ ફાઇલ", "SET-02 Local backup card title."),
+    "backup_localBody": ("Save all your data as one file on this phone, or restore from a file.", "अपना सारा डेटा इस फ़ोन पर एक फ़ाइल के रूप में सेव करें, या किसी फ़ाइल से रीस्टोर करें।", "તમારો બધો ડેટા આ ફોન પર એક ફાઇલ તરીકે સેવ કરો, અથવા કોઈ ફાઇલમાંથી રિસ્ટોર કરો.", "SET-02 Local backup card body."),
+    "backup_saveFile": ("Save backup file", "बैकअप फ़ाइल सेव करें", "બેકઅપ ફાઇલ સેવ કરો", "SET-02 primary button."),
+    "backup_restoreFile": ("Restore from file", "फ़ाइल से रीस्टोर करें", "ફાઇલમાંથી રિસ્ટોર કરો", "SET-02 button."),
+    "backup_saved": ("Backup saved", "बैकअप सेव हो गया", "બેકઅપ સેવ થઈ ગયું", "Snackbar after a successful save."),
+    "backup_share": ("Share", "शेयर करें", "શેર કરો", "Snackbar action: share the saved backup file."),
+    "backup_working": ("Creating backup…", "बैकअप बनाया जा रहा है…", "બેકઅપ બનાવી રહ્યા છીએ…", "SET-02 progress while backing up."),
+    "backup_optionsTitle": ("Options", "विकल्प", "વિકલ્પો", "SET-02 section title."),
+    "backup_encrypt": ("Encrypt backup", "बैकअप एन्क्रिप्ट करें", "બેકઅપ એન્ક્રિપ્ટ કરો", "SET-02 switch."),
+    "backup_encryptHelp": ("Protects backup files with a password", "बैकअप फ़ाइलों को पासवर्ड से सुरक्षित करता है", "બેકઅપ ફાઇલોને પાસવર્ડથી સુરક્ષિત કરે છે", "SET-02 switch helper text."),
+    "backup_changePassword": ("Change password", "पासवर्ड बदलें", "પાસવર્ડ બદલો", "SET-02 row shown while encryption is on."),
+    "backup_includeReceipts": ("Include receipt images", "रसीद की तस्वीरें शामिल करें", "રસીદના ફોટા સામેલ કરો", "SET-02 switch."),
+    "backup_includeReceiptsHelp": ("Makes the backup file larger", "इससे बैकअप फ़ाइल बड़ी हो जाती है", "આનાથી બેકઅપ ફાઇલ મોટી થાય છે", "SET-02 switch helper text."),
+    "backup_countTransactions": ("{count, plural, =0{No transactions} =1{1 transaction} other{{count} transactions}}", "{count, plural, =0{कोई लेन-देन नहीं} =1{1 लेन-देन} other{{count} लेन-देन}}", "{count, plural, =0{કોઈ વ્યવહાર નથી} =1{1 વ્યવહાર} other{{count} વ્યવહારો}}", "Restore summary for the Expense module."),
+    "backup_countHabits": ("{count, plural, =0{No habits} =1{1 habit} other{{count} habits}}", "{count, plural, =0{कोई आदत नहीं} =1{1 आदत} other{{count} आदतें}}", "{count, plural, =0{કોઈ આદત નથી} =1{1 આદત} other{{count} આદતો}}", "Restore summary for the Habit module."),
+    "backup_passwordTitle": ("Set backup password", "बैकअप पासवर्ड सेट करें", "બેકઅપ પાસવર્ડ સેટ કરો", "Password sheet title when turning encryption on."),
+    "backup_passwordChangeTitle": ("Change backup password", "बैकअप पासवर्ड बदलें", "બેકઅપ પાસવર્ડ બદલો", "Password sheet title when changing it."),
+    "backup_passwordField": ("Password", "पासवर्ड", "પાસવર્ડ", "Password field label."),
+    "backup_passwordConfirm": ("Confirm password", "पासवर्ड की पुष्टि करें", "પાસવર્ડની પુષ્ટિ કરો", "Password confirmation field label."),
+    "backup_passwordWarning": ("If you lose this password, backups made with it can't be restored. It can't be recovered.", "अगर आप यह पासवर्ड भूल गए, तो इससे बने बैकअप रीस्टोर नहीं हो सकेंगे। इसे वापस नहीं पाया जा सकता।", "જો તમે આ પાસવર્ડ ભૂલી જશો, તો તેનાથી બનેલા બેકઅપ રિસ્ટોર થઈ શકશે નહીં. તેને પાછો મેળવી શકાતો નથી.", "Password sheet warning."),
+    "backup_passwordMismatch": ("Passwords don't match", "पासवर्ड मेल नहीं खाते", "પાસવર્ડ મેળ ખાતા નથી", "Password sheet error."),
+    "backup_passwordSave": ("Save password", "पासवर्ड सेव करें", "પાસવર્ડ સેવ કરો", "Password sheet primary button."),
+    "restore_passwordTitle": ("Enter backup password", "बैकअप पासवर्ड डालें", "બેકઅપ પાસવર્ડ દાખલ કરો", "Restore: password prompt title."),
+    "restore_open": ("Open backup", "बैकअप खोलें", "બેકઅપ ખોલો", "Restore: password prompt button."),
+    "restore_previewTitle": ("Restore this backup?", "यह बैकअप रीस्टोर करें?", "આ બેકઅપ રિસ્ટોર કરીએ?", "Restore summary title."),
+    "restore_previewCreated": ("Made on {date}", "{date} को बनाया गया", "{date} એ બનાવેલ", "Restore summary: when the backup was made."),
+    "restore_previewVersion": ("App version {version}", "ऐप वर्ज़न {version}", "એપ વર્ઝન {version}", "Restore summary: app version that made it."),
+    "restore_previewReceipts": ("{count, plural, =1{Includes 1 receipt image} other{Includes {count} receipt images}}", "{count, plural, =1{1 रसीद की तस्वीर शामिल है} other{{count} रसीद की तस्वीरें शामिल हैं}}", "{count, plural, =1{1 રસીદનો ફોટો સામેલ છે} other{{count} રસીદના ફોટા સામેલ છે}}", "Restore summary: receipts in the file."),
+    "restore_previewSkipped": ("Some data in this backup is from a feature this version doesn't have. It will be skipped.", "इस बैकअप का कुछ डेटा ऐसे फ़ीचर का है जो इस वर्ज़न में नहीं है। उसे छोड़ दिया जाएगा।", "આ બેકઅપનો થોડો ડેટા એવી સુવિધાનો છે જે આ વર્ઝનમાં નથી. તેને છોડી દેવામાં આવશે.", "Restore summary: unknown module sections."),
+    "restore_continue": ("Continue", "आगे बढ़ें", "આગળ વધો", "Restore summary button."),
+    "restore_confirmTitle": ("Replace current data?", "मौजूदा डेटा बदलें?", "હાલનો ડેટા બદલીએ?", "Restore confirmation title."),
+    "restore_confirmBody": ("All your current transactions, accounts, categories, budgets, recurring entries, habits, check-ins, and preferences will be replaced by this backup. This can't be undone.", "आपके मौजूदा सभी लेन-देन, खाते, श्रेणियाँ, बजट, दोहराई जाने वाली एंट्री, आदतें, चेक-इन और पसंद इस बैकअप से बदल दिए जाएँगे। इसे पहले जैसा नहीं किया जा सकता।", "તમારા હાલના બધા વ્યવહારો, ખાતાં, શ્રેણીઓ, બજેટ, પુનરાવર્તિત એન્ટ્રી, આદતો, ચેક-ઇન અને પસંદગીઓ આ બેકઅપથી બદલાઈ જશે. આને પૂર્વવત્ કરી શકાતું નથી.", "Restore confirmation consequence text."),
+    "restore_confirmAction": ("Replace data", "डेटा बदलें", "ડેટા બદલો", "Restore confirmation destructive button."),
+    "restore_inProgress": ("Restoring…", "रीस्टोर हो रहा है…", "રિસ્ટોર થઈ રહ્યું છે…", "Restore progress."),
+    "restore_done": ("Backup restored", "बैकअप रीस्टोर हो गया", "બેકઅપ રિસ્ટોર થઈ ગયું", "Snackbar after a successful restore."),
+    "restore_doneMissingReceipts": ("Backup restored, but some receipt images couldn't be copied.", "बैकअप रीस्टोर हो गया, लेकिन कुछ रसीद की तस्वीरें कॉपी नहीं हो सकीं।", "બેકઅપ રિસ્ટોર થઈ ગયું, પણ કેટલાક રસીદના ફોટા કૉપિ થઈ શક્યા નહીં.", "Snackbar after a restore whose receipt folder swap failed."),
+    "restore_failedTitle": ("Couldn't restore", "रीस्टोर नहीं हो सका", "રિસ્ટોર થઈ શક્યું નહીં", "Restore error dialog title."),
+    "backup_failedTitle": ("Couldn't back up", "बैकअप नहीं हो सका", "બેકઅપ થઈ શક્યું નહીં", "Backup error dialog title."),
+    "backup_errNotRecognized": ("This isn't a DailyTrack backup. Nothing was changed.", "यह DailyTrack बैकअप नहीं है। कुछ नहीं बदला गया।", "આ DailyTrack બેકઅપ નથી. કંઈ બદલાયું નથી.", "BackupNotRecognized message."),
+    "backup_errDamaged": ("This backup file is damaged and can't be read. Nothing was changed.", "यह बैकअप फ़ाइल खराब है और पढ़ी नहीं जा सकती। कुछ नहीं बदला गया।", "આ બેકઅપ ફાઇલ ખરાબ છે અને વાંચી શકાતી નથી. કંઈ બદલાયું નથી.", "BackupDamaged message."),
+    "backup_errInvalid": ("This backup has data DailyTrack can't use. Nothing was changed.", "इस बैकअप में ऐसा डेटा है जिसे DailyTrack इस्तेमाल नहीं कर सकता। कुछ नहीं बदला गया।", "આ બેકઅપમાં એવો ડેટા છે જે DailyTrack વાપરી શકતું નથી. કંઈ બદલાયું નથી.", "BackupInvalid message."),
+    "backup_errTooNew": ("Update DailyTrack to restore this backup.", "यह बैकअप रीस्टोर करने के लिए DailyTrack अपडेट करें।", "આ બેકઅપ રિસ્ટોર કરવા DailyTrack અપડેટ કરો.", "BackupTooNew message."),
+    "backup_errWrongPassword": ("Wrong password or damaged file.", "गलत पासवर्ड या खराब फ़ाइल।", "ખોટો પાસવર્ડ અથવા ખરાબ ફાઇલ.", "BackupWrongPassword message; no hint about which."),
+    "backup_errNeedsPassword": ("Set your backup password again to keep making encrypted backups.", "एन्क्रिप्टेड बैकअप बनाते रहने के लिए अपना बैकअप पासवर्ड फिर से सेट करें।", "એન્ક્રિપ્ટેડ બેકઅપ બનાવતા રહેવા માટે તમારો બેકઅપ પાસવર્ડ ફરીથી સેટ કરો.", "BackupNeedsPassword message."),
+    "backup_errTooLarge": ("This backup is too large to encrypt. Turn off receipt images and try again.", "यह बैकअप एन्क्रिप्ट करने के लिए बहुत बड़ा है। रसीद की तस्वीरें बंद करके फिर से कोशिश करें।", "આ બેકઅપ એન્ક્રિપ્ટ કરવા માટે ખૂબ મોટું છે. રસીદના ફોટા બંધ કરીને ફરી પ્રયાસ કરો.", "BackupTooLargeToEncrypt message."),
+    "backup_errBusy": ("A backup or restore is already running. Try again in a moment.", "एक बैकअप या रीस्टोर पहले से चल रहा है। थोड़ी देर बाद फिर से कोशिश करें।", "એક બેકઅપ અથવા રિસ્ટોર પહેલેથી ચાલી રહ્યું છે. થોડી વાર પછી ફરી પ્રયાસ કરો.", "BackupBusy message."),
+    "backup_errStorage": ("There isn't enough storage on this phone. Free up some space and try again.", "इस फ़ोन में पर्याप्त जगह नहीं है। थोड़ी जगह खाली करके फिर से कोशिश करें।", "આ ફોનમાં પૂરતી જગ્યા નથી. થોડી જગ્યા ખાલી કરીને ફરી પ્રયાસ કરો.", "BackupStorageFull message."),
+    "backup_errGeneric": ("Something went wrong. Nothing was changed.", "कुछ गड़बड़ हो गई। कुछ नहीं बदला गया।", "કંઈક ખોટું થયું. કંઈ બદલાયું નથી.", "Unexpected backup or restore error."),
+})
+
+PLACEHOLDERS.update({
+    "backup_lastBackupDetail": {"date": {"type": "String"}, "location": {"type": "String"}, "size": {"type": "String"}},
+    "backup_lastBackupSubtitle": {"date": {"type": "String"}},
+    "backup_countTransactions": {"count": {"type": "int", "format": "decimalPattern"}},
+    "backup_countHabits": {"count": {"type": "int", "format": "decimalPattern"}},
+    "restore_previewCreated": {"date": {"type": "String"}},
+    "restore_previewVersion": {"version": {"type": "String"}},
+    "restore_previewReceipts": {"count": {"type": "int", "format": "decimalPattern"}},
+})
+
+
+# --- 008-backup-export-notifications-widget (T3.2 Google Drive, auto backup, Forgot PIN restore) ---
+S.update({
+    "backup_driveTitle": ("Google Drive", "Google Drive", "Google Drive", "SET-02 card title; product name, not translated."),
+    "backup_driveBody": ("Back up to your own Google Drive. Backups are stored in a private app folder you won't see in your Drive files.", "अपनी Google Drive पर बैकअप लें। बैकअप एक निजी ऐप फ़ोल्डर में रखे जाते हैं, जो आपको अपनी Drive फ़ाइलों में नहीं दिखेगा।", "તમારી પોતાની Google Drive પર બેકઅપ લો. બેકઅપ એક ખાનગી એપ ફોલ્ડરમાં રાખવામાં આવે છે, જે તમને તમારી Drive ફાઇલોમાં દેખાશે નહીં.", "SET-02 Drive card explanation."),
+    "backup_driveUnavailable": ("Google Drive isn't available in this build.", "इस बिल्ड में Google Drive उपलब्ध नहीं है।", "આ બિલ્ડમાં Google Drive ઉપલબ્ધ નથી.", "SET-02 Drive card when no client ID is configured."),
+    "backup_connect": ("Connect Google account", "Google खाता जोड़ें", "Google ખાતું જોડો", "SET-02 button."),
+    "backup_connected": ("Connected as {email}", "{email} के रूप में जुड़ा है", "{email} તરીકે જોડાયેલું છે", "SET-02 connected account line."),
+    "backup_backUpNow": ("Back up now", "अभी बैकअप लें", "હમણાં બેકઅપ લો", "SET-02 primary button when connected."),
+    "backup_uploading": ("Backing up to Google Drive…", "Google Drive पर बैकअप हो रहा है…", "Google Drive પર બેકઅપ થઈ રહ્યું છે…", "SET-02 progress."),
+    "backup_driveSaved": ("Backed up to Google Drive", "Google Drive पर बैकअप हो गया", "Google Drive પર બેકઅપ થઈ ગયું", "Snackbar after a Drive backup."),
+    "backup_disconnect": ("Disconnect", "डिस्कनेक्ट करें", "ડિસ્કનેક્ટ કરો", "SET-02 text button."),
+    "backup_disconnectTitle": ("Disconnect Google account?", "Google खाता डिस्कनेक्ट करें?", "Google ખાતું ડિસ્કનેક્ટ કરીએ?", "Disconnect confirmation title."),
+    "backup_disconnectBody": ("Automatic backup turns off. Backups already in Google Drive are kept.", "ऑटोमैटिक बैकअप बंद हो जाएगा। Google Drive में पहले से मौजूद बैकअप रखे रहेंगे।", "ઑટોમેટિક બેકઅપ બંધ થઈ જશે. Google Drive માં પહેલેથી રહેલા બેકઅપ રાખવામાં આવશે.", "Disconnect confirmation consequence."),
+    "backup_autoTitle": ("Auto backup", "ऑटो बैकअप", "ઑટો બેકઅપ", "SET-02 row and choice sheet title."),
+    "backup_autoOff": ("Off", "बंद", "બંધ", "Auto backup option."),
+    "backup_autoDaily": ("Daily", "रोज़", "રોજ", "Auto backup option."),
+    "backup_autoWeekly": ("Weekly", "हर हफ़्ते", "દર અઠવાડિયે", "Auto backup option."),
+    "backup_wifiOnly": ("Wi-Fi only", "सिर्फ़ Wi-Fi पर", "ફક્ત Wi-Fi પર", "SET-02 switch."),
+    "backup_wifiOnlyHelp": ("Waits for Wi-Fi before backing up", "बैकअप से पहले Wi-Fi का इंतज़ार करता है", "બેકઅપ પહેલાં Wi-Fi ની રાહ જુએ છે", "SET-02 switch helper."),
+    "backup_driveListTitle": ("Restore from Google Drive", "Google Drive से रीस्टोर करें", "Google Drive માંથી રિસ્ટોર કરો", "SET-02 section title and Drive picker title."),
+    "backup_driveListEmpty": ("No backups in Google Drive yet", "Google Drive में अभी तक कोई बैकअप नहीं", "Google Drive માં હજી સુધી કોઈ બેકઅપ નથી", "Drive list empty state."),
+    "backup_driveListError": ("Couldn't load your Google Drive backups.", "आपके Google Drive बैकअप लोड नहीं हो सके।", "તમારા Google Drive બેકઅપ લોડ થઈ શક્યા નહીં.", "Drive list error state."),
+    "backup_driveEntry": ("{date} · {size}", "{date} · {size}", "{date} · {size}", "Drive list row: date and time, file size."),
+    "backup_kindManual": ("Manual", "मैन्युअल", "મેન્યુઅલ", "Drive list label for a backup made with Back up now."),
+    "backup_kindAuto": ("Auto", "ऑटो", "ઑટો", "Drive list label for an automatic backup."),
+    "backup_delete": ("Delete", "हटाएँ", "કાઢી નાખો", "Drive list row action."),
+    "backup_deleteTitle": ("Delete this backup?", "यह बैकअप हटाएँ?", "આ બેકઅપ કાઢી નાખીએ?", "Delete confirmation title."),
+    "backup_deleteBody": ("It will be removed from Google Drive. This can't be undone.", "इसे Google Drive से हटा दिया जाएगा। इसे पहले जैसा नहीं किया जा सकता।", "તેને Google Drive માંથી દૂર કરવામાં આવશે. આને પૂર્વવત્ કરી શકાતું નથી.", "Delete confirmation consequence."),
+    "backup_deleteAction": ("Delete backup", "बैकअप हटाएँ", "બેકઅપ કાઢી નાખો", "Delete confirmation destructive button."),
+    "backup_moreActions": ("More actions for this backup", "इस बैकअप के लिए और विकल्प", "આ બેકઅપ માટે વધુ વિકલ્પો", "Drive list overflow button label."),
+    "backup_listLoading": ("Loading your backups…", "आपके बैकअप लोड हो रहे हैं…", "તમારા બેકઅપ લોડ થઈ રહ્યા છે…", "Progress while listing Drive backups."),
+    "backup_downloading": ("Downloading backup…", "बैकअप डाउनलोड हो रहा है…", "બેકઅપ ડાઉનલોડ થઈ રહ્યું છે…", "Progress while downloading a Drive backup."),
+    "backup_errAuth": ("Your Google account needs to be connected again.", "आपका Google खाता फिर से जोड़ना होगा।", "તમારું Google ખાતું ફરીથી જોડવું પડશે.", "DriveAuthRequired message."),
+    "backup_reconnect": ("Reconnect Google account", "Google खाता फिर से जोड़ें", "Google ખાતું ફરીથી જોડો", "Action for an auth error."),
+    "backup_errQuota": ("Your Google Drive is full. Free up space in Drive and try again.", "आपकी Google Drive भर गई है। Drive में जगह खाली करके फिर से कोशिश करें।", "તમારી Google Drive ભરાઈ ગઈ છે. Drive માં જગ્યા ખાલી કરીને ફરી પ્રયાસ કરો.", "DriveQuotaExceeded message."),
+    "backup_errOffline": ("Couldn't reach Google Drive. Check your connection and try again.", "Google Drive तक नहीं पहुँच सके। अपना कनेक्शन जाँचें और फिर से कोशिश करें।", "Google Drive સુધી પહોંચી શક્યા નહીં. તમારું કનેક્શન તપાસો અને ફરી પ્રયાસ કરો.", "DriveOffline message."),
+    "backup_errDrive": ("Google Drive isn't responding right now. Try again later.", "Google Drive अभी जवाब नहीं दे रही है। बाद में फिर से कोशिश करें।", "Google Drive હાલમાં જવાબ આપતી નથી. પછીથી ફરી પ્રયાસ કરો.", "DriveUnavailable message."),
+    "notif_channelBackup": ("Backup", "बैकअप", "બેકઅપ", "Android notification channel name."),
+    "notif_channelBackupDescription": ("Tells you when automatic backup keeps failing", "ऑटोमैटिक बैकअप बार-बार विफल होने पर बताता है", "ઑટોમેટિક બેકઅપ વારંવાર નિષ્ફળ જાય ત્યારે જણાવે છે", "Android notification channel description."),
+    "notif_backupFailingTitle": ("Automatic backup isn't working", "ऑटोमैटिक बैकअप काम नहीं कर रहा", "ઑટોમેટિક બેકઅપ કામ કરતું નથી", "Backup failure notification title."),
+    "notif_backupFailingBody": ("Your last 3 backups to Google Drive failed. Tap to check.", "Google Drive पर आपके पिछले 3 बैकअप विफल रहे। जाँचने के लिए टैप करें।", "Google Drive પર તમારા છેલ્લા 3 બેકઅપ નિષ્ફળ ગયા. તપાસવા ટૅપ કરો.", "Backup failure notification body."),
+    "lock_forgotBodyRestore": ("Your PIN can't be recovered. You can restore your data from a Google Drive backup, or erase all data and start fresh.", "आपका PIN वापस नहीं मिल सकता। आप Google Drive बैकअप से अपना डेटा रीस्टोर कर सकते हैं, या सारा डेटा मिटाकर नए सिरे से शुरू कर सकते हैं।", "તમારો PIN પાછો મેળવી શકાતો નથી. તમે Google Drive બેકઅપમાંથી તમારો ડેટા રિસ્ટોર કરી શકો છો, અથવા બધો ડેટા ભૂંસીને નવેસરથી શરૂ કરી શકો છો.", "Forgot PIN sheet body when Drive restore is available."),
+    "lock_restoreFromDrive": ("Restore from Google Drive backup", "Google Drive बैकअप से रीस्टोर करें", "Google Drive બેકઅપમાંથી રિસ્ટોર કરો", "Forgot PIN primary button."),
+})
+
+PLACEHOLDERS.update({
+    "backup_connected": {"email": {"type": "String"}},
+    "backup_driveEntry": {"date": {"type": "String"}, "size": {"type": "String"}},
+})
+
+
+# --- 008-backup-export-notifications-widget (T3.3 export: SET-03, EXP-11 action, SET-01 row) ---
+S.update({
+    "export_title": ("Export data", "डेटा एक्सपोर्ट करें", "ડેટા એક્સપોર્ટ કરો", "SET-03 title and SET-01 Data row."),
+    "export_settingsHelp": ("CSV or PDF", "CSV या PDF", "CSV અથવા PDF", "SET-01 Export data row subtitle."),
+    "export_dataType": ("Data", "डेटा", "ડેટા", "SET-03 data type label."),
+    "export_transactions": ("Transactions", "लेन-देन", "વ્યવહારો", "SET-03 data type and PDF title."),
+    "export_habits": ("Habits", "आदतें", "આદતો", "SET-03 data type and PDF title."),
+    "export_period": ("Period", "अवधि", "સમયગાળો", "SET-03 period label."),
+    "export_format": ("Format", "फ़ॉर्मेट", "ફોર્મેટ", "SET-03 format label."),
+    "export_csv": ("CSV", "CSV", "CSV", "Format name; not translated."),
+    "export_pdf": ("PDF", "PDF", "PDF", "Format name; not translated."),
+    "export_filtersTitle": ("Filters", "फ़िल्टर", "ફિલ્ટર", "SET-03 filters label."),
+    "export_accounts": ("Accounts", "खाते", "ખાતાં", "SET-03 filter."),
+    "export_categories": ("Categories", "श्रेणियाँ", "શ્રેણીઓ", "SET-03 filter."),
+    "export_all": ("All", "सभी", "બધા", "SET-03 filter value when nothing is narrowed."),
+    "export_selected": ("{count, plural, =1{1 selected} other{{count} selected}}", "{count, plural, =1{1 चुना गया} other{{count} चुने गए}}", "{count, plural, =1{1 પસંદ કર્યું} other{{count} પસંદ કર્યા}}", "SET-03 filter value."),
+    "export_filterDone": ("Apply", "लागू करें", "લાગુ કરો", "Filter sheet button."),
+    "export_button": ("Export", "एक्सपोर्ट करें", "એક્સપોર્ટ કરો", "SET-03 primary button."),
+    "export_working": ("Creating your file…", "आपकी फ़ाइल बन रही है…", "તમારી ફાઇલ બની રહી છે…", "SET-03 progress."),
+    "export_locked": ("Exports are part of DailyTrack Pro. Unlocking them is coming soon.", "एक्सपोर्ट DailyTrack Pro का हिस्सा हैं। इन्हें अनलॉक करना जल्द आ रहा है।", "એક્સપોર્ટ DailyTrack Pro નો ભાગ છે. તેમને અનલૉક કરવાનું ટૂંક સમયમાં આવી રહ્યું છે.", "SET-03 locked overlay message until rewarded ads and Pro exist."),
+    "export_nothing": ("Nothing to export for this period", "इस अवधि के लिए एक्सपोर्ट करने को कुछ नहीं है", "આ સમયગાળા માટે એક્સપોર્ટ કરવા જેવું કંઈ નથી", "Snackbar when the export would be empty."),
+    "export_failedTitle": ("Couldn't export", "एक्सपोर्ट नहीं हो सका", "એક્સપોર્ટ થઈ શક્યું નહીં", "Export error dialog title."),
+    "export_failed": ("Couldn't create the file. Nothing was shared. Try again.", "फ़ाइल नहीं बन सकी। कुछ भी शेयर नहीं किया गया। फिर से कोशिश करें।", "ફાઇલ બની શકી નહીં. કંઈ શેર કરાયું નથી. ફરી પ્રયાસ કરો.", "Export error message."),
+    "export_reportAction": ("Export this report", "यह रिपोर्ट एक्सपोर्ट करें", "આ રિપોર્ટ એક્સપોર્ટ કરો", "EXP-11 app bar action label."),
+    "export_colDate": ("Date", "तारीख", "તારીખ", "Export column."),
+    "export_colTime": ("Time", "समय", "સમય", "Export column."),
+    "export_colType": ("Type", "प्रकार", "પ્રકાર", "Export column."),
+    "export_colCategory": ("Category", "श्रेणी", "શ્રેણી", "Export column."),
+    "export_colAccount": ("Account", "खाता", "ખાતું", "Export column."),
+    "export_colPaymentMode": ("Payment mode", "भुगतान का तरीका", "ચુકવણીની રીત", "Export column."),
+    "export_colAmount": ("Amount", "राशि", "રકમ", "Export column."),
+    "export_colNote": ("Note", "नोट", "નોંધ", "Export column."),
+    "export_colHabit": ("Habit", "आदत", "આદત", "Export column."),
+    "export_colValue": ("Value", "मान", "મૂલ્ય", "Export column."),
+    "export_colTarget": ("Target", "लक्ष्य", "લક્ષ્ય", "Export column."),
+    "export_colUnit": ("Unit", "इकाई", "એકમ", "Export column."),
+    "export_colStatus": ("Status", "स्थिति", "સ્થિતિ", "Export column."),
+    "export_statusDone": ("Done", "पूरा", "પૂર્ણ", "Habit export status."),
+    "export_statusPartial": ("Partial", "आंशिक", "આંશિક", "Habit export status."),
+    "export_statusFreeze": ("Freeze", "फ़्रीज़", "ફ્રીઝ", "Habit export status: a streak freeze day."),
+    "export_totalIncome": ("Total income", "कुल आय", "કુલ આવક", "PDF summary label."),
+    "export_totalExpense": ("Total expense", "कुल खर्च", "કુલ ખર્ચ", "PDF summary label."),
+    "export_net": ("Net", "शुद्ध", "ચોખ્ખું", "PDF summary label."),
+    "export_count": ("Entries", "एंट्री", "એન્ટ્રી", "PDF summary label: number of rows."),
+    "export_percent": ("{percent}% done", "{percent}% पूरा", "{percent}% પૂર્ણ", "PDF summary: a habit's completion rate."),
+    "export_filterAccounts": ("Accounts: {names}", "खाते: {names}", "ખાતાં: {names}", "PDF filter line."),
+    "export_filterCategories": ("Categories: {names}", "श्रेणियाँ: {names}", "શ્રેણીઓ: {names}", "PDF filter line."),
+    "export_transfer": ("{from} → {to}", "{from} → {to}", "{from} → {to}", "Export account cell of a transfer."),
+    "export_chartTitle": ("Spending by category", "श्रेणी के अनुसार खर्च", "શ્રેણી મુજબ ખર્ચ", "PDF chart title."),
+    "export_other": ("Other", "अन्य", "અન્ય", "PDF chart slice for small categories."),
+    "export_summaryTitle": ("Summary", "सारांश", "સારાંશ", "PDF section title."),
+    "export_pdfHeader": ("DailyTrack · {title} · {period}", "DailyTrack · {title} · {period}", "DailyTrack · {title} · {period}", "PDF page header."),
+    "export_page": ("Page {page} of {pages}", "पेज {page} / {pages}", "પેજ {page} / {pages}", "PDF page footer."),
+})
+
+PLACEHOLDERS.update({
+    "export_selected": {"count": {"type": "int"}},
+    "export_percent": {"percent": {"type": "int"}},
+    "export_filterAccounts": {"names": {"type": "String"}},
+    "export_filterCategories": {"names": {"type": "String"}},
+    "export_transfer": {"from": {"type": "String"}, "to": {"type": "String"}},
+    "export_pdfHeader": {"title": {"type": "String"}, "period": {"type": "String"}},
+    "export_page": {"page": {"type": "int"}, "pages": {"type": "int"}},
+})
+
+
+# --- 008-backup-export-notifications-widget (T3.4: notifications, SET-05 widget switch, home screen widget) ---
+S.update({
+    "notif_channelDailySummary": ("Daily summary", "रोज़ का सारांश", "દૈનિક સારાંશ", "Android notification channel name."),
+    "notif_channelDailySummaryDescription": ("Your spending and habits for the day", "दिन का आपका खर्च और आदतें", "દિવસનો તમારો ખર્ચ અને આદતો", "Android notification channel description."),
+    "notif_dailySummaryTitle": ("Today in DailyTrack", "आज DailyTrack में", "આજે DailyTrack માં", "Daily summary notification title."),
+    "notif_dailySummaryBoth": ("Spent {amount} today · {done}/{total} habits done", "आज {amount} खर्च · {done}/{total} आदतें पूरी", "આજે {amount} ખર્ચ · {done}/{total} આદતો પૂર્ણ", "Daily summary body with both modules."),
+    "notif_dailySummarySpend": ("Spent {amount} today", "आज {amount} खर्च", "આજે {amount} ખર્ચ", "Daily summary body, Expense only."),
+    "notif_dailySummaryHabits": ("{done}/{total} habits done", "{done}/{total} आदतें पूरी", "{done}/{total} આદતો પૂર્ણ", "Daily summary body, Habit only."),
+    "notif_actionMarkDone": ("Mark done", "पूरा करें", "પૂર્ણ કરો", "Habit reminder button (yes/no habits)."),
+    "notif_actionSnooze": ("Snooze 1 h", "1 घंटे बाद", "1 કલાક પછી", "Habit reminder button: remind again in one hour."),
+    "settings_exactNote": ("Reminders may arrive a few minutes late", "रिमाइंडर कुछ मिनट देर से आ सकते हैं", "રિમાઇન્ડર થોડી મિનિટ મોડા આવી શકે છે", "SET-01 note when exact alarms are not allowed."),
+    "settings_exactAllow": ("Allow exact timing", "सटीक समय की अनुमति दें", "ચોક્કસ સમયની મંજૂરી આપો", "SET-01 note action: opens the system alarms page."),
+    "security_showWidgetData": ("Show data on widget", "विजेट पर डेटा दिखाएँ", "વિજેટ પર ડેટા બતાવો", "SET-05 switch."),
+    "security_showWidgetDataHelp": ("Shows amounts and habit names on your home screen", "आपकी होम स्क्रीन पर राशि और आदतों के नाम दिखाता है", "તમારી હોમ સ્ક્રીન પર રકમ અને આદતોનાં નામ બતાવે છે", "SET-05 switch helper text."),
+    "widget_label": ("DailyTrack today", "DailyTrack आज", "DailyTrack આજે", "Home screen widget name in the widget picker."),
+    "widget_description": ("Today's spending, budget, and habit checks", "आज का खर्च, बजट और आदतों की जाँच", "આજનો ખર્ચ, બજેટ અને આદતોની તપાસ", "Widget picker description."),
+    "widget_open": ("Open DailyTrack", "DailyTrack खोलें", "DailyTrack ખોલો", "Widget text when data is hidden."),
+    "widget_spentToday": ("Spent today", "आज का खर्च", "આજનો ખર્ચ", "Widget spend label."),
+    "widget_spentTodayA11y": ("Spent today, {amount}", "आज का खर्च, {amount}", "આજનો ખર્ચ, {amount}", "Widget spend content description."),
+    "widget_monthBudget": ("{month} budget", "{month} का बजट", "{month} નું બજેટ", "Widget budget label."),
+    "widget_budgetText": ("{percent}% used · {spent} of {limit}", "{percent}% इस्तेमाल · {limit} में से {spent}", "{percent}% વપરાયું · {limit} માંથી {spent}", "Widget budget text."),
+    "widget_noBudget": ("No budget set", "कोई बजट सेट नहीं", "કોઈ બજેટ સેટ નથી", "Widget when there is no Overall budget."),
+    "widget_progress": ("{value} / {target}", "{value} / {target}", "{value} / {target}", "Widget count habit progress without a unit."),
+    "widget_progressUnit": ("{value} / {target} {unit}", "{value} / {target} {unit}", "{value} / {target} {unit}", "Widget count habit progress with its unit."),
+    "widget_habitDoneA11y": ("{name}, done", "{name}, पूरा", "{name}, પૂર્ણ", "Widget content description of a done habit."),
+    "widget_habitTodoA11y": ("{name}, not done. Double tap to mark done", "{name}, पूरा नहीं। पूरा करने के लिए दो बार टैप करें", "{name}, પૂર્ણ નથી. પૂર્ણ કરવા માટે બે વાર ટૅપ કરો", "Widget content description of a yes/no habit to check."),
+    "widget_habitCountA11y": ("{name}, {progress}. Double tap to add one", "{name}, {progress}। एक जोड़ने के लिए दो बार टैप करें", "{name}, {progress}. એક ઉમેરવા માટે બે વાર ટૅપ કરો", "Widget content description of a count habit."),
+})
+
+PLACEHOLDERS.update({
+    "notif_dailySummaryBoth": {"amount": {"type": "String"}, "done": {"type": "int"}, "total": {"type": "int"}},
+    "notif_dailySummarySpend": {"amount": {"type": "String"}},
+    "notif_dailySummaryHabits": {"done": {"type": "int"}, "total": {"type": "int"}},
+    "widget_spentTodayA11y": {"amount": {"type": "String"}},
+    "widget_monthBudget": {"month": {"type": "String"}},
+    "widget_budgetText": {"percent": {"type": "int"}, "spent": {"type": "String"}, "limit": {"type": "String"}},
+    "widget_progress": {"value": {"type": "int"}, "target": {"type": "int"}},
+    "widget_progressUnit": {"value": {"type": "int"}, "target": {"type": "int"}, "unit": {"type": "String"}},
+    "widget_habitDoneA11y": {"name": {"type": "String"}},
+    "widget_habitTodoA11y": {"name": {"type": "String"}},
+    "widget_habitCountA11y": {"name": {"type": "String"}, "progress": {"type": "String"}},
+})
+
+# Android resources for the home screen widget, used before Dart writes a
+# payload (contracts/android.md). Generated so the native text never drifts.
+ANDROID_STRINGS = ["widget_label", "widget_description", "widget_open"]
+
+
+def _android_escape(text: str) -> str:
+    return (
+        text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        .replace("'", "\\'").replace('"', '\\"')
+    )
+
+
+def write_android_strings(root: pathlib.Path) -> None:
+    res = root / "android" / "app" / "src" / "main" / "res"
+    for idx, folder in enumerate(["values", "values-hi", "values-gu"]):
+        lines = [
+            '<?xml version="1.0" encoding="utf-8"?>',
+            "<!-- GENERATED by tool/l10n/phase0_strings.py. Do not edit by hand. -->",
+            "<resources>",
+        ]
+        for key in ANDROID_STRINGS:
+            lines.append(f'    <string name="{key}">{_android_escape(S[key][idx])}</string>')
+        lines.append("</resources>")
+        (res / folder).mkdir(parents=True, exist_ok=True)
+        (res / folder / "strings.xml").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def main() -> None:
     out_dir = pathlib.Path(__file__).resolve().parents[2] / "lib" / "core" / "l10n"
     for idx, lang in enumerate(["en", "hi", "gu"]):
@@ -1116,7 +1374,12 @@ def main() -> None:
     # Key -> getter lookup for strings stored as data (currency names, module
     # names, seeded category names). Placeholder strings are excluded.
     keys = [k for k in S if k not in PLACEHOLDERS] + [f"currency_{c}" for c in CURRENCIES]
-    cases = "\n".join(f"  '{k}' => l10n.{k}," for k in keys)
+    def case(k: str) -> str:
+        # Wrapped like `dart format`, so the file stays within 80 columns.
+        line = f"  '{k}' => l10n.{k},"
+        return line if len(line) <= 80 else f"  '{k}' =>\n    l10n.{k},"
+
+    cases = "\n".join(case(k) for k in keys)
     dart = (
         "// GENERATED by tool/l10n/phase0_strings.py. Do not edit by hand.\n\n"
         "import 'package:dailytrack/core/l10n/gen/app_localizations.dart';\n\n"
@@ -1128,6 +1391,7 @@ def main() -> None:
         "};\n"
     )
     (out_dir / "l10n_lookup.dart").write_text(dart, encoding="utf-8")
+    write_android_strings(pathlib.Path(__file__).resolve().parents[2])
 
 
 if __name__ == "__main__":

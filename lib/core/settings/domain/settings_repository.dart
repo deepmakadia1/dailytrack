@@ -88,6 +88,45 @@ abstract interface class SettingsRepository {
 
   Future<void> setHideInRecents({required bool enabled});
 
+  // Feature 008 (SET-02, data-model §1).
+
+  /// Records a finished backup: time, location, and size in one transaction.
+  Future<void> setLastBackup({
+    required int at,
+    required BackupLocation location,
+    required int sizeBytes,
+  });
+
+  /// SET-02 "Encrypt backup". Turn on only after the password is stored.
+  Future<void> setBackupEncrypt({required bool enabled});
+
+  /// SET-02 "Include receipt images".
+  Future<void> setBackupIncludeReceipts({required bool enabled});
+
+  /// The connected Google account, or null after disconnect.
+  Future<void> setBackupAccountEmail(String? email);
+
+  /// SET-02 Auto backup and "Wi-Fi only".
+  Future<void> setAutoBackup({
+    required AutoBackupFrequency frequency,
+    required bool wifiOnly,
+  });
+
+  /// UTC ms of the last successful auto backup.
+  Future<void> setLastAutoBackupAt(int at);
+
+  /// The auto backup failure streak (FR-020).
+  Future<void> setAutoBackupFailures({
+    required int failures,
+    required bool notified,
+  });
+
+  /// SET-05 "Show data on widget" (FR-047).
+  Future<void> setShowDataOnWidget({required bool enabled});
+
+  /// The device zone last seen (research R21).
+  Future<void> setDeviceTimeZoneId(String id);
+
   /// A module's own string state, stored as `module.<key>`, or null.
   Future<String?> readModuleState(String key);
 

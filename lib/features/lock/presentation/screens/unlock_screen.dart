@@ -1,10 +1,17 @@
 import 'dart:async';
 
+import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/backup/backup_providers.dart';
+import 'package:dailytrack/core/backup/presentation/backup_summaries.dart';
+import 'package:dailytrack/core/backup/presentation/drive_restore_flow.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
+import 'package:dailytrack/core/module/module_registry.dart';
 import 'package:dailytrack/core/reset/reset_providers.dart';
 import 'package:dailytrack/core/security/domain/lock_types.dart';
 import 'package:dailytrack/core/security/lock_session.dart';
 import 'package:dailytrack/core/security/secure_screen_service.dart';
+import 'package:dailytrack/core/security/security_providers.dart';
+import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
 import 'package:dailytrack/features/lock/presentation/controllers/unlock_controller.dart';
 import 'package:dailytrack/features/lock/presentation/widgets/forgot_pin_sheet.dart';
@@ -14,13 +21,15 @@ import 'package:dailytrack/features/lock/presentation/widgets/pin_keypad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// SYS-03 Unlock (spec §6, feature 007 contracts/screens.md): logo, "Enter
 /// PIN", 4 dots, and the keypad with a biometric key. Shown as the `/lock`
 /// route on a cold start, or covering the app after a resume
 /// ([LockMode.overlay]) so the screens below keep their state. Screenshots
 /// are blocked while it shows (SYS-03 AC3); back closes the app. No ads,
-/// ever (§11). "Forgot PIN?" offers erasing all data (FR-035).
+/// ever (§11). "Forgot PIN?" offers restoring from a Google Drive backup
+/// (FR-024) or erasing all data (FR-035).
 class UnlockScreen extends ConsumerStatefulWidget {
   const new({required this.mode, super.key, this.from});
 
@@ -42,6 +51,28 @@ class _UnlockScreenState extends ConsumerState<UnlockScreen> {
 
   UnlockController get _controller =>
       ref.read(unlockControllerProvider.notifier);
+
+  /// "Restore from Google Drive backup" (FR-024): on success the forgotten
+  /// PIN, biometric unlock, and any lockout are cleared and app lock turns
+  /// off, so the user can set a new PIN; then Home opens. A restore never
+  /// carries lock settings (FR-009), so this is the only place they change.
+  Future<DriveRestoreResult> _restoreFromDrive(AppLocalizations l10n) async {
+    final settings = ref.read(settingsRepositoryProvider);
+    final result = await showDriveRestoreFlow(
+      context,
+      drive: ref.read(driveBackupStoreProvider),
+      restore: ref.read(restoreServiceProvider),
+      moduleSummaries: backupSummaries(ref.read(moduleRegistryProvider), l10n),
+      onConnected: settings.setBackupAccountEmail,
+    );
+    if (result != DriveRestoreResult.restored) return result;
+    await ref.read(lockServiceProvider).reset();
+    await settings.setBiometricEnabled(enabled: false);
+    await settings.setLockEnabled(enabled: false);
+    ref.read(lockSessionProvider.notifier).unlocked();
+    if (mounted) GoRouter.of(context).go(Routes.home);
+    return result;
+  }
 
   @override
   void initState() {
@@ -190,6 +221,9 @@ class _UnlockScreenState extends ConsumerState<UnlockScreen> {
                       showForgotPinSheet(
                         context,
                         ref.read(appResetServiceProvider),
+                        restoreFromDrive: ref.read(driveAvailableProvider)
+                            ? () => _restoreFromDrive(l10n)
+                            : null,
                       ),
                     ),
                     child: Text(l10n.lock_forgotPin),

@@ -426,6 +426,11 @@ final class FakeTransactionRepository implements TransactionRepository {
       _w.watch(() => [for (final t in _matching(query).take(limit)) _view(t)]);
 
   @override
+  Future<List<TransactionView>> listForExport(TxnQuery query) async => [
+    for (final t in _matching(query).toList().reversed) _view(t),
+  ];
+
+  @override
   Stream<List<TransactionView>> watchRecent({int limit = 5}) => _w.watch(() {
     final rows = [
       for (final t in _w.transactions.values)

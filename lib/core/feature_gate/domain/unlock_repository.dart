@@ -17,4 +17,10 @@ abstract interface class UnlockRepository {
 
   /// Soft-deletes the unlock (for example a refunded purchase).
   Future<void> revoke(String unlockId);
+
+  /// Uses up one one-time unlock for [key]: the oldest live, unexpired
+  /// rewarded-ad unlock is revoked (a rewarded ad grants one export; SET-03,
+  /// feature 008 clarification Q2). Purchases are never used up. Returns
+  /// whether one was used.
+  Future<bool> consumeOne(FeatureKey key);
 }

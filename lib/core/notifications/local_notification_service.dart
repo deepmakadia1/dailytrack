@@ -15,13 +15,31 @@ typedef ChannelLabels = ({String name, String description});
 String androidChannelId(NotificationChannelId channel) => switch (channel) {
   NotificationChannelId.budgetAlerts => 'budget_alerts',
   NotificationChannelId.habitReminders => 'habit_reminders',
+  NotificationChannelId.backup => 'backup',
+  NotificationChannelId.dailySummary => 'daily_summary',
 };
 
-/// What must match for a repeating notification to fire again (R10).
-DateTimeComponents matchFor(RepeatInterval repeat) => switch (repeat) {
+/// What must match for a repeating notification to fire again (R10); null
+/// for a one-shot (feature 008 R16).
+DateTimeComponents? matchFor(RepeatInterval? repeat) => switch (repeat) {
   RepeatInterval.daily => DateTimeComponents.time,
   RepeatInterval.weekly => DateTimeComponents.dayOfWeekAndTime,
+  null => null,
 };
+
+/// Buttons handled without opening the app; tapping one dismisses the
+/// notification (feature 008 R16). The plugin's defaults already are
+/// `showsUserInterface: false` and `cancelNotification: true`.
+List<AndroidNotificationAction> androidActionsFor(
+  List<NotificationActionSpec> actions,
+) => [for (final a in actions) AndroidNotificationAction(a.id, a.label)];
+
+/// A button response as an event, or null for a plain tap.
+NotificationActionEvent? actionOf(NotificationResponse response) {
+  final id = response.actionId;
+  if (id == null || id.isEmpty) return null;
+  return NotificationActionEvent(actionId: id, payload: response.payload ?? '');
+}
 
 /// Exact alarm when allowed, else the inexact fallback (FR-041).
 AndroidScheduleMode scheduleModeFor({required bool exact}) => exact
@@ -45,11 +63,13 @@ AndroidNotificationDetails androidDetailsFor(
   NotificationChannelId channel,
   ChannelLabels labels, {
   String? tag,
+  List<NotificationActionSpec> actions = const [],
 }) => AndroidNotificationDetails(
   androidChannelId(channel),
   labels.name,
   channelDescription: labels.description,
   tag: tag,
+  actions: actions.isEmpty ? null : androidActionsFor(actions),
 );
 
 /// The tap payload, or null when there is none.
@@ -60,8 +80,15 @@ String? payloadOf(NotificationResponse? response) {
 
 /// [NotificationService] backed by `flutter_local_notifications` (R15). The
 /// only importer of the plugin besides `LocalNotificationPermission`.
+///
+/// [backgroundHandler] receives button taps while the app is not running
+/// (feature 008 R16). It must be a top-level `@pragma('vm:entry-point')`
+/// function; `production_overrides.dart` passes it, so core never imports
+/// `lib/app/`.
 final class LocalNotificationService implements NotificationService {
-  new(this._labels, this._zones);
+  new(this._labels, this._zones, {this.backgroundHandler});
+
+  final DidReceiveBackgroundNotificationResponseCallback? backgroundHandler;
 
   /// Resolves the localized channel labels when [initialize] runs.
   final ChannelLabels Function(NotificationChannelId channel) _labels;
@@ -70,6 +97,7 @@ final class LocalNotificationService implements NotificationService {
   final TimeZoneSource _zones;
 
   final _taps = StreamController<String>.broadcast();
+  final _actions = StreamController<NotificationActionEvent>.broadcast();
   Future<void>? _initialized;
 
   // Plugin calls: exercised on a device (quickstart §4), not in unit tests.
@@ -93,8 +121,13 @@ final class LocalNotificationService implements NotificationService {
           android: AndroidInitializationSettings('@mipmap/ic_launcher'),
         ),
         onDidReceiveNotificationResponse: (response) {
-          if (payloadOf(response) case final payload?) _taps.add(payload);
+          if (actionOf(response) case final action?) {
+            _actions.add(action);
+          } else if (payloadOf(response) case final payload?) {
+            _taps.add(payload);
+          }
         },
+        onDidReceiveBackgroundNotificationResponse: backgroundHandler,
       );
       for (final channel in NotificationChannelId.values) {
         final labels = _labels(channel);
@@ -134,6 +167,7 @@ final class LocalNotificationService implements NotificationService {
           notification.channel,
           _labels(notification.channel),
           tag: notification.tag,
+          actions: notification.actions,
         ),
       ),
     );
@@ -170,7 +204,12 @@ final class LocalNotificationService implements NotificationService {
       payload: n.payload,
       scheduledDate: tzWallTime(scheduled.firstAt, tz.local),
       notificationDetails: NotificationDetails(
-        android: androidDetailsFor(n.channel, _labels(n.channel), tag: n.tag),
+        android: androidDetailsFor(
+          n.channel,
+          _labels(n.channel),
+          tag: n.tag,
+          actions: n.actions,
+        ),
       ),
       androidScheduleMode: scheduleModeFor(exact: scheduled.exact),
       matchDateTimeComponents: matchFor(scheduled.repeat),
@@ -187,6 +226,16 @@ final class LocalNotificationService implements NotificationService {
     } on Object {
       return false;
     }
+  }
+
+  @override
+  Future<bool> requestExactAlarms() async {
+    try {
+      await _android?.requestExactAlarmsPermission();
+    } on Object {
+      // The settings page may be missing on some devices.
+    }
+    return await canScheduleExact();
   }
 
   /// Loads the zone database once per process.
@@ -211,4 +260,7 @@ final class LocalNotificationService implements NotificationService {
 
   @override
   Stream<String> get taps => _taps.stream;
+
+  @override
+  Stream<NotificationActionEvent> get actions => _actions.stream;
 }

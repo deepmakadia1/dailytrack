@@ -367,6 +367,12 @@ final class _RecordingNotifications implements NotificationService {
   Future<bool> canScheduleExact() async => true;
 
   @override
+  Future<bool> requestExactAlarms() async => true;
+
+  @override
+  Stream<NotificationActionEvent> get actions => const Stream.empty();
+
+  @override
   Future<bool> refreshTimeZone() async => true;
 }
 
@@ -374,6 +380,13 @@ final class _RecordingNotifications implements NotificationService {
 final class _NoBackground implements BackgroundScheduler {
   @override
   Future<void> ensureDaily(String uniqueName) async {}
+
+  @override
+  Future<void> ensurePeriodic(
+    String uniqueName, {
+    required Duration every,
+    NetworkRequirement network = NetworkRequirement.none,
+  }) async {}
 
   @override
   Future<void> cancel(String uniqueName) async {}

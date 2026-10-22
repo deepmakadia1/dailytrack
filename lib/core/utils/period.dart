@@ -217,3 +217,55 @@ final class CustomPeriod extends Period {
     return '${f.format(startLocal)} – ${f.format(last)}';
   }
 }
+
+/// A period as route query parameters (feature 008 contracts/routes.md):
+/// `kind` (day, week, month, year, custom), `start` and `end` as local
+/// `yyyy-MM-dd`, both inclusive. EXP-11 "Export this report" passes its
+/// period to SET-03 this way.
+Map<String, String> periodToQuery(Period p) {
+  final last = DateTime(
+    p.endLocalExclusive.year,
+    p.endLocalExclusive.month,
+    p.endLocalExclusive.day - 1,
+  );
+  return {
+    'kind': switch (p) {
+      SingleDayPeriod() => 'day',
+      WeekPeriod() => 'week',
+      MonthPeriod() => 'month',
+      YearPeriod() => 'year',
+      CustomPeriod() => 'custom',
+    },
+    'start': DateKeys.fromLocal(p.startLocal),
+    'end': DateKeys.fromLocal(last),
+  };
+}
+
+/// The period [q] describes, or null when it is missing or invalid. A week
+/// that no longer lines up with [firstDayOfWeek] becomes a custom range
+/// over the same days.
+Period? periodFromQuery(Map<String, String> q, {required int firstDayOfWeek}) {
+  final kind = q['kind'];
+  final DateTime start;
+  final DateTime end;
+  try {
+    start = DateKeys.parse(q['start'] ?? '');
+    end = DateKeys.parse(q['end'] ?? '');
+  } on FormatException {
+    return null;
+  }
+  if (end.isBefore(start)) return null;
+  final p = switch (kind) {
+    'day' => SingleDayPeriod(start),
+    'week' => WeekPeriod(start, firstDayOfWeek: firstDayOfWeek),
+    'month' => MonthPeriod(start),
+    'year' => YearPeriod(start),
+    'custom' => CustomPeriod(start, end),
+    _ => null,
+  };
+  if (p == null) return null;
+  final matches =
+      DateKeys.fromLocal(p.startLocal) == DateKeys.fromLocal(start) &&
+      periodToQuery(p)['end'] == DateKeys.fromLocal(end);
+  return matches ? p : CustomPeriod(start, end);
+}

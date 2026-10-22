@@ -11,5 +11,17 @@ abstract interface class BackgroundScheduler {
   /// A periodic 24 h job named [uniqueName]; a no-op if already scheduled.
   Future<void> ensureDaily(String uniqueName);
 
+  /// A periodic job every [every] that runs only with [network]
+  /// (feature 008 research R11). Re-registering replaces the job and
+  /// restarts its period, so call it only when the schedule changes.
+  Future<void> ensurePeriodic(
+    String uniqueName, {
+    required Duration every,
+    NetworkRequirement network = NetworkRequirement.none,
+  });
+
   Future<void> cancel(String uniqueName);
 }
+
+/// The network a periodic job waits for. `unmetered` is Wi-Fi only.
+enum NetworkRequirement { none, connected, unmetered }

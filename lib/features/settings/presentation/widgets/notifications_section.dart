@@ -9,9 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// SET-01 Notifications (FR-007 – FR-009, clarification Q2): the master
-/// switch, daily summary time (stored only), budget alerts, and habit
-/// reminders while the Habit module is on. With the master switch off the
-/// other rows are disabled but keep their values.
+/// switch, daily summary time, budget alerts, and habit reminders while the
+/// Habit module is on. With the master switch off the other rows are
+/// disabled but keep their values. Without exact alarms a note says
+/// reminders may be late and offers "Allow exact timing" (feature 008
+/// FR-042).
 class NotificationsSection extends ConsumerWidget {
   const new({required this.settings, required this.habitEnabled, super.key});
 
@@ -33,6 +35,7 @@ class NotificationsSection extends ConsumerWidget {
     final master = settings.notificationsEnabled;
     // Unknown while loading: assume allowed, so the note never flashes.
     final allowed = ref.watch(notificationsAllowedProvider).value ?? true;
+    final exact = ref.watch(exactAlarmsAllowedProvider).value ?? true;
     final time = parseTime(settings.dailySummaryTime);
     final timeText = MaterialLocalizations.of(context).formatTimeOfDay(
       time,
@@ -77,6 +80,17 @@ class NotificationsSection extends ConsumerWidget {
               key: const Key('settings_open_system_settings'),
               onPressed: () => unawaited(openSystemSettings()),
               child: Text(l10n.settings_openSystemSettings),
+            ),
+          ),
+        if (master && allowed && !exact)
+          ListTile(
+            key: const Key('settings_exact_note'),
+            leading: const Icon(Icons.timer_outlined),
+            title: Text(l10n.settings_exactNote),
+            trailing: TextButton(
+              key: const Key('settings_exact_allow'),
+              onPressed: () => unawaited(controller.requestExactAlarms()),
+              child: Text(l10n.settings_exactAllow),
             ),
           ),
         ListTile(

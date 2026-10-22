@@ -186,4 +186,35 @@ void main() {
     expect(notifications.cancelAllCalls, 1);
     expect(order, ['after']);
   });
+
+  test(
+    'feature 008 T130: after the lock, the widget is redrawn (now hidden), '
+    'then startup runs again; a failing refresh never blocks the erase',
+    () async {
+      final withWidget = DriftAppResetService(
+        db: db,
+        modules: modules,
+        read: <T>(p) => throw UnimplementedError(),
+        notifications: notifications,
+        resetLock: () async => order.add('lock'),
+        afterErase: () => order.add('after'),
+        refreshGlance: () async => order.add('widget'),
+      );
+      await withWidget.eraseAll();
+      expect(order, ['lock', 'widget', 'after']);
+
+      order.clear();
+      final failing = DriftAppResetService(
+        db: db,
+        modules: modules,
+        read: <T>(p) => throw UnimplementedError(),
+        notifications: notifications,
+        resetLock: () async => order.add('lock'),
+        afterErase: () => order.add('after'),
+        refreshGlance: () async => throw StateError('no widget host'),
+      );
+      await failing.eraseAll();
+      expect(order, ['lock', 'after']);
+    },
+  );
 }

@@ -13,6 +13,8 @@ import 'package:dailytrack/features/lock/presentation/screens/pin_screen.dart';
 import 'package:dailytrack/features/lock/presentation/screens/unlock_screen.dart';
 import 'package:dailytrack/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:dailytrack/features/settings/presentation/controllers/web_page_controller.dart';
+import 'package:dailytrack/features/settings/presentation/screens/backup_screen.dart';
+import 'package:dailytrack/features/settings/presentation/screens/export_screen.dart';
 import 'package:dailytrack/features/settings/presentation/screens/modules_screen.dart';
 import 'package:dailytrack/features/settings/presentation/screens/security_screen.dart';
 import 'package:dailytrack/features/settings/presentation/screens/settings_screen.dart';
@@ -124,6 +126,31 @@ GoRouter appRouter(Ref ref) {
                     path: Routes.securitySegment,
                     name: RouteNames.security,
                     builder: (context, state) => const SecurityScreen(),
+                  ),
+                  GoRoute(
+                    path: Routes.backupSegment,
+                    name: RouteNames.backup,
+                    builder: (context, state) => const BackupScreen(),
+                  ),
+                  // Full screen above the shell, so EXP-11 can push it and
+                  // back returns to Reports (feature 008 contracts/routes.md).
+                  GoRoute(
+                    path: Routes.exportSegment,
+                    name: RouteNames.export,
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) {
+                      final q = state.uri.queryParameters;
+                      final period = {
+                        for (final k in const ['kind', 'start', 'end'])
+                          k: ?q[k],
+                      };
+                      return ExportScreen(
+                        datasetId: q['dataset'],
+                        periodQuery: period.length == 3
+                            ? Uri(queryParameters: period).query
+                            : null,
+                      );
+                    },
                   ),
                   // Full screen above the shell; an unknown page goes back
                   // to SET-01.

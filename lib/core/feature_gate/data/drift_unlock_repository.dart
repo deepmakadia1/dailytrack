@@ -60,6 +60,26 @@ final class DriftUnlockRepository implements UnlockRepository {
   }
 
   @override
+  Future<bool> consumeOne(FeatureKey key) => _db.transaction(() async {
+    final now = _clock.now().toUtc().millisecondsSinceEpoch;
+    final oldest =
+        await (_db.select(_db.unlocks)
+              ..where(
+                (t) =>
+                    t.deletedAt.isNull() &
+                    t.featureKey.equals(key.storageKey) &
+                    t.source.equalsValue(UnlockSource.rewardedAd) &
+                    (t.expiresAt.isNull() | t.expiresAt.isBiggerThanValue(now)),
+              )
+              ..orderBy([(t) => OrderingTerm.asc(t.createdAt)])
+              ..limit(1))
+            .getSingleOrNull();
+    if (oldest == null) return false;
+    await revoke(oldest.id);
+    return true;
+  });
+
+  @override
   Future<void> revoke(String unlockId) {
     final now = _clock.now().toUtc().millisecondsSinceEpoch;
     return (_db.update(_db.unlocks)..where((t) => t.id.equals(unlockId))).write(

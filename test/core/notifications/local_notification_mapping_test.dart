@@ -7,7 +7,8 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
 /// Pure mapping helpers of LocalNotificationService (feature 005 T022,
-/// research R10, R11). Plugin calls are checked on a device.
+/// research R10, R11; feature 008 T008). Plugin calls are checked on a
+/// device.
 void main() {
   setUpAll(tz_data.initializeTimeZones);
 
@@ -28,6 +29,72 @@ void main() {
       matchFor(RepeatInterval.weekly),
       DateTimeComponents.dayOfWeekAndTime,
     );
+  });
+
+  group('feature 008 (T008, research R16)', () {
+    test('the daily summary and backup channels have stable ids', () {
+      expect(
+        androidChannelId(NotificationChannelId.dailySummary),
+        'daily_summary',
+      );
+      expect(androidChannelId(NotificationChannelId.backup), 'backup');
+    });
+
+    test('a one-shot (no repeat) matches no components', () {
+      expect(matchFor(null), isNull);
+    });
+
+    test('actions become buttons that do not open the app and dismiss the '
+        'notification', () {
+      final buttons = androidActionsFor(const [
+        NotificationActionSpec(id: 'habit.markDone', label: 'Mark done'),
+        NotificationActionSpec(id: 'habit.snooze', label: 'Snooze 1 h'),
+      ]);
+      expect(
+        [for (final b in buttons) (b.id, b.title)],
+        [('habit.markDone', 'Mark done'), ('habit.snooze', 'Snooze 1 h')],
+      );
+      for (final b in buttons) {
+        expect(b.showsUserInterface, isFalse);
+        expect(b.cancelNotification, isTrue);
+      }
+    });
+
+    test('details carry the actions only when there are some', () {
+      const labels = (name: 'n', description: 'd');
+      expect(
+        androidDetailsFor(NotificationChannelId.habitReminders, labels).actions,
+        isNull,
+      );
+      expect(
+        androidDetailsFor(
+          NotificationChannelId.habitReminders,
+          labels,
+          actions: const [NotificationActionSpec(id: 'a', label: 'A')],
+        ).actions,
+        hasLength(1),
+      );
+    });
+
+    test('a response with an action id is an action, not a tap', () {
+      const action = NotificationResponse(
+        notificationResponseType:
+            NotificationResponseType.selectedNotificationAction,
+        actionId: 'habit.snooze',
+        payload: '/habits?habit=h1&at=08:00&wd=0',
+      );
+      final e = actionOf(action)!;
+      expect(
+        (e.actionId, e.payload),
+        ('habit.snooze', '/habits?habit=h1&at=08:00&wd=0'),
+      );
+      const tap = NotificationResponse(
+        notificationResponseType: NotificationResponseType.selectedNotification,
+        payload: '/home',
+      );
+      expect(actionOf(tap), isNull);
+      expect(payloadOf(tap), '/home');
+    });
   });
 
   test('exact → exactAllowWhileIdle, else the inexact fallback', () {

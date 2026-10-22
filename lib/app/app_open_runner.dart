@@ -1,6 +1,11 @@
 import 'dart:async';
 
+import 'package:dailytrack/app/auto_backup_task.dart';
+import 'package:dailytrack/app/background_entry_points.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
+import 'package:dailytrack/core/module/tracker_module.dart';
+import 'package:dailytrack/core/notifications/daily_summary_scheduler.dart';
+import 'package:dailytrack/core/notifications/notification_providers.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -41,8 +46,39 @@ final class AppOpenRunner {
           // One module's failure never stops the others.
         }
       }
+      await _checkTimeZone(settings.deviceTimeZoneId, modules);
+      // An overdue auto backup runs now, unawaited (feature 008 R11).
+      if (autoBackupCatchUpDue(settings, now.millisecondsSinceEpoch)) {
+        unawaited(runAutoBackup(_ref.read));
+      }
     } on Object {
       // App-open work is best effort; the next open retries.
+    }
+  }
+
+  /// When the device zone differs from the last one seen, reschedules every
+  /// notification for the new zone, for OEMs that drop the system broadcast
+  /// (FR-041, feature 008 research R21). The first open only records it.
+  Future<void> _checkTimeZone(
+    String? stored,
+    List<TrackerModule> modules,
+  ) async {
+    try {
+      final zone = await _ref.read(timeZoneSourceProvider).deviceZoneId();
+      if (zone == null || zone == stored) return;
+      if (stored != null) {
+        for (final module in modules) {
+          try {
+            await module.onNotificationSettingsChanged(_ref.read);
+          } on Object {
+            // One module's failure never stops the others.
+          }
+        }
+        await _ref.read(dailySummarySchedulerProvider).reschedule();
+      }
+      await recordTimeZone(_ref.read);
+    } on Object {
+      // Checked again on the next open.
     }
   }
 }

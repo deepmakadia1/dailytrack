@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/reset/reset_providers.dart';
+import 'package:dailytrack/core/utils/date_formats.dart';
+import 'package:dailytrack/core/utils/date_keys.dart';
 import 'package:dailytrack/core/widgets/app_scaffold.dart';
 import 'package:dailytrack/core/widgets/erase_all_data_flow.dart';
 import 'package:dailytrack/core/widgets/error_state.dart';
+import 'package:dailytrack/core/widgets/full_date_format_scope.dart';
 import 'package:dailytrack/core/widgets/settings_section.dart';
 import 'package:dailytrack/core/widgets/skeleton.dart';
 import 'package:dailytrack/features/settings/presentation/controllers/settings_controller.dart';
@@ -36,7 +39,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     super.initState();
     // Back from system settings: check the notification permission again.
     _lifecycle = AppLifecycleListener(
-      onResume: () => ref.invalidate(notificationsAllowedProvider),
+      onResume: () => ref
+        ..invalidate(notificationsAllowedProvider)
+        ..invalidate(exactAlarmsAllowedProvider),
     );
   }
 
@@ -127,7 +132,31 @@ class _SettingsList extends ConsumerWidget {
         SettingsSection(
           title: l10n.settings_data,
           children: [
-            // Backup and export rows arrive with T3.2/T3.3.
+            ListTile(
+              key: const Key('settings_backup'),
+              leading: const Icon(Icons.backup_outlined),
+              title: Text(l10n.backup_title),
+              subtitle: Text(switch (settings.lastBackupAt) {
+                final at? => l10n.backup_lastBackupSubtitle(
+                  formatFullDate(
+                    Epoch.toLocal(at),
+                    FullDateFormatScope.of(context),
+                    Localizations.localeOf(context).toString(),
+                  ),
+                ),
+                null => l10n.backup_notBackedUp,
+              }),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => unawaited(context.push(Routes.backup)),
+            ),
+            ListTile(
+              key: const Key('settings_export'),
+              leading: const Icon(Icons.ios_share),
+              title: Text(l10n.export_title),
+              subtitle: Text(l10n.export_settingsHelp),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => unawaited(context.push(Routes.export)),
+            ),
             ListTile(
               key: const Key('settings_erase_all'),
               leading: Icon(

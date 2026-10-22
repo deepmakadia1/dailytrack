@@ -1,6 +1,7 @@
 import 'package:dailytrack/core/security/domain/lock_types.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/fakes.dart';
@@ -28,6 +29,7 @@ Future<LockWorld> pumpLockApp(
   LockWorld? world,
   ExpenseFakes? expense,
   FakeAppResetService? reset,
+  List<Override> overrides = const [],
 }) async {
   tester.view
     ..physicalSize = const Size(412, 915)
@@ -57,6 +59,7 @@ Future<LockWorld> pumpLockApp(
     secureScreen: screen,
     expense: f,
     reset: reset,
+    overrides: overrides,
   );
   return (settings: settings, lock: lock, screen: screen, expense: f);
 }

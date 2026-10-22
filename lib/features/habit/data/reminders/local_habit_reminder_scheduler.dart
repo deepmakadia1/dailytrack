@@ -1,5 +1,4 @@
 import 'package:clock/clock.dart';
-import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/notifications/notification_service.dart';
 import 'package:dailytrack/core/settings/domain/settings_repository.dart';
@@ -27,6 +26,11 @@ import 'package:dailytrack/features/habit/domain/streaks/streak_engine.dart';
 ///
 /// Text comes from ARB in the saved or device language and holds only the
 /// habit name and an encouragement (FR-043).
+///
+/// Feature 008 (research R17): yes/no reminders carry "Mark done" and
+/// "Snooze 1 h", count reminders only "Snooze 1 h", and the payload names
+/// the habit, time, and weekday so the actions find the reminder's day.
+/// A snoozed copy is cancelled once the habit is done for today.
 final class LocalHabitReminderScheduler implements HabitReminderScheduler {
   new({
     required this.service,
@@ -73,8 +77,14 @@ final class LocalHabitReminderScheduler implements HabitReminderScheduler {
     }
   }
 
+  /// Also cancels a snoozed copy.
   @override
   Future<void> cancel(String habitId) async {
+    await _cancelReminders(habitId);
+    await service.cancel(snoozeIdFor(habitId));
+  }
+
+  Future<void> _cancelReminders(String habitId) async {
     for (final id in reminderIdsFor(habitId)) {
       await service.cancel(id);
     }
@@ -125,8 +135,13 @@ final class LocalHabitReminderScheduler implements HabitReminderScheduler {
       weekTargetMet = week.done >= week.target;
     }
 
-    await cancel(habit.id);
+    await _cancelReminders(habit.id);
+    // A snoozed reminder of a habit already done today never shows.
+    if (doneToday && habit.remindOnlyIfNotDone) {
+      await service.cancel(snoozeIdFor(habit.id));
+    }
     final t = l10n();
+    final actions = reminderActions(habit, t);
     for (final plan in planReminders(
       habit,
       now: now,
@@ -141,7 +156,12 @@ final class LocalHabitReminderScheduler implements HabitReminderScheduler {
             channel: NotificationChannelId.habitReminders,
             title: t.notif_habitReminderTitle(habit.name),
             body: t.notif_habitReminderBody(habit.name),
-            payload: Routes.habits,
+            payload: reminderPayload(
+              habit.id,
+              plan.firstAt,
+              plan.repeat == ReminderRepeat.weekly ? plan.firstAt.weekday : 0,
+            ),
+            actions: actions,
           ),
           firstAt: plan.firstAt,
           repeat: switch (plan.repeat) {
@@ -154,3 +174,17 @@ final class LocalHabitReminderScheduler implements HabitReminderScheduler {
     }
   }
 }
+
+/// The buttons on [habit]'s reminders (FR-038, FR-039): "Mark done" only
+/// for yes/no habits, since a count needs a number.
+List<NotificationActionSpec> reminderActions(
+  Habit habit,
+  AppLocalizations t,
+) => [
+  if (habit.kind == HabitKind.yesNo)
+    NotificationActionSpec(
+      id: HabitActions.markDone,
+      label: t.notif_actionMarkDone,
+    ),
+  NotificationActionSpec(id: HabitActions.snooze, label: t.notif_actionSnooze),
+];

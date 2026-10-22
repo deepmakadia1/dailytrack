@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/app_open_runner.dart';
+import 'package:dailytrack/app/background_entry_points.dart';
 import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/core/ads/ad_providers.dart';
 import 'package:dailytrack/core/database/database_provider.dart';
@@ -10,6 +11,8 @@ import 'package:dailytrack/core/notifications/notification_providers.dart';
 import 'package:dailytrack/core/security/lock_session.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
+import 'package:dailytrack/core/widget/glance_refresher.dart';
+import 'package:dailytrack/core/widget/widget_providers.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -49,8 +52,10 @@ String initialLocationFor(AppSettings settings, {String? launchPayload}) {
 ///  1. open the database (runs migrations) and load settings,
 ///  2. seed defaults for every registered module, exactly once,
 ///  3. start the ads SDK unless Remove Ads was purchased (never blocks),
-///  4. start notifications and the app-open hooks (never block),
-///  5. pick the first route (a tapped notification's location if allowed).
+///  4. start notifications, the app-open hooks, and the home screen widget
+///     host (never block),
+///  5. pick the first route (a tapped notification's or the widget's
+///     location if allowed).
 /// A failure in steps 1–2 gives [BootstrapFailed], shown with "Retry".
 @Riverpod(keepAlive: true)
 class Bootstrap extends _$Bootstrap {
@@ -104,12 +109,35 @@ class Bootstrap extends _$Bootstrap {
     } on Object {
       payload = null;
     }
+    // A widget tap that started the app opens Home (feature 008 R20).
+    if (payload == null) {
+      try {
+        payload = await ref
+            .read(homeWidgetBridgeProvider)
+            .launchLocation()
+            .timeout(const Duration(seconds: 1));
+      } on Object {
+        payload = null;
+      }
+    }
     // Budget rollover and similar work run behind the first screen (R10).
     unawaited(ref.read(appOpenRunnerProvider).run());
+    // The widget's background callback, midnight alarm, and live refresh
+    // (feature 008 research R19 – R21).
+    unawaited(_startWidgetHost());
     // A cold start with app lock on begins locked (feature 007 R7).
     ref
         .read(lockSessionProvider.notifier)
         .start(lockEnabled: settings.onboardingDone && settings.lockEnabled);
     return BootstrapReady(initialLocationFor(settings, launchPayload: payload));
+  }
+
+  Future<void> _startWidgetHost() async {
+    try {
+      await registerWidgetHost(ref.read(homeWidgetBridgeProvider));
+      ref.read(glanceRefresherProvider).start();
+    } on Object {
+      // The widget is optional; the app works without it.
+    }
   }
 }

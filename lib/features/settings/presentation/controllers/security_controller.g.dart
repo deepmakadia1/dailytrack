@@ -40,7 +40,7 @@ final class SecurityControllerProvider
 }
 
 String _$securityControllerHash() =>
-    r'6f300548491b51512330fd6c33d4f3314b67d47e';
+    r'43cc3b0285d846f14459a282069a75e8b1e5ffb6';
 
 /// SET-05 Security controller (FR-022 – FR-027). The lock itself is turned
 /// on and off through SYS-04, which owns the PIN.

@@ -63,6 +63,18 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     return q.watch().map((rows) => rows.map(_read).toList());
   }
 
+  /// Every row matching [query], oldest first (SET-03 export).
+  Future<List<TransactionJoinRow>> listMatching(TxnQuery query) async {
+    final q = _joined()
+      ..where(_matching(query))
+      ..orderBy([
+        OrderingTerm.asc(transactions.occurredAt),
+        OrderingTerm.asc(transactions.createdAt),
+        OrderingTerm.asc(transactions.id),
+      ]);
+    return (await q.get()).map(_read).toList();
+  }
+
   /// The newest [limit] rows of all time (DSH-01). Uses the
   /// `transactions_occurred` index.
   Stream<List<TransactionJoinRow>> watchRecent(int limit) {

@@ -1,5 +1,6 @@
 import 'package:dailytrack/app/module_registry.dart';
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/features/habit/data/backup/habit_backup_section.dart';
 import 'package:dailytrack/features/habit/habit_module.dart';
 import 'package:dailytrack/features/habit/presentation/habit_providers.dart';
 import 'package:dailytrack/features/habit/presentation/screens/habits_today_screen.dart';
@@ -65,8 +66,9 @@ void main() {
     expect(action.icon, Icons.check_circle);
   });
 
-  test('backup is a stub; no seeders or background tasks', () {
-    expect(module.backupSection(), isNull);
+  test('backup is the habit section (feature 008); no seeders or '
+      'background tasks', () {
+    expect(module.backupSection(), isA<HabitBackupSection>());
     expect(module.seeders, isEmpty);
     expect(module.backgroundTasks, isEmpty);
   });

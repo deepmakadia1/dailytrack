@@ -22,14 +22,24 @@ List<File> _dartFiles(String dir) {
 
 String _rel(File f) => f.path.replaceAll(r'\', '/');
 
+/// Import URIs, including ones with `show`, `hide`, or `as` (feature 008:
+/// those were missed before).
 List<String> _importsOf(File f) => RegExp(
-  r'''^import\s+'([^']+)';''',
+  r'''^import\s+'([^']+)'(?:\s|;)''',
   multiLine: true,
 ).allMatches(f.readAsStringSync()).map((m) => m.group(1)!).toList();
 
 void main() {
   final styledFiles = [
-    ..._dartFiles('lib/features'),
+    // The SET-03 PDF builder and its text renderer draw a printed page, not
+    // app UI: they use PDF layout values and black ink, not AppTokens
+    // (feature 008 research R12).
+    for (final f in _dartFiles('lib/features'))
+      if (!_rel(f).startsWith('lib/features/settings/domain/export/') &&
+          _rel(f) !=
+              'lib/features/settings/presentation/export/'
+                  'flutter_shaped_text_renderer.dart')
+        f,
     ..._dartFiles('lib/core/widgets'),
     ..._dartFiles('lib/app'),
   ];
@@ -254,9 +264,12 @@ void main() {
       expect(
         importersOf(
           'package:flutter_local_notifications',
+          // Plus the background entry point's response type (feature 008
+          // research R16).
           allowed: (p) =>
-              p.startsWith('lib/core/notifications/') &&
-              p.split('/').last.startsWith('local_'),
+              (p.startsWith('lib/core/notifications/') &&
+                  p.split('/').last.startsWith('local_')) ||
+              p == 'lib/app/background_entry_points.dart',
         ),
         isEmpty,
       );
@@ -428,8 +441,10 @@ void main() {
     final offenders = [
       for (final f in _dartFiles('lib'))
         if (!_rel(f).startsWith('lib/core/security/data/') &&
-            // PBKDF2 itself is pure Dart and lives in the domain hasher.
-            _rel(f) != 'lib/core/security/domain/pin_hasher.dart')
+            // PBKDF2 itself is pure Dart and lives in the domain hasher, and
+            // the backup envelope (AES-GCM, feature 008 research R3).
+            _rel(f) != 'lib/core/security/domain/pin_hasher.dart' &&
+            _rel(f) != 'lib/core/backup/domain/backup_envelope.dart')
           for (final i in _importsOf(f))
             if (plugins.any(i.startsWith)) '${_rel(f)} -> $i',
     ];
@@ -468,6 +483,131 @@ void main() {
     final offenders = [
       for (final f in _dartFiles('lib/features'))
         if (fixed.hasMatch(f.readAsStringSync())) _rel(f),
+    ];
+    expect(offenders, isEmpty);
+  });
+
+  // --- 008-backup-export-notifications-widget (T005, research R24) ---
+
+  test('(008-a) file_picker only in core/backup/data/', () {
+    final offenders = [
+      for (final f in _dartFiles('lib'))
+        if (!_rel(f).startsWith('lib/core/backup/data/'))
+          for (final i in _importsOf(f))
+            if (i.startsWith('package:file_picker')) '${_rel(f)} -> $i',
+    ];
+    expect(offenders, isEmpty);
+  });
+
+  test('(008-b) archive only in the backup domain', () {
+    final offenders = [
+      for (final f in _dartFiles('lib'))
+        if (!_rel(f).startsWith('lib/core/backup/domain/'))
+          for (final i in _importsOf(f))
+            if (i.startsWith('package:archive')) '${_rel(f)} -> $i',
+    ];
+    expect(offenders, isEmpty);
+  });
+
+  test('(008-c) the backup domain is pure Dart', () {
+    final offenders = [
+      for (final f in _dartFiles('lib/core/backup/domain'))
+        for (final i in _importsOf(f))
+          if (i.startsWith('package:flutter/') ||
+              i.startsWith('package:flutter_riverpod') ||
+              i.startsWith('package:riverpod') ||
+              i.startsWith('package:drift') ||
+              i.startsWith('package:path_provider') ||
+              i.startsWith('package:file_picker') ||
+              i.contains('/data/'))
+            '${_rel(f)} -> $i',
+    ];
+    expect(offenders, isEmpty);
+  });
+
+  test('(008-d) core never imports lib/app/', () {
+    final offenders = [
+      for (final f in _dartFiles('lib/core'))
+        for (final i in _importsOf(f))
+          if (i.startsWith('package:dailytrack/app/')) '${_rel(f)} -> $i',
+    ];
+    expect(offenders, isEmpty);
+  });
+
+  test('(008-e) backup presentation imports no data layer', () {
+    final offenders = [
+      for (final f in _dartFiles('lib/core/backup/presentation'))
+        for (final i in _importsOf(f))
+          if (i.contains('/data/')) '${_rel(f)} -> $i',
+    ];
+    expect(offenders, isEmpty);
+  });
+
+  test('(008-f) Google sign-in and Drive only in core/backup/data/', () {
+    const plugins = [
+      'package:google_sign_in',
+      'package:googleapis',
+      'package:extension_google_sign_in_as_googleapis_auth',
+    ];
+    final offenders = [
+      for (final f in _dartFiles('lib'))
+        if (!_rel(f).startsWith('lib/core/backup/data/'))
+          for (final i in _importsOf(f))
+            if (plugins.any(i.startsWith)) '${_rel(f)} -> $i',
+    ];
+    expect(offenders, isEmpty);
+  });
+
+  test('(008-g) pdf and csv only in the export domain', () {
+    final offenders = [
+      for (final f in _dartFiles('lib'))
+        if (!_rel(f).startsWith('lib/features/settings/domain/export/'))
+          for (final i in _importsOf(f))
+            if (i.startsWith('package:pdf') || i.startsWith('package:csv'))
+              '${_rel(f)} -> $i',
+    ];
+    expect(offenders, isEmpty);
+  });
+
+  test('(008-h) settings imports no module; modules never import settings', () {
+    final offenders = [
+      for (final f in _dartFiles('lib/features/settings'))
+        for (final i in _importsOf(f))
+          if (i.startsWith('package:dailytrack/features/expense/') ||
+              i.startsWith('package:dailytrack/features/habit/'))
+            '${_rel(f)} -> $i',
+      for (final dir in ['lib/features/expense', 'lib/features/habit'])
+        for (final f in _dartFiles(dir))
+          for (final i in _importsOf(f))
+            if (i.startsWith('package:dailytrack/features/settings/'))
+              '${_rel(f)} -> $i',
+    ];
+    expect(offenders, isEmpty);
+  });
+
+  test('(008-i) home_widget only in core/widget/data/ and the background '
+      'entry points', () {
+    final offenders = [
+      for (final f in _dartFiles('lib'))
+        if (!_rel(f).startsWith('lib/core/widget/data/') &&
+            _rel(f) != 'lib/app/background_entry_points.dart')
+          for (final i in _importsOf(f))
+            if (i.startsWith('package:home_widget')) '${_rel(f)} -> $i',
+    ];
+    expect(offenders, isEmpty);
+  });
+
+  test('(008-j) the glance and widget payload domain is pure Dart', () {
+    final offenders = [
+      for (final f in _dartFiles('lib/core/widget/domain'))
+        for (final i in _importsOf(f))
+          if (i.startsWith('package:flutter/') ||
+              i.startsWith('package:flutter_riverpod') ||
+              i.startsWith('package:riverpod') ||
+              i.startsWith('package:drift') ||
+              i.startsWith('package:home_widget') ||
+              i.contains('/data/'))
+            '${_rel(f)} -> $i',
     ];
     expect(offenders, isEmpty);
   });

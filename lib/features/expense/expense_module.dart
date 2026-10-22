@@ -4,12 +4,15 @@ import 'package:dailytrack/core/database/seeding.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/module/root_navigator.dart';
 import 'package:dailytrack/core/module/tracker_module.dart';
+import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
+import 'package:dailytrack/features/expense/data/backup/expense_backup_section.dart';
 import 'package:dailytrack/features/expense/data/seed/expense_defaults_seeder.dart';
 import 'package:dailytrack/features/expense/domain/enums.dart';
 import 'package:dailytrack/features/expense/domain/usecases/budget_math.dart';
 import 'package:dailytrack/features/expense/presentation/controllers/transaction_form_state.dart';
 import 'package:dailytrack/features/expense/presentation/expense_providers.dart';
+import 'package:dailytrack/features/expense/presentation/export/transactions_export_dataset.dart';
 import 'package:dailytrack/features/expense/presentation/insights/expense_insight_source.dart';
 import 'package:dailytrack/features/expense/presentation/screens/accounts_screen.dart';
 import 'package:dailytrack/features/expense/presentation/screens/budgets_screen.dart';
@@ -196,9 +199,42 @@ final class ExpenseModule extends TrackerModule {
   @override
   InsightSource? insights() => const ExpenseInsightSource();
 
-  /// Stub until T3.2 (FR-032).
+  /// SET-03 export (feature 008 research R14).
   @override
-  BackupSection? backupSection() => null;
+  List<ExportDataset> exportDatasets() => const [TransactionsExportDataset()];
+
+  @override
+  BackupSection? backupSection() => const ExpenseBackupSection();
+
+  /// Spent today and the month's Overall budget for the home screen widget
+  /// and the daily summary (feature 008 research R19). For a later day
+  /// (tomorrow's precomputed block) today's spend is 0.
+  @override
+  Future<void> contributeGlance(
+    GlanceBuilder b,
+    ProviderReader read,
+    DateTime nowLocal,
+  ) async {
+    final settings = await read(settingsRepositoryProvider).load();
+    final spend = await read(transactionRepositoryProvider)
+        .watchTodayAndMonthSpend(nowLocal)
+        .first;
+    final overview = await read(budgetRepositoryProvider)
+        .watchOverview(monthKeyOf(nowLocal))
+        .first;
+    final overall = overview.overall;
+    b.spend = GlanceSpend(
+      todayMinor: spend.todayMinor,
+      currencyCode: settings.currencyCode,
+      monthStart: DateTime(nowLocal.year, nowLocal.month),
+      budget: overall == null
+          ? null
+          : GlanceBudget(
+              limitMinor: overall.spentMinor + overall.remainingMinor,
+              spentMinor: overall.spentMinor,
+            ),
+    );
+  }
 
   @override
   List<Seeder> get seeders => const [ExpenseDefaultsSeeder()];

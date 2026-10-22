@@ -1,5 +1,6 @@
 import 'package:dailytrack/core/feature_gate/feature_gate_providers.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
+import 'package:dailytrack/core/notifications/daily_summary_scheduler.dart';
 import 'package:dailytrack/core/notifications/notification_providers.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
@@ -81,17 +82,35 @@ class SettingsController extends _$SettingsController {
         .setHabitRemindersEnabled(enabled: enabled),
   );
 
-  /// Stored only; the daily summary reminder itself arrives in T3.4.
-  Future<void> setDailySummaryTime({required int hour, required int minute}) =>
-      ref
-          .read(settingsRepositoryProvider)
-          .setDailySummaryTime(
-            '${hour.toString().padLeft(2, '0')}:'
-            '${minute.toString().padLeft(2, '0')}',
-          );
+  /// Moves the daily summary to the new time (feature 008 R18).
+  Future<void> setDailySummaryTime({
+    required int hour,
+    required int minute,
+  }) async {
+    await ref
+        .read(settingsRepositoryProvider)
+        .setDailySummaryTime(
+          '${hour.toString().padLeft(2, '0')}:'
+          '${minute.toString().padLeft(2, '0')}',
+        );
+    await ref.read(dailySummarySchedulerProvider).reschedule();
+  }
+
+  /// "Allow exact timing" (FR-042): opens the system page, then
+  /// reschedules everything so it uses exact alarms when allowed.
+  Future<void> requestExactAlarms() async {
+    try {
+      await ref.read(notificationServiceProvider).requestExactAlarms();
+    } on Object {
+      // The note stays; the user can try again.
+    }
+    ref.invalidate(exactAlarmsAllowedProvider);
+    await _notify(() async {});
+  }
 
   /// Writes, then lets every enabled module reconcile its notifications
-  /// with the new settings (cancel when off, reschedule when on).
+  /// with the new settings (cancel when off, reschedule when on), and
+  /// reschedules or cancels the daily summary (feature 008 R18).
   Future<void> _notify(Future<void> Function() write) async {
     await write();
     final repo = ref.read(settingsRepositoryProvider);
@@ -103,6 +122,7 @@ class SettingsController extends _$SettingsController {
         // Best effort; one module never blocks the others.
       }
     }
+    await ref.read(dailySummarySchedulerProvider).reschedule();
   }
 
   // --- Developer ---
@@ -120,3 +140,9 @@ Future<AppInfo> appInfo(Ref ref) => ref.watch(appInfoSourceProvider).load();
 @riverpod
 Future<bool> notificationsAllowed(Ref ref) =>
     ref.watch(notificationServiceProvider).canNotify();
+
+/// Whether exact alarms are allowed (SET-01 "Exact timing" note, FR-042).
+/// Refreshed on resume, like [notificationsAllowed].
+@riverpod
+Future<bool> exactAlarmsAllowed(Ref ref) =>
+    ref.watch(notificationServiceProvider).canScheduleExact();

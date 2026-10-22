@@ -1,5 +1,6 @@
 import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
+import 'package:dailytrack/core/notifications/daily_summary_scheduler.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/features/settings/presentation/screens/modules_screen.dart';
 import 'package:dailytrack/features/settings/presentation/screens/themes_screen.dart';
@@ -61,8 +62,8 @@ void main() {
   }
 
   group('SET-01 layout', () {
-    testWidgets('US4-1 sections in order; no backup, export, premium, or ad '
-        'privacy rows', (tester) async {
+    testWidgets('US4-1 sections in order; no premium or ad privacy rows '
+        '(backup and export arrived with feature 008)', (tester) async {
       await open(tester);
       const order = [
         'General',
@@ -79,8 +80,6 @@ void main() {
       ];
       expect(tops, orderedEquals([...tops]..sort()));
       for (final absent in [
-        'Backup and restore',
-        'Export data',
         'Ad privacy choices',
         'Remove ads and unlock everything',
         'Developer',
@@ -269,7 +268,8 @@ void main() {
     });
 
     testWidgets('US6-3 daily summary time: 9:00 PM by default; picking 20:30 '
-        'stores it and shows 8:30 PM; nothing is scheduled', (tester) async {
+        'stores it and shows 8:30 PM; the daily summary moves to 8:30 PM '
+        '(feature 008 T112)', (tester) async {
       final notifications = FakeNotificationService();
       final settings = await open(tester, notifications: notifications);
       final row = find.byKey(const Key('settings_daily_summary_time'));
@@ -291,7 +291,9 @@ void main() {
         find.descendant(of: row, matching: find.text('8:30 PM')),
         findsOneWidget,
       );
-      expect(notifications.scheduled, isEmpty);
+      final summary = notifications.scheduled[dailySummaryNotificationId]!;
+      expect((summary.firstAt.hour, summary.firstAt.minute), (20, 30));
+      expect(summary.repeat, isNull);
     });
 
     testWidgets('US6-5 blocked by the OS: a note with "Open settings"', (
@@ -319,6 +321,52 @@ void main() {
         find.byKey(const Key('settings_notifications_blocked')),
         findsNothing,
       );
+    });
+
+    testWidgets('feature 008 FR-042 without exact alarms: "Reminders may '
+        'arrive a few minutes late" with "Allow exact timing"', (tester) async {
+      final notifications = FakeNotificationService()
+        ..exactAllowed = false
+        ..grantExactOnRequest = true;
+      await open(tester, notifications: notifications);
+      expect(
+        find.text('Reminders may arrive a few minutes late'),
+        findsOneWidget,
+      );
+      await tester.tap(find.byKey(const Key('settings_exact_allow')));
+      await tester.pumpAndSettle();
+      expect(notifications.requestExactCalls, 1);
+      expect(find.byKey(const Key('settings_exact_note')), findsNothing);
+    });
+
+    testWidgets('feature 008 exact alarms allowed: no note', (tester) async {
+      await open(tester);
+      expect(find.byKey(const Key('settings_exact_note')), findsNothing);
+    });
+
+    testWidgets('feature 008 the note hides while notifications are off', (
+      tester,
+    ) async {
+      await open(
+        tester,
+        initial: const AppSettings(
+          onboardingDone: true,
+          locale: 'en',
+          notificationsEnabled: false,
+        ),
+        notifications: FakeNotificationService()..exactAllowed = false,
+      );
+      expect(find.byKey(const Key('settings_exact_note')), findsNothing);
+    });
+
+    testWidgets('feature 008 R18 turning notifications off cancels the daily '
+        'summary', (tester) async {
+      final notifications = FakeNotificationService();
+      await open(tester, notifications: notifications);
+      await tester.tap(find.byKey(const Key('settings_notifications_master')));
+      await tester.pumpAndSettle();
+      expect(notifications.cancelled, contains(dailySummaryNotificationId));
+      expect(notifications.scheduled[dailySummaryNotificationId], isNull);
     });
   });
 
@@ -430,8 +478,8 @@ void main() {
   });
 
   group('SET-01 Data (T064)', () {
-    testWidgets('US7 Erase all data is the only Data row, in the error color; '
-        'it erases only after both confirmations', (tester) async {
+    testWidgets('US7 Erase all data comes after Backup and restore, in the '
+        'error color; it erases only after both confirmations', (tester) async {
       final reset = FakeAppResetService();
       await open(tester, reset: reset);
       final row = find.byKey(const Key('settings_erase_all'));
@@ -441,8 +489,9 @@ void main() {
       );
       final context = tester.element(row);
       expect(title.style?.color, Theme.of(context).colorScheme.error);
-      expect(find.text('Backup and restore'), findsNothing);
-      expect(find.text('Export data'), findsNothing);
+      // Backup and restore and Export data (feature 008) come first.
+      expect(find.byKey(const Key('settings_backup')), findsOneWidget);
+      expect(find.byKey(const Key('settings_export')), findsOneWidget);
 
       expect(find.text('Erase all data?'), findsOneWidget);
       await tester.tap(find.text('Continue'));

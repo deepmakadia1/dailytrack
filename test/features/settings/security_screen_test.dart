@@ -87,13 +87,41 @@ void main() {
     expect(switchOf(tester, 'security_app_lock').value, isFalse);
   });
 
-  testWidgets('US3-4 with the lock off, Change PIN, biometric, and Lock after '
-      'are disabled with "Turn on app lock first"', (tester) async {
+  testWidgets('US3-4 with the lock off, Change PIN, biometric, Lock after, '
+      'and Show data on widget are disabled with "Turn on app lock first"', (
+    tester,
+  ) async {
     await open(tester, biometric: true);
     expect(tileOf(tester, 'security_change_pin').enabled, isFalse);
     expect(switchOf(tester, 'security_biometric').onChanged, isNull);
     expect(tileOf(tester, 'security_lock_after').enabled, isFalse);
-    expect(find.text('Turn on app lock first'), findsNWidgets(3));
+    expect(switchOf(tester, 'security_show_widget_data').onChanged, isNull);
+    expect(find.text('Turn on app lock first'), findsNWidgets(4));
+  });
+
+  testWidgets('feature 008 T129 FR-047 "Show data on widget" with its helper; '
+      'with the lock on it toggles the setting', (tester) async {
+    final w = await open(tester, lockOn: true);
+    final row = find.byKey(const Key('security_show_widget_data'));
+    await tester.ensureVisible(row);
+    expect(
+      find.descendant(of: row, matching: find.text('Show data on widget')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: row,
+        matching: find.text(
+          'Shows amounts and habit names on your home screen',
+        ),
+      ),
+      findsOneWidget,
+    );
+    expect(switchOf(tester, 'security_show_widget_data').value, isFalse);
+    await tester.tap(row);
+    await tester.pumpAndSettle();
+    expect(w.settings.current.showDataOnWidget, isTrue);
+    expect(switchOf(tester, 'security_show_widget_data').value, isTrue);
   });
 
   testWidgets('US3-1 Change PIN opens SYS-04 in change mode', (tester) async {

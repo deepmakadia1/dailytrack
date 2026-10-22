@@ -4594,6 +4594,1044 @@ abstract class AppLocalizations {
   /// **'Your PIN can\'t be recovered. You can erase all data and start fresh.'**
   String get lock_forgotBody;
 
+  /// SET-02 title and SET-01 Data row.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup and restore'**
+  String get backup_title;
+
+  /// SET-02 card title.
+  ///
+  /// In en, this message translates to:
+  /// **'Last backup'**
+  String get backup_lastBackupTitle;
+
+  /// SET-02 Last backup when none exists.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup yet'**
+  String get backup_noBackupYet;
+
+  /// SET-02 Last backup line: date and time, location, file size.
+  ///
+  /// In en, this message translates to:
+  /// **'{date} · {location} · {size}'**
+  String backup_lastBackupDetail(String date, String location, String size);
+
+  /// Backup location.
+  ///
+  /// In en, this message translates to:
+  /// **'This device'**
+  String get backup_locationDevice;
+
+  /// Backup location; product name, not translated.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive'**
+  String get backup_locationDrive;
+
+  /// SET-01 Data row subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Last backup: {date}'**
+  String backup_lastBackupSubtitle(String date);
+
+  /// SET-01 Data row subtitle when no backup exists.
+  ///
+  /// In en, this message translates to:
+  /// **'Not backed up yet'**
+  String get backup_notBackedUp;
+
+  /// SET-02 Local backup card title.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup file'**
+  String get backup_localTitle;
+
+  /// SET-02 Local backup card body.
+  ///
+  /// In en, this message translates to:
+  /// **'Save all your data as one file on this phone, or restore from a file.'**
+  String get backup_localBody;
+
+  /// SET-02 primary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Save backup file'**
+  String get backup_saveFile;
+
+  /// SET-02 button.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from file'**
+  String get backup_restoreFile;
+
+  /// Snackbar after a successful save.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup saved'**
+  String get backup_saved;
+
+  /// Snackbar action: share the saved backup file.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get backup_share;
+
+  /// SET-02 progress while backing up.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating backup…'**
+  String get backup_working;
+
+  /// SET-02 section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Options'**
+  String get backup_optionsTitle;
+
+  /// SET-02 switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypt backup'**
+  String get backup_encrypt;
+
+  /// SET-02 switch helper text.
+  ///
+  /// In en, this message translates to:
+  /// **'Protects backup files with a password'**
+  String get backup_encryptHelp;
+
+  /// SET-02 row shown while encryption is on.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get backup_changePassword;
+
+  /// SET-02 switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Include receipt images'**
+  String get backup_includeReceipts;
+
+  /// SET-02 switch helper text.
+  ///
+  /// In en, this message translates to:
+  /// **'Makes the backup file larger'**
+  String get backup_includeReceiptsHelp;
+
+  /// Restore summary for the Expense module.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No transactions} =1{1 transaction} other{{count} transactions}}'**
+  String backup_countTransactions(int count);
+
+  /// Restore summary for the Habit module.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No habits} =1{1 habit} other{{count} habits}}'**
+  String backup_countHabits(int count);
+
+  /// Password sheet title when turning encryption on.
+  ///
+  /// In en, this message translates to:
+  /// **'Set backup password'**
+  String get backup_passwordTitle;
+
+  /// Password sheet title when changing it.
+  ///
+  /// In en, this message translates to:
+  /// **'Change backup password'**
+  String get backup_passwordChangeTitle;
+
+  /// Password field label.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get backup_passwordField;
+
+  /// Password confirmation field label.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get backup_passwordConfirm;
+
+  /// Password sheet warning.
+  ///
+  /// In en, this message translates to:
+  /// **'If you lose this password, backups made with it can\'t be restored. It can\'t be recovered.'**
+  String get backup_passwordWarning;
+
+  /// Password sheet error.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords don\'t match'**
+  String get backup_passwordMismatch;
+
+  /// Password sheet primary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Save password'**
+  String get backup_passwordSave;
+
+  /// Restore: password prompt title.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter backup password'**
+  String get restore_passwordTitle;
+
+  /// Restore: password prompt button.
+  ///
+  /// In en, this message translates to:
+  /// **'Open backup'**
+  String get restore_open;
+
+  /// Restore summary title.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore this backup?'**
+  String get restore_previewTitle;
+
+  /// Restore summary: when the backup was made.
+  ///
+  /// In en, this message translates to:
+  /// **'Made on {date}'**
+  String restore_previewCreated(String date);
+
+  /// Restore summary: app version that made it.
+  ///
+  /// In en, this message translates to:
+  /// **'App version {version}'**
+  String restore_previewVersion(String version);
+
+  /// Restore summary: receipts in the file.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Includes 1 receipt image} other{Includes {count} receipt images}}'**
+  String restore_previewReceipts(int count);
+
+  /// Restore summary: unknown module sections.
+  ///
+  /// In en, this message translates to:
+  /// **'Some data in this backup is from a feature this version doesn\'t have. It will be skipped.'**
+  String get restore_previewSkipped;
+
+  /// Restore summary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get restore_continue;
+
+  /// Restore confirmation title.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace current data?'**
+  String get restore_confirmTitle;
+
+  /// Restore confirmation consequence text.
+  ///
+  /// In en, this message translates to:
+  /// **'All your current transactions, accounts, categories, budgets, recurring entries, habits, check-ins, and preferences will be replaced by this backup. This can\'t be undone.'**
+  String get restore_confirmBody;
+
+  /// Restore confirmation destructive button.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace data'**
+  String get restore_confirmAction;
+
+  /// Restore progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring…'**
+  String get restore_inProgress;
+
+  /// Snackbar after a successful restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup restored'**
+  String get restore_done;
+
+  /// Snackbar after a restore whose receipt folder swap failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup restored, but some receipt images couldn\'t be copied.'**
+  String get restore_doneMissingReceipts;
+
+  /// Restore error dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t restore'**
+  String get restore_failedTitle;
+
+  /// Backup error dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t back up'**
+  String get backup_failedTitle;
+
+  /// BackupNotRecognized message.
+  ///
+  /// In en, this message translates to:
+  /// **'This isn\'t a DailyTrack backup. Nothing was changed.'**
+  String get backup_errNotRecognized;
+
+  /// BackupDamaged message.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup file is damaged and can\'t be read. Nothing was changed.'**
+  String get backup_errDamaged;
+
+  /// BackupInvalid message.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup has data DailyTrack can\'t use. Nothing was changed.'**
+  String get backup_errInvalid;
+
+  /// BackupTooNew message.
+  ///
+  /// In en, this message translates to:
+  /// **'Update DailyTrack to restore this backup.'**
+  String get backup_errTooNew;
+
+  /// BackupWrongPassword message; no hint about which.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong password or damaged file.'**
+  String get backup_errWrongPassword;
+
+  /// BackupNeedsPassword message.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your backup password again to keep making encrypted backups.'**
+  String get backup_errNeedsPassword;
+
+  /// BackupTooLargeToEncrypt message.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup is too large to encrypt. Turn off receipt images and try again.'**
+  String get backup_errTooLarge;
+
+  /// BackupBusy message.
+  ///
+  /// In en, this message translates to:
+  /// **'A backup or restore is already running. Try again in a moment.'**
+  String get backup_errBusy;
+
+  /// BackupStorageFull message.
+  ///
+  /// In en, this message translates to:
+  /// **'There isn\'t enough storage on this phone. Free up some space and try again.'**
+  String get backup_errStorage;
+
+  /// Unexpected backup or restore error.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Nothing was changed.'**
+  String get backup_errGeneric;
+
+  /// SET-02 card title; product name, not translated.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive'**
+  String get backup_driveTitle;
+
+  /// SET-02 Drive card explanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up to your own Google Drive. Backups are stored in a private app folder you won\'t see in your Drive files.'**
+  String get backup_driveBody;
+
+  /// SET-02 Drive card when no client ID is configured.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive isn\'t available in this build.'**
+  String get backup_driveUnavailable;
+
+  /// SET-02 button.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Google account'**
+  String get backup_connect;
+
+  /// SET-02 connected account line.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected as {email}'**
+  String backup_connected(String email);
+
+  /// SET-02 primary button when connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up now'**
+  String get backup_backUpNow;
+
+  /// SET-02 progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Backing up to Google Drive…'**
+  String get backup_uploading;
+
+  /// Snackbar after a Drive backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backed up to Google Drive'**
+  String get backup_driveSaved;
+
+  /// SET-02 text button.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get backup_disconnect;
+
+  /// Disconnect confirmation title.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect Google account?'**
+  String get backup_disconnectTitle;
+
+  /// Disconnect confirmation consequence.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic backup turns off. Backups already in Google Drive are kept.'**
+  String get backup_disconnectBody;
+
+  /// SET-02 row and choice sheet title.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto backup'**
+  String get backup_autoTitle;
+
+  /// Auto backup option.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get backup_autoOff;
+
+  /// Auto backup option.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get backup_autoDaily;
+
+  /// Auto backup option.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get backup_autoWeekly;
+
+  /// SET-02 switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi only'**
+  String get backup_wifiOnly;
+
+  /// SET-02 switch helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Waits for Wi-Fi before backing up'**
+  String get backup_wifiOnlyHelp;
+
+  /// SET-02 section title and Drive picker title.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from Google Drive'**
+  String get backup_driveListTitle;
+
+  /// Drive list empty state.
+  ///
+  /// In en, this message translates to:
+  /// **'No backups in Google Drive yet'**
+  String get backup_driveListEmpty;
+
+  /// Drive list error state.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load your Google Drive backups.'**
+  String get backup_driveListError;
+
+  /// Drive list row: date and time, file size.
+  ///
+  /// In en, this message translates to:
+  /// **'{date} · {size}'**
+  String backup_driveEntry(String date, String size);
+
+  /// Drive list label for a backup made with Back up now.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual'**
+  String get backup_kindManual;
+
+  /// Drive list label for an automatic backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get backup_kindAuto;
+
+  /// Drive list row action.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get backup_delete;
+
+  /// Delete confirmation title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this backup?'**
+  String get backup_deleteTitle;
+
+  /// Delete confirmation consequence.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be removed from Google Drive. This can\'t be undone.'**
+  String get backup_deleteBody;
+
+  /// Delete confirmation destructive button.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete backup'**
+  String get backup_deleteAction;
+
+  /// Drive list overflow button label.
+  ///
+  /// In en, this message translates to:
+  /// **'More actions for this backup'**
+  String get backup_moreActions;
+
+  /// Progress while listing Drive backups.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading your backups…'**
+  String get backup_listLoading;
+
+  /// Progress while downloading a Drive backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading backup…'**
+  String get backup_downloading;
+
+  /// DriveAuthRequired message.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Google account needs to be connected again.'**
+  String get backup_errAuth;
+
+  /// Action for an auth error.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect Google account'**
+  String get backup_reconnect;
+
+  /// DriveQuotaExceeded message.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Google Drive is full. Free up space in Drive and try again.'**
+  String get backup_errQuota;
+
+  /// DriveOffline message.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t reach Google Drive. Check your connection and try again.'**
+  String get backup_errOffline;
+
+  /// DriveUnavailable message.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive isn\'t responding right now. Try again later.'**
+  String get backup_errDrive;
+
+  /// Android notification channel name.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get notif_channelBackup;
+
+  /// Android notification channel description.
+  ///
+  /// In en, this message translates to:
+  /// **'Tells you when automatic backup keeps failing'**
+  String get notif_channelBackupDescription;
+
+  /// Backup failure notification title.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic backup isn\'t working'**
+  String get notif_backupFailingTitle;
+
+  /// Backup failure notification body.
+  ///
+  /// In en, this message translates to:
+  /// **'Your last 3 backups to Google Drive failed. Tap to check.'**
+  String get notif_backupFailingBody;
+
+  /// Forgot PIN sheet body when Drive restore is available.
+  ///
+  /// In en, this message translates to:
+  /// **'Your PIN can\'t be recovered. You can restore your data from a Google Drive backup, or erase all data and start fresh.'**
+  String get lock_forgotBodyRestore;
+
+  /// Forgot PIN primary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from Google Drive backup'**
+  String get lock_restoreFromDrive;
+
+  /// SET-03 title and SET-01 Data row.
+  ///
+  /// In en, this message translates to:
+  /// **'Export data'**
+  String get export_title;
+
+  /// SET-01 Export data row subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'CSV or PDF'**
+  String get export_settingsHelp;
+
+  /// SET-03 data type label.
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get export_dataType;
+
+  /// SET-03 data type and PDF title.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get export_transactions;
+
+  /// SET-03 data type and PDF title.
+  ///
+  /// In en, this message translates to:
+  /// **'Habits'**
+  String get export_habits;
+
+  /// SET-03 period label.
+  ///
+  /// In en, this message translates to:
+  /// **'Period'**
+  String get export_period;
+
+  /// SET-03 format label.
+  ///
+  /// In en, this message translates to:
+  /// **'Format'**
+  String get export_format;
+
+  /// Format name; not translated.
+  ///
+  /// In en, this message translates to:
+  /// **'CSV'**
+  String get export_csv;
+
+  /// Format name; not translated.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF'**
+  String get export_pdf;
+
+  /// SET-03 filters label.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get export_filtersTitle;
+
+  /// SET-03 filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get export_accounts;
+
+  /// SET-03 filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get export_categories;
+
+  /// SET-03 filter value when nothing is narrowed.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get export_all;
+
+  /// SET-03 filter value.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 selected} other{{count} selected}}'**
+  String export_selected(int count);
+
+  /// Filter sheet button.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get export_filterDone;
+
+  /// SET-03 primary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get export_button;
+
+  /// SET-03 progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating your file…'**
+  String get export_working;
+
+  /// SET-03 locked overlay message until rewarded ads and Pro exist.
+  ///
+  /// In en, this message translates to:
+  /// **'Exports are part of DailyTrack Pro. Unlocking them is coming soon.'**
+  String get export_locked;
+
+  /// Snackbar when the export would be empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to export for this period'**
+  String get export_nothing;
+
+  /// Export error dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t export'**
+  String get export_failedTitle;
+
+  /// Export error message.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t create the file. Nothing was shared. Try again.'**
+  String get export_failed;
+
+  /// EXP-11 app bar action label.
+  ///
+  /// In en, this message translates to:
+  /// **'Export this report'**
+  String get export_reportAction;
+
+  /// Export column.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get export_colDate;
+
+  /// Export column.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get export_colTime;
+
+  /// Export column.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get export_colType;
+
+  /// Export column.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get export_colCategory;
+
+  /// Export column.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get export_colAccount;
+
+  /// Export column.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment mode'**
+  String get export_colPaymentMode;
+
+  /// Export column.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get export_colAmount;
+
+  /// Export column.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get export_colNote;
+
+  /// Export column.
+  ///
+  /// In en, this message translates to:
+  /// **'Habit'**
+  String get export_colHabit;
+
+  /// Export column.
+  ///
+  /// In en, this message translates to:
+  /// **'Value'**
+  String get export_colValue;
+
+  /// Export column.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get export_colTarget;
+
+  /// Export column.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get export_colUnit;
+
+  /// Export column.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get export_colStatus;
+
+  /// Habit export status.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get export_statusDone;
+
+  /// Habit export status.
+  ///
+  /// In en, this message translates to:
+  /// **'Partial'**
+  String get export_statusPartial;
+
+  /// Habit export status: a streak freeze day.
+  ///
+  /// In en, this message translates to:
+  /// **'Freeze'**
+  String get export_statusFreeze;
+
+  /// PDF summary label.
+  ///
+  /// In en, this message translates to:
+  /// **'Total income'**
+  String get export_totalIncome;
+
+  /// PDF summary label.
+  ///
+  /// In en, this message translates to:
+  /// **'Total expense'**
+  String get export_totalExpense;
+
+  /// PDF summary label.
+  ///
+  /// In en, this message translates to:
+  /// **'Net'**
+  String get export_net;
+
+  /// PDF summary label: number of rows.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries'**
+  String get export_count;
+
+  /// PDF summary: a habit's completion rate.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% done'**
+  String export_percent(int percent);
+
+  /// PDF filter line.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts: {names}'**
+  String export_filterAccounts(String names);
+
+  /// PDF filter line.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories: {names}'**
+  String export_filterCategories(String names);
+
+  /// Export account cell of a transfer.
+  ///
+  /// In en, this message translates to:
+  /// **'{from} → {to}'**
+  String export_transfer(String from, String to);
+
+  /// PDF chart title.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending by category'**
+  String get export_chartTitle;
+
+  /// PDF chart slice for small categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get export_other;
+
+  /// PDF section title.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get export_summaryTitle;
+
+  /// PDF page header.
+  ///
+  /// In en, this message translates to:
+  /// **'DailyTrack · {title} · {period}'**
+  String export_pdfHeader(String title, String period);
+
+  /// PDF page footer.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {page} of {pages}'**
+  String export_page(int page, int pages);
+
+  /// Android notification channel name.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily summary'**
+  String get notif_channelDailySummary;
+
+  /// Android notification channel description.
+  ///
+  /// In en, this message translates to:
+  /// **'Your spending and habits for the day'**
+  String get notif_channelDailySummaryDescription;
+
+  /// Daily summary notification title.
+  ///
+  /// In en, this message translates to:
+  /// **'Today in DailyTrack'**
+  String get notif_dailySummaryTitle;
+
+  /// Daily summary body with both modules.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent {amount} today · {done}/{total} habits done'**
+  String notif_dailySummaryBoth(String amount, int done, int total);
+
+  /// Daily summary body, Expense only.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent {amount} today'**
+  String notif_dailySummarySpend(String amount);
+
+  /// Daily summary body, Habit only.
+  ///
+  /// In en, this message translates to:
+  /// **'{done}/{total} habits done'**
+  String notif_dailySummaryHabits(int done, int total);
+
+  /// Habit reminder button (yes/no habits).
+  ///
+  /// In en, this message translates to:
+  /// **'Mark done'**
+  String get notif_actionMarkDone;
+
+  /// Habit reminder button: remind again in one hour.
+  ///
+  /// In en, this message translates to:
+  /// **'Snooze 1 h'**
+  String get notif_actionSnooze;
+
+  /// SET-01 note when exact alarms are not allowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders may arrive a few minutes late'**
+  String get settings_exactNote;
+
+  /// SET-01 note action: opens the system alarms page.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow exact timing'**
+  String get settings_exactAllow;
+
+  /// SET-05 switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Show data on widget'**
+  String get security_showWidgetData;
+
+  /// SET-05 switch helper text.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows amounts and habit names on your home screen'**
+  String get security_showWidgetDataHelp;
+
+  /// Home screen widget name in the widget picker.
+  ///
+  /// In en, this message translates to:
+  /// **'DailyTrack today'**
+  String get widget_label;
+
+  /// Widget picker description.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s spending, budget, and habit checks'**
+  String get widget_description;
+
+  /// Widget text when data is hidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Open DailyTrack'**
+  String get widget_open;
+
+  /// Widget spend label.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent today'**
+  String get widget_spentToday;
+
+  /// Widget spend content description.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent today, {amount}'**
+  String widget_spentTodayA11y(String amount);
+
+  /// Widget budget label.
+  ///
+  /// In en, this message translates to:
+  /// **'{month} budget'**
+  String widget_monthBudget(String month);
+
+  /// Widget budget text.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% used · {spent} of {limit}'**
+  String widget_budgetText(int percent, String spent, String limit);
+
+  /// Widget when there is no Overall budget.
+  ///
+  /// In en, this message translates to:
+  /// **'No budget set'**
+  String get widget_noBudget;
+
+  /// Widget count habit progress without a unit.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} / {target}'**
+  String widget_progress(int value, int target);
+
+  /// Widget count habit progress with its unit.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} / {target} {unit}'**
+  String widget_progressUnit(int value, int target, String unit);
+
+  /// Widget content description of a done habit.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, done'**
+  String widget_habitDoneA11y(String name);
+
+  /// Widget content description of a yes/no habit to check.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, not done. Double tap to mark done'**
+  String widget_habitTodoA11y(String name);
+
+  /// Widget content description of a count habit.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, {progress}. Double tap to add one'**
+  String widget_habitCountA11y(String name, String progress);
+
   /// Display name of INR (SYS-02 step 2).
   ///
   /// In en, this message translates to:

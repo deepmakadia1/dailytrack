@@ -18,6 +18,10 @@ abstract interface class TransactionRepository {
   /// order as [watchPage] (DSH-01 Recent transactions, feature 006 R10).
   Stream<List<TransactionView>> watchRecent({int limit = 5});
 
+  /// Every live row matching [query], oldest first, unpaged (SET-03
+  /// export, feature 008 research R14).
+  Future<List<TransactionView>> listForExport(TxnQuery query);
+
   /// Income/expense/net and per-local-day totals for ALL rows matching
   /// [query]; transfers excluded from every total (FR-018).
   Stream<PeriodLedger> watchLedger(TxnQuery query);

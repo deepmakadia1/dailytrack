@@ -15,7 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SecurityState {
 
- bool get lockOn; BiometricAvailability get biometric; bool get biometricEnabled; int get lockAfterSeconds; bool get hideInRecents;
+ bool get lockOn; BiometricAvailability get biometric; bool get biometricEnabled; int get lockAfterSeconds; bool get hideInRecents;/// "Show data on widget" (feature 008 FR-047).
+ bool get showDataOnWidget;
 /// Create a copy of SecurityState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,20 +28,20 @@ $SecurityStateCopyWith<SecurityState> get copyWith => _$SecurityStateCopyWithImp
 @override
 bool operator ==(Object other) {
   final _this = this as SecurityState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityState&&(identical(other.lockOn, _this.lockOn) || other.lockOn == _this.lockOn)&&(identical(other.biometric, _this.biometric) || other.biometric == _this.biometric)&&(identical(other.biometricEnabled, _this.biometricEnabled) || other.biometricEnabled == _this.biometricEnabled)&&(identical(other.lockAfterSeconds, _this.lockAfterSeconds) || other.lockAfterSeconds == _this.lockAfterSeconds)&&(identical(other.hideInRecents, _this.hideInRecents) || other.hideInRecents == _this.hideInRecents));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityState&&(identical(other.lockOn, _this.lockOn) || other.lockOn == _this.lockOn)&&(identical(other.biometric, _this.biometric) || other.biometric == _this.biometric)&&(identical(other.biometricEnabled, _this.biometricEnabled) || other.biometricEnabled == _this.biometricEnabled)&&(identical(other.lockAfterSeconds, _this.lockAfterSeconds) || other.lockAfterSeconds == _this.lockAfterSeconds)&&(identical(other.hideInRecents, _this.hideInRecents) || other.hideInRecents == _this.hideInRecents)&&(identical(other.showDataOnWidget, _this.showDataOnWidget) || other.showDataOnWidget == _this.showDataOnWidget));
 }
 
 
 @override
 int get hashCode {
   final _this = this as SecurityState;
-  return Object.hash(runtimeType,_this.lockOn,_this.biometric,_this.biometricEnabled,_this.lockAfterSeconds,_this.hideInRecents);
+  return Object.hash(runtimeType,_this.lockOn,_this.biometric,_this.biometricEnabled,_this.lockAfterSeconds,_this.hideInRecents,_this.showDataOnWidget);
 }
 
 @override
 String toString() {
   final _this = this as SecurityState;
-  return 'SecurityState(lockOn: ${_this.lockOn}, biometric: ${_this.biometric}, biometricEnabled: ${_this.biometricEnabled}, lockAfterSeconds: ${_this.lockAfterSeconds}, hideInRecents: ${_this.hideInRecents})';
+  return 'SecurityState(lockOn: ${_this.lockOn}, biometric: ${_this.biometric}, biometricEnabled: ${_this.biometricEnabled}, lockAfterSeconds: ${_this.lockAfterSeconds}, hideInRecents: ${_this.hideInRecents}, showDataOnWidget: ${_this.showDataOnWidget})';
 }
 
 
@@ -51,7 +52,7 @@ abstract mixin class $SecurityStateCopyWith<$Res>  {
   factory $SecurityStateCopyWith(SecurityState value, $Res Function(SecurityState) _then) = _$SecurityStateCopyWithImpl;
 @useResult
 $Res call({
- bool lockOn, BiometricAvailability biometric, bool biometricEnabled, int lockAfterSeconds, bool hideInRecents
+ bool lockOn, BiometricAvailability biometric, bool biometricEnabled, int lockAfterSeconds, bool hideInRecents, bool showDataOnWidget
 });
 
 
@@ -68,13 +69,14 @@ class _$SecurityStateCopyWithImpl<$Res>
 
 /// Create a copy of SecurityState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? lockOn = null,Object? biometric = null,Object? biometricEnabled = null,Object? lockAfterSeconds = null,Object? hideInRecents = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? lockOn = null,Object? biometric = null,Object? biometricEnabled = null,Object? lockAfterSeconds = null,Object? hideInRecents = null,Object? showDataOnWidget = null,}) {
   return _then(SecurityState(
 lockOn: null == lockOn ? _self.lockOn : lockOn // ignore: cast_nullable_to_non_nullable
 as bool,biometric: null == biometric ? _self.biometric : biometric // ignore: cast_nullable_to_non_nullable
 as BiometricAvailability,biometricEnabled: null == biometricEnabled ? _self.biometricEnabled : biometricEnabled // ignore: cast_nullable_to_non_nullable
 as bool,lockAfterSeconds: null == lockAfterSeconds ? _self.lockAfterSeconds : lockAfterSeconds // ignore: cast_nullable_to_non_nullable
 as int,hideInRecents: null == hideInRecents ? _self.hideInRecents : hideInRecents // ignore: cast_nullable_to_non_nullable
+as bool,showDataOnWidget: null == showDataOnWidget ? _self.showDataOnWidget : showDataOnWidget // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -160,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool lockOn,  BiometricAvailability biometric,  bool biometricEnabled,  int lockAfterSeconds,  bool hideInRecents)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool lockOn,  BiometricAvailability biometric,  bool biometricEnabled,  int lockAfterSeconds,  bool hideInRecents,  bool showDataOnWidget)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SecurityState() when $default != null:
-return $default(_that.lockOn,_that.biometric,_that.biometricEnabled,_that.lockAfterSeconds,_that.hideInRecents);case _:
+return $default(_that.lockOn,_that.biometric,_that.biometricEnabled,_that.lockAfterSeconds,_that.hideInRecents,_that.showDataOnWidget);case _:
   return orElse();
 
 }
@@ -181,10 +183,10 @@ return $default(_that.lockOn,_that.biometric,_that.biometricEnabled,_that.lockAf
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool lockOn,  BiometricAvailability biometric,  bool biometricEnabled,  int lockAfterSeconds,  bool hideInRecents)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool lockOn,  BiometricAvailability biometric,  bool biometricEnabled,  int lockAfterSeconds,  bool hideInRecents,  bool showDataOnWidget)  $default,) {final _that = this;
 switch (_that) {
 case _SecurityState():
-return $default(_that.lockOn,_that.biometric,_that.biometricEnabled,_that.lockAfterSeconds,_that.hideInRecents);case _:
+return $default(_that.lockOn,_that.biometric,_that.biometricEnabled,_that.lockAfterSeconds,_that.hideInRecents,_that.showDataOnWidget);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +203,10 @@ return $default(_that.lockOn,_that.biometric,_that.biometricEnabled,_that.lockAf
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool lockOn,  BiometricAvailability biometric,  bool biometricEnabled,  int lockAfterSeconds,  bool hideInRecents)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool lockOn,  BiometricAvailability biometric,  bool biometricEnabled,  int lockAfterSeconds,  bool hideInRecents,  bool showDataOnWidget)?  $default,) {final _that = this;
 switch (_that) {
 case _SecurityState() when $default != null:
-return $default(_that.lockOn,_that.biometric,_that.biometricEnabled,_that.lockAfterSeconds,_that.hideInRecents);case _:
+return $default(_that.lockOn,_that.biometric,_that.biometricEnabled,_that.lockAfterSeconds,_that.hideInRecents,_that.showDataOnWidget);case _:
   return null;
 
 }
@@ -216,7 +218,7 @@ return $default(_that.lockOn,_that.biometric,_that.biometricEnabled,_that.lockAf
 
 
 class _SecurityState implements SecurityState {
-  const _SecurityState({required this.lockOn, required this.biometric, required this.biometricEnabled, required this.lockAfterSeconds, required this.hideInRecents});
+  const _SecurityState({required this.lockOn, required this.biometric, required this.biometricEnabled, required this.lockAfterSeconds, required this.hideInRecents, this.showDataOnWidget = false});
   
 
 @override final  bool lockOn;
@@ -224,6 +226,8 @@ class _SecurityState implements SecurityState {
 @override final  bool biometricEnabled;
 @override final  int lockAfterSeconds;
 @override final  bool hideInRecents;
+/// "Show data on widget" (feature 008 FR-047).
+@override@JsonKey() final  bool showDataOnWidget;
 
 /// Create a copy of SecurityState
 /// with the given fields replaced by the non-null parameter values.
@@ -235,18 +239,18 @@ _$SecurityStateCopyWith<_SecurityState> get copyWith => __$SecurityStateCopyWith
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecurityState&&(identical(other.lockOn, lockOn) || other.lockOn == lockOn)&&(identical(other.biometric, biometric) || other.biometric == biometric)&&(identical(other.biometricEnabled, biometricEnabled) || other.biometricEnabled == biometricEnabled)&&(identical(other.lockAfterSeconds, lockAfterSeconds) || other.lockAfterSeconds == lockAfterSeconds)&&(identical(other.hideInRecents, hideInRecents) || other.hideInRecents == hideInRecents));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecurityState&&(identical(other.lockOn, lockOn) || other.lockOn == lockOn)&&(identical(other.biometric, biometric) || other.biometric == biometric)&&(identical(other.biometricEnabled, biometricEnabled) || other.biometricEnabled == biometricEnabled)&&(identical(other.lockAfterSeconds, lockAfterSeconds) || other.lockAfterSeconds == lockAfterSeconds)&&(identical(other.hideInRecents, hideInRecents) || other.hideInRecents == hideInRecents)&&(identical(other.showDataOnWidget, showDataOnWidget) || other.showDataOnWidget == showDataOnWidget));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,lockOn,biometric,biometricEnabled,lockAfterSeconds,hideInRecents);
+    return Object.hash(runtimeType,lockOn,biometric,biometricEnabled,lockAfterSeconds,hideInRecents,showDataOnWidget);
 }
 
 @override
 String toString() {
-    return 'SecurityState(lockOn: $lockOn, biometric: $biometric, biometricEnabled: $biometricEnabled, lockAfterSeconds: $lockAfterSeconds, hideInRecents: $hideInRecents)';
+    return 'SecurityState(lockOn: $lockOn, biometric: $biometric, biometricEnabled: $biometricEnabled, lockAfterSeconds: $lockAfterSeconds, hideInRecents: $hideInRecents, showDataOnWidget: $showDataOnWidget)';
 }
 
 
@@ -257,7 +261,7 @@ abstract mixin class _$SecurityStateCopyWith<$Res> implements $SecurityStateCopy
   factory _$SecurityStateCopyWith(_SecurityState value, $Res Function(_SecurityState) _then) = __$SecurityStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool lockOn, BiometricAvailability biometric, bool biometricEnabled, int lockAfterSeconds, bool hideInRecents
+ bool lockOn, BiometricAvailability biometric, bool biometricEnabled, int lockAfterSeconds, bool hideInRecents, bool showDataOnWidget
 });
 
 
@@ -274,13 +278,14 @@ class __$SecurityStateCopyWithImpl<$Res>
 
 /// Create a copy of SecurityState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? lockOn = null,Object? biometric = null,Object? biometricEnabled = null,Object? lockAfterSeconds = null,Object? hideInRecents = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? lockOn = null,Object? biometric = null,Object? biometricEnabled = null,Object? lockAfterSeconds = null,Object? hideInRecents = null,Object? showDataOnWidget = null,}) {
   return _then(_SecurityState(
 lockOn: null == lockOn ? _self.lockOn : lockOn // ignore: cast_nullable_to_non_nullable
 as bool,biometric: null == biometric ? _self.biometric : biometric // ignore: cast_nullable_to_non_nullable
 as BiometricAvailability,biometricEnabled: null == biometricEnabled ? _self.biometricEnabled : biometricEnabled // ignore: cast_nullable_to_non_nullable
 as bool,lockAfterSeconds: null == lockAfterSeconds ? _self.lockAfterSeconds : lockAfterSeconds // ignore: cast_nullable_to_non_nullable
 as int,hideInRecents: null == hideInRecents ? _self.hideInRecents : hideInRecents // ignore: cast_nullable_to_non_nullable
+as bool,showDataOnWidget: null == showDataOnWidget ? _self.showDataOnWidget : showDataOnWidget // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
