@@ -55,8 +55,15 @@ jobs:
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
         run: |
           missing=0
+          # A key from another Google Cloud project uploads with HTTP 403.
+          key_project=$(printf '%s' "$FIREBASE_SERVICE_ACCOUNT" | jq -r '.project_id // empty' 2>/dev/null)
+          if [ -n "$FIREBASE_PROJECT_ID" ] && [ -n "$key_project" ] && [ "$key_project" != "$FIREBASE_PROJECT_ID" ]; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT belongs to another Google Cloud project than FIREBASE_PROJECT_ID; create the key in the Firebase project"
+            missing=1
+          fi
           for name in FIREBASE_SERVICE_ACCOUNT FIREBASE_APP_ID; do
             if [ -z "${!name}" ]; then
               echo "::error::Repository secret $name is not set (Settings → Secrets and variables → Actions → Repository secrets)"
