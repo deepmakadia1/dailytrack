@@ -48,6 +48,27 @@ jobs:
       FLAVOR: ${{ inputs.flavor }}
       VARIANT: ${{ inputs.variant }}
     steps:
+      # Fails in seconds, before the build, when a required secret is not
+      # visible to this run (unset, misnamed, or saved as an environment
+      # secret or a variable instead of a repository secret).
+      - name: Check required secrets
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+        run: |
+          missing=0
+          for name in FIREBASE_SERVICE_ACCOUNT FIREBASE_APP_ID; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Repository secret $name is not set (Settings → Secrets and variables → Actions → Repository secrets)"
+              missing=1
+            fi
+          done
+          if ! printf '%s' "$FIREBASE_SERVICE_ACCOUNT" | jq -e '.type == "service_account"' >/dev/null 2>&1; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT must be the whole service account JSON key file, pasted as is"
+            missing=1
+          fi
+          exit $missing
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-java@v4
