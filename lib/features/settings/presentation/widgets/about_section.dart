@@ -18,7 +18,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 /// Package name used before `package_info_plus` answers.
-const String _fallbackPackage = 'com.midexcode.daily.track.dailytrack';
+const String _fallbackPackage = 'com.midexcode.dailytrack';
 
 /// SET-01 Privacy (FR-011): "Ad privacy choices" while the consent SDK
 /// requires it (feature 009 FR-014), then the policy and terms in the

@@ -1,4 +1,5 @@
 import 'package:dailytrack/app/auto_backup_task.dart';
+import 'package:dailytrack/app/firebase_setup.dart';
 import 'package:dailytrack/app/production_overrides.dart';
 import 'package:dailytrack/core/backup/auto_backup_schedule.dart';
 import 'package:dailytrack/core/backup/background_backup_scheduler.dart';
@@ -47,6 +48,7 @@ Future<bool> runBackgroundTask(String name, ProviderContainer container) async {
 void backgroundDispatcher() {
   Workmanager().executeTask((task, _) async {
     WidgetsFlutterBinding.ensureInitialized();
+    await startFirebase();
     final container = ProviderContainer(overrides: productionOverrides());
     try {
       try {

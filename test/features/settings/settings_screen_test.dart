@@ -401,8 +401,7 @@ void main() {
       expect(
         sharer.shared.single.text,
         contains(
-          'play.google.com/store/apps/details?id='
-          'com.midexcode.daily.track.dailytrack',
+          'play.google.com/store/apps/details?id=com.midexcode.dailytrack',
         ),
       );
     });

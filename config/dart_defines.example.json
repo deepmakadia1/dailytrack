@@ -1,0 +1,7 @@
+{
+  "GOOGLE_SERVER_CLIENT_ID": "<web-client-id>.apps.googleusercontent.com",
+  "FIREBASE_API_KEY": "<android apiKey from firebase_options.dart>",
+  "FIREBASE_APP_ID": "1:<sender>:android:<id>",
+  "FIREBASE_SENDER_ID": "<messagingSenderId>",
+  "FIREBASE_PROJECT_ID": "<projectId>"
+}

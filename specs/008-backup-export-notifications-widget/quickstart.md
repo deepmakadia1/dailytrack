@@ -15,9 +15,8 @@ How to check that the feature works.
 - **Google Drive setup** (R10, once per developer machine or CI secret store):
   1. Create a Google Cloud project, enable the **Google Drive API**, and configure the OAuth consent
      screen (scope `.../auth/drive.appdata`, plus test users while unverified).
-  2. Create **Android** OAuth clients for `com.midexcode.daily.track.dailytrack.dev` and
-     `com.midexcode.daily.track.dailytrack`, using the SHA-1 of the signing key
-     (`./gradlew signingReport`).
+  2. Create **Android** OAuth clients for `com.midexcode.dailytrack` (dev and prod share it),
+     one per signing key SHA-1: debug and release (`./gradlew signingReport`).
   3. Create a **Web** OAuth client and pass its ID as `--dart-define=GOOGLE_SERVER_CLIENT_ID=<id>`.
      It is not committed; CI reads it from secrets.
 - Without step 3, Drive features show "Google Drive isn't available in this build". Local backup,
@@ -65,7 +64,7 @@ flutter test integration_test/backup_restore_test.dart -d <device>   # backup �
    Restore with a wrong password → error, nothing changes. Restore with the right one → success.
 4. **Drive**: connect Google, "Back up now" → the list shows a Manual backup. Set Auto backup to
    Daily with Wi-Fi only. Force-run the job:
-   `adb shell cmd jobscheduler run -f com.midexcode.daily.track.dailytrack.dev <jobId>`, or the
+   `adb shell cmd jobscheduler run -f com.midexcode.dailytrack <jobId>`, or the
    WorkManager diagnostics broadcast. Confirm an Auto entry appears **while the app is swiped away**
    (background auth, R11). Run it 6 times: only 5 Auto entries remain and the Manual one is kept.
    Delete one from the list.

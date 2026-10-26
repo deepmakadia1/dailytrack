@@ -12,7 +12,7 @@ void main() {
   const app = AppInfo(
     version: '1.0.0',
     buildNumber: '7',
-    packageName: 'com.midexcode.daily.track.dailytrack',
+    packageName: 'com.midexcode.dailytrack',
   );
   const device = DeviceInfo(
     manufacturer: 'Samsung',

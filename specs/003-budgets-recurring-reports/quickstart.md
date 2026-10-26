@@ -69,7 +69,7 @@ Manual smoke test (about 5 minutes; the automated tests in §5 are the real proo
 6. **Dev unlock**: More → Developer → "Unlock all features (debug)" on. Reports Trends shows a
    solid and a dashed line, and Accounts shows two bar charts.
 7. **Background**: in Android Studio, App Inspection → Background Task Inspector → find
-   `expense.recurring` for `com.midexcode.daily.track.dailytrack.dev` and run it. Due entries
+   `expense.recurring` for `com.midexcode.dailytrack` and run it. Due entries
    appear, and no duplicates appear on the next app open.
 
 Prod check: `flutter run --flavor prod` → the More tab has no Developer section.

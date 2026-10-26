@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
@@ -17,8 +19,10 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.midexcode.daily.track.dailytrack"
+        // The store ID, the same for dev and prod (so dev and prod replace
+        // each other on a device). The Kotlin namespace above is the code
+        // package and stays as it is.
+        applicationId = "com.midexcode.dailytrack"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24
@@ -40,7 +44,6 @@ android {
     productFlavors {
         create("dev") {
             dimension = "env"
-            applicationIdSuffix = ".dev"
             resValue("string", "app_name", "DailyTrack Dev")
         }
         create("prod") {
@@ -63,7 +66,8 @@ android {
 // reads it from android/local.properties (`admob.appId`, git-ignored) or the
 // ADMOB_APP_ID environment variable. Every other variant uses the test ID.
 val admobTestAppId = "ca-app-pub-3940256099942544~3347511713"
-val localProperties = java.util.Properties().apply {
+// Imported above: in this script `java` is the java extension, not the package.
+val localProperties = Properties().apply {
     rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
 }
 val prodAdmobAppId: String? =

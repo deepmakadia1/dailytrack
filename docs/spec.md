@@ -54,7 +54,7 @@ The app uses feature-first clean architecture: each feature owns its presentatio
 | Backup | `google_sign_in` + `googleapis` (Drive appDataFolder), `file_picker`, `share_plus` | JSON backup, optional encryption |
 | Export | `csv`, `pdf` + `printing` | CSV and PDF reports |
 | Home widget | `home_widget` | Today summary widget |
-| Crash + analytics | `firebase_crashlytics`, `firebase_analytics` | No personal data in events |
+| Crash + analytics | `firebase_crashlytics`, `firebase_analytics` | No personal data in events: automatic Analytics events only (no custom events, user ID, or user properties); crash reports carry the error type and stack trace, never the message. Prod release builds only; config comes from build defines and is never committed |
 | Testing | `flutter_test`, `mocktail`, `integration_test` | Unit, widget, and integration tests |
 | Lints | `very_good_analysis` (or `flutter_lints`) | Zero warnings policy |
 
@@ -925,7 +925,7 @@ Ads must never interrupt logging. Every placement below sits on a reading screen
 - **Integration tests:** add expense → see on Home → appears in Reports; create habit → check in → streak; backup → erase → restore.
 - **CI** (GitHub Actions): `flutter analyze`, `dart format --set-exit-if-changed`, `flutter test`, build release App Bundle on every pull request.
 
-**Build flavors:** `dev` (test ad IDs, debug banner, separate application ID suffix `.dev`) and `prod` (real ad IDs from CI secrets via `--dart-define`).
+**Build flavors:** `dev` (test ad IDs, debug banner, "DailyTrack Dev" label) and `prod` (real ad IDs from CI secrets via `--dart-define`). Both use the application ID `com.midexcode.dailytrack`, so installing one replaces the other.
 
 **Play Store compliance checklist**
 

@@ -52,6 +52,14 @@ app.*.map.json
 
 # Secrets and signing (never commit)
 .env*
+# Firebase config from `flutterfire configure`, and the build's --dart-define
+# values (Constitution III: client IDs stay out of git; see
+# config/dart_defines.example.json).
+/android/app/google-services.json
+/ios/Runner/GoogleService-Info.plist
+/lib/firebase_options.dart
+/firebase.json
+/config/dart_defines.json
 *.jks
 *.keystore
 /android/key.properties

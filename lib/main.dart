@@ -1,5 +1,6 @@
 import 'package:dailytrack/app/app.dart';
 import 'package:dailytrack/app/background_dispatcher.dart';
+import 'package:dailytrack/app/firebase_setup.dart';
 import 'package:dailytrack/app/production_overrides.dart';
 import 'package:dailytrack/core/background/workmanager_background_scheduler.dart';
 import 'package:flutter/widgets.dart';
@@ -12,6 +13,8 @@ Future<void> main() async {
   final binding = WidgetsFlutterBinding.ensureInitialized();
   // Keep the native splash until bootstrap() has a result (it calls remove()).
   FlutterNativeSplash.preserve(widgetsBinding: binding);
+  // Crash reporting first, so startup errors are caught (prod only).
+  await startFirebase();
   try {
     await initializeBackground(backgroundDispatcher);
   } on Object {

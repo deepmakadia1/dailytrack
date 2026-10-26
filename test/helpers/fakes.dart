@@ -1288,7 +1288,7 @@ class FakeAppInfoSource implements AppInfoSource {
     this.info = const AppInfo(
       version: '1.0.0',
       buildNumber: '1',
-      packageName: 'com.midexcode.daily.track.dailytrack',
+      packageName: 'com.midexcode.dailytrack',
     ),
   });
 

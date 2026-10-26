@@ -1,5 +1,10 @@
 <!--
 Sync Impact Report
+- Version change: 1.1.0 → 1.1.1 (PATCH: Technology & Platform Constraints, build flavors: dev
+  drops the `.dev` application ID suffix; dev and prod share `com.midexcode.dailytrack`.
+  Guidance: docs/spec.md "Build flavors" updated in the same change)
+
+Previous report:
 - Version change: 1.0.3 → 1.1.0 (MINOR: materially expanded guidance in III and V; no principle
   removed or redefined)
 - Modified principles:
@@ -152,8 +157,9 @@ agents.
 - Platform: Android first (min API 24, target latest Play-required API); code stays iOS-ready but
   iOS is not tested in MVP.
 - Package choices are those in spec §2; versions are locked in `pubspec.lock`.
-- Build flavors: `dev` (test ad IDs, `.dev` application ID suffix) and `prod` (real IDs injected via
-  `--dart-define` from CI secrets).
+- Build flavors: `dev` (test ad IDs) and `prod` (real IDs injected via `--dart-define` from CI
+  secrets). Both use the application ID `com.midexcode.dailytrack`, so they do not install side
+  by side.
 - Play Store compliance (spec §13) is a release requirement: data safety form, public privacy
   policy, 18+ audience, ads policy, IAP acknowledgement and restore, `app-ads.txt`.
 
@@ -183,4 +189,4 @@ agents.
 - Versioning follows semantic versioning: MAJOR for removing or redefining a principle, MINOR for
   adding a principle or materially expanding guidance, PATCH for clarifications and wording.
 
-**Version**: 1.1.0 | **Ratified**: 2026-10-13 | **Last Amended**: 2026-10-23
+**Version**: 1.1.1 | **Ratified**: 2026-10-13 | **Last Amended**: 2026-10-26
