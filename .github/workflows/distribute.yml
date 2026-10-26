@@ -1,0 +1,134 @@
+name: Distribute APK
+
+# Run by hand: Actions → "Distribute APK" → Run workflow. Builds a debug or
+# release APK and shares it with testers through Firebase App Distribution.
+#
+# Repository secrets (Settings → Secrets and variables → Actions):
+#   FIREBASE_SERVICE_ACCOUNT  JSON key of a service account with the
+#                             "Firebase App Distribution Admin" role (required)
+#   FIREBASE_APP_ID           Firebase Android app ID, 1:…:android:… (required)
+#   FIREBASE_API_KEY, FIREBASE_SENDER_ID, FIREBASE_PROJECT_ID,
+#   GOOGLE_SERVER_CLIENT_ID   build defines, as in config/dart_defines.json;
+#                             missing ones turn that feature off
+#   DEBUG_KEYSTORE_BASE64     base64 of ~/.android/debug.keystore, so the APK
+#                             carries the SHA-1 registered for Google sign-in;
+#                             without it the runner's own debug key is used
+#   ADMOB_APP_ID              optional; prod release falls back to the test ID
+on:
+  workflow_dispatch:
+    inputs:
+      variant:
+        description: Build type
+        type: choice
+        options: [debug, release]
+        default: debug
+      flavor:
+        description: Flavor
+        type: choice
+        options: [dev, prod]
+        default: dev
+      groups:
+        description: Tester groups (comma-separated aliases from App Distribution)
+        type: string
+        default: testers
+      release_notes:
+        description: Release notes (optional)
+        type: string
+        default: ""
+
+concurrency:
+  group: distribute-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  distribute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      FLAVOR: ${{ inputs.flavor }}
+      VARIANT: ${{ inputs.variant }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.x
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Code generation
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      # Values come from secrets and are never printed or committed
+      # (Constitution III).
+      - name: Write build defines
+        env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_SENDER_ID: ${{ secrets.FIREBASE_SENDER_ID }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          GOOGLE_SERVER_CLIENT_ID: ${{ secrets.GOOGLE_SERVER_CLIENT_ID }}
+        run: |
+          jq -n \
+            --arg apiKey "$FIREBASE_API_KEY" \
+            --arg appId "$FIREBASE_APP_ID" \
+            --arg senderId "$FIREBASE_SENDER_ID" \
+            --arg projectId "$FIREBASE_PROJECT_ID" \
+            --arg clientId "$GOOGLE_SERVER_CLIENT_ID" \
+            '{GOOGLE_SERVER_CLIENT_ID: $clientId, FIREBASE_API_KEY: $apiKey,
+              FIREBASE_APP_ID: $appId, FIREBASE_SENDER_ID: $senderId,
+              FIREBASE_PROJECT_ID: $projectId}' > config/dart_defines.json
+
+      - name: Restore debug keystore
+        env:
+          DEBUG_KEYSTORE_BASE64: ${{ secrets.DEBUG_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$DEBUG_KEYSTORE_BASE64" ]; then
+            echo "::warning::DEBUG_KEYSTORE_BASE64 not set; Google sign-in will not work in this APK"
+            exit 0
+          fi
+          mkdir -p ~/.android
+          echo "$DEBUG_KEYSTORE_BASE64" | base64 --decode > ~/.android/debug.keystore
+
+      - name: Build APK
+        env:
+          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
+        run: |
+          flutter build apk --flavor "$FLAVOR" --"$VARIANT" \
+            --build-number=${{ github.run_number }} \
+            --dart-define-from-file=config/dart_defines.json
+          echo "APK_PATH=build/app/outputs/flutter-apk/app-$FLAVOR-$VARIANT.apk" >> "$GITHUB_ENV"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dailytrack-${{ inputs.flavor }}-${{ inputs.variant }}-${{ github.run_number }}
+          path: ${{ env.APK_PATH }}
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Share through App Distribution
+        env:
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          GROUPS: ${{ inputs.groups }}
+          NOTES: ${{ inputs.release_notes }}
+        run: |
+          {
+            [ -n "$NOTES" ] && printf '%s\n\n' "$NOTES"
+            echo "$FLAVOR $VARIANT · build ${{ github.run_number }}"
+            echo "${GITHUB_REF_NAME} @ ${GITHUB_SHA::7}"
+          } > release_notes.txt
+          npx --yes firebase-tools@14 appdistribution:distribute "$APK_PATH" \
+            --app "$FIREBASE_APP_ID" \
+            --groups "$GROUPS" \
+            --release-notes-file release_notes.txt

@@ -1,9 +1,12 @@
 name: CI
 
+# Error check on every push to any branch and on pull requests: code
+# generation, analyze, format, and tests. Pushes to main also build the prod
+# App Bundle.
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: ["**"]
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -39,9 +42,11 @@ jobs:
       - name: Format check
         run: dart format --set-exit-if-changed .
 
-      # Linux is the golden reference platform (research R11), so all tags run here.
+      # Linux is the golden reference platform (research R11). No baselines
+      # are committed yet, so goldens are skipped; drop --exclude-tags once
+      # `flutter test --tags golden --update-goldens` output is committed.
       - name: Tests
-        run: flutter test --coverage
+        run: flutter test --coverage --exclude-tags golden
 
       - name: Upload golden failures
         if: failure()
@@ -53,9 +58,11 @@ jobs:
 
       # Release signing uses the debug key until T5.2 (plan Open item 5).
       - name: Build prod App Bundle
+        if: github.ref == 'refs/heads/main'
         run: flutter build appbundle --flavor prod --release
 
       - name: Upload App Bundle
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
           name: prod-release-aab
