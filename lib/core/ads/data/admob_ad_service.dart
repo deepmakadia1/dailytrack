@@ -107,11 +107,11 @@ final class AdMobAdService implements AdService {
   Future<AdView?> loadBanner({required double width}) async {
     final unitId = ids.banner;
     if (unitId == null || !await _ready()) return null;
+    // The standard 320×50 banner: smaller than an adaptive one. A screen
+    // narrower than the banner shows none.
+    const size = AdSize.banner;
+    if (width < size.width || !adsEnabled) return null;
     try {
-      final size = await AdSize.getLargeAnchoredAdaptiveBannerAdSize(
-        width.truncate(),
-      );
-      if (size == null || !adsEnabled) return null;
       final loaded = Completer<AdView?>();
       final ad = BannerAd(
         size: size,

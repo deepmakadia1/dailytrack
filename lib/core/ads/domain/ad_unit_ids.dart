@@ -16,7 +16,7 @@ final class AdUnitIds {
 
   /// Google's public Android test IDs. Safe to commit (Constitution VI).
   static const AdUnitIds test = AdUnitIds(
-    banner: 'ca-app-pub-3940256099942544/9214589741',
+    banner: 'ca-app-pub-3940256099942544/6300978111',
     native: 'ca-app-pub-3940256099942544/2247696110',
     interstitial: 'ca-app-pub-3940256099942544/1033173712',
     rewarded: 'ca-app-pub-3940256099942544/5224354917',

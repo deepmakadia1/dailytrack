@@ -68,7 +68,7 @@ build without the ID (breaks CI pull-request builds, rejected in clarification).
 
 **Decision**: `lib/core/ads/domain/ad_unit_ids.dart` (pure Dart):
 - `AdUnitIds.test` holds Google's public Android test IDs:
-  - adaptive banner `ca-app-pub-3940256099942544/9214589741`
+  - banner `ca-app-pub-3940256099942544/6300978111` (fixed size; was the adaptive test unit `…/9214589741`)
   - native `ca-app-pub-3940256099942544/2247696110`
   - interstitial `ca-app-pub-3940256099942544/1033173712`
   - rewarded `ca-app-pub-3940256099942544/5224354917`
@@ -219,6 +219,10 @@ loads.
   `NavigationBar` and the FAB above it, with safe areas.
 - **Orientation**: the ad is reloaded when the width changes by more than 1 dp. A new
   `LayoutBuilder` width triggers one reload, after a 500 ms debounce.
+
+**Update (2026-10-27)**: the banner is now the standard `AdSize.banner` (320×50), centered,
+for a smaller ad on every screen; screens narrower than 320 dp show none. This replaces the size
+decision above and FR-006's screen-width adaptive size.
 
 **Rationale**: This covers FR-006, FR-007, FR-015, the §15.6 no-layout-shift rule, and the §15.8
 8 dp gap. The large anchored size is AdMob's current recommendation.

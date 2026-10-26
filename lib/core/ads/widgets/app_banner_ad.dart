@@ -9,8 +9,8 @@ import 'package:dailytrack/core/theme/app_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// The bottom banner (spec §11): a large anchored adaptive banner placed in
-/// `AppScaffold.bannerSlot`. It takes no space until an ad loads, then
+/// The bottom banner (spec §11): a standard 320×50 banner, centered, placed
+/// in `AppScaffold.bannerSlot`. It takes no space until an ad loads, then
 /// animates in with an 8 dp gap above it (§15.8). With `NoAdsService` it is
 /// always zero height.
 class AppBannerAd extends ConsumerStatefulWidget {
@@ -31,7 +31,7 @@ class _AppBannerAdState extends ConsumerState<AppBannerAd>
     final previous = _width;
     _width = width;
     super.didChangeDependencies();
-    // A new width (rotation, split screen) needs a banner of the new size.
+    // A new width (rotation, split screen) may now fit the banner, or not.
     if (previous != null && (width - previous).abs() > 1) {
       _resize?.cancel();
       _resize = Timer(const Duration(milliseconds: 500), () {

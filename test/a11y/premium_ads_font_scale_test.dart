@@ -143,11 +143,11 @@ void main() {
               tester,
               lang: lang,
               themeMode: mode,
-              // Worst-case sizes: a native template is 320 dp; a large
-              // adaptive banner is at most 15% of the 800 dp screen.
+              // Worst-case sizes: a native template is 320 dp; the
+              // standard banner is 50 dp.
               ads: FakeAdService(
                 view: FakeAdView(height: 320),
-                bannerView: FakeAdView(height: 120),
+                bannerView: FakeAdView(height: 50),
               ),
             );
             await go(tester, location);

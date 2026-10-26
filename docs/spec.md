@@ -463,7 +463,7 @@ Every screen spec in sections 6–10 and 16 follows the same template: **Purpose
 4. **Active filter chips** (if any): category, account, payment mode, type, amount range. Each chip has an × to remove it.
 5. **Grouped list:** Sticky date headers ("Today," "Yesterday," "Mon, 12 Oct") with that day's total. Each row: category icon in a colored circle, category name, note (one line, ellipsized), account + payment mode in small text, amount right-aligned.
 6. **Native ad** after the 8th row, then every 15 rows, maximum 3 per screen load.
-7. **Banner ad** anchored at the bottom above the nav bar (`AppBannerAd`, adaptive size).
+7. **Banner ad** anchored at the bottom above the nav bar (`AppBannerAd`, standard 320×50 size).
 8. **FAB:** + opens EXP-02 with type Expense.
 
 **Behavior:**
@@ -830,7 +830,7 @@ Ads must never interrupt logging. Every placement below sits on a reading screen
 
 | Format | Screens | Rule |
 | --- | --- | --- |
-| Banner (adaptive, anchored bottom) | EXP-01, EXP-03, EXP-04, EXP-06, EXP-11, HAB-01, HAB-03, HAB-04, SET-01, SET-02 | Never on add/edit forms, lock, onboarding, or PRM screens |
+| Banner (standard 320×50, anchored bottom) | EXP-01, EXP-03, EXP-04, EXP-06, EXP-11, HAB-01, HAB-03, HAB-04, SET-01, SET-02 | Never on add/edit forms, lock, onboarding, or PRM screens |
 | Native (medium template) | DSH-01 (after 2nd card), EXP-01 (after row 8, then every 15, max 3), EXP-08 (after list), HAB-01 (after 4th card, if 5+ habits) | Clearly labeled "Ad"; styled like app cards |
 | Interstitial | After EXP-02 save (every 4th new entry), after new habit save in HAB-02, after manual backup success in SET-02 | Shown only after the screen has closed and the app is idle; may appear over Home when EXP-02 or HAB-02 closes back to it |
 | Rewarded | PRM-02 only: advanced reports (24 h), one export, one premium theme (permanent), streak freeze | Reward granted only in `onUserEarnedReward` |

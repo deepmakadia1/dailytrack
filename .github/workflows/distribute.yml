@@ -78,6 +78,33 @@ jobs:
 
       - uses: actions/checkout@v4
 
+      # After checkout: checkout cleans the workspace, where auth writes
+      # the credentials file.
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      # Asks App Distribution before the build whether this key may use the
+      # app, and logs which service account it is. A 403 here is the same
+      # 403 the upload would hit, with Google's reason.
+      - name: Check App Distribution access
+        env:
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+        run: |
+          email=$(jq -r .client_email "$GOOGLE_APPLICATION_CREDENTIALS")
+          project_number=$(printf '%s' "$FIREBASE_APP_ID" | cut -d: -f2)
+          echo "Service account: $email"
+          echo "Firebase project number: $project_number"
+          gcloud auth login --cred-file="$GOOGLE_APPLICATION_CREDENTIALS" --quiet >/dev/null 2>&1
+          token=$(gcloud auth print-access-token)
+          status=$(curl -sS -o response.json -w '%{http_code}'             -H "Authorization: Bearer $token"             "https://firebaseappdistribution.googleapis.com/v1/projects/$project_number/apps/$FIREBASE_APP_ID/releases?pageSize=1")
+          if [ "$status" != "200" ]; then
+            echo "::error::App Distribution answered HTTP $status for $email: $(jq -r '.error.message // empty' response.json)"
+            echo "::error::Grant $email the role 'Firebase App Distribution Admin' in Google Cloud IAM for project number $project_number, and click Get started in Firebase console → App Distribution"
+            exit 1
+          fi
+          echo "Access OK"
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -140,10 +167,6 @@ jobs:
         with:
           name: dailytrack-${{ inputs.flavor }}-${{ inputs.variant }}-${{ github.run_number }}
           path: ${{ env.APK_PATH }}
-
-      - uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
       - name: Share through App Distribution
         env:
