@@ -205,7 +205,7 @@ final class DriveBackupStoreProvider
   }
 }
 
-String _$driveBackupStoreHash() => r'20b43a9f2af6a0a3977012763fb467917a1b0c52';
+String _$driveBackupStoreHash() => r'0e2cccf3ceaa4a89d66b6c8c161b8320201c86b5';
 
 /// The backup password in secure storage (feature 008 research R4).
 
@@ -364,6 +364,56 @@ final class BackupCacheDirProvider
 }
 
 String _$backupCacheDirHash() => r'c38102caaca15be867279ddefcfa43529c617b66';
+
+/// The 7-day safety copy in app support (feature 010 data-model §5).
+/// Widget tests override it with a fake.
+
+@ProviderFor(safetyCopyStore)
+final safetyCopyStoreProvider = SafetyCopyStoreProvider._();
+
+/// The 7-day safety copy in app support (feature 010 data-model §5).
+/// Widget tests override it with a fake.
+
+final class SafetyCopyStoreProvider
+    extends
+        $FunctionalProvider<SafetyCopyStore, SafetyCopyStore, SafetyCopyStore>
+    with $Provider<SafetyCopyStore> {
+  /// The 7-day safety copy in app support (feature 010 data-model §5).
+  /// Widget tests override it with a fake.
+  SafetyCopyStoreProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'safetyCopyStoreProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$safetyCopyStoreHash();
+
+  @$internal
+  @override
+  $ProviderElement<SafetyCopyStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  SafetyCopyStore create(Ref ref) {
+    return safetyCopyStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SafetyCopyStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SafetyCopyStore>(value),
+    );
+  }
+}
+
+String _$safetyCopyStoreHash() => r'76dfbe0a6c69f1a8c465b641764faa12932697eb';
 
 /// Runs after a restore: reschedule notifications and run app-open work
 /// (FR-010). Bound in `lib/app/production_overrides.dart`, because core never
@@ -550,7 +600,7 @@ final class BackupServiceProvider
   }
 }
 
-String _$backupServiceHash() => r'185c7aa773c4ba9f75428c061395da3f28be5f14';
+String _$backupServiceHash() => r'7041747f54587cfdade069a3f1898ecbd69fba67';
 
 @ProviderFor(restoreService)
 final restoreServiceProvider = RestoreServiceProvider._();
@@ -592,3 +642,56 @@ final class RestoreServiceProvider
 }
 
 String _$restoreServiceHash() => r'743ab8a4c320111e255f2d5c2bb5cb90afd21261';
+
+/// Starts a background backup when the app is hidden (feature 010 R6).
+
+@ProviderFor(backgroundBackupScheduler)
+final backgroundBackupSchedulerProvider = BackgroundBackupSchedulerProvider._();
+
+/// Starts a background backup when the app is hidden (feature 010 R6).
+
+final class BackgroundBackupSchedulerProvider
+    extends
+        $FunctionalProvider<
+          BackgroundBackupScheduler,
+          BackgroundBackupScheduler,
+          BackgroundBackupScheduler
+        >
+    with $Provider<BackgroundBackupScheduler> {
+  /// Starts a background backup when the app is hidden (feature 010 R6).
+  BackgroundBackupSchedulerProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'backgroundBackupSchedulerProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$backgroundBackupSchedulerHash();
+
+  @$internal
+  @override
+  $ProviderElement<BackgroundBackupScheduler> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  BackgroundBackupScheduler create(Ref ref) {
+    return backgroundBackupScheduler(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(BackgroundBackupScheduler value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<BackgroundBackupScheduler>(value),
+    );
+  }
+}
+
+String _$backgroundBackupSchedulerHash() =>
+    r'42283f6faa36bbb43db534909d82296645fd7749';

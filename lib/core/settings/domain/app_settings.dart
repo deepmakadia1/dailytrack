@@ -112,6 +112,75 @@ abstract class AppSettings with _$AppSettings {
     /// The IANA zone seen at the last app open or time zone trigger, so a
     /// change reschedules notifications (FR-041, research R21).
     String? deviceTimeZoneId,
+
+    /// First start of this install, UTC ms: the 2-day interstitial rule
+    /// (spec §11). Kept by Erase all data; never in backups (feature 009
+    /// data-model §1).
+    int? adsInstallAt,
+
+    /// When the last interstitial was shown, UTC ms.
+    int? adsLastInterstitialAt,
+
+    /// Local `yyyy-MM-dd` that [adsInterstitialsToday] counts for.
+    String? adsInterstitialDay,
+
+    /// Interstitials shown on [adsInterstitialDay].
+    @Default(0) int adsInterstitialsToday,
+
+    /// Local day the last app session started on (first session of the day).
+    String? adsLastSessionDay,
+
+    /// Local `yyyy-MM-dd` that [rewardedCounts] counts for (FR-053).
+    String? rewardedDay,
+
+    /// Rewards earned on [rewardedDay], by feature key storage text.
+    @Default({}) Map<String, int> rewardedCounts,
+
+    /// Online starts in a row that reported Pro not owned, 0–2 (feature 009
+    /// clarification Q1).
+    @Default(0) int proNotOwnedStreak,
+
+    /// A Pro payment is pending in Google Play.
+    @Default(false) bool proPurchasePending,
+
+    /// Pro was reported not owned twice: removed at the next cold start, so
+    /// locks and ads return together (analysis I1).
+    @Default(false) bool proRemovalPending,
+
+    // Feature 010 (data-model §1). None of these is ever restored.
+
+    /// The signed-in account's name and photo, for ACC-01 (FR-003).
+    String? accountDisplayName,
+    String? accountPhotoUrl,
+
+    /// Copy of the no-backup device ID file (research R4).
+    String? deviceId,
+
+    /// Raised only by SQLite triggers on writes to backed-up data
+    /// (research R5).
+    @Default(0) int dataChangeCounter,
+
+    /// [dataChangeCounter] inside the snapshot of the last successful
+    /// Drive backup.
+    @Default(0) int backedUpChangeCounter,
+
+    /// UTC ms of the last background backup request (15-minute rule).
+    int? lastBackgroundBackupAt,
+
+    /// `createdAt` (UTC ms) and device of the newest Drive backup this
+    /// phone made or has seen (FR-040).
+    int? lastKnownDriveBackupAt,
+    String? lastKnownDriveBackupDeviceId,
+
+    /// Auto backup stopped by a newer backup from another phone (FR-038).
+    @Default(false) bool autoBackupPausedByConflict,
+
+    /// The pause notification was shown for this pause.
+    @Default(false) bool autoBackupPauseNotified,
+
+    /// Show the "Finish setting up" sheet once on Home: a restore onto an
+    /// empty phone skipped the app lock step (research R13).
+    @Default(false) bool finishSetupPending,
   }) = _AppSettings;
 }
 

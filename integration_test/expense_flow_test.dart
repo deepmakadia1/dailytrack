@@ -382,6 +382,12 @@ final class _NoBackground implements BackgroundScheduler {
   Future<void> ensureDaily(String uniqueName) async {}
 
   @override
+  Future<void> enqueueOnce(
+    String uniqueName, {
+    NetworkRequirement network = NetworkRequirement.none,
+  }) async {}
+
+  @override
   Future<void> ensurePeriodic(
     String uniqueName, {
     required Duration every,

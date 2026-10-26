@@ -1,6 +1,7 @@
 import 'package:dailytrack/app/auto_backup_task.dart';
 import 'package:dailytrack/app/production_overrides.dart';
 import 'package:dailytrack/core/backup/auto_backup_schedule.dart';
+import 'package:dailytrack/core/backup/background_backup_scheduler.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
 import 'package:dailytrack/core/module/tracker_module.dart' show BackgroundTask;
 import 'package:dailytrack/core/notifications/notification_providers.dart';
@@ -13,6 +14,8 @@ import 'package:workmanager/workmanager.dart';
 /// App-wide jobs, checked before module jobs (feature 008 research R11).
 final Map<String, BackgroundTask> coreBackgroundTasks = {
   autoBackupTaskName: runAutoBackup,
+  // The one-off backup when the app is hidden (feature 010 research R6).
+  backgroundBackupTaskName: runAutoBackup,
 };
 
 /// Runs the background task [name] (research R10): a core task, or one of

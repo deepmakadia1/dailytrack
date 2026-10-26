@@ -1,9 +1,13 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/backup/backup_providers.dart';
+import 'package:dailytrack/core/backup/domain/backup_errors.dart';
+import 'package:dailytrack/core/backup/presentation/backup_password_sheet.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/l10n/l10n_lookup.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
+import 'package:dailytrack/core/module/root_navigator.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
 import 'package:dailytrack/features/onboarding/presentation/controllers/onboarding_controller.dart';
@@ -62,6 +66,26 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       (_, step) => _showStep(step),
     );
 
+    // Full screen while restoring; back can't interrupt it (FR-017).
+    if (state.googleRestore == GoogleRestoreStatus.restoring) {
+      return PopScope(
+        canPop: false,
+        child: Scaffold(
+          body: Center(
+            key: const Key('sys02_restoring'),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(),
+                SizedBox(height: tokens.s16),
+                Text(l10n.account_restoring),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -104,6 +128,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             LanguageStep(
                               languageCode: state.languageCode,
                               onLanguageSelected: controller.selectLanguage,
+                              restore: ref.watch(driveAvailableProvider)
+                                  ? _RestoreWithGoogle(state: state)
+                                  : null,
                             ),
                             CurrencyStep(
                               selectedCode: state.currencyCode,
@@ -160,6 +187,84 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           },
         ),
       ),
+    );
+  }
+}
+
+/// SYS-02 step 1 "Restore with Google" (spec §2): a secondary button, and
+/// what happened last time it was tapped.
+class _RestoreWithGoogle extends ConsumerWidget {
+  const new({required this.state});
+
+  final OnboardingState state;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final tokens = AppTokens.of(context);
+    final theme = Theme.of(context);
+    final busy =
+        state.saving || state.googleRestore == GoogleRestoreStatus.signingIn;
+
+    Future<void> restore() {
+      // Shown over Home after the router leaves onboarding.
+      final proRestored = l10n.premium_restored;
+      return ref
+          .read(onboardingControllerProvider.notifier)
+          .restoreWithGoogle(
+            askPassword: ({required wrong}) => showBackupPasswordPrompt(
+              context,
+              error: wrong ? l10n.account_wrongPassword : null,
+            ),
+            onProRestored: () => rootMessengerKey.currentState?.showSnackBar(
+              SnackBar(
+                key: const Key('sys02_proRestored'),
+                content: Text(proRestored),
+              ),
+            ),
+          );
+    }
+
+    final error = state.googleRestoreError;
+    final message = switch (state.googleRestore) {
+      GoogleRestoreStatus.noBackup => l10n.onboarding_noBackupFound,
+      GoogleRestoreStatus.failed when error is DriveAuthRequired =>
+        l10n.account_sessionExpired,
+      GoogleRestoreStatus.failed => l10n.account_restoreFailed,
+      _ => null,
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        OutlinedButton.icon(
+          key: const Key('sys02.restoreWithGoogle'),
+          onPressed: busy ? null : () => unawaited(restore()),
+          icon: busy
+              ? SizedBox.square(
+                  dimension: tokens.chipIconSize,
+                  child: const CircularProgressIndicator(),
+                )
+              : const Icon(Icons.cloud_download_outlined),
+          label: Text(
+            state.googleRestore == GoogleRestoreStatus.failed
+                ? l10n.common_tryAgain
+                : l10n.onboarding_restoreWithGoogle,
+          ),
+        ),
+        if (message != null) ...[
+          SizedBox(height: tokens.s8),
+          Text(
+            message,
+            key: const Key('sys02_restoreMessage'),
+            textAlign: TextAlign.center,
+            style: state.googleRestore == GoogleRestoreStatus.failed
+                ? theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.error,
+                  )
+                : theme.textTheme.bodyMedium,
+          ),
+        ],
+      ],
     );
   }
 }

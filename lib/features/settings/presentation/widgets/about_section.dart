@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/ad_providers.dart';
 import 'package:dailytrack/core/config/app_links.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/share/text_sharer.dart';
@@ -19,17 +20,29 @@ import 'package:go_router/go_router.dart';
 /// Package name used before `package_info_plus` answers.
 const String _fallbackPackage = 'com.midexcode.daily.track.dailytrack';
 
-/// SET-01 Privacy (FR-011): the policy and terms in the in-app web view.
-/// "Ad privacy choices" arrives with the ads SDK (feature 008).
-class PrivacySection extends StatelessWidget {
+/// SET-01 Privacy (FR-011): "Ad privacy choices" while the consent SDK
+/// requires it (feature 009 FR-014), then the policy and terms in the
+/// in-app web view.
+class PrivacySection extends ConsumerWidget {
   const new({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final adChoices = ref.watch(privacyOptionsRequiredProvider).value ?? false;
     return SettingsSection(
       title: l10n.settings_privacy,
       children: [
+        if (adChoices)
+          ListTile(
+            key: const Key('ad_privacy_choices'),
+            leading: const Icon(Icons.ads_click_outlined),
+            title: Text(l10n.privacy_adChoices),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => unawaited(
+              ref.read(consentServiceProvider).showPrivacyOptionsForm(),
+            ),
+          ),
         ListTile(
           key: const Key('settings_privacy_policy'),
           leading: const Icon(Icons.privacy_tip_outlined),

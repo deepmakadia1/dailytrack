@@ -72,7 +72,7 @@ void main() {
     // US3 regression (T080): the criterion holds on schema v4 (feature 005),
     // and seeding never writes transactions, rules, budgets, unlocks or
     // habit rows (no habit seed data, research R17 of feature 005).
-    expect(db.schemaVersion, 4);
+    expect(db.schemaVersion, 5);
     expect(await db.select(db.transactions).get(), isEmpty);
     expect(await db.select(db.recurringRules).get(), isEmpty);
     expect(await db.select(db.budgets).get(), isEmpty);

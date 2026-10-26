@@ -1,5 +1,4 @@
 import 'package:dailytrack/core/backup/backup_service.dart';
-import 'package:dailytrack/core/backup/domain/backup_errors.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
 import 'package:dailytrack/core/backup/presentation/drive_backup_tile.dart';
 import 'package:dailytrack/core/backup/presentation/restore_flow.dart';
@@ -11,21 +10,20 @@ import 'package:flutter/material.dart';
 enum DriveRestoreResult { restored, cancelled, noBackups }
 
 /// Restore from Google Drive where SET-02 is not open, e.g. SYS-03 "Forgot
-/// PIN?" (FR-024): connect the Google account, pick a backup, then the
-/// usual password, summary, and "Replace current data?" steps. Nothing
-/// changes until the user confirms. [onConnected] stores the account.
+/// PIN?" (FR-024): sign in with the shared `AccountService` sign-in
+/// ([signIn], false when cancelled; feature 010 research R1), pick a
+/// backup, then the usual password, summary, and "Replace current data?"
+/// steps. Nothing changes until the user confirms.
 Future<DriveRestoreResult> showDriveRestoreFlow(
   BuildContext context, {
   required DriveBackupStore drive,
   required RestoreService restore,
   required Map<String, String Function(Map<String, int>)> moduleSummaries,
-  required Future<void> Function(String email) onConnected,
+  required Future<bool> Function() signIn,
 }) async {
   final l10n = AppLocalizations.of(context);
   try {
-    await onConnected(await drive.connect());
-  } on DriveAuthRequired {
-    return DriveRestoreResult.cancelled;
+    if (!await signIn()) return DriveRestoreResult.cancelled;
   } on Object catch (e) {
     if (context.mounted) {
       await showBackupError(context, l10n.restore_failedTitle, e);

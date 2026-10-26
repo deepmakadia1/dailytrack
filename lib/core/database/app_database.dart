@@ -34,6 +34,8 @@ part 'app_database.g.dart';
     HabitSchedules,
     HabitEntries,
   ],
+  // Change-counter triggers (feature 010 research R5).
+  include: {'tables/backup_triggers.drift'},
 )
 class AppDatabase extends _$AppDatabase {
   // The generated superclass names its parameter `e`.
@@ -52,7 +54,7 @@ class AppDatabase extends _$AppDatabase {
   // coverage:ignore-end
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -114,6 +116,14 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(schema.habitEntries);
         await m.createIndex(schema.habitEntriesHabitDateUnique);
         await m.createIndex(schema.habitEntriesDate);
+      },
+      // v5 (010-google-account-backup, data-model §2): the change-counter
+      // triggers only. No table or row is touched, so backups need no
+      // upgrade step.
+      from4To5: (m, schema) async {
+        for (final trigger in schema.entities.whereType<Trigger>()) {
+          await m.createTrigger(trigger);
+        }
       },
     ),
     beforeOpen: (details) async {

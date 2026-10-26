@@ -1427,10 +1427,472 @@ i1.GeneratedColumn<int> _column_58(String aliasedName) =>
       $customConstraints: 'NOT NULL DEFAULT 0 CHECK (is_freeze IN (0, 1))',
       defaultValue: const i1.CustomExpression('0'),
     );
+
+final class Schema5 extends i0.VersionedSchema {
+  Schema5({required super.database}) : super(version: 5);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    accounts,
+    settings,
+    bkAccountsIns,
+    bkAccountsUpd,
+    bkAccountsDel,
+    categories,
+    bkCategoriesIns,
+    bkCategoriesUpd,
+    bkCategoriesDel,
+    recurringRules,
+    transactions,
+    bkTransactionsIns,
+    bkTransactionsUpd,
+    bkTransactionsDel,
+    budgets,
+    bkBudgetsIns,
+    bkBudgetsUpd,
+    bkBudgetsDel,
+    bkRecurringRulesIns,
+    bkRecurringRulesUpd,
+    bkRecurringRulesDel,
+    habits,
+    bkHabitsIns,
+    bkHabitsUpd,
+    bkHabitsDel,
+    habitSchedules,
+    bkHabitSchedulesIns,
+    bkHabitSchedulesUpd,
+    bkHabitSchedulesDel,
+    habitEntries,
+    bkHabitEntriesIns,
+    bkHabitEntriesUpd,
+    bkHabitEntriesDel,
+    bkSettingsIns,
+    bkSettingsUpd,
+    bkSettingsDel,
+    habitEntriesHabitDateUnique,
+    habitEntriesDate,
+    habitSchedulesHabitFromUnique,
+    habitsActiveOrder,
+    recurringRulesDue,
+    budgetsMonth,
+    budgetsMonthCategoryUnique,
+    transactionsOccurred,
+    transactionsCategoryOccurred,
+    transactionsAccountOccurred,
+    transactionsRule,
+    categoriesTypeSort,
+    unlocks,
+    unlocksFeature,
+  ];
+  late final Shape2 accounts = Shape2(
+    source: i0.VersionedTable(
+      entityName: 'accounts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(id)'],
+      columns: [
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_13,
+        _column_6,
+        _column_7,
+        _column_9,
+        _column_10,
+        _column_11,
+        _column_2,
+        _column_12,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape0 settings = Shape0(
+    source: i0.VersionedTable(
+      entityName: 'settings',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY("key")'],
+      columns: [_column_0, _column_1, _column_2],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  final i1.Trigger bkAccountsIns = i1.Trigger(
+    'CREATE TRIGGER bk_accounts_ins AFTER INSERT ON accounts BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_accounts_ins',
+  );
+  final i1.Trigger bkAccountsUpd = i1.Trigger(
+    'CREATE TRIGGER bk_accounts_upd AFTER UPDATE ON accounts BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_accounts_upd',
+  );
+  final i1.Trigger bkAccountsDel = i1.Trigger(
+    'CREATE TRIGGER bk_accounts_del AFTER DELETE ON accounts BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_accounts_del',
+  );
+  late final Shape1 categories = Shape1(
+    source: i0.VersionedTable(
+      entityName: 'categories',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(id)'],
+      columns: [
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_8,
+        _column_9,
+        _column_10,
+        _column_11,
+        _column_2,
+        _column_12,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  final i1.Trigger bkCategoriesIns = i1.Trigger(
+    'CREATE TRIGGER bk_categories_ins AFTER INSERT ON categories BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_categories_ins',
+  );
+  final i1.Trigger bkCategoriesUpd = i1.Trigger(
+    'CREATE TRIGGER bk_categories_upd AFTER UPDATE ON categories BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_categories_upd',
+  );
+  final i1.Trigger bkCategoriesDel = i1.Trigger(
+    'CREATE TRIGGER bk_categories_del AFTER DELETE ON categories BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_categories_del',
+  );
+  late final Shape4 recurringRules = Shape4(
+    source: i0.VersionedTable(
+      entityName: 'recurring_rules',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(id)'],
+      columns: [
+        _column_3,
+        _column_23,
+        _column_14,
+        _column_15,
+        _column_16,
+        _column_17,
+        _column_18,
+        _column_19,
+        _column_24,
+        _column_25,
+        _column_26,
+        _column_27,
+        _column_28,
+        _column_29,
+        _column_11,
+        _column_2,
+        _column_12,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape3 transactions = Shape3(
+    source: i0.VersionedTable(
+      entityName: 'transactions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(id)'],
+      columns: [
+        _column_3,
+        _column_5,
+        _column_14,
+        _column_15,
+        _column_16,
+        _column_17,
+        _column_18,
+        _column_19,
+        _column_20,
+        _column_21,
+        _column_30,
+        _column_11,
+        _column_2,
+        _column_12,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  final i1.Trigger bkTransactionsIns = i1.Trigger(
+    'CREATE TRIGGER bk_transactions_ins AFTER INSERT ON transactions BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_transactions_ins',
+  );
+  final i1.Trigger bkTransactionsUpd = i1.Trigger(
+    'CREATE TRIGGER bk_transactions_upd AFTER UPDATE ON transactions BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_transactions_upd',
+  );
+  final i1.Trigger bkTransactionsDel = i1.Trigger(
+    'CREATE TRIGGER bk_transactions_del AFTER DELETE ON transactions BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_transactions_del',
+  );
+  late final Shape5 budgets = Shape5(
+    source: i0.VersionedTable(
+      entityName: 'budgets',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [
+        'PRIMARY KEY(id)',
+        'CHECK(month_key GLOB \'[0-9][0-9][0-9][0-9]-[01][0-9]\')',
+      ],
+      columns: [
+        _column_3,
+        _column_17,
+        _column_31,
+        _column_32,
+        _column_33,
+        _column_34,
+        _column_35,
+        _column_11,
+        _column_2,
+        _column_12,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  final i1.Trigger bkBudgetsIns = i1.Trigger(
+    'CREATE TRIGGER bk_budgets_ins AFTER INSERT ON budgets BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_budgets_ins',
+  );
+  final i1.Trigger bkBudgetsUpd = i1.Trigger(
+    'CREATE TRIGGER bk_budgets_upd AFTER UPDATE ON budgets BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_budgets_upd',
+  );
+  final i1.Trigger bkBudgetsDel = i1.Trigger(
+    'CREATE TRIGGER bk_budgets_del AFTER DELETE ON budgets BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_budgets_del',
+  );
+  final i1.Trigger bkRecurringRulesIns = i1.Trigger(
+    'CREATE TRIGGER bk_recurring_rules_ins AFTER INSERT ON recurring_rules BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_recurring_rules_ins',
+  );
+  final i1.Trigger bkRecurringRulesUpd = i1.Trigger(
+    'CREATE TRIGGER bk_recurring_rules_upd AFTER UPDATE ON recurring_rules BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_recurring_rules_upd',
+  );
+  final i1.Trigger bkRecurringRulesDel = i1.Trigger(
+    'CREATE TRIGGER bk_recurring_rules_del AFTER DELETE ON recurring_rules BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_recurring_rules_del',
+  );
+  late final Shape7 habits = Shape7(
+    source: i0.VersionedTable(
+      entityName: 'habits',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [
+        'PRIMARY KEY(id)',
+        'CHECK(length(trim(name)) BETWEEN 1 AND 40)',
+        'CHECK((kind = 0 AND target_value = 1)OR(kind = 1 AND target_value BETWEEN 1 AND 9999))',
+        'CHECK(start_date_key GLOB \'[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]\')',
+      ],
+      columns: [
+        _column_3,
+        _column_39,
+        _column_6,
+        _column_40,
+        _column_41,
+        _column_42,
+        _column_43,
+        _column_44,
+        _column_45,
+        _column_46,
+        _column_47,
+        _column_48,
+        _column_49,
+        _column_9,
+        _column_50,
+        _column_10,
+        _column_51,
+        _column_52,
+        _column_11,
+        _column_2,
+        _column_12,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  final i1.Trigger bkHabitsIns = i1.Trigger(
+    'CREATE TRIGGER bk_habits_ins AFTER INSERT ON habits BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habits_ins',
+  );
+  final i1.Trigger bkHabitsUpd = i1.Trigger(
+    'CREATE TRIGGER bk_habits_upd AFTER UPDATE ON habits BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habits_upd',
+  );
+  final i1.Trigger bkHabitsDel = i1.Trigger(
+    'CREATE TRIGGER bk_habits_del AFTER DELETE ON habits BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habits_del',
+  );
+  late final Shape8 habitSchedules = Shape8(
+    source: i0.VersionedTable(
+      entityName: 'habit_schedules',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [
+        'PRIMARY KEY(id)',
+        'CHECK(effective_from_key GLOB \'[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]\')',
+      ],
+      columns: [
+        _column_3,
+        _column_53,
+        _column_54,
+        _column_44,
+        _column_45,
+        _column_46,
+        _column_55,
+        _column_11,
+        _column_2,
+        _column_12,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  final i1.Trigger bkHabitSchedulesIns = i1.Trigger(
+    'CREATE TRIGGER bk_habit_schedules_ins AFTER INSERT ON habit_schedules BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habit_schedules_ins',
+  );
+  final i1.Trigger bkHabitSchedulesUpd = i1.Trigger(
+    'CREATE TRIGGER bk_habit_schedules_upd AFTER UPDATE ON habit_schedules BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habit_schedules_upd',
+  );
+  final i1.Trigger bkHabitSchedulesDel = i1.Trigger(
+    'CREATE TRIGGER bk_habit_schedules_del AFTER DELETE ON habit_schedules BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habit_schedules_del',
+  );
+  late final Shape9 habitEntries = Shape9(
+    source: i0.VersionedTable(
+      entityName: 'habit_entries',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [
+        'PRIMARY KEY(id)',
+        'CHECK(date_key GLOB \'[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]\')',
+      ],
+      columns: [
+        _column_3,
+        _column_53,
+        _column_56,
+        _column_57,
+        _column_58,
+        _column_19,
+        _column_11,
+        _column_2,
+        _column_12,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  final i1.Trigger bkHabitEntriesIns = i1.Trigger(
+    'CREATE TRIGGER bk_habit_entries_ins AFTER INSERT ON habit_entries BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habit_entries_ins',
+  );
+  final i1.Trigger bkHabitEntriesUpd = i1.Trigger(
+    'CREATE TRIGGER bk_habit_entries_upd AFTER UPDATE ON habit_entries BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habit_entries_upd',
+  );
+  final i1.Trigger bkHabitEntriesDel = i1.Trigger(
+    'CREATE TRIGGER bk_habit_entries_del AFTER DELETE ON habit_entries BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habit_entries_del',
+  );
+  final i1.Trigger bkSettingsIns = i1.Trigger(
+    'CREATE TRIGGER bk_settings_ins AFTER INSERT ON settings WHEN(NEW."key" IN (\'locale\', \'currencyCode\', \'firstDayOfWeek\', \'dateFormat\', \'themeMode\', \'selectedTheme\', \'fontSize\', \'enabledModules\', \'moduleOrder\', \'notificationsEnabled\', \'budgetAlertsEnabled\', \'habitRemindersEnabled\', \'dailySummaryTime\', \'homeComingSoonDismissed\') OR NEW."key" LIKE \'module.%\')BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_settings_ins',
+  );
+  final i1.Trigger bkSettingsUpd = i1.Trigger(
+    'CREATE TRIGGER bk_settings_upd AFTER UPDATE ON settings WHEN(NEW."key" IN (\'locale\', \'currencyCode\', \'firstDayOfWeek\', \'dateFormat\', \'themeMode\', \'selectedTheme\', \'fontSize\', \'enabledModules\', \'moduleOrder\', \'notificationsEnabled\', \'budgetAlertsEnabled\', \'habitRemindersEnabled\', \'dailySummaryTime\', \'homeComingSoonDismissed\') OR NEW."key" LIKE \'module.%\')AND NEW.value IS NOT OLD.value BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_settings_upd',
+  );
+  final i1.Trigger bkSettingsDel = i1.Trigger(
+    'CREATE TRIGGER bk_settings_del AFTER DELETE ON settings WHEN(OLD."key" IN (\'locale\', \'currencyCode\', \'firstDayOfWeek\', \'dateFormat\', \'themeMode\', \'selectedTheme\', \'fontSize\', \'enabledModules\', \'moduleOrder\', \'notificationsEnabled\', \'budgetAlertsEnabled\', \'habitRemindersEnabled\', \'dailySummaryTime\', \'homeComingSoonDismissed\') OR OLD."key" LIKE \'module.%\')BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_settings_del',
+  );
+  final i1.Index habitEntriesHabitDateUnique = i1.Index(
+    'habit_entries_habit_date_unique',
+    'CREATE UNIQUE INDEX habit_entries_habit_date_unique ON habit_entries (habit_id, date_key)',
+  );
+  final i1.Index habitEntriesDate = i1.Index(
+    'habit_entries_date',
+    'CREATE INDEX habit_entries_date ON habit_entries (date_key)',
+  );
+  final i1.Index habitSchedulesHabitFromUnique = i1.Index(
+    'habit_schedules_habit_from_unique',
+    'CREATE UNIQUE INDEX habit_schedules_habit_from_unique ON habit_schedules (habit_id, effective_from_key) WHERE deleted_at IS NULL',
+  );
+  final i1.Index habitsActiveOrder = i1.Index(
+    'habits_active_order',
+    'CREATE INDEX habits_active_order ON habits (deleted_at, is_archived, sort_order)',
+  );
+  final i1.Index recurringRulesDue = i1.Index(
+    'recurring_rules_due',
+    'CREATE INDEX recurring_rules_due ON recurring_rules (is_active, next_run_at)',
+  );
+  final i1.Index budgetsMonth = i1.Index(
+    'budgets_month',
+    'CREATE INDEX budgets_month ON budgets (month_key)',
+  );
+  final i1.Index budgetsMonthCategoryUnique = i1.Index(
+    'budgets_month_category_unique',
+    'CREATE UNIQUE INDEX budgets_month_category_unique ON budgets (month_key, IFNULL(category_id, \'\')) WHERE deleted_at IS NULL',
+  );
+  final i1.Index transactionsOccurred = i1.Index(
+    'transactions_occurred',
+    'CREATE INDEX transactions_occurred ON transactions (occurred_at)',
+  );
+  final i1.Index transactionsCategoryOccurred = i1.Index(
+    'transactions_category_occurred',
+    'CREATE INDEX transactions_category_occurred ON transactions (category_id, occurred_at)',
+  );
+  final i1.Index transactionsAccountOccurred = i1.Index(
+    'transactions_account_occurred',
+    'CREATE INDEX transactions_account_occurred ON transactions (account_id, occurred_at)',
+  );
+  final i1.Index transactionsRule = i1.Index(
+    'transactions_rule',
+    'CREATE INDEX transactions_rule ON transactions (recurring_rule_id)',
+  );
+  final i1.Index categoriesTypeSort = i1.Index(
+    'categories_type_sort',
+    'CREATE INDEX categories_type_sort ON categories (type, sort_order)',
+  );
+  late final Shape6 unlocks = Shape6(
+    source: i0.VersionedTable(
+      entityName: 'unlocks',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(id)'],
+      columns: [
+        _column_3,
+        _column_36,
+        _column_37,
+        _column_38,
+        _column_11,
+        _column_2,
+        _column_12,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  final i1.Index unlocksFeature = i1.Index(
+    'unlocks_feature',
+    'CREATE INDEX unlocks_feature ON unlocks (feature_key)',
+  );
+}
+
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
   required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
+  required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -1449,6 +1911,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from3To4(migrator, schema);
         return 4;
+      case 4:
+        final schema = Schema5(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from4To5(migrator, schema);
+        return 5;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -1459,10 +1926,12 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
   required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
+  required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
 }) => i0.VersionedSchema.stepByStepHelper(
   step: migrationSteps(
     from1To2: from1To2,
     from2To3: from2To3,
     from3To4: from3To4,
+    from4To5: from4To5,
   ),
 );

@@ -82,15 +82,14 @@ class Habits extends Table {
   @override
   Set<Column<Object>> get primaryKey => {id};
 
-  /// Yes/no habits always have target 1; count habits 1–9,999.
-  static const String _targetMatchesKind =
-      'CHECK ((kind = 0 AND target_value = 1) OR '
-      '(kind = 1 AND target_value BETWEEN 1 AND 9999))';
-
+  // Literals only: `make-migrations` drops constraints given as constant
+  // references from the schema snapshot.
   @override
   List<String> get customConstraints => const [
     'CHECK (length(trim(name)) BETWEEN 1 AND 40)',
-    _targetMatchesKind,
+    // Yes/no habits always have target 1; count habits 1–9,999.
+    // ignore: lines_longer_than_80_chars, one literal for the snapshot
+    'CHECK ((kind = 0 AND target_value = 1) OR (kind = 1 AND target_value BETWEEN 1 AND 9999))',
     "CHECK (start_date_key GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]')",
   ];
 }

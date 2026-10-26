@@ -1,6 +1,7 @@
 import 'dart:ui' show Tristate;
 
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
 import 'package:dailytrack/core/widgets/app_scaffold.dart';
 import 'package:dailytrack/core/widgets/error_state.dart';
 import 'package:dailytrack/core/widgets/skeleton.dart';
@@ -600,7 +601,7 @@ void main() {
     });
   });
 
-  testWidgets('FR-049: no ad slot on HAB-01', (tester) async {
+  testWidgets('spec §11: HAB-01 has the bottom banner slot', (tester) async {
     await pumpHabitApp(tester, habits: habitFakes()..addHabit('Read'));
     final scaffold = tester.widget<AppScaffold>(
       find.descendant(
@@ -608,7 +609,7 @@ void main() {
         matching: find.byType(AppScaffold),
       ),
     );
-    expect(scaffold.bannerSlot, isNull);
+    expect(scaffold.bannerSlot, isA<AppBannerAd>());
   });
 
   testWidgets('a day rollover on resume selects the new today', (tester) async {

@@ -1,6 +1,10 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/rewarded_unlock.dart';
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
+import 'package:dailytrack/core/billing/billing_providers.dart';
+import 'package:dailytrack/core/feature_gate/domain/feature_key.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/module/root_navigator.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
@@ -140,6 +144,8 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
     final data = state.data.value;
     return AppScaffold(
       title: data?.habit.name ?? l10n.habit_detailTitle,
+      // Spec §11: the bottom banner (no space until an ad loads).
+      bannerSlot: const AppBannerAd(),
       padBody: false,
       actions: [
         if (data != null)
@@ -160,6 +166,26 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
           onUseFreeze: (day) => unawaited(_useFreeze(value, day)),
           onAddDebugFreeze: () => unawaited(_addDebugFreeze()),
           onShareHeatmap: () => unawaited(_shareHeatmap()),
+          // PRM-02 (feature 009 FR-032): 24 hours of advanced reports, or
+          // one more freeze for this habit, granted only by the reward.
+          onWatchAdReports: () => unawaited(
+            showRewardedUnlock(
+              context,
+              FeatureKey.advancedReports,
+              duration: const Duration(hours: 24),
+            ),
+          ),
+          onWatchAdFreeze: () => unawaited(
+            showRewardedUnlock(
+              context,
+              FeatureKey.streakFreeze,
+              grant: _controller.addRewardedFreeze,
+              subjectName: value.habit.name,
+            ),
+          ),
+          onGetPro: () => unawaited(context.push(Routes.premium)),
+          isPro: ref.watch(proOwnedProvider),
+          onAddProFreeze: () => unawaited(_controller.addProFreeze()),
         ),
         AsyncError() => ErrorState(
           message: l10n.habit_loadError,
@@ -179,6 +205,11 @@ class _Content extends StatelessWidget {
     required this.onUseFreeze,
     required this.onAddDebugFreeze,
     required this.onShareHeatmap,
+    required this.onWatchAdReports,
+    required this.onWatchAdFreeze,
+    required this.onGetPro,
+    required this.isPro,
+    required this.onAddProFreeze,
   });
 
   final HabitDetailData data;
@@ -187,6 +218,11 @@ class _Content extends StatelessWidget {
   final ValueChanged<LocalDate> onUseFreeze;
   final VoidCallback onAddDebugFreeze;
   final VoidCallback onShareHeatmap;
+  final VoidCallback onWatchAdReports;
+  final VoidCallback onWatchAdFreeze;
+  final VoidCallback onGetPro;
+  final bool isPro;
+  final VoidCallback onAddProFreeze;
 
   @override
   Widget build(BuildContext context) {
@@ -270,7 +306,11 @@ class _Content extends StatelessWidget {
               data.advancedReportsUnlocked
                   ? WeeklyBarsChart(bars: data.vm.weeklyBars, color: color)
                   : LockedFeatureOverlay(
+                      key: const Key('weekly_chart_locked'),
                       message: l10n.premium_advancedReportsMessage,
+                      watchAdLabel: l10n.locked_watchAdReports,
+                      onWatchAd: onWatchAdReports,
+                      onGetPro: onGetPro,
                       child: WeeklyBarsChart(
                         bars: data.vm.weeklyBars,
                         color: color,
@@ -294,6 +334,9 @@ class _Content extends StatelessWidget {
                 showDebugButton: data.showDebugFreezeButton,
                 onUse: onUseFreeze,
                 onAddDebug: onAddDebugFreeze,
+                onWatchAd: onWatchAdFreeze,
+                isPro: isPro,
+                onAddPro: onAddProFreeze,
               ),
             ),
           ],

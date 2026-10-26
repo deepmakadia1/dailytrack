@@ -1,13 +1,24 @@
 import 'dart:async';
 
+import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/account/account_providers.dart';
+import 'package:dailytrack/core/account/account_sign_in.dart';
+import 'package:dailytrack/core/ads/ad_providers.dart';
+import 'package:dailytrack/core/ads/domain/ad_trigger.dart';
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
 import 'package:dailytrack/core/backup/backup_providers.dart';
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
+import 'package:dailytrack/core/backup/domain/drive_backup_result.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
+import 'package:dailytrack/core/backup/domain/safety_copy.dart';
+import 'package:dailytrack/core/backup/presentation/backup_conflict_dialog.dart';
 import 'package:dailytrack/core/backup/presentation/backup_failure_text.dart';
 import 'package:dailytrack/core/backup/presentation/backup_password_sheet.dart';
+import 'package:dailytrack/core/backup/presentation/backup_summaries.dart';
 import 'package:dailytrack/core/backup/presentation/drive_backup_tile.dart';
 import 'package:dailytrack/core/backup/presentation/restore_flow.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
+import 'package:dailytrack/core/module/module_registry.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
 import 'package:dailytrack/core/utils/date_formats.dart';
@@ -22,6 +33,7 @@ import 'package:dailytrack/features/settings/presentation/controllers/backup_con
 import 'package:dailytrack/features/settings/presentation/widgets/choice_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// SET-02 Backup and restore (spec §10, feature 008 contracts/screens.md):
 /// last backup, Google Drive (connect, back up now, auto backup), the local
@@ -37,6 +49,8 @@ class BackupScreen extends ConsumerWidget {
     final async = ref.watch(backupControllerProvider);
     return AppScaffold(
       title: l10n.backup_title,
+      // Spec §11: the bottom banner (no space until an ad loads).
+      bannerSlot: const AppBannerAd(),
       padBody: false,
       body: switch (async) {
         AsyncValue(:final value?) => _BackupList(state: value),
@@ -69,12 +83,69 @@ Future<void> _showError(BuildContext context, String title, Object error) {
   );
 }
 
+/// "Sign in with Google" (the shared ACC-01 sign-in) and its next step:
+/// ACC-02 (through the account port, research R18) when the account has a
+/// backup.
+Future<void> _signIn(
+  BuildContext context,
+  WidgetRef ref,
+  BackupController controller,
+) async {
+  final l10n = AppLocalizations.of(context);
+  final messenger = ScaffoldMessenger.of(context);
+  final ui = ref.read(accountUiProvider);
+  final SignInOutcome outcome;
+  try {
+    outcome = await controller.signIn();
+  } on Object {
+    messenger.showSnackBar(
+      SnackBar(
+        key: const Key('backup_signInFailed'),
+        content: Text(l10n.account_signInFailed),
+      ),
+    );
+    return;
+  }
+  switch (outcome) {
+    case SignInCancelled():
+      break;
+    case SignedInAndBackedUp():
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.account_signedInBackedUp)),
+      );
+    case SignedInWithBackups(:final newest):
+      if (context.mounted) {
+        await ui.showRestoreChoice(context, newest: newest, afterSignIn: true);
+      }
+      await controller.refreshDrive();
+    case SignedInBackupFailed(:final error):
+      if (context.mounted) {
+        await _showError(context, l10n.backup_failedTitle, error);
+      }
+  }
+}
+
 String _frequencyLabel(AppLocalizations l10n, AutoBackupFrequency f) =>
     switch (f) {
       AutoBackupFrequency.off => l10n.backup_autoOff,
       AutoBackupFrequency.daily => l10n.backup_autoDaily,
       AutoBackupFrequency.weekly => l10n.backup_autoWeekly,
     };
+
+/// A manual backup succeeded: once its success message has closed, an
+/// interstitial may follow under the global cap (spec §11, SET-02 Ads).
+/// Auto backups never get here.
+void _interstitialAfter(
+  WidgetRef ref,
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> shown,
+) {
+  final ads = ref.read(adServiceProvider);
+  unawaited(
+    shown.closed.then(
+      (_) => ads.maybeShowInterstitial(const ManualBackupSucceeded()),
+    ),
+  );
+}
 
 class _BackupList extends ConsumerWidget {
   const new({required this.state});
@@ -115,6 +186,7 @@ class _BackupList extends ConsumerWidget {
           ],
         ),
         _DriveCard(state: state),
+        if (state.safetyCopy case final copy?) _SafetyCopyCard(copy: copy),
         _LocalCard(state: state),
         _Options(state: state),
         if (connected) _DriveList(state: state),
@@ -123,8 +195,9 @@ class _BackupList extends ConsumerWidget {
   }
 }
 
-/// Google Drive: connect, back up now, auto backup, disconnect (FR-014,
-/// FR-015, FR-018, FR-019).
+/// Google Drive: sign in (the ACC-01 sign-in), the account (→ ACC-01),
+/// back up now, auto backup (FR-014, FR-015, FR-018, FR-019; feature 010
+/// T063).
 class _DriveCard extends ConsumerWidget {
   const new({required this.state});
 
@@ -138,43 +211,30 @@ class _DriveCard extends ConsumerWidget {
     final email = state.accountEmail;
     final working = state.busy || state.uploading;
 
-    Future<void> connect() async {
-      try {
-        await controller.connect();
-      } on DriveAuthRequired {
-        // Cancelled at the account picker: stays disconnected.
-      } on Object catch (e) {
-        if (context.mounted) {
-          await _showError(context, l10n.backup_failedTitle, e);
-        }
-      }
-    }
+    Future<void> signIn() => _signIn(context, ref, controller);
 
     Future<void> backUpNow() async {
       final messenger = ScaffoldMessenger.of(context);
       try {
-        await controller.backUpNow();
-        messenger.showSnackBar(
+        var result = await controller.backUpNow();
+        if (result case NeedsConfirmation(:final conflict)) {
+          if (!context.mounted) return;
+          if (!await showBackupConflictDialog(context, conflict)) return;
+          result = await controller.backUpNow(overwrite: true);
+        }
+        if (result is! Uploaded) return;
+        final shown = messenger.showSnackBar(
           SnackBar(
             key: const Key('backup_drive_saved'),
             content: Text(l10n.backup_driveSaved),
           ),
         );
+        _interstitialAfter(ref, shown);
       } on Object catch (e) {
         if (context.mounted) {
           await _showError(context, l10n.backup_failedTitle, e);
         }
       }
-    }
-
-    Future<void> disconnect() async {
-      final ok = await ConfirmDialog.show(
-        context,
-        title: l10n.backup_disconnectTitle,
-        consequence: l10n.backup_disconnectBody,
-        confirmLabel: l10n.backup_disconnect,
-      );
-      if (ok) await controller.disconnect();
     }
 
     Future<void> pickFrequency() async {
@@ -205,20 +265,32 @@ class _DriveCard extends ConsumerWidget {
               key: const Key('backup_drive_unavailable'),
             )
           else if (email == null) ...[
+            if (state.sessionExpired) ...[
+              Text(
+                l10n.account_sessionExpired,
+                key: const Key('backup_sessionExpired'),
+              ),
+              SizedBox(height: tokens.s8),
+            ],
             Text(l10n.backup_driveBody),
             SizedBox(height: tokens.s16),
             OutlinedButton.icon(
-              key: const Key('backup_connect'),
-              onPressed: working ? null : () => unawaited(connect()),
-              icon: const Icon(Icons.add_link),
-              label: Text(l10n.backup_connect),
+              key: const Key('backup_signIn'),
+              onPressed: working ? null : () => unawaited(signIn()),
+              icon: const Icon(Icons.login),
+              label: Text(l10n.account_signIn),
             ),
           ] else ...[
-            Text(
-              l10n.backup_connected(email),
+            ListTile(
               key: const Key('backup_account'),
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.account_circle_outlined),
+              title: Text(email),
+              subtitle: Text(l10n.backup_manageAccount),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => unawaited(context.push(Routes.account)),
             ),
-            SizedBox(height: tokens.s16),
+            SizedBox(height: tokens.s8),
             if (state.uploading) ...[
               const LinearProgressIndicator(key: Key('backup_upload_progress')),
               SizedBox(height: tokens.s8),
@@ -259,18 +331,57 @@ class _DriveCard extends ConsumerWidget {
                 ? null
                 : (on) => unawaited(controller.setWifiOnly(wifiOnly: on)),
           ),
-          Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: tokens.s8),
-              child: TextButton(
-                key: const Key('backup_disconnect'),
-                onPressed: working ? null : () => unawaited(disconnect()),
-                child: Text(l10n.backup_disconnect),
-              ),
-            ),
-          ),
         ],
+      ],
+    );
+  }
+}
+
+/// "Restore previous phone data" (feature 010 FR-019a, clarification Q3):
+/// the copy saved before a restore from the account replaced this phone's
+/// data, for 7 days. The usual summary and "Replace current data?" steps,
+/// then the copy is deleted.
+class _SafetyCopyCard extends ConsumerWidget {
+  const new({required this.copy});
+
+  final SafetyCopyInfo copy;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final controller = ref.read(backupControllerProvider.notifier);
+    final date = formatFullDateTime(
+      Epoch.toLocal(copy.createdAt),
+      FullDateFormatScope.of(context),
+      Localizations.localeOf(context).toString(),
+    );
+    final counts = backupCountsLine(
+      ref.read(moduleRegistryProvider),
+      l10n,
+      copy.counts,
+    );
+
+    Future<void> restore() async {
+      final restored = await showRestoreFlow(
+        context,
+        ref.read(restoreServiceProvider),
+        source: controller.readSafetyCopy,
+        moduleSummaries: controller.summaries(l10n),
+      );
+      if (restored) await controller.safetyCopyRestored();
+    }
+
+    return SettingsSection(
+      title: l10n.backup_previousTitle,
+      children: [
+        ListTile(
+          key: const Key('backup_previous'),
+          leading: const Icon(Icons.history_toggle_off),
+          title: Text(l10n.backup_previousTitle),
+          subtitle: Text(l10n.backup_previousDetail(date, counts)),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => unawaited(restore()),
+        ),
       ],
     );
   }
@@ -296,7 +407,7 @@ class _LocalCard extends ConsumerWidget {
       try {
         final saved = await controller.saveBackup();
         if (saved == null) return;
-        messenger.showSnackBar(
+        final shown = messenger.showSnackBar(
           SnackBar(
             key: const Key('backup_saved'),
             content: Text(l10n.backup_saved),
@@ -306,6 +417,7 @@ class _LocalCard extends ConsumerWidget {
             ),
           ),
         );
+        _interstitialAfter(ref, shown);
       } on Object catch (e) {
         if (context.mounted) {
           await _showError(context, l10n.backup_failedTitle, e);
@@ -317,6 +429,7 @@ class _LocalCard extends ConsumerWidget {
       context,
       ref.read(restoreServiceProvider),
       moduleSummaries: controller.summaries(l10n),
+      apply: controller.applyFromFile(),
     );
 
     final saveLabel = Text(l10n.backup_saveFile);
@@ -452,6 +565,7 @@ class _DriveList extends ConsumerWidget {
       source: () => ref.read(driveBackupStoreProvider).download(entry.id),
       progressLabel: l10n.backup_downloading,
       moduleSummaries: controller.summaries(l10n),
+      apply: controller.applyFromDrive(entry),
     );
 
     Future<void> delete(DriveBackupEntry entry) async {
@@ -472,18 +586,7 @@ class _DriveList extends ConsumerWidget {
       }
     }
 
-    Future<void> reconnect() async {
-      try {
-        await controller.connect();
-        await controller.refreshDrive();
-      } on DriveAuthRequired {
-        // Cancelled again; the error stays.
-      } on Object catch (e) {
-        if (context.mounted) {
-          await _showError(context, l10n.backup_failedTitle, e);
-        }
-      }
-    }
+    Future<void> reconnect() => _signIn(context, ref, controller);
 
     final rows = switch (drive) {
       AsyncValue(:final value?) when value.isEmpty => [

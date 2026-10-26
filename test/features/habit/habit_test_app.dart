@@ -1,4 +1,6 @@
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/ad_service.dart';
+import 'package:dailytrack/core/ads/rewarded_unlock.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/features/habit/domain/entities/habit_schedule.dart';
 import 'package:dailytrack/features/habit/domain/enums.dart';
@@ -45,6 +47,8 @@ Future<FakeSettingsRepository> pumpHabitApp(
   bool debugUnlockAll = false,
   String themeMode = 'system',
   Size size = const Size(412, 915),
+  AdService? ads,
+  RewardedUnlockPresenter? rewardedPresenter,
 }) async {
   tester.view
     ..physicalSize = size
@@ -68,6 +72,8 @@ Future<FakeSettingsRepository> pumpHabitApp(
     imageSharer: imageSharer,
     gate: gate,
     debugTools: debugTools,
+    ads: ads,
+    rewardedPresenter: rewardedPresenter,
   );
   routerOf(tester).go(location);
   await tester.pumpAndSettle();

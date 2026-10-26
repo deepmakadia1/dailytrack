@@ -11,19 +11,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// SET-04 live preview (FR-019): a sample dashboard card in the previewed
 /// color theme and the chosen mode. A locked theme is shown blurred behind
-/// [LockedFeatureOverlay] with "Get Pro" disabled and no "Watch an ad"
-/// (FR-018, research R12; rewarded unlocks arrive in T4.4).
+/// [LockedFeatureOverlay] with "Watch an ad to unlock this theme" (PRM-02)
+/// and "Get Pro" (FR-018, research R12; feature 009 FR-032).
 class ThemePreviewCard extends ConsumerWidget {
   const new({
     required this.theme,
     required this.themeMode,
     required this.locked,
+    this.onWatchAd,
+    this.onGetPro,
     super.key,
   });
 
   final AppColorTheme theme;
   final String themeMode;
   final bool locked;
+
+  /// Opens PRM-02 for [theme] while it is locked.
+  final VoidCallback? onWatchAd;
+
+  /// Opens PRM-01.
+  final VoidCallback? onGetPro;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -108,6 +116,9 @@ class ThemePreviewCard extends ConsumerWidget {
           ? LockedFeatureOverlay(
               key: const Key('theme_preview_locked'),
               message: l10n.themes_lockedMessage,
+              watchAdLabel: l10n.locked_watchAdTheme,
+              onWatchAd: onWatchAd,
+              onGetPro: onGetPro,
               child: sample,
             )
           : ExcludeSemantics(child: IgnorePointer(child: sample)),

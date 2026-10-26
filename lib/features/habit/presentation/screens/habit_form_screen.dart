@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/ad_providers.dart';
+import 'package:dailytrack/core/ads/domain/ad_trigger.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/module/root_navigator.dart';
 import 'package:dailytrack/core/theme/app_colors.dart';
@@ -114,6 +116,8 @@ class _HabitFormScreenState extends ConsumerState<HabitFormScreen> {
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context);
     final messenger = rootMessengerKey.currentState;
+    final created = !ref.read(_provider).isEdit;
+    final ads = ref.read(adServiceProvider);
     final saved = await _controller.save();
     if (!mounted) return;
     if (saved == null) {
@@ -127,6 +131,8 @@ class _HabitFormScreenState extends ConsumerState<HabitFormScreen> {
     messenger?.showSnackBar(SnackBar(content: Text(l10n.habit_saved)));
     setState(() => _leaving = true);
     _close();
+    // A new habit only, after the form has closed (spec §11).
+    if (created) unawaited(ads.maybeShowInterstitial(const HabitCreated()));
   }
 
   Future<void> _archive() async {

@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../helpers/backup_fakes.dart';
 import '../../helpers/fakes.dart';
 import '../../helpers/test_app.dart';
 import '../expense/fakes.dart';
@@ -29,6 +30,8 @@ Future<LockWorld> pumpLockApp(
   LockWorld? world,
   ExpenseFakes? expense,
   FakeAppResetService? reset,
+  FakeAccountAuth? accountAuth,
+  FakeAccountRestore? accountRestore,
   List<Override> overrides = const [],
 }) async {
   tester.view
@@ -58,6 +61,8 @@ Future<LockWorld> pumpLockApp(
     lock: lock,
     secureScreen: screen,
     expense: f,
+    accountAuth: accountAuth,
+    accountRestore: accountRestore,
     reset: reset,
     overrides: overrides,
   );

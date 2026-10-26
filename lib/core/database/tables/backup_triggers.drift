@@ -1,0 +1,184 @@
+-- Change-counter triggers (feature 010 research R5, data-model §2).
+-- GENERATED from BackupSection.tables and BackupSettingsPolicy.restorableKeys;
+-- test/core/database/change_counter_triggers_test.dart checks they match.
+-- Each one raises settings.dataChangeCounter, so "changed since the last
+-- backup" sees writes from every isolate, app open or not. A new module
+-- that joins backup adds its tables' triggers here in its own migration.
+import '../../../features/expense/data/tables/accounts_table.dart';
+import '../../../features/expense/data/tables/categories_table.dart';
+import '../../../features/expense/data/tables/transactions_table.dart';
+import '../../../features/expense/data/tables/budgets_table.dart';
+import '../../../features/expense/data/tables/recurring_rules_table.dart';
+import '../../../features/habit/data/tables/habits_table.dart';
+import '../../../features/habit/data/tables/habit_schedules_table.dart';
+import '../../../features/habit/data/tables/habit_entries_table.dart';
+import 'settings_table.dart';
+
+CREATE TRIGGER bk_accounts_ins AFTER INSERT ON accounts BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_accounts_upd AFTER UPDATE ON accounts BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_accounts_del AFTER DELETE ON accounts BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_categories_ins AFTER INSERT ON categories BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_categories_upd AFTER UPDATE ON categories BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_categories_del AFTER DELETE ON categories BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_transactions_ins AFTER INSERT ON transactions BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_transactions_upd AFTER UPDATE ON transactions BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_transactions_del AFTER DELETE ON transactions BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_budgets_ins AFTER INSERT ON budgets BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_budgets_upd AFTER UPDATE ON budgets BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_budgets_del AFTER DELETE ON budgets BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_recurring_rules_ins AFTER INSERT ON recurring_rules BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_recurring_rules_upd AFTER UPDATE ON recurring_rules BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_recurring_rules_del AFTER DELETE ON recurring_rules BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_habits_ins AFTER INSERT ON habits BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_habits_upd AFTER UPDATE ON habits BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_habits_del AFTER DELETE ON habits BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_habit_schedules_ins AFTER INSERT ON habit_schedules BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_habit_schedules_upd AFTER UPDATE ON habit_schedules BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_habit_schedules_del AFTER DELETE ON habit_schedules BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_habit_entries_ins AFTER INSERT ON habit_entries BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_habit_entries_upd AFTER UPDATE ON habit_entries BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_habit_entries_del AFTER DELETE ON habit_entries BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+-- Restorable settings only; device state (including this counter) never counts.
+CREATE TRIGGER bk_settings_ins AFTER INSERT ON settings
+WHEN (NEW."key" IN ('locale', 'currencyCode', 'firstDayOfWeek', 'dateFormat', 'themeMode', 'selectedTheme', 'fontSize', 'enabledModules', 'moduleOrder', 'notificationsEnabled', 'budgetAlertsEnabled', 'habitRemindersEnabled', 'dailySummaryTime', 'homeComingSoonDismissed') OR NEW."key" LIKE 'module.%')
+BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_settings_upd AFTER UPDATE ON settings
+WHEN (NEW."key" IN ('locale', 'currencyCode', 'firstDayOfWeek', 'dateFormat', 'themeMode', 'selectedTheme', 'fontSize', 'enabledModules', 'moduleOrder', 'notificationsEnabled', 'budgetAlertsEnabled', 'habitRemindersEnabled', 'dailySummaryTime', 'homeComingSoonDismissed') OR NEW."key" LIKE 'module.%') AND NEW.value IS NOT OLD.value
+BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;
+
+CREATE TRIGGER bk_settings_del AFTER DELETE ON settings
+WHEN (OLD."key" IN ('locale', 'currencyCode', 'firstDayOfWeek', 'dateFormat', 'themeMode', 'selectedTheme', 'fontSize', 'enabledModules', 'moduleOrder', 'notificationsEnabled', 'budgetAlertsEnabled', 'habitRemindersEnabled', 'dailySummaryTime', 'homeComingSoonDismissed') OR OLD."key" LIKE 'module.%')
+BEGIN
+  INSERT INTO settings ("key", value, updated_at)
+    VALUES ('dataChangeCounter', '1', CAST(strftime('%s', 'now') AS INTEGER) * 1000)
+    ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;
+END;

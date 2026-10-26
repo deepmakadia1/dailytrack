@@ -1,5 +1,7 @@
 import 'package:dailytrack/app/router/app_router.dart';
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/ad_service.dart';
+import 'package:dailytrack/core/ads/rewarded_unlock.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/utils/keypad_expression.dart';
 import 'package:dailytrack/core/widgets/numeric_keypad.dart';
@@ -23,6 +25,8 @@ Future<ExpenseFakes> pumpExpenseApp(
   Size size = const Size(412, 915),
   FakeSettingsRepository? settings,
   FakeFeatureGate? gate,
+  AdService? ads,
+  RewardedUnlockPresenter? rewardedPresenter,
 }) async {
   tester.view
     ..physicalSize = size
@@ -39,6 +43,8 @@ Future<ExpenseFakes> pumpExpenseApp(
     expense: f,
     sharer: sharer,
     gate: gate,
+    ads: ads,
+    rewardedPresenter: rewardedPresenter,
   );
   if (location != Routes.home) {
     routerOf(tester).go(location);

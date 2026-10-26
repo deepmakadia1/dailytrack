@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
 import 'package:dailytrack/core/utils/date_formats.dart';
@@ -76,6 +77,8 @@ class ArchivedHabitsScreen extends ConsumerWidget {
 
     return AppScaffold(
       title: l10n.habit_archivedTitle,
+      // Spec §11: the bottom banner (no space until an ad loads).
+      bannerSlot: const AppBannerAd(),
       body: switch (state) {
         AsyncData(:final value) when value.isEmpty => EmptyState(
           title: l10n.habit_archivedEmpty,

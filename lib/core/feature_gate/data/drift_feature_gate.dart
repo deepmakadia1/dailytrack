@@ -5,17 +5,19 @@ import 'package:clock/clock.dart';
 import 'package:dailytrack/core/feature_gate/domain/feature_gate.dart';
 import 'package:dailytrack/core/feature_gate/domain/feature_key.dart';
 import 'package:dailytrack/core/feature_gate/domain/unlock.dart';
+import 'package:dailytrack/core/feature_gate/domain/unlock_policy.dart';
 import 'package:dailytrack/core/feature_gate/domain/unlock_repository.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/domain/settings_repository.dart';
+import 'package:dailytrack/core/utils/effective_clock.dart';
 
 /// [FeatureGate] over unlock records and settings (research R13).
 ///
-/// A feature is unlocked when developer tools exist and the debug switch is
-/// on (FR-041), or when a live unlock for its key is permanent or expires
-/// after the effective now. The effective now is the later of the clock and
-/// `latestSeenAt`, so moving the device clock back never revives an expired
-/// unlock (FR-038).
+/// The rules live in the pure [UnlockPolicy]: Pro, the dev debug switch
+/// (only when developer tools exist, FR-041), or a live unlock that is
+/// permanent or expires after the effective now. The effective now is the
+/// later of the clock and `latestSeenAt`, so moving the device clock back
+/// never revives an expired unlock (FR-038).
 final class DriftFeatureGate implements FeatureGate {
   new(
     this._unlocks,
@@ -36,36 +38,30 @@ final class DriftFeatureGate implements FeatureGate {
   static const Duration seenAtStep = Duration(minutes: 1);
 
   int _effectiveNowMs(AppSettings settings) {
-    final now = _clock.now().toUtc().millisecondsSinceEpoch;
+    final clockNow = _clock.now();
+    final now = clockNow.toUtc().millisecondsSinceEpoch;
     final seen = settings.latestSeenAt;
     if (seen == null || now - seen >= seenAtStep.inMilliseconds) {
       unawaited(_settings.raiseLatestSeenAt(now).catchError((Object _) {}));
     }
-    return seen == null ? now : math.max(now, seen);
+    return effectiveNow(clockNow, seen).millisecondsSinceEpoch;
   }
 
-  /// The answer, plus the next expiry that would change it (if any).
+  /// The answer, plus the next expiry that would change it (if any), from
+  /// the pure [UnlockPolicy] (feature 009 research R12).
   (bool, int?) _evaluate(
     FeatureKey key,
     List<Unlock> unlocks,
     AppSettings settings,
   ) {
-    if (debugToolsAvailable && settings.debugUnlockAll) return (true, null);
-    final now = _effectiveNowMs(settings);
-    int? nextExpiry;
-    var unlocked = false;
-    for (final u in unlocks) {
-      if (u.featureKey != key) continue;
-      final expires = u.expiresAt?.millisecondsSinceEpoch;
-      if (expires == null) return (true, null);
-      if (expires > now) {
-        unlocked = true;
-        nextExpiry = nextExpiry == null
-            ? expires
-            : math.max(nextExpiry, expires);
-      }
-    }
-    return (unlocked, nextExpiry);
+    final d = UnlockPolicy.evaluate(
+      key,
+      unlocks,
+      effectiveNowMs: _effectiveNowMs(settings),
+      debugUnlockAll: debugToolsAvailable && settings.debugUnlockAll,
+      proOwned: settings.removeAdsPurchased,
+    );
+    return (d.unlocked, d.nextExpiryMs);
   }
 
   @override

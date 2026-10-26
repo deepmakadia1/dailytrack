@@ -34,18 +34,30 @@ final class WorkmanagerBackgroundScheduler implements BackgroundScheduler {
     uniqueName,
     uniqueName,
     frequency: every,
-    constraints: Constraints(
-      networkType: switch (network) {
-        NetworkRequirement.none => NetworkType.notRequired,
-        NetworkRequirement.connected => NetworkType.connected,
-        NetworkRequirement.unmetered => NetworkType.unmetered,
-      },
-    ),
+    constraints: Constraints(networkType: _networkType(network)),
     existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
+  );
+
+  @override
+  Future<void> enqueueOnce(
+    String uniqueName, {
+    NetworkRequirement network = NetworkRequirement.none,
+  }) => Workmanager().registerOneOffTask(
+    uniqueName,
+    uniqueName,
+    constraints: Constraints(networkType: _networkType(network)),
+    existingWorkPolicy: ExistingWorkPolicy.replace,
   );
 
   @override
   Future<void> cancel(String uniqueName) =>
       Workmanager().cancelByUniqueName(uniqueName);
+
+  static NetworkType _networkType(NetworkRequirement network) =>
+      switch (network) {
+        NetworkRequirement.none => NetworkType.notRequired,
+        NetworkRequirement.connected => NetworkType.connected,
+        NetworkRequirement.unmetered => NetworkType.unmetered,
+      };
 }
 // coverage:ignore-end

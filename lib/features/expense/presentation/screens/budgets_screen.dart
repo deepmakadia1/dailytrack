@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:dailytrack/core/ads/domain/ad_placement.dart';
+import 'package:dailytrack/core/ads/widgets/app_native_ad.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
@@ -197,6 +199,11 @@ class _BudgetsList extends ConsumerWidget {
                   open(BudgetFormArgs(monthKey: month, categoryId: c.id)),
             ),
         ],
+        // Spec §11: one native ad after the list.
+        const AppNativeAd(
+          key: Key('budgets_native'),
+          placement: NativePlacement.budgets,
+        ),
       ],
     );
   }

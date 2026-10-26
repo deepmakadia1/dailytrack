@@ -5,6 +5,8 @@ import 'package:dailytrack/app/background_entry_points.dart';
 import 'package:dailytrack/app/flavor.dart';
 import 'package:dailytrack/app/router/app_router.dart';
 import 'package:dailytrack/app/router/lock_back_button_dispatcher.dart';
+import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/backup/backup_providers.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/module/root_navigator.dart';
 import 'package:dailytrack/core/notifications/notification_providers.dart';
@@ -21,6 +23,7 @@ import 'package:dailytrack/core/utils/clock_provider.dart';
 import 'package:dailytrack/core/utils/date_formats.dart';
 import 'package:dailytrack/core/widget/widget_providers.dart';
 import 'package:dailytrack/core/widgets/full_date_format_scope.dart';
+import 'package:dailytrack/features/account/presentation/widgets/finish_setup_sheet.dart';
 import 'package:dailytrack/features/lock/presentation/screens/unlock_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -44,7 +47,51 @@ class _DailyTrackAppState extends ConsumerState<DailyTrackApp> {
 
   LockSession get _session => ref.read(lockSessionProvider.notifier);
 
+  bool _finishSetupShowing = false;
+
+  /// Kept for dispose, where providers can't be read.
+  late final Listenable _routerChanges;
+
+  /// "Finish setting up" once on Home, unlocked, after a restore onto an
+  /// empty phone (feature 010 research R13). Not with app lock on: that
+  /// user already has a PIN.
+  void _maybeFinishSetup() {
+    if (_finishSetupShowing || !mounted) return;
+    final s = ref.read(appSettingsProvider).value;
+    if (s == null || !s.finishSetupPending) return;
+    if (s.lockEnabled) {
+      unawaited(
+        ref
+            .read(settingsRepositoryProvider)
+            .setFinishSetupPending(pending: false)
+            .then((_) {}, onError: (Object _) {}),
+      );
+      return;
+    }
+    if (ref.read(lockSessionProvider).locked) return;
+    if (Uri.parse(_location()).path != Routes.home) return;
+    final context = rootNavigatorKey.currentContext;
+    if (context == null) return;
+    _finishSetupShowing = true;
+    unawaited(
+      showFinishSetupSheet(context)
+          .whenComplete(() => _finishSetupShowing = false),
+    );
+  }
+
+  void _scheduleFinishSetup() =>
+      WidgetsBinding.instance.addPostFrameCallback((_) => _maybeFinishSetup());
+
   DateTime _now() => ref.read(clockProvider).now();
+
+  /// Never throws, even where no scheduler is bound (widget tests).
+  Future<void> _backUpInBackground() async {
+    try {
+      await ref.read(backgroundBackupSchedulerProvider).onAppHidden();
+    } on Object {
+      // The scheduled auto backup still runs.
+    }
+  }
 
   /// Where the router is now, as the redirect sees it.
   String _location() => ref
@@ -63,7 +110,12 @@ class _DailyTrackAppState extends ConsumerState<DailyTrackApp> {
     _lifecycle = AppLifecycleListener(
       // App lock: note when the app leaves the screen, and lock on the way
       // back after "Lock after" (feature 007 research R7).
-      onHide: () => _session.markBackgrounded(_now(), location: _location()),
+      onHide: () {
+        _session.markBackgrounded(_now(), location: _location());
+        // Changed data goes to Drive soon after leaving the app (feature
+        // 010 research R6).
+        unawaited(_backUpInBackground());
+      },
       onResume: () {
         _session.onResumed(_now(), location: _location());
         // Every resume counts as an app open (feature 003 research R10).
@@ -99,7 +151,12 @@ class _DailyTrackAppState extends ConsumerState<DailyTrackApp> {
         }
       })
       // FLAG_SECURE follows SYS-03 and "Hide app content in recents".
-      ..listenManual(secureScreenControllerProvider, (_, _) {});
+      ..listenManual(secureScreenControllerProvider, (_, _) {})
+      // "Finish setting up" waits for Home and an unlocked app.
+      ..listenManual(appSettingsProvider, (_, _) => _scheduleFinishSetup())
+      ..listenManual(lockSessionProvider, (_, _) => _scheduleFinishSetup());
+    _routerChanges = ref.read(appRouterProvider).routerDelegate
+      ..addListener(_scheduleFinishSetup);
   }
 
   void _open(String location) {
@@ -113,6 +170,7 @@ class _DailyTrackAppState extends ConsumerState<DailyTrackApp> {
 
   @override
   void dispose() {
+    _routerChanges.removeListener(_scheduleFinishSetup);
     _lifecycle.dispose();
     unawaited(_taps?.cancel());
     unawaited(_widgetLaunches?.cancel());

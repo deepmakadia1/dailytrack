@@ -1,5 +1,6 @@
 import 'dart:ui' show Tristate;
 
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
 import 'package:dailytrack/core/feature_gate/domain/feature_key.dart';
 import 'package:dailytrack/core/widgets/app_scaffold.dart';
 import 'package:dailytrack/core/widgets/error_state.dart';
@@ -35,6 +36,7 @@ void main() {
     FakeImageSharer? sharer,
     bool debugTools = false,
     bool debugUnlockAll = false,
+    FakeRewardedUnlockPresenter? presenter,
   }) async {
     await pumpHabitApp(
       tester,
@@ -45,6 +47,7 @@ void main() {
       imageSharer: sharer,
       debugTools: debugTools,
       debugUnlockAll: debugUnlockAll,
+      rewardedPresenter: presenter,
     );
     return f;
   }
@@ -240,24 +243,34 @@ void main() {
   });
 
   group('US5-5 weekly chart (FR-032)', () {
-    testWidgets('locked: the shared overlay, no "Watch an ad", "Get Pro" '
-        'disabled', (tester) async {
+    testWidgets('locked: the shared overlay with "Watch an ad to unlock for '
+        '24 hours" (PRM-02) and an enabled "Get Pro" (feature 009)', (
+      tester,
+    ) async {
       final f = habitFakes();
       final id = f.addHabit('Walk').id;
-      await open(tester, f, id, gate: FakeFeatureGate());
-      final overlay = tester.widget<LockedFeatureOverlay>(
-        find.byType(LockedFeatureOverlay),
-      );
-      expect(overlay.onWatchAd, isNull);
-      expect(overlay.onGetPro, isNull);
-      expect(find.text('Watch an ad'), findsNothing);
+      final presenter = FakeRewardedUnlockPresenter();
+      await open(tester, f, id, gate: FakeFeatureGate(), presenter: presenter);
+      expect(find.byKey(const Key('weekly_chart_locked')), findsOneWidget);
+      expect(find.text('Watch an ad to unlock for 24 hours'), findsOneWidget);
       final getPro = tester.widget<ButtonStyleButton>(
         find.ancestor(
           of: find.text('Get Pro'),
           matching: find.bySubtype<ButtonStyleButton>(),
         ),
       );
-      expect(getPro.onPressed, isNull);
+      expect(getPro.onPressed, isNotNull);
+      final watch = find.descendant(
+        of: find.byKey(const Key('weekly_chart_locked')),
+        matching: find.byKey(const Key('locked_watch_ad')),
+      );
+      await tester.ensureVisible(watch);
+      await tester.pumpAndSettle();
+      await tester.tap(watch);
+      await tester.pumpAndSettle();
+      final request = presenter.requests.single;
+      expect(request.key, FeatureKey.advancedReports);
+      expect(request.duration, const Duration(hours: 24));
     });
 
     testWidgets('unlocked (also by the dev switch): the chart is shown', (
@@ -409,9 +422,8 @@ void main() {
     expect(find.text('7-day streak!'), findsOneWidget);
   });
 
-  testWidgets('error state with Try again; no ad slot (FR-049)', (
-    tester,
-  ) async {
+  testWidgets('error state with Try again; the bottom banner slot (spec '
+      '§11)', (tester) async {
     final f = habitFakes();
     final id = f.addHabit('Walk').id;
     f.world.failWatch = Exception('boom');
@@ -426,6 +438,98 @@ void main() {
         matching: find.byType(AppScaffold),
       ),
     );
-    expect(scaffold.bannerSlot, isNull);
+    expect(scaffold.bannerSlot, isA<AppBannerAd>());
+  });
+
+  // --- 009-ads-rewarded-pro (T068): rewarded streak freezes. ---
+  group('US2-8 "Watch an ad to get a freeze"', () {
+    Finder watchFreeze() => find.byKey(const Key('watch_ad_freeze'));
+
+    testWidgets('an earned reward adds 1 freeze to this habit only', (
+      tester,
+    ) async {
+      final f = habitFakes();
+      final id = f.addHabit('Walk').id;
+      final other = f.addHabit('Read').id;
+      final presenter = FakeRewardedUnlockPresenter(runGrant: true);
+      await open(tester, f, id, presenter: presenter);
+      await tester.ensureVisible(watchFreeze());
+      await tester.pumpAndSettle();
+      await tester.tap(watchFreeze());
+      await tester.pumpAndSettle();
+      final request = presenter.requests.single;
+      expect(request.key, FeatureKey.streakFreeze);
+      expect(request.subjectName, 'Walk');
+      expect(f.world.habits[id]!.freezesAvailable, 1);
+      expect(f.world.habits[other]!.freezesAvailable, 0);
+      await flushTimers(tester);
+    });
+
+    testWidgets('closing the ad early (no reward) adds nothing', (
+      tester,
+    ) async {
+      final f = habitFakes();
+      final id = f.addHabit('Walk').id;
+      final presenter = FakeRewardedUnlockPresenter(
+        earn: false,
+        runGrant: true,
+      );
+      await open(tester, f, id, presenter: presenter);
+      await tester.ensureVisible(watchFreeze());
+      await tester.pumpAndSettle();
+      await tester.tap(watchFreeze());
+      await tester.pumpAndSettle();
+      expect(f.world.habits[id]!.freezesAvailable, 0);
+      await flushTimers(tester);
+    });
+
+    testWidgets('FR-034 at 2 freezes the button is disabled', (tester) async {
+      final f = habitFakes();
+      final id = f.addHabit('Walk', freezes: 2).id;
+      await open(tester, f, id);
+      await tester.ensureVisible(watchFreeze());
+      expect(tester.widget<ButtonStyleButton>(watchFreeze()).onPressed, isNull);
+      await flushTimers(tester);
+    });
+  });
+
+  // --- 009-ads-rewarded-pro (T085): Pro freezes. ---
+  group('FR-044 Pro adds freezes without an ad', () {
+    Future<void> openPro(WidgetTester tester, HabitFakes f, String id) async {
+      final settings = await pumpHabitApp(
+        tester,
+        habits: f,
+        location: '/habits/$id',
+        size: tall,
+      );
+      settings.replace(settings.current.copyWith(removeAdsPurchased: true));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('"Add a freeze" replaces the ad button and adds one', (
+      tester,
+    ) async {
+      final f = habitFakes();
+      final id = f.addHabit('Walk').id;
+      await openPro(tester, f, id);
+      expect(find.byKey(const Key('watch_ad_freeze')), findsNothing);
+      final add = find.byKey(const Key('add_freeze_pro'));
+      await tester.ensureVisible(add);
+      await tester.pumpAndSettle();
+      await tester.tap(add);
+      await tester.pumpAndSettle();
+      expect(f.world.habits[id]!.freezesAvailable, 1);
+      await flushTimers(tester);
+    });
+
+    testWidgets('disabled at 2', (tester) async {
+      final f = habitFakes();
+      final id = f.addHabit('Walk', freezes: 2).id;
+      await openPro(tester, f, id);
+      final add = find.byKey(const Key('add_freeze_pro'));
+      await tester.ensureVisible(add);
+      expect(tester.widget<ButtonStyleButton>(add).onPressed, isNull);
+      await flushTimers(tester);
+    });
   });
 }

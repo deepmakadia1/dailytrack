@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/theme/app_icons.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
@@ -146,6 +147,8 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
 
     return AppScaffold(
       title: l10n.expense_categoriesTitle,
+      // Spec §11: the bottom banner (no space until an ad loads).
+      bannerSlot: const AppBannerAd(),
       padBody: false,
       // §15.1: the empty state's own button is the one primary action.
       fab: state.items.value?.isEmpty ?? false

@@ -4948,12 +4948,6 @@ abstract class AppLocalizations {
   /// **'Google Drive isn\'t available in this build.'**
   String get backup_driveUnavailable;
 
-  /// SET-02 button.
-  ///
-  /// In en, this message translates to:
-  /// **'Connect Google account'**
-  String get backup_connect;
-
   /// SET-02 connected account line.
   ///
   /// In en, this message translates to:
@@ -4977,24 +4971,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Backed up to Google Drive'**
   String get backup_driveSaved;
-
-  /// SET-02 text button.
-  ///
-  /// In en, this message translates to:
-  /// **'Disconnect'**
-  String get backup_disconnect;
-
-  /// Disconnect confirmation title.
-  ///
-  /// In en, this message translates to:
-  /// **'Disconnect Google account?'**
-  String get backup_disconnectTitle;
-
-  /// Disconnect confirmation consequence.
-  ///
-  /// In en, this message translates to:
-  /// **'Automatic backup turns off. Backups already in Google Drive are kept.'**
-  String get backup_disconnectBody;
 
   /// SET-02 row and choice sheet title.
   ///
@@ -5278,10 +5254,10 @@ abstract class AppLocalizations {
   /// **'Creating your file…'**
   String get export_working;
 
-  /// SET-03 locked overlay message until rewarded ads and Pro exist.
+  /// SET-03 locked overlay message (feature 009).
   ///
   /// In en, this message translates to:
-  /// **'Exports are part of DailyTrack Pro. Unlocking them is coming soon.'**
+  /// **'Exports are part of DailyTrack Pro. Watch an ad for one export, or get Pro.'**
   String get export_locked;
 
   /// Snackbar when the export would be empty.
@@ -5631,6 +5607,714 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name}, {progress}. Double tap to add one'**
   String widget_habitCountA11y(String name, String progress);
+
+  /// Label on every native ad (spec §15.8).
+  ///
+  /// In en, this message translates to:
+  /// **'Ad'**
+  String get ads_badge;
+
+  /// Semantic label of a banner or native ad.
+  ///
+  /// In en, this message translates to:
+  /// **'Advertisement'**
+  String get ads_bannerLabel;
+
+  /// SET-01 Privacy row; reopens the consent form (FR-014).
+  ///
+  /// In en, this message translates to:
+  /// **'Ad privacy choices'**
+  String get privacy_adChoices;
+
+  /// Dev-only SET-01 action (FR-048).
+  ///
+  /// In en, this message translates to:
+  /// **'Reset ad counters'**
+  String get ads_resetCounters;
+
+  /// Snackbar after Reset ad counters.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad counters reset'**
+  String get ads_resetCountersDone;
+
+  /// PRM-01 headline.
+  ///
+  /// In en, this message translates to:
+  /// **'DailyTrack Pro'**
+  String get premium_title;
+
+  /// PRM-01 benefit.
+  ///
+  /// In en, this message translates to:
+  /// **'No ads'**
+  String get premium_benefitNoAds;
+
+  /// PRM-01 benefit.
+  ///
+  /// In en, this message translates to:
+  /// **'All themes'**
+  String get premium_benefitThemes;
+
+  /// PRM-01 benefit.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced reports'**
+  String get premium_benefitReports;
+
+  /// PRM-01 benefit.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited exports'**
+  String get premium_benefitExports;
+
+  /// PRM-01 benefit.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited streak freezes up to the cap'**
+  String get premium_benefitFreezes;
+
+  /// PRM-02 title.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock advanced reports for 24 hours'**
+  String get rewarded_titleReports;
+
+  /// PRM-02 title.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock one CSV export'**
+  String get rewarded_titleCsv;
+
+  /// PRM-02 title.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock one PDF export'**
+  String get rewarded_titlePdf;
+
+  /// PRM-02 title; theme name.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock the {theme} theme for good'**
+  String rewarded_titleTheme(String theme);
+
+  /// PRM-02 title; habit name.
+  ///
+  /// In en, this message translates to:
+  /// **'Get 1 streak freeze for {habit}'**
+  String rewarded_titleFreeze(String habit);
+
+  /// PRM-02 explanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch a short ad to see Trends, Accounts, and every period for the next 24 hours.'**
+  String get rewarded_explainReports;
+
+  /// PRM-02 explanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch a short ad to create one export file in this format.'**
+  String get rewarded_explainExport;
+
+  /// PRM-02 explanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch a short ad to keep this color theme for good.'**
+  String get rewarded_explainTheme;
+
+  /// PRM-02 explanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch a short ad to add one streak freeze to this habit (up to 2).'**
+  String get rewarded_explainFreeze;
+
+  /// PRM-02 primary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch a short ad'**
+  String get rewarded_watch;
+
+  /// PRM-02 secondary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Pro instead'**
+  String get rewarded_getPro;
+
+  /// PRM-02 text button.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get rewarded_notNow;
+
+  /// Semantic label of the PRM-02 spinner.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading ad'**
+  String get rewarded_loadingAd;
+
+  /// PRM-02 when no ad loads in 8 s.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad not available, try again later'**
+  String get rewarded_unavailable;
+
+  /// PRM-02 button after a failed load.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get rewarded_tryAgain;
+
+  /// PRM-02 after the ad was closed early.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch the whole ad to unlock'**
+  String get rewarded_closedEarly;
+
+  /// PRM-02 at 10 rewards per feature per day (FR-053).
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached today\'s limit for this unlock. Try again tomorrow, or get Pro.'**
+  String get rewarded_limitReached;
+
+  /// EXP-11 and HAB-03 locked overlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch an ad to unlock for 24 hours'**
+  String get locked_watchAdReports;
+
+  /// SET-03 locked overlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch an ad to unlock one export'**
+  String get locked_watchAdExport;
+
+  /// SET-04 locked overlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch an ad to unlock this theme'**
+  String get locked_watchAdTheme;
+
+  /// HAB-03 freeze card button.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch an ad to get a freeze'**
+  String get locked_watchAdFreeze;
+
+  /// PRM-01 primary button; price from Google Play.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Pro for {price}'**
+  String premium_buyFor(String price);
+
+  /// PRM-01 text button.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore purchase'**
+  String get premium_restore;
+
+  /// Snackbar after Restore purchase found Pro.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro restored'**
+  String get premium_restored;
+
+  /// Snackbar after Restore purchase found nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'No Pro purchase found for this Google account'**
+  String get premium_restoreNotFound;
+
+  /// PRM-01 when Google Play can't sell Pro.
+  ///
+  /// In en, this message translates to:
+  /// **'Store not available right now, try again later'**
+  String get premium_storeUnavailable;
+
+  /// PRM-01 note.
+  ///
+  /// In en, this message translates to:
+  /// **'Your purchase is tied to your Google account.'**
+  String get premium_accountNote;
+
+  /// PRM-01 pending payment.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro unlocks when the payment completes'**
+  String get premium_pending;
+
+  /// PRM-01 purchase error.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t complete the purchase. Try again.'**
+  String get premium_purchaseError;
+
+  /// PRM-01 when Pro is owned.
+  ///
+  /// In en, this message translates to:
+  /// **'You have Pro. Thanks for your support.'**
+  String get premium_owned;
+
+  /// SET-01 premium card title.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove ads and unlock everything'**
+  String get premium_cardTitle;
+
+  /// SET-01 premium card subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'DailyTrack Pro: one purchase, yours for good'**
+  String get premium_cardSubtitle;
+
+  /// HAB-03 freeze card button for Pro users.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a freeze'**
+  String get habit_addFreezePro;
+
+  /// ACC-01 title.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account_title;
+
+  /// ACC-01 signed-out title.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up with your Google account'**
+  String get account_signedOutTitle;
+
+  /// ACC-01 signed-out point 1.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data is saved to your own Google Drive'**
+  String get account_pointDrive;
+
+  /// ACC-01 signed-out point 2.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore it on a new phone'**
+  String get account_pointRestore;
+
+  /// ACC-01 signed-out point 3.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional: the app works fully without an account'**
+  String get account_pointOptional;
+
+  /// ACC-01 and SET-02 sign-in button.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google'**
+  String get account_signIn;
+
+  /// ACC-01 signed-out footnote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your app lock PIN is never backed up.'**
+  String get account_pinFootnote;
+
+  /// Sign-in failure message.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t sign in. Check your connection and try again.'**
+  String get account_signInFailed;
+
+  /// Snackbar after signing in to an account without backups.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in. Your data is backed up.'**
+  String get account_signedInBackedUp;
+
+  /// ACC-01 last backup line with the device that made it.
+  ///
+  /// In en, this message translates to:
+  /// **'Last backup: {time} · {device}'**
+  String account_lastBackupFrom(String time, String device);
+
+  /// ACC-01 last backup line.
+  ///
+  /// In en, this message translates to:
+  /// **'Last backup: {time}'**
+  String account_lastBackup(String time);
+
+  /// ACC-01 status when the account has no backups.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup in this account yet'**
+  String get account_noBackupYet;
+
+  /// ACC-01 state line.
+  ///
+  /// In en, this message translates to:
+  /// **'Backed up'**
+  String get account_statusBackedUp;
+
+  /// ACC-01 state line.
+  ///
+  /// In en, this message translates to:
+  /// **'Backing up…'**
+  String get account_statusBackingUp;
+
+  /// ACC-01 state line.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup paused: a newer backup from another phone exists'**
+  String get account_statusPaused;
+
+  /// ACC-01 state line.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup failed'**
+  String get account_statusFailed;
+
+  /// ACC-01 status area error.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t read your backups.'**
+  String get account_statusError;
+
+  /// ACC-01 Auto backup row.
+  ///
+  /// In en, this message translates to:
+  /// **'{frequency} · Wi-Fi only'**
+  String account_autoSummaryWifi(String frequency);
+
+  /// ACC-01 text button.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get account_signOut;
+
+  /// Snackbar after signing out.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed out. Your data is still on this phone.'**
+  String get account_signedOut;
+
+  /// ACC-01 destructive text button.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete my backups'**
+  String get account_deleteBackups;
+
+  /// Delete my backups confirmation title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your backups?'**
+  String get account_deleteTitle;
+
+  /// Delete my backups confirmation consequence.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Delete 1 DailyTrack backup from {email}? Data on this phone stays. This can\'t be undone.} other{Delete all {count} DailyTrack backups from {email}? Data on this phone stays. This can\'t be undone.}}'**
+  String account_deleteBody(int count, String email);
+
+  /// Delete my backups destructive button.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete backups'**
+  String get account_deleteAction;
+
+  /// Snackbar after Delete my backups.
+  ///
+  /// In en, this message translates to:
+  /// **'Your backups were deleted'**
+  String get account_deleted;
+
+  /// ACC-01 account photo semantic label.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile photo of {name}'**
+  String account_photoOf(String name);
+
+  /// SET-02 account row subtitle; opens ACC-01.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your account'**
+  String get backup_manageAccount;
+
+  /// Conflict dialog title.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up anyway?'**
+  String get backup_conflictTitle;
+
+  /// Conflict dialog: another phone backed up newer data.
+  ///
+  /// In en, this message translates to:
+  /// **'A newer backup from {device} ({time}) exists. Backing up now makes this phone\'s data the latest.'**
+  String backup_conflictNewer(String device, String time);
+
+  /// Conflict dialog: empty phone over a backup with data.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone has no data. Backing up now makes an empty backup the latest.'**
+  String get backup_conflictEmpty;
+
+  /// Conflict dialog confirm button.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up anyway'**
+  String get backup_backUpAnyway;
+
+  /// Device name when a backup doesn't say.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown device'**
+  String get backup_unknownDevice;
+
+  /// Pause notification title.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup paused'**
+  String get notif_backupPausedTitle;
+
+  /// Pause notification body.
+  ///
+  /// In en, this message translates to:
+  /// **'Another phone made a newer backup. Tap to review.'**
+  String get notif_backupPausedBody;
+
+  /// ACC-02 title.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup found on {email}'**
+  String account_choiceTitle(String email);
+
+  /// ACC-02 device line when the backup came from this phone.
+  ///
+  /// In en, this message translates to:
+  /// **'From this phone'**
+  String get account_fromThisPhone;
+
+  /// ACC-02 device line.
+  ///
+  /// In en, this message translates to:
+  /// **'From {device}'**
+  String account_fromDevice(String device);
+
+  /// ACC-02 label next to a lock icon.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted'**
+  String get account_encrypted;
+
+  /// ACC-02 line with this phone's data counts.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone: {counts}'**
+  String account_thisPhone(String counts);
+
+  /// ACC-02 line when this phone has no counts.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone: no data yet'**
+  String get account_thisPhoneEmpty;
+
+  /// ACC-02 note above the buttons.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring replaces the data on this phone.'**
+  String get account_replaceNote;
+
+  /// ACC-02 primary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from account'**
+  String get account_restoreFromAccount;
+
+  /// ACC-02 secondary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this phone\'s data'**
+  String get account_keepThisPhone;
+
+  /// ACC-02 link to the SET-02 Drive list.
+  ///
+  /// In en, this message translates to:
+  /// **'See all backups'**
+  String get account_seeAllBackups;
+
+  /// ACC-02 close button when opened from ACC-01.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get account_close;
+
+  /// Inline error for a wrong backup password.
+  ///
+  /// In en, this message translates to:
+  /// **'That password didn\'t work'**
+  String get account_wrongPassword;
+
+  /// Restore from the account failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t restore. Your data on this phone wasn\'t changed.'**
+  String get account_restoreFailed;
+
+  /// The safety copy couldn't be saved; nothing was restored.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough free space to save a copy of this phone\'s data first, so nothing was restored. Free up space and try again.'**
+  String get account_safetyCopyFailed;
+
+  /// Snackbar after a restore, e.g. 'Restored 1,240 transactions · 8 habits'.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored {summary}'**
+  String account_restoredCounts(String summary);
+
+  /// Progress while restoring from the account.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring your data…'**
+  String get account_restoring;
+
+  /// ACC-01 secondary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get account_restore;
+
+  /// ACC-01 link next to Backup paused.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get account_review;
+
+  /// ACC-01 text button.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch account'**
+  String get account_switch;
+
+  /// Switch account: the backup to the current account failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t back up first'**
+  String get account_switchFailedTitle;
+
+  /// Switch account failure dialog body.
+  ///
+  /// In en, this message translates to:
+  /// **'Your latest changes aren\'t in {email} yet. Switch anyway? Your data stays on this phone.'**
+  String account_switchFailedBody(String email);
+
+  /// Switch account failure dialog button.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch anyway'**
+  String get account_switchAnyway;
+
+  /// Shown when Drive says the sign-in expired or access was removed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Google sign-in expired. Sign in again to keep backing up.'**
+  String get account_sessionExpired;
+
+  /// ACC-03 title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out of {email}?'**
+  String account_signOutSheetTitle(String email);
+
+  /// ACC-03 step 1 progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Backing up your latest changes…'**
+  String get account_signOutBackingUp;
+
+  /// ACC-03 step 1 failure.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t back up your latest changes'**
+  String get account_signOutBackupFailed;
+
+  /// ACC-03 button after a failed backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out anyway'**
+  String get account_signOutAnyway;
+
+  /// ACC-03 option.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep data on this phone'**
+  String get account_keepData;
+
+  /// ACC-03 option helper.
+  ///
+  /// In en, this message translates to:
+  /// **'You can keep using the app without an account.'**
+  String get account_keepDataHelp;
+
+  /// ACC-03 option.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove data from this phone'**
+  String get account_removeData;
+
+  /// ACC-03 option helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Your backup stays in your Google account.'**
+  String get account_removeDataHelp;
+
+  /// SYS-02 step 1 secondary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore with Google'**
+  String get onboarding_restoreWithGoogle;
+
+  /// SYS-02 message when the account has no backup.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup found on this account'**
+  String get onboarding_noBackupFound;
+
+  /// Finish setting up sheet title.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish setting up'**
+  String get finishSetup_title;
+
+  /// Finish setting up sheet body.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data is back. Your app lock PIN is never backed up, so set a new one to keep your data private.'**
+  String get finishSetup_body;
+
+  /// Finish setting up primary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Set app lock'**
+  String get finishSetup_setLock;
+
+  /// Finish setting up button (Android 13+).
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notifications'**
+  String get finishSetup_allowNotifications;
+
+  /// Finish setting up dismiss button.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get finishSetup_notNow;
+
+  /// SET-02 safety copy tile.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore previous phone data'**
+  String get backup_previousTitle;
+
+  /// SET-02 safety copy tile subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {date} · {counts}'**
+  String backup_previousDetail(String date, String counts);
 
   /// Display name of INR (SYS-02 step 2).
   ///

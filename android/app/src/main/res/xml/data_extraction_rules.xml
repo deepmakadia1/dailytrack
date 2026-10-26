@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+ backup and device transfer (feature 010, spec §16, research
+     R14). An include list: only the Drift database and its -wal and -shm
+     files (it holds the settings table). Secure storage (PIN hash, lockout,
+     backup password), the no-backup folder with the device ID, receipt
+     images, the restore safety copy, WorkManager's database, and caches
+     never leave the device. Checked by test/android/backup_rules_test.dart. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <include domain="root" path="app_flutter/dailytrack.sqlite" />
+        <include domain="root" path="app_flutter/dailytrack.sqlite-wal" />
+        <include domain="root" path="app_flutter/dailytrack.sqlite-shm" />
+        <exclude domain="sharedpref" path="FlutterSecureStorage.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <include domain="root" path="app_flutter/dailytrack.sqlite" />
+        <include domain="root" path="app_flutter/dailytrack.sqlite-wal" />
+        <include domain="root" path="app_flutter/dailytrack.sqlite-shm" />
+        <exclude domain="sharedpref" path="FlutterSecureStorage.xml" />
+    </device-transfer>
+</data-extraction-rules>

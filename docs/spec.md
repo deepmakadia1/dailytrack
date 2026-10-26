@@ -2,7 +2,7 @@
 
 Version 1.0 · October 13, 2026
 
-**Changes:** 2026-10-14: EXP-01 amount search, EXP-02 category order and payment mode defaults, EXP-05 name uniqueness, and EXP-06 last active account clarified (feature `specs/002-expense-core`, clarifications Q2–Q5). 2026-10-15: EXP-11 free report periods, EXP-02 budget alerts limited to the current month, EXP-02 Repeat when editing an entry, EXP-10 turning Repeat off in rule-edit mode, and EXP-09 alert re-arming after a limit change clarified (feature `specs/003-budgets-recurring-reports`, clarifications Q1–Q5); §4 budgets uniqueness and alert reset, recurring_rules `toAccountId` and `anchorAt`, and unlocks `featureKey` stored as text (feature `specs/003-budgets-recurring-reports`, plan). 2026-10-17: EXP-02 keypad hides when the user scrolls the form and shows again only when the amount is tapped (feature `specs/004-keypad-hide-on-scroll`). 2026-10-18: HAB-01 "Skip today" uses a freeze on today, and the HAB-03 "not today" rule covers only the freeze card; freezes can be added from a dev-only debug button until rewarded ads exist (feature `specs/005-habit-module`, clarifications Q1–Q2); §4 habits gain `remindOnlyIfNotDone`, `archivedAt`, `freezesAvailable`, and `celebratedMilestones`, the new `habit_schedules` table keeps schedule and target history, and the streak rules for freezes, unscheduled days, and start dates are spelled out (feature `specs/005-habit-module`, plan). 2026-10-19: DSH-01 daily insight rotation (stored daily pick, never yesterday's when another applies), insight tap opens the related screen, Coming soon card dismissal with Undo, and transfers in Recent transactions clarified (feature `specs/006-home-dashboard`, clarifications Q1–Q4); §3 `TrackerModule` gains optional `dashboardSections()`, `insights()`, and `appBarBadge()`, and `quickAddAction()` becomes `quickAddActions()` returning a list; §4 settings gain the daily insight pick and Coming soon dismissal (feature `specs/006-home-dashboard`, plan). 2026-10-21: SYS-03 lockout escalates on each wrong PIN after the first lockout and biometric unlock stays available during a lockout; §5 re-locking on resume keeps the open screens and unsaved input; SET-01 Notifications gains a Habit reminders toggle; SET-01 Date format applies to full dates only (feature `specs/007-settings-themes-app-lock`, clarifications Q1–Q5); §4 settings gain date format, daily summary time, lock-after, hide-in-recents, and font size; SET-04 locked themes show `LockedFeatureOverlay` until PRM-02 exists (feature `specs/007-settings-themes-app-lock`, plan); §4 and §15.6/§15.10 note the erase-all and fixed-control empty-state exceptions from constitution 1.0.1 (feature `specs/007-settings-themes-app-lock`, analysis). 2026-10-21: SET-02 auto backups rotate at 5 while manual Drive backups are kept until the user deletes them, and the backup password is saved in secure storage; SET-03 one-time export unlocks are used up only by a created file; §12 widget checks never undo a check-in (feature `specs/008-backup-export-notifications-widget`, clarifications Q1–Q4); SET-02 backup file layout (JSON, zip with receipts, encrypted envelope), restorable settings, and SYS-01 restore into a fresh database; SET-05 "Show data on widget"; §12 "Mark done" day rule, snooze, daily summary refresh, and rescheduling triggers; §4 backup, widget, and time zone settings; rewarded-ads references renamed from "feature 008" to the rewarded-ads feature (T4.4) (feature `specs/008-backup-export-notifications-widget`, plan).
+**Changes:** 2026-10-14: EXP-01 amount search, EXP-02 category order and payment mode defaults, EXP-05 name uniqueness, and EXP-06 last active account clarified (feature `specs/002-expense-core`, clarifications Q2–Q5). 2026-10-15: EXP-11 free report periods, EXP-02 budget alerts limited to the current month, EXP-02 Repeat when editing an entry, EXP-10 turning Repeat off in rule-edit mode, and EXP-09 alert re-arming after a limit change clarified (feature `specs/003-budgets-recurring-reports`, clarifications Q1–Q5); §4 budgets uniqueness and alert reset, recurring_rules `toAccountId` and `anchorAt`, and unlocks `featureKey` stored as text (feature `specs/003-budgets-recurring-reports`, plan). 2026-10-17: EXP-02 keypad hides when the user scrolls the form and shows again only when the amount is tapped (feature `specs/004-keypad-hide-on-scroll`). 2026-10-18: HAB-01 "Skip today" uses a freeze on today, and the HAB-03 "not today" rule covers only the freeze card; freezes can be added from a dev-only debug button until rewarded ads exist (feature `specs/005-habit-module`, clarifications Q1–Q2); §4 habits gain `remindOnlyIfNotDone`, `archivedAt`, `freezesAvailable`, and `celebratedMilestones`, the new `habit_schedules` table keeps schedule and target history, and the streak rules for freezes, unscheduled days, and start dates are spelled out (feature `specs/005-habit-module`, plan). 2026-10-19: DSH-01 daily insight rotation (stored daily pick, never yesterday's when another applies), insight tap opens the related screen, Coming soon card dismissal with Undo, and transfers in Recent transactions clarified (feature `specs/006-home-dashboard`, clarifications Q1–Q4); §3 `TrackerModule` gains optional `dashboardSections()`, `insights()`, and `appBarBadge()`, and `quickAddAction()` becomes `quickAddActions()` returning a list; §4 settings gain the daily insight pick and Coming soon dismissal (feature `specs/006-home-dashboard`, plan). 2026-10-21: SYS-03 lockout escalates on each wrong PIN after the first lockout and biometric unlock stays available during a lockout; §5 re-locking on resume keeps the open screens and unsaved input; SET-01 Notifications gains a Habit reminders toggle; SET-01 Date format applies to full dates only (feature `specs/007-settings-themes-app-lock`, clarifications Q1–Q5); §4 settings gain date format, daily summary time, lock-after, hide-in-recents, and font size; SET-04 locked themes show `LockedFeatureOverlay` until PRM-02 exists (feature `specs/007-settings-themes-app-lock`, plan); §4 and §15.6/§15.10 note the erase-all and fixed-control empty-state exceptions from constitution 1.0.1 (feature `specs/007-settings-themes-app-lock`, analysis). 2026-10-21: SET-02 auto backups rotate at 5 while manual Drive backups are kept until the user deletes them, and the backup password is saved in secure storage; SET-03 one-time export unlocks are used up only by a created file; §12 widget checks never undo a check-in (feature `specs/008-backup-export-notifications-widget`, clarifications Q1–Q4); SET-02 backup file layout (JSON, zip with receipts, encrypted envelope), restorable settings, and SYS-01 restore into a fresh database; SET-05 "Show data on widget"; §12 "Mark done" day rule, snooze, daily summary refresh, and rescheduling triggers; §4 backup, widget, and time zone settings; rewarded-ads references renamed from "feature 008" to the rewarded-ads feature (T4.4) (feature `specs/008-backup-export-notifications-widget`, plan). 2026-10-22: the ad-free day reward is dropped (ads go away only with Pro); Pro is removed only after 2 online starts in a row report it not owned; the EXP-02 and HAB-02 interstitials may appear over Home when those screens close back to it; only builds meant for Play upload need the production AdMob App ID; a session starts on cold start or after 30 minutes in the background; only new EXP-02 entries count toward the interstitial counter; PRM-02 stays open after an early-closed ad; rewarded unlocks are limited to 10 per feature key per local day (feature `specs/009-ads-rewarded-pro`, clarifications); §4 `adFreeDay` kept but unused and new ads and Pro settings keys; §11 `AdService` shape, App ID placeholder, and rewarded grants; SET-02, SET-03, SET-04, HAB-03, PRM-01, PRM-02, and §15.8 updated for rewarded ads and Pro (feature `specs/009-ads-rewarded-pro`, plan). 2026-10-23: new section 16, Google account and cloud backup (ACC-01 Account, ACC-02 Restore choice, ACC-03 Sign out, auto backup while signed in, the last-backup-wins conflict rule, Drive backup metadata, Android Auto Backup); §1 scope, §2 SYS-02 "Restore with Google", §4 account and device settings, §5 routes, SET-01 Account row, SET-02 Drive card, §12 Backup notifications, and §13 offline and data safety updated to match. 2026-10-23 (later): SET-02 and §16 auto backups rotate by day (today's newest plus the newest of each of the 5 most recent earlier days); ACC-02 saves a 7-day safety copy before replacing a phone's data, restored from SET-02 "Restore previous phone data"; restoring an encrypted backup turns "Encrypt backup" on with that password (feature `specs/010-google-account-backup`, clarifications Q1–Q3); §4 `dataChangedSinceBackup` replaced by a change counter kept by SQLite triggers, plus `autoBackupPauseNotified`, `finishSetupPending`, and a settings copy of `deviceId` that detects an Android restore; §16 empty-phone guard, include-list Android backup rules, and pre-feature backups' device names; §14 T3.5 (feature `specs/010-google-account-backup`, plan and analysis).
 
 ## 1. Overview and scope
 
@@ -16,12 +16,13 @@ The MVP is an offline-first Flutter app (working name **DailyTrack**) with two m
 - Expense: add/edit, list with filters, categories, accounts/wallets, monthly budgets, recurring entries, reports
 - Habit: create/edit, daily check-in, frequency rules, streaks, heatmap, reminders
 - Settings, themes (light/dark + premium colors), backup/restore (local file + Google Drive), CSV/PDF export
+- Optional Google account sign-in with automatic Drive backup and restore on a new or reset phone (section 16); the app works fully without signing in
 - AdMob with consent (UMP), frequency caps, rewarded unlocks, Remove Ads IAP
 
 **Out of scope for MVP (planned later)**
 
 - Water tracker and Period tracker modules (Phase 3)
-- Cloud account sync across devices, SMS-based auto expense detection, multi-user/family sharing
+- Live sync across devices and merging data from two phones (a restore always replaces this phone's data), sign-in methods other than Google, SMS-based auto expense detection, multi-user/family sharing
 - iOS release (the code stays iOS-ready, but no iOS testing in MVP)
 
 **How to use this spec with Claude Code (SDD)**
@@ -256,11 +257,13 @@ The schedule and target columns above hold the habit's current settings. Their h
 
 | Field | Type | Notes |
 | --- | --- | --- |
-| featureKey | text (FeatureKey) | exportCsv, exportPdf, premiumTheme_{name}, advancedReports, adFreeDay, streakFreeze; stored as text because `premiumTheme_{name}` carries a theme name |
+| featureKey | text (FeatureKey) | exportCsv, exportPdf, premiumTheme_{name}, advancedReports, adFreeDay, streakFreeze; stored as text because `premiumTheme_{name}` carries a theme name. `adFreeDay` is kept (append-only) but never granted (feature `specs/009-ads-rewarded-pro`); a rewarded streak freeze adds to `habits.freezesAvailable` instead of writing a row |
 | expiresAt | int, nullable | Null = permanent |
-| source | enum UnlockSource | rewardedAd, purchase |
+| source | enum UnlockSource | rewardedAd, purchase. Pro is read from `removeAdsPurchased`, so purchase rows are not written |
 
-**settings** is a key-value table (`key` text PK, `value` text JSON) for: locale, currency code, theme mode, selected theme, first day of week, lock enabled, biometric enabled, enabled modules, onboarding done, ad consent status, last backup time, `removeAdsPurchased`, the Home daily insight pick (`dailyInsightDate` local `yyyy-MM-dd` + `dailyInsightId`, written together), whether the Home Coming soon card was dismissed (`homeComingSoonDismissed`), date format (`dateFormat`, full dates only), daily summary time (`dailySummaryTime`, local `HH:mm`), lock after (`lockAfterSeconds`: 0, 60, 300), hide app content in recents (`hideInRecents`), font size (`fontSize`: default, large), backup state (`lastBackupLocation`: device, drive; `lastBackupSizeBytes`; `lastAutoBackupAt`; `backupAccountEmail`; `autoBackupFrequency`: off, daily, weekly; `autoBackupWifiOnly`; `backupEncrypt`; `backupIncludeReceipts`; `autoBackupFailures`; `autoBackupFailureNotified`; `backupLeaseUntil`), `showDataOnWidget`, and the last seen device time zone (`deviceTimeZoneId`). Only user preferences are restored from a backup (SET-02). The PIN hash and lockout state are not in this table; they live in `flutter_secure_storage`, as does the backup encryption password (`backup.password`).
+**settings** is a key-value table (`key` text PK, `value` text JSON) for: locale, currency code, theme mode, selected theme, first day of week, lock enabled, biometric enabled, enabled modules, onboarding done, ad consent status, last backup time, `removeAdsPurchased`, the Home daily insight pick (`dailyInsightDate` local `yyyy-MM-dd` + `dailyInsightId`, written together), whether the Home Coming soon card was dismissed (`homeComingSoonDismissed`), date format (`dateFormat`, full dates only), daily summary time (`dailySummaryTime`, local `HH:mm`), lock after (`lockAfterSeconds`: 0, 60, 300), hide app content in recents (`hideInRecents`), font size (`fontSize`: default, large), backup state (`lastBackupLocation`: device, drive; `lastBackupSizeBytes`; `lastAutoBackupAt`; `backupAccountEmail`; `autoBackupFrequency`: off, daily, weekly; `autoBackupWifiOnly`; `backupEncrypt`; `backupIncludeReceipts`; `autoBackupFailures`; `autoBackupFailureNotified`; `backupLeaseUntil`), `showDataOnWidget`, the last seen device time zone (`deviceTimeZoneId`), interstitial cap state (`adsInstallAt`, kept by Erase all data; `adsLastInterstitialAt`; `adsInterstitialDay` + `adsInterstitialsToday`; `adsLastSessionDay`), and Pro checks (`proNotOwnedStreak`, `proPurchasePending`, `proRemovalPending`: a removal staged until the next cold start), and the Google account and cloud backup state (section 16): `backupAccountEmail` is the signed-in Google account (empty when signed out), plus `accountDisplayName`, `accountPhotoUrl`, the change counter (`dataChangeCounter`, raised by SQLite triggers on every write to a backed-up table or a restorable preference, never written by app code; `backedUpChangeCounter`, the counter value captured in the last successful backup or restore; data has changed since the last backup while the two differ), `lastBackgroundBackupAt` (UTC ms the last background backup was requested, for the 15-minute limit), `lastKnownDriveBackupAt` + `lastKnownDriveBackupDeviceId` (the newest Drive backup this phone made, restored, or chose to keep its own data over; used by the conflict rule), `autoBackupPausedByConflict` + `autoBackupPauseNotified` (the pause notice was shown for this pause), `finishSetupPending` (show the "Finish setting up" sheet once on Home), and a copy of `deviceId` (see Device identity). Erase all data keeps the account keys, `deviceId`, `lastKnownDriveBackup*`, and the auto backup settings, and resets both change counters to 0. Only user preferences are restored from a backup (SET-02). The PIN hash and lockout state are not in this table; they live in `flutter_secure_storage`, as does the backup encryption password (`backup.password`).
+
+**Device identity:** `deviceId` (a random UUID made on the first start) and nothing else device-specific is kept in a small file in Android's no-backup folder (`Context.getNoBackupFilesDir()`), so neither a Drive restore nor Android Auto Backup ever copies one phone's ID to another. A copy is also stored in this table as `deviceId` (never restored from a Drive backup). It travels with the database when Android restores it, so a copy without the file means "this database came from Android Auto Backup or device transfer" (§16). An install updated from a version without device IDs has neither, and simply gets a new ID. The device name shown in backups is read from the system at backup time (manufacturer + model, e.g. "Xiaomi Redmi Note 12") and is not stored.
 
 **Business rules for streaks.** A habit's current streak counts back from today over scheduled days only. A scheduled day breaks the streak if it has no entry reaching `targetValue` and no freeze. Today never breaks the streak until the day is over. For `timesPerWeek`, the streak counts consecutive weeks where the target was met. Each day is judged with the schedule and target in effect on that date (`habit_schedules`). Days before `startDateKey` are not scheduled. A freeze day keeps the streak unbroken but does not add to it, and is left out of completion rate. Completions on unscheduled days count toward total completions but not toward the streak (feature `specs/005-habit-module`).
 
@@ -304,6 +307,9 @@ The app has a bottom navigation bar with four tabs (Home, Expenses, Habits, More
 | SET-04 | Themes and appearance | `/more/themes` | Push |
 | SET-05 | Security | `/more/security` | Push |
 | SET-06 | Modules | `/more/modules` | Push |
+| ACC-01 | Account | `/more/account` | Push |
+| ACC-02 | Restore choice | — | Bottom sheet |
+| ACC-03 | Sign out | — | Bottom sheet |
 | PRM-01 | Premium / Remove Ads | `/premium` | Full screen modal |
 | PRM-02 | Rewarded unlock prompt | — | Bottom sheet (shared component) |
 
@@ -311,7 +317,7 @@ Keep all paths and names in `app/router/routes.dart`. Each module adds its route
 
 ## 6. Shared screens
 
-Every screen spec in sections 6–10 follows the same template: **Purpose**, **Layout** (top to bottom), **Behavior**, **States** (loading, empty, error), **Ads**, and **Acceptance criteria**. Claude Code should turn each acceptance criterion into at least one widget or unit test. All screens also follow the UI/UX guidelines in section 15, which apply even where a screen spec doesn't repeat them.
+Every screen spec in sections 6–10 and 16 follows the same template: **Purpose**, **Layout** (top to bottom), **Behavior**, **States** (loading, empty, error), **Ads**, and **Acceptance criteria**. Claude Code should turn each acceptance criterion into at least one widget or unit test. All screens also follow the UI/UX guidelines in section 15, which apply even where a screen spec doesn't repeat them.
 
 ### SYS-01 Splash
 
@@ -342,12 +348,18 @@ Every screen spec in sections 6–10 follows the same template: **Purpose**, **L
 
 **Layout:** A 4-step `PageView` with a progress indicator and "Skip" (top right) on steps 1–2.
 
-1. **Welcome:** Illustration, headline "Track money and habits in one place," language selector chips (English, हिन्दी, ગુજરાતી). Changing language updates the UI instantly.
+1. **Welcome:** Illustration, headline "Track money and habits in one place," language selector chips (English, हिन्दी, ગુજરાતી). Changing language updates the UI instantly. Below the chips, a secondary "Restore with Google" button for users coming from another phone or a reinstall (section 16).
 2. **Currency:** Searchable list of 30 common ISO 4217 currencies, INR preselected based on device locale.
 3. **Choose modules:** Two toggle cards, Expense and Habit, both on by default. At least one must stay on. A "Coming soon" row shows Water and Period (disabled).
 4. **Reminders and privacy:** Explain that data stays on the device. Buttons: "Allow notifications" (requests `POST_NOTIFICATIONS` on Android 13+) and "Set app lock" (optional, opens SYS-04; shown from T3.1, hidden in Phase 0 because SYS-04 doesn't exist yet). Primary button "Get started."
 
-**Behavior:** "Get started" saves settings, marks onboarding done, and goes to DSH-01. Skip uses defaults (device language if supported, else English; INR; both modules on).
+**Behavior:**
+
+- "Get started" saves settings, marks onboarding done, and goes to DSH-01. Skip uses defaults (device language if supported, else English; INR; both modules on).
+- "Restore with Google" opens Google Sign-In (section 16). The phone has no data during onboarding, so if the account has a backup, the newest one is restored without asking (ACC-02 rule), behind a full-screen progress view ("Restoring your data…"). An encrypted backup first asks for its password.
+- After a successful restore, the remaining onboarding steps are skipped: language, currency, and modules come from the backup, onboarding is marked done, and the app goes to DSH-01. Home then shows a one-time "Finish setting up" bottom sheet with "Set app lock" (→ SYS-04), "Allow notifications" (Android 13+), and "Not now", because the PIN is never backed up and step 4 was skipped. Restore purchase (PRM-01) runs in the background at the same time, without UI unless Pro is found ("Pro restored").
+- If the account has no backup, the user stays signed in, sees "No backup found on this account," and continues onboarding from step 1; their data is backed up once onboarding is done.
+- If sign-in is cancelled or the restore fails, onboarding continues from step 1 with nothing written, and a failed restore shows the SET-02 error message with "Try again."
 
 **Ads:** None.
 
@@ -356,6 +368,9 @@ Every screen spec in sections 6–10 follows the same template: **Purpose**, **L
 - [ ] Selected language persists and applies after app restart.
 - [ ] Denying the notification permission does not block onboarding.
 - [ ] User cannot turn off both modules.
+- [ ] "Restore with Google" on an account with a backup restores it without a choice sheet, skips steps 2–4, and lands on DSH-01 with the backup's language, currency, and modules.
+- [ ] After a restore from onboarding, the "Finish setting up" sheet appears once and Restore purchase runs.
+- [ ] Cancelling sign-in, or an account with no backup, returns to onboarding with no data written.
 
 ### SYS-03 Unlock
 
@@ -425,7 +440,7 @@ Every screen spec in sections 6–10 follows the same template: **Purpose**, **L
 - Empty (first day): each card shows a friendly empty state with one action ("Add your first expense," "Create your first habit").
 - If a module is disabled, its card is hidden.
 
-**Ads:** One native ad only. No interstitials on this screen. Hide the ad slot when Remove Ads is active or an ad-free day unlock is active.
+**Ads:** One native ad only. This screen never triggers an interstitial; the EXP-02 and HAB-02 interstitials may appear over Home only right after those screens close back to it (section 11). Hide the ad slot when Remove Ads is active.
 
 **Acceptance criteria:**
 
@@ -492,7 +507,7 @@ Every screen spec in sections 6–10 follows the same template: **Purpose**, **L
 - Unsaved changes trigger a "Discard changes?" dialog on back.
 - **Keypad visibility** (user story: *As a user entering a transaction, I want the keypad to get out of the way when I scroll, so that I can see the rest of the form*): the keypad shows when a new entry opens and whenever the amount is tapped. It hides when the user starts scrolling the form by touch, on Done, and when the note field is tapped. Once hidden it shows again only when the amount is tapped; scrolling back up or tapping other controls does not show it. Hiding it keeps the typed amount or calculation and is not an unsaved change. Scrolls started by the app itself do not hide it.
 
-**Ads:** No banner or native ads on this screen. After every 4th successful save in a session, request an interstitial **after** the screen closes, subject to the global frequency cap (section 11).
+**Ads:** No banner or native ads on this screen. After every 4th new entry saved in a session (new entries, duplicates, and "Save and add another" count; edits don't), request an interstitial **after** the screen closes, subject to the global frequency cap (section 11).
 
 **Acceptance criteria:**
 
@@ -672,7 +687,7 @@ Every screen spec in sections 6–10 follows the same template: **Purpose**, **L
 7. **Streak freeze card:** "Freezes available: 1." Button "Watch an ad to get a freeze" (PRM-02). Max 2 stored freezes per habit.
 8. **Banner ad** at the bottom.
 
-**Behavior:** Using a freeze on a missed past day (within the last 3 days) marks it `isFreeze = true` and restores the streak. The freeze card never freezes today; today is frozen only through HAB-01 "Skip today". Until rewarded ads exist (T4.4), dev builds with "Unlock all features (debug)" on show an "Add a freeze (debug)" button instead of "Watch an ad to get a freeze". Share button renders the heatmap as an image.
+**Behavior:** Using a freeze on a missed past day (within the last 3 days) marks it `isFreeze = true` and restores the streak. The freeze card never freezes today; today is frozen only through HAB-01 "Skip today". "Watch an ad to get a freeze" opens PRM-02 and adds 1 freeze to this habit when the reward is earned; it is disabled at 2 freezes. Pro users get "Add a freeze" without an ad, up to 2. Dev builds with "Unlock all features (debug)" on also show "Add a freeze (debug)". Share button renders the heatmap as an image.
 
 **Acceptance criteria:**
 
@@ -693,27 +708,29 @@ Every screen spec in sections 6–10 follows the same template: **Purpose**, **L
 **Layout (grouped list):**
 
 1. **Premium banner card** (hidden after purchase): "Remove ads and unlock everything" → PRM-01.
-2. **General:** Language, Currency, First day of week, Date format.
-3. **Appearance:** Theme and colors → SET-04.
-4. **Modules:** Enable or reorder trackers → SET-06.
-5. **Notifications:** Master toggle, Daily summary reminder time (default 9:00 PM, "Did you log today's expenses?"), Budget alerts toggle, Habit reminders toggle (shown only while the Habit module is enabled).
-6. **Security:** App lock → SET-05.
-7. **Data:** Backup and restore → SET-02, Export data → SET-03, Erase all data (double confirmation, typed "DELETE").
-8. **Privacy:** "Ad privacy choices" (reopens UMP consent form when required), Privacy policy (in-app web view), Terms.
-9. **About:** Rate us (Play in-app review API), Share app, Send feedback (email intent with device info), App version, Open-source licenses.
-10. Banner ad at bottom.
+2. **Account row** → ACC-01. Signed out: Google icon, "Sign in to back up your data," helper "Optional." Signed in: profile photo, name, email, and "Last backup: Today, 9:41 PM" (or "Backup paused" / "Backup failed" in `warning` color with an icon).
+3. **General:** Language, Currency, First day of week, Date format.
+4. **Appearance:** Theme and colors → SET-04.
+5. **Modules:** Enable or reorder trackers → SET-06.
+6. **Notifications:** Master toggle, Daily summary reminder time (default 9:00 PM, "Did you log today's expenses?"), Budget alerts toggle, Habit reminders toggle (shown only while the Habit module is enabled).
+7. **Security:** App lock → SET-05.
+8. **Data:** Backup and restore → SET-02, Export data → SET-03, Erase all data (double confirmation, typed "DELETE"). Erase all data removes data from this phone only; it does not sign out or delete Drive backups.
+9. **Privacy:** "Ad privacy choices" (reopens UMP consent form when required), Privacy policy (in-app web view), Terms.
+10. **About:** Rate us (Play in-app review API), Share app, Send feedback (email intent with device info), App version, Open-source licenses.
+11. Banner ad at bottom.
 
 **Acceptance criteria:**
 
 - [ ] Changing currency changes formatting only; stored amounts are not converted.
 - [ ] "Ad privacy choices" is visible whenever the UMP SDK reports a privacy options requirement.
+- [ ] The Account row shows the signed-out text when signed out and the account's name, email, and last backup time when signed in, and opens ACC-01 in both states.
 
 ### SET-02 Backup and restore
 
 **Layout:**
 
 1. **Last backup** info: date, time, location, size.
-2. **Google Drive backup card:** "Connect Google account" (Google Sign-In with Drive `appDataFolder` scope only), then "Back up now" and an "Auto backup" selector (Off, Daily, Weekly; Wi-Fi only toggle).
+2. **Google Drive backup card:** signed out, "Sign in with Google" (the same sign-in as ACC-01, section 16); signed in, the account email (tap → ACC-01), "Back up now," and an "Auto backup" selector (Off, Daily, Weekly; Wi-Fi only toggle). Signing in sets Auto backup to Daily if it was Off; while it is not Off, backups also run when the app goes to the background (section 16).
 3. **Local backup card:** "Save backup file" (system file picker / share sheet) and "Restore from file."
 4. **Encrypt backup** toggle with a password (AES-GCM via a key derived from the password). Warn that a lost password cannot be recovered.
 5. **Restore from Google Drive:** lists available backups with dates.
@@ -723,12 +740,14 @@ Every screen spec in sections 6–10 follows the same template: **Purpose**, **L
 - Backup format: one file named `dailytrack_backup_<yyyyMMdd_HHmm>`. Without receipts it is JSON (`.json`) with `{format, schemaVersion, appVersion, createdAt, modules: {expense: {...}, habit: {...}}, settings: {...}}`; with "Include receipt images" on it is a zip (`.zip`) holding `backup.json` and `receipts/`; with "Encrypt backup" on, either one is wrapped in an encrypted envelope (`.dtbk`: AES-256-GCM, key from PBKDF2-HMAC-SHA256 of the password, salt and parameters in the header). Each module writes and reads its own section through `TrackerModule.backupSection()`.
 - Only user preferences are in `settings` (language, currency, first day of week, date format, theme, font size, modules, notification preferences, Home preferences). Lock, PIN, Google account, backup and widget settings, ad consent, purchase state, and unlocks are never backed up or restored.
 - The backup password is saved only in secure storage, so auto backups encrypt without asking; Erase all data removes it.
-- The Drive list labels each backup Manual or Auto and offers Delete (with confirmation).
+- The Drive list labels each backup Manual or Auto, shows the device name and counts from its metadata (section 16), and offers Delete (with confirmation). Restoring from this list follows the same rules as ACC-02.
 - Restore validates `schemaVersion`, runs migrations if older, shows a summary ("1,240 transactions, 8 habits"), and asks "Replace current data?" before writing in a single DB transaction.
-- Auto backup runs through `workmanager` and keeps the last 5 auto backups in Drive; manual Drive backups are never deleted automatically. After 3 failed auto backups in a row, the Backup notification is shown once until a backup succeeds.
+- Auto backup runs through `workmanager`. After each successful auto backup, Drive keeps today's newest auto backup plus the newest auto backup of each of the 5 most recent earlier local days that had one (at most 6), and deletes the other auto backups in that account, whichever phone made them; manual Drive backups are never deleted automatically (feature `specs/010-google-account-backup`, clarification Q1). After 3 failed auto backups in a row, the Backup notification is shown once until a backup succeeds.
+- "Restore previous phone data" appears only while a safety copy exists (a copy of this phone's data saved just before a restore from the Google account replaced it, §16 ACC-02). It shows the copy's date and counts, restores it with the same summary and "Replace current data?" confirmation, and the copy is deleted after a successful restore or after 7 days.
+- After any successful restore of an encrypted backup (Drive or local file), "Encrypt backup" is turned on and the password that opened it is saved in secure storage, so later backups stay encrypted (clarification Q2). A failed or cancelled restore saves nothing.
 - If the database cannot be opened at startup (SYS-01), "Restore from backup" moves the broken database aside and restores into a fresh one.
 
-**Ads:** Banner at bottom. Interstitial allowed after a successful manual backup closes its success dialog, subject to the cap.
+**Ads:** Banner at bottom. Interstitial allowed after a successful manual backup ("Save backup file" or Drive "Back up now") once its success message closes, subject to the cap. Auto backups never trigger ads.
 
 **Acceptance criteria:**
 
@@ -745,7 +764,7 @@ Every screen spec in sections 6–10 follows the same template: **Purpose**, **L
 - **CSV:** UTF-8 with BOM (so Excel shows ₹ and Indian scripts correctly). Columns for transactions: Date, Time, Type, Category, Account, Payment mode, Amount, Note.
 - **PDF:** cover summary (period, totals, category donut as image), then a transaction table. Uses a bundled Noto font that supports Devanagari and Gujarati.
 - Output opens the share sheet.
-- **Unlock:** each export requires either an active `exportCsv`/`exportPdf` unlock (rewarded ad grants one export) or Remove Ads. A one-time unlock is used up only when the file is created; a failed, cancelled, or empty export keeps it. Until rewarded ads exist (T4.4), a locked export shows `LockedFeatureOverlay` with "Get Pro" disabled.
+- **Unlock:** each export requires either an active `exportCsv`/`exportPdf` unlock (rewarded ad grants one export) or Remove Ads. A one-time unlock is used up only when the file is created; a failed, cancelled, or empty export keeps it. A locked export shows `LockedFeatureOverlay` with "Watch an ad" (PRM-02 grants one export of the selected format, and the export then starts) and "Get Pro" (PRM-01).
 - **Habits:** CSV columns Date, Habit, Value, Target, Unit, Status (Done, Partial, Freeze), Note; the PDF shows a summary with each habit's completion rate, then a table of check-ins.
 - Opened from EXP-11 "Export this report", the screen starts on Transactions with the report's period.
 
@@ -758,7 +777,7 @@ Every screen spec in sections 6–10 follows the same template: **Purpose**, **L
 
 **Layout:** Theme mode (System, Light, Dark). A grid of color themes: 2 free (Default Teal, Indigo) and 6 premium (e.g. Saffron, Forest, Rose, Midnight, Ocean, Mono) with a lock badge. Live preview card at top showing a sample dashboard. Font size option (Default, Large).
 
-**Behavior:** Until PRM-02 exists (T4.4), tapping a locked theme previews it behind `LockedFeatureOverlay` without applying it. Afterwards, tapping a locked theme opens PRM-02 ("Watch an ad to unlock this theme permanently"). Themes use Material 3 `ColorScheme.fromSeed`.
+**Behavior:** Tapping a locked theme previews it behind `LockedFeatureOverlay` without applying it and opens PRM-02 ("Watch an ad to unlock this theme permanently"); an earned reward unlocks and applies that theme. The overlay keeps "Watch an ad" and "Get Pro" if the sheet is dismissed. Themes use Material 3 `ColorScheme.fromSeed`.
 
 ### SET-05 Security
 
@@ -777,8 +796,10 @@ Every screen spec in sections 6–10 follows the same template: **Purpose**, **L
 **Behavior:**
 
 - On purchase success: set `removeAdsPurchased = true`, dispose all loaded ads, stop the ads SDK from loading new ads, and grant permanent unlocks.
-- Verify ownership on every app start with `queryPastPurchases` (offline: trust the cached flag).
-- Acknowledge purchases within 3 days, as Play requires.
+- Verify ownership on every app start with `queryPastPurchases` (offline: trust the cached flag). Pro is removed only after 2 online starts in a row report it not owned (an "owned" result resets the count; offline or failed checks leave it); removal takes effect from the next cold start.
+- A pending payment shows "Pro unlocks when the payment completes" and is granted when Play reports it purchased, even on a later start.
+- Acknowledge purchases within 3 days, as Play requires; any unacknowledged purchase is acknowledged on the next start.
+- Store unavailable or no price: the price button is disabled with "Store not available right now, try again later"; "Restore purchase" stays available.
 
 **Acceptance criteria:**
 
@@ -792,8 +813,11 @@ Every screen spec in sections 6–10 follows the same template: **Purpose**, **L
 **Behavior:**
 
 - Preload one rewarded ad when the sheet opens; show a spinner on the button until loaded (timeout 8 s → "Ad not available, try again later").
-- Grant the unlock **only** in the `onUserEarnedReward` callback, then write to `unlocks`.
-- Reusable API: `showRewardedUnlock(context, FeatureKey key, {Duration? duration})` returns `Future<bool>`.
+- Grant the unlock **only** in the `onUserEarnedReward` callback, then write to `unlocks` (or run the caller's grant, e.g. +1 freeze for a habit).
+- Rewards: advanced reports (24 h), one CSV or PDF export, one premium theme (permanent), one streak freeze (max 2 per habit). There is no ad-free day reward.
+- Closing the ad early keeps the sheet open with "Watch the whole ad to unlock" and loads a new ad for a retry.
+- At most 10 earned rewards per feature key per local day (each premium theme counts separately); after that the sheet says the daily limit is reached, loads no ad, and offers only "Get Pro instead" and "Not now" (feature `specs/009-ads-rewarded-pro`, clarification 2026-10-22).
+- Reusable API: `showRewardedUnlock(context, FeatureKey key, {Duration? duration, Future<void> Function()? grant})` returns `Future<bool>` when the sheet closes.
 
 **Acceptance criteria:**
 
@@ -808,22 +832,22 @@ Ads must never interrupt logging. Every placement below sits on a reading screen
 | --- | --- | --- |
 | Banner (adaptive, anchored bottom) | EXP-01, EXP-03, EXP-04, EXP-06, EXP-11, HAB-01, HAB-03, HAB-04, SET-01, SET-02 | Never on add/edit forms, lock, onboarding, or PRM screens |
 | Native (medium template) | DSH-01 (after 2nd card), EXP-01 (after row 8, then every 15, max 3), EXP-08 (after list), HAB-01 (after 4th card, if 5+ habits) | Clearly labeled "Ad"; styled like app cards |
-| Interstitial | After EXP-02 save (every 4th save), after new habit save in HAB-02, after manual backup success in SET-02 | Shown only after the screen has closed and the app is idle |
-| Rewarded | PRM-02 only: advanced reports (24 h), one export, one premium theme (permanent), streak freeze, ad-free day (24 h) | Reward granted only in `onUserEarnedReward` |
+| Interstitial | After EXP-02 save (every 4th new entry), after new habit save in HAB-02, after manual backup success in SET-02 | Shown only after the screen has closed and the app is idle; may appear over Home when EXP-02 or HAB-02 closes back to it |
+| Rewarded | PRM-02 only: advanced reports (24 h), one export, one premium theme (permanent), streak freeze | Reward granted only in `onUserEarnedReward` |
 | App open | Not used in MVP | Revisit after measuring retention |
 
 **Interstitial frequency cap (global):**
 
-- No interstitial in the first 2 days after install, and never in a user's first session of the day.
+- No interstitial in the first 2 days after install, and never in a user's first session of the day. A session starts on a cold start or when the app returns after at least 30 minutes in the background.
 - Minimum 3 minutes between interstitials, maximum 4 per day.
 - Counter of qualifying actions (saves) resets after each shown interstitial.
 - All values live in one `AdConfig` class (and can later come from Firebase Remote Config) so they can be tuned without code changes.
 
 **AdService design (`core/ads/`):**
 
-- `abstract class AdService` with: `Future<void> init()`, `bool get adsEnabled`, `Future<void> preloadInterstitial()`, `Future<void> maybeShowInterstitial(AdTrigger trigger)`, `Future<bool> showRewarded(FeatureKey key)`, and a `Stream<bool> adsEnabledStream`.
-- `AdMobAdService` implements it with `google_mobile_ads`. `NoAdsService` is used when Pro is purchased, an ad-free day is active, and in widget tests.
-- `AdUnitIds` reads IDs from `--dart-define` per build flavor. **Debug builds always use Google's official test ad unit IDs.** Release IDs are never committed to the repo.
+- `abstract class AdService` with: `Future<void> init()`, `bool get adsEnabled`, a `Stream<bool> adsEnabledStream`, `loadBanner` and `loadNative` (used only by `AppBannerAd` and `AppNativeAd`), `Future<void> preloadInterstitial()`, `Future<void> maybeShowInterstitial(AdTrigger trigger)`, `Future<bool> prepareRewarded()`, and `Future<RewardedOutcome> showRewarded(FeatureKey key, {required Future<void> Function() onEarned})` (feature `specs/009-ads-rewarded-pro` contracts).
+- `AdMobAdService` implements it with `google_mobile_ads`. `NoAdsService` is used when Pro is purchased (from the next screen build; from cold start the ads SDK is not started) and in widget tests.
+- `AdUnitIds` reads IDs from `--dart-define` per build flavor. **Dev-flavor and debug builds always use Google's official test ad unit IDs and test App ID.** Release IDs are never committed to the repo. The AdMob App ID reaches `AndroidManifest.xml` through a Gradle manifest placeholder read from `local.properties` or an environment variable; only builds meant for Play upload fail without it, other prod release builds use the test App ID and request no ads.
 - `AppBannerAd` and `AppNativeAd` widgets handle load, retry with backoff, dispose, and collapse to zero height on failure (no empty boxes).
 - Preload the next interstitial after one is shown; preload rewarded only when PRM-02 opens.
 
@@ -851,12 +875,14 @@ Ads must never interrupt logging. Every placement below sits on a reading screen
 | Habit reminders | Each habit's reminder times; skipped if done when "only if not done" is on | On | HAB-01 for today |
 | Daily summary | User time (default 9:00 PM): "Spent ₹X today · 3/5 habits done" | On | DSH-01 |
 | Budget alerts | Category or overall budget reaches 80% / 100% | On | EXP-08 |
-| Backup | Auto backup failed 3 times in a row | On | SET-02 |
+| Backup | Auto backup failed 3 times in a row; auto backup paused because another phone made a newer backup (section 16, shown once per pause) | On | SET-02 (failure), ACC-01 (pause) |
 
 - Habit reminders include action buttons "Mark done" (yes/no habits) and "Snooze 1 h," handled without opening the app. "Mark done" marks the day of the latest reminder occurrence at or before the tap (so a tap after midnight marks the reminder's day). "Snooze 1 h" shows the reminder once more an hour later, unless the habit is done by then and "only if not done" is on.
 - The daily summary text is kept current: it is rescheduled after every change to the data it shows and at midnight.
 - Use exact alarms only if the user grants `SCHEDULE_EXACT_ALARM`; otherwise fall back to inexact scheduling and note possible delays.
-- Reschedule all notifications on app start, after restore, after timezone change, and after reboot.
+- Reschedule all notifications on app start, after restore (including a restore from SYS-02 or ACC-02 and the first start after an Android Auto Backup restore), after timezone change, and after reboot.
+- The home widget is refreshed after a restore and after "Remove data from this phone" (ACC-03).
+- Account and backup strings (section 16) are translated like all others; device names and email addresses are shown as given, never translated.
 
 **Home screen widget (`home_widget`)**
 
@@ -888,8 +914,8 @@ Ads must never interrupt logging. Every placement below sits on a reading screen
 | List scrolling | 60 fps with 10,000 transactions |
 | APK size | < 25 MB per ABI (use `--split-per-abi` / App Bundle) |
 | Crash-free users | ≥ 99.5% |
-| Offline | 100% of features work offline except Drive backup, ads, and purchase |
-| Data safety | No user data leaves the device except user-initiated Drive backup |
+| Offline | 100% of features work offline except Google sign-in, Drive backup and restore, ads, and purchase; signing in is never required |
+| Data safety | User data leaves the device only as backups the user chose: manual and auto Drive backups to their own Google account's hidden app folder (auto backups run only while signed in with auto backup on), backup or export files they save or share, and Android Auto Backup of the database (section 16). The PIN, lockout state, and backup password never leave the device |
 
 **Testing strategy**
 
@@ -903,7 +929,9 @@ Ads must never interrupt logging. Every placement below sits on a reading screen
 
 **Play Store compliance checklist**
 
-- [ ] Data safety form: declares on-device financial and health-adjacent data, ads SDK device identifiers, crash logs; no data sold.
+- [ ] Data safety form: declares on-device financial and health-adjacent data, ads SDK device identifiers, crash logs; no data sold. Also declares the Google account name, email, and photo (used only to show the signed-in account, stored on the device) and that backups go to the user's own Google Drive and Android backup, encrypted in transit, and can be deleted from the app (ACC-01 "Delete my backups").
+- [ ] Google OAuth consent screen set up and verified for the scopes used (`email`, `profile`, Drive `appDataFolder` only).
+- [ ] Android Auto Backup rules (`dataExtractionRules` and `fullBackupContent`) include the database and exclude secure storage and the no-backup folder (section 16).
 - [ ] Privacy policy URL hosted publicly and linked in SET-01.
 - [ ] Target audience 18+; not in Designed for Families.
 - [ ] Ads policy: no ads on lock screen, forms, or exit; no accidental-click layouts (8 dp minimum gap between ads and tappable controls); interstitials never appear unexpectedly mid-task.
@@ -947,6 +975,7 @@ Build in this order so each phase ends with a runnable, tested app. With Spec Ki
 - [ ] T3.2 SET-02 Backup and restore (local, then Drive, then encryption).
 - [ ] T3.3 SET-03 Export CSV and PDF.
 - [ ] T3.4 Notifications: daily summary, action buttons, reboot handling. Home screen widget.
+- [ ] T3.5 Google account and cloud backup (section 16): ACC-01–ACC-03, SYS-02 "Restore with Google", background backups, conflict rule, metadata, safety copy, Android Auto Backup (feature `specs/010-google-account-backup`).
 
 **Phase 4: Monetization**
 
@@ -1101,7 +1130,7 @@ Every screen designs all four states: loading, empty, error, and content. A scre
 - Keep at least 8 dp between any ad and any tappable control, and never place an ad directly next to the FAB, Save button, or a check button.
 - Banner slots take no space until an ad has loaded, then animate in (15.6) so nothing shifts under a tap.
 - Rewarded ads are always the user's choice, explained before playing: what they get and for how long.
-- After Pro purchase or during an ad-free day, all ad slots disappear completely, with no empty boxes or "Upgrade" placeholders in their place.
+- After Pro purchase, all ad slots disappear completely, with no empty boxes or "Upgrade" placeholders in their place.
 
 ### 15.9 Dark mode and theming
 
@@ -1122,3 +1151,190 @@ Claude Code should check these before marking any screen task done, and include 
 - [ ] Destructive actions follow the undo-vs-confirm rule.
 - [ ] Ad placements match section 11 and the ad UX rules above; no layout shift.
 - [ ] All strings come from ARB files and use placeholders, not concatenation.
+
+## 16. Google account and cloud backup
+
+Signing in with Google is optional. Its only purpose is to back up this phone's data to the user's own Google Drive and bring it back on a new or reset phone. Every feature works the same without an account, and the app never asks the user to sign in except from the places listed here (SYS-02 step 1, SET-01 Account row, SET-02 Drive card, SYS-03 "Forgot PIN?").
+
+**Rules for the whole section**
+
+- **Sign-in:** `google_sign_in` with the `email` and `profile` scopes plus Drive `appDataFolder` only. Backups live in the hidden app folder, which the user cannot see or edit in Drive and no other app can read. One account is signed in at a time.
+- **What is backed up:** the same backup file as SET-02 (module data and user preferences, with receipts and encryption if those settings are on). The PIN hash, lockout state, app lock and biometric settings, backup password, Google account, purchase state, unlocks, and ad consent are never backed up, to Drive or anywhere else.
+- **Restore replaces, never merges.** A restore replaces all module rows on this phone with the backup's rows in one transaction (constitution III). Combining data from two phones is out of scope.
+- **Account state is local.** `backupAccountEmail`, `accountDisplayName`, and `accountPhotoUrl` (section 4) are set on sign-in and cleared on sign-out. On start, the app tries a silent sign-in; if it fails (token revoked, account removed from the phone), the app shows the account as signed out and keeps all data.
+
+### Backup metadata
+
+Every Drive backup carries metadata, so the app can list and compare backups without downloading or decrypting them:
+
+| Field | Value |
+| --- | --- |
+| `deviceId` | This phone's `deviceId` (section 4) |
+| `deviceName` | Manufacturer + model at backup time, e.g. "Xiaomi Redmi Note 12" |
+| `appVersion` | App version name and build number |
+| `createdAt` | UTC ms |
+| `kind` | `manual` or `auto` |
+| `counts` | Row counts per module section, non-deleted rows only, e.g. `{"expense.transactions": 1240, "habit.habits": 8}` |
+| `schemaVersion`, `encrypted` | As in the backup file |
+
+- The metadata is stored twice: as Drive file `appProperties` (read when listing) and inside the backup file as a `meta` object next to `format` and `schemaVersion` (the source of truth; for an encrypted file it is read after decryption). If the two disagree, the file wins.
+- `counts` are shown in plain words using ARB plurals ("1,240 transactions · 8 habits"). Each module provides the labels for its own counts through `TrackerModule.backupSection()`.
+- Local backup files (SET-02 "Save backup file") also include `meta`.
+- Backups made before this feature have no `meta`. They stay listable and restorable, show the device name feature 008 already stored ("Unknown device" when there is none) without counts, and never trigger the conflict warning.
+
+### Auto backup while signed in
+
+- While signed in and Auto backup is not Off (SET-02), a backup to Drive runs:
+  1. **On background:** when the app goes to the background, if data has changed since the last backup (change counter, §4), onboarding is done, and the last background backup was requested at least 15 minutes ago (`lastBackgroundBackupAt`). It runs as a one-off `workmanager` task, so it finishes even if the app is closed.
+  2. **Scheduled:** the existing daily (or weekly) `workmanager` job from SET-02. It skips the upload if nothing changed since the last successful backup.
+- Both respect "Wi-Fi only": the task waits for an unmetered network instead of using mobile data. A waiting background backup is replaced by the next one, never queued twice.
+- Background backups count as auto backups for SET-02's day-based rotation (today's newest plus the newest of each of the 5 most recent earlier days) and the 3-failures notification. They never trigger ads.
+- Changes made while signed out are backed up by the first backup after signing in.
+- Every successful backup sets `backedUpChangeCounter` to the counter value read inside the backup's own snapshot, so a write made while it ran still counts as changed; updates the last backup time, and sets `lastKnownDriveBackupAt` and `lastKnownDriveBackupDeviceId` to the new backup.
+
+### Conflict rule: last backup wins
+
+- The newest backup on the account, by `createdAt`, is the one restored by default (ACC-02, SYS-02). Older backups stay in the SET-02 list until rotation or deletion.
+- Before any backup to Drive, the app reads the newest backup's metadata. If it was made on a **different** `deviceId` and is newer than `lastKnownDriveBackupAt`, another phone has backed up data this phone has never seen:
+  - **Manual backup** ("Back up now" in ACC-01 or SET-02, or the sign-out backup in ACC-03): a `ConfirmDialog` says "A newer backup from Redmi Note 12 (Today, 8:15 PM) exists. Backing up now makes this phone's data the latest." with "Back up anyway" and "Cancel". "Back up anyway" uploads and updates `lastKnownDriveBackup*`.
+  - **Auto backup:** does not upload. It sets `autoBackupPausedByConflict`, shows the Backup notification once, and shows "Backup paused" in ACC-01 and SET-01. The pause ends when the user restores, chooses "Keep this phone's data" (ACC-02), or makes a manual backup.
+- Backups made on the same `deviceId` never trigger the warning, and neither does a backup older than `lastKnownDriveBackupAt`.
+- **Empty phone over a backup with data:** if this phone has no user data (the ACC-02 rule) and the newest backup's counts show data, an auto backup does not upload (not a failure and not a pause), and a manual backup shows a `ConfirmDialog`: "This phone has no data. Backing up now makes an empty backup the latest." with "Back up anyway" and "Cancel". This protects the account after Erase all data, which keeps the sign-in.
+
+### Android Auto Backup
+
+- `android:allowBackup="true"` with `android:dataExtractionRules` (Android 12+) and `android:fullBackupContent` (Android 11 and lower). Both use an include list with only the Drift database file and its `-wal` and `-shm` files (`app_flutter/dailytrack.sqlite*` in the `root` domain; the database holds the settings table), so nothing else is backed up: not secure storage (also explicitly excluded: `sharedpref` `FlutterSecureStorage.xml`), the no-backup folder (`deviceId`), receipt images (to stay under Android's 25 MB limit), the safety copy, WorkManager's own database, or caches. Device-to-device transfer follows the same rules (constitution III).
+- This is a fallback the user does not manage; it works whether or not they sign in. It is described in the privacy policy.
+- **First start after an Android Auto Backup restore** (the settings table has a `deviceId` copy but the no-backup folder has no `deviceId` file, or the two differ): the app makes a new `deviceId`; turns app lock and biometric off if no PIN hash exists in secure storage; clears the account keys, then tries a silent sign-in; sets `lastKnownDriveBackupAt` to 0 so the conflict rule applies; reschedules notifications; runs Restore purchase; and shows the "Finish setting up" sheet from SYS-02 on Home. Onboarding is not shown again. If "Encrypt backup" was on, the password didn't come along (secure storage is excluded): backups fail with "Set your backup password in Backup and restore" and are never made unencrypted.
+
+### ACC-01 Account
+
+**Purpose:** Sign in with Google to keep this phone's data backed up, and manage that account and its backups.
+
+**Layout (signed out):**
+
+1. Illustration and title "Back up with your Google account."
+2. Three short points: "Your data is saved to your own Google Drive," "Restore it on a new phone," "Optional: the app works fully without an account."
+3. Primary button "Sign in with Google."
+4. Footnote: "Your app lock PIN is never backed up."
+
+**Layout (signed in):**
+
+1. **Account card:** profile photo (initial in a `CategoryAvatar` if there is no photo), name, email.
+2. **Backup status:** "Last backup: Today, 9:41 PM · Redmi Note 12" and a state line: "Backed up," "Backing up…," "Waiting for Wi-Fi," "Backup paused: a newer backup from another phone exists" (with "Review" → ACC-02 for that backup), or "Backup failed" (with the error message).
+3. **Back up now** (primary button).
+4. **Restore** (secondary button): opens ACC-02 for the newest backup, with a "See all backups" link to the SET-02 Drive list.
+5. **Auto backup:** current setting ("Daily · Wi-Fi only") → SET-02.
+6. **Switch account** and **Sign out** (text buttons).
+7. **Delete my backups** (text button in `error` color).
+
+**Behavior:**
+
+- **Sign in with Google:** opens the account chooser and scope consent. On success, saves the account keys and sets Auto backup to Daily if it was Off. Then:
+  - If the account has a backup: opens ACC-02 (which restores without asking if this phone has no data).
+  - If not: runs a first backup right away and shows "Signed in. Your data is backed up."
+  - Cancelled or failed: stays signed out; a failure shows "Couldn't sign in. Check your connection and try again."
+- **Back up now:** runs a manual backup with the conflict rule, ignoring "Wi-Fi only." Shows progress on the button and a success snackbar. No interstitial follows (the SET-02 interstitial applies only to SET-02).
+- **Switch account:** backs up to the current account first (as in ACC-03 step 1; a failure offers "Switch anyway"), signs out without touching this phone's data, and opens the account chooser. After signing in to the new account, the flow is the same as "Sign in with Google." Cancelling the chooser leaves the user signed out with data kept.
+- **Delete my backups:** a `ConfirmDialog`: "Delete all 7 DailyTrack backups from user@gmail.com? Data on this phone stays. This can't be undone." On confirm, deletes every DailyTrack file in the account's app folder (manual and auto). The user stays signed in, `lastKnownDriveBackup*` is reset, and the next auto backup creates a fresh one.
+- The photo is loaded from `accountPhotoUrl` and cached; the screen never waits for it.
+
+**States:**
+
+- Loading: skeleton of the backup status while reading Drive metadata; local account details show at once.
+- Offline: account details from settings, status "You're offline. Backups resume when you're back online." Back up now, Restore, Switch account, and Delete my backups are disabled with that reason; Sign out still works (ACC-03).
+- Error reading Drive: `ErrorState` text in the status area with "Try again"; the rest of the screen stays usable.
+- Signed out is this screen's empty state.
+
+**Ads:** None.
+
+**Acceptance criteria:**
+
+- [ ] Signed out shows only the sign-in content; signed in shows name, email, photo (or initial), last backup time and device, and all actions.
+- [ ] Signing in to an account without a backup makes a first backup, and Auto backup becomes Daily if it was Off.
+- [ ] Signing in to an account with a backup opens ACC-02.
+- [ ] Cancelling sign-in changes nothing.
+- [ ] "Back up now" with a newer backup from another device shows the warning, and "Cancel" uploads nothing.
+- [ ] "Delete my backups" removes every backup file in the app folder and leaves local data and the sign-in in place.
+- [ ] Switch account backs up to the old account before signing out and never removes local data.
+- [ ] Offline, the network actions are disabled with an explanation and Sign out still works.
+
+### ACC-02 Restore choice (bottom sheet)
+
+**Purpose:** Let the user choose between the account's backup and the data already on this phone, right after sign-in or from ACC-01 "Restore."
+
+**Layout:**
+
+1. Title "Backup found on user@gmail.com."
+2. **Backup summary card:** date and time ("Yesterday, 10:02 PM"), device name ("From Redmi Note 12," or "From this phone" when the `deviceId` matches), counts ("1,240 transactions · 8 habits"), Manual or Auto, and a lock icon with "Encrypted" when it is.
+3. **This phone** line: counts of this phone's data in the same format.
+4. Password field, shown only for an encrypted backup when the saved backup password doesn't open it.
+5. Primary "Restore from account," secondary "Keep this phone's data," and a "See all backups" link (→ SET-02 Drive list).
+
+**Behavior:**
+
+- **No data on this phone:** if every module's backup section reports zero user rows (seeded defaults don't count), the sheet is not shown; the newest backup is restored at once behind a progress view, then the "Finish setting up" sheet (SYS-02) is shown if app lock is off. This also covers SYS-02 "Restore with Google."
+- **Safety copy:** before "Restore from account" (or a restore from the SET-02 Drive list) replaces a phone that has user data, the app saves a copy of the current data (backup format with receipts, never encrypted, never uploaded) in its private storage, replacing any earlier copy. If it can't be saved (e.g. storage full), the restore doesn't start and the error says why. The copy is kept for 7 days and restored from SET-02 "Restore previous phone data" (clarification Q3).
+- **Restore from account:** the sheet already says "This replaces the data on this phone," so there is no second dialog. Runs the SET-02 restore (validate, migrate, single transaction), then sets `lastKnownDriveBackup*` to that backup (from the file's `meta`), sets `backedUpChangeCounter` to the current counter, clears `autoBackupPausedByConflict`, turns "Encrypt backup" on with the password used if the backup was encrypted, reschedules notifications, and refreshes the widget. Success snackbar: "Restored 1,240 transactions and 8 habits."
+- **Keep this phone's data:** closes the sheet without restoring. Sets `lastKnownDriveBackup*` to the newest backup (so the conflict rule does not fire for it), clears `autoBackupPausedByConflict`, and starts a backup, which becomes the newest. The declined backup stays in the list.
+- Opened after sign-in, the sheet cannot be dismissed by dragging or tapping outside, so the user always chooses. Opened from ACC-01 "Restore," it also has a close button that changes nothing.
+- Wrong password: inline error "That password didn't work"; nothing is written.
+
+**States:** Loading while reading metadata (skeleton card). Download or restore failure: "Couldn't restore. Your data on this phone wasn't changed." with "Try again." Offline: "Connect to the internet to restore," with restore disabled; "Keep this phone's data" still works.
+
+**Ads:** None.
+
+**Acceptance criteria:**
+
+- [ ] The summary shows the backup's date, device name, counts, and encryption from metadata without downloading the file.
+- [ ] With no user data on the phone, the newest backup is restored without showing the choice.
+- [ ] Seeded categories and the Cash account alone count as no data.
+- [ ] "Restore from account" replaces all module rows in one transaction; a failure leaves this phone's data unchanged.
+- [ ] "Keep this phone's data" writes nothing locally, starts a backup, and no conflict warning appears for the declined backup.
+- [ ] An encrypted backup asks for the password only when the saved one fails; a wrong password writes nothing.
+
+### ACC-03 Sign out (bottom sheet)
+
+**Purpose:** Sign out safely, without losing changes that aren't backed up.
+
+**Layout:**
+
+1. Title "Sign out of user@gmail.com?"
+2. **Step 1, backup:** "Backing up your latest changes…" with progress, or "Backed up" when nothing changed since the last backup (change counter, §4).
+3. **Step 2, choice:** two radio options:
+    - "Keep data on this phone" (default): "You can keep using the app without an account."
+    - "Remove data from this phone": "Your backup stays in your Google account."
+4. Buttons: "Sign out" (primary; in `error` color when Remove is chosen) and "Cancel."
+
+**Behavior:**
+
+- The step 1 backup is a manual backup and follows the conflict rule; cancelling the conflict warning counts as a failed backup.
+- **Backup fails** (offline, error, or declined): step 1 shows "Couldn't back up your latest changes" with "Try again" and "Sign out anyway." "Sign out anyway" moves to step 2, and choosing "Remove data from this phone" then needs a typed "DELETE" confirmation, as in Erase all data, because those changes would be lost.
+- **Sign out:** calls `GoogleSignIn.signOut()`, clears the account keys and `lastKnownDriveBackup*`, cancels pending Drive backup tasks, and stops background backups. The Auto backup setting is kept for the next sign-in.
+- **Remove data from this phone:** after signing out, runs the same erase as SET-01 "Erase all data" (all module rows, receipts, the safety copy, backup password, and app lock), keeps `deviceId`, and opens SYS-02 onboarding, where "Restore with Google" brings the data back.
+- **Keep data on this phone:** returns to ACC-01 signed out, with the snackbar "Signed out. Your data is still on this phone."
+
+**States:** Backup in progress (step 1 progress, "Sign out" disabled), backup failed (as above), and ready. Offline goes straight to the failed state.
+
+**Ads:** None.
+
+**Acceptance criteria:**
+
+- [ ] With changes not yet backed up, sign-out backs up first and enables "Sign out" only after the backup succeeds or the user picks "Sign out anyway."
+- [ ] "Keep data on this phone" leaves every local row in place and the app fully usable.
+- [ ] "Remove data from this phone" erases local data, keeps the Drive backups, and opens onboarding.
+- [ ] After a failed backup, "Remove data from this phone" needs the typed "DELETE" confirmation.
+- [ ] After sign-out, no Drive request is made until the user signs in again.
+
+### Section acceptance criteria
+
+- [ ] Every screen outside this section works the same with no account signed in, and only the places listed at the top of this section offer sign-in.
+- [ ] Neither a Drive backup file nor Android Auto Backup data contains the PIN hash, lockout state, or backup password (a test inspects the backup JSON and the backup rules XML).
+- [ ] Going to the background with changed data starts a backup; going to the background again within 15 minutes does not; nothing starts when no data changed.
+- [ ] With "Wi-Fi only" on, background and scheduled auto backups don't upload on mobile data and run once Wi-Fi is back.
+- [ ] Auto backup does not upload over a newer backup from another device; it pauses, notifies once, and resumes after a restore, "Keep this phone's data," or a manual backup.
+- [ ] Each Drive backup has `deviceId`, `deviceName`, `appVersion`, `createdAt`, `kind`, and `counts` in both `appProperties` and the file's `meta`.
+- [ ] Two installs never share a `deviceId`, including after a Drive restore or an Android Auto Backup restore.
+- [ ] On the first start after an Android Auto Backup restore with app lock on and no PIN hash, the lock is turned off and the "Finish setting up" sheet is shown instead of locking the user out.
+
+**Out of scope:** live sync between phones, merging data from two phones, sign-in methods other than Google, and backing up to any cloud other than the user's own Google Drive.

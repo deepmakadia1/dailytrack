@@ -62,9 +62,12 @@ void main() {
   }
 
   group('SET-01 layout', () {
-    testWidgets('US4-1 sections in order; no premium or ad privacy rows '
-        '(backup and export arrived with feature 008)', (tester) async {
+    testWidgets('US4-1 the premium card first, then the sections in order; '
+        'no ad privacy row unless the consent SDK asks (feature 009)', (
+      tester,
+    ) async {
       await open(tester);
+      expect(find.byKey(const Key('premium_card')), findsOneWidget);
       const order = [
         'General',
         'Appearance',
@@ -79,11 +82,7 @@ void main() {
         for (final title in order) tester.getTopLeft(find.text(title).first).dy,
       ];
       expect(tops, orderedEquals([...tops]..sort()));
-      for (final absent in [
-        'Ad privacy choices',
-        'Remove ads and unlock everything',
-        'Developer',
-      ]) {
+      for (final absent in ['Ad privacy choices', 'Developer']) {
         expect(find.text(absent), findsNothing, reason: absent);
       }
     });

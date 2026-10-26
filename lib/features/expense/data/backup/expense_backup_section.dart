@@ -7,6 +7,7 @@ import 'package:dailytrack/features/expense/data/backup/budget_codec.dart';
 import 'package:dailytrack/features/expense/data/backup/category_codec.dart';
 import 'package:dailytrack/features/expense/data/backup/recurring_rule_codec.dart';
 import 'package:dailytrack/features/expense/data/backup/transaction_codec.dart';
+import 'package:drift/drift.dart';
 
 /// The Expense module's backup section (SET-02, feature 008 research R5):
 /// accounts, categories, transactions, budgets, and recurring rules,
@@ -20,6 +21,67 @@ final class ExpenseBackupSection extends BackupSection {
   /// accounts and categories exist since v1; the section upgrades from there.
   @override
   int get sinceSchemaVersion => 1;
+
+  @override
+  Set<String> get tables => const {
+    'accounts',
+    'categories',
+    'transactions',
+    'budgets',
+    'recurring_rules',
+  };
+
+  /// Any transaction, budget, or recurring rule; a category the user made;
+  /// or a second account (the seed makes exactly one, Cash). Renaming a
+  /// seeded row doesn't count (research R11).
+  @override
+  Future<bool> hasUserData(AppDatabase db) async {
+    // At least one row of [query].
+    Future<bool> exists(JoinedSelectStatement<HasResultSet, dynamic> query) =>
+        (query..limit(1)).get().then((rows) => rows.isNotEmpty);
+
+    final t = db.transactions;
+    final b = db.budgets;
+    final r = db.recurringRules;
+    final c = db.categories;
+    if (await exists(
+      db.selectOnly(t)
+        ..addColumns([t.id])
+        ..where(t.deletedAt.isNull()),
+    )) {
+      return true;
+    }
+    if (await exists(
+      db.selectOnly(b)
+        ..addColumns([b.id])
+        ..where(b.deletedAt.isNull()),
+    )) {
+      return true;
+    }
+    if (await exists(
+      db.selectOnly(r)
+        ..addColumns([r.id])
+        ..where(r.deletedAt.isNull()),
+    )) {
+      return true;
+    }
+    if (await exists(
+      db.selectOnly(c)
+        ..addColumns([c.id])
+        ..where(c.deletedAt.isNull() & c.isDefault.not()),
+    )) {
+      return true;
+    }
+    final a = db.accounts;
+    final count = a.id.count();
+    final live =
+        await (db.selectOnly(a)
+              ..addColumns([count])
+              ..where(a.deletedAt.isNull()))
+            .map((row) => row.read(count) ?? 0)
+            .getSingle();
+    return live > 1;
+  }
 
   @override
   Future<Map<String, Object?>> export(AppDatabase db) async => {

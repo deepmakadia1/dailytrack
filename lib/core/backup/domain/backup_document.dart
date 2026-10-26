@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
+import 'package:dailytrack/core/backup/domain/backup_meta.dart';
 
 /// The backup document (data-model §3): `backup.json`, or the whole `.json`
 /// file. Pure Dart.
@@ -12,6 +13,7 @@ final class BackupDocument {
     required this.createdAt,
     required this.modules,
     required this.settings,
+    this.meta,
   });
 
   /// Reads and checks the header (research R7: version range is checked by
@@ -70,6 +72,8 @@ final class BackupDocument {
       createdAt: createdAt,
       modules: modules.cast<String, Map<String, Object?>>(),
       settings: settingsMap,
+      // Files from before feature 010 have none (FR-043).
+      meta: BackupMeta.fromJson(json['meta']),
     );
   }
 
@@ -89,6 +93,10 @@ final class BackupDocument {
   /// Restorable settings: key → the JSON text stored in `settings.value`.
   final Map<String, String> settings;
 
+  /// Who made it and what it holds (feature 010 data-model §4). The source
+  /// of truth when it disagrees with the Drive listing.
+  final BackupMeta? meta;
+
   BackupDocument copyWith({
     int? schemaVersion,
     Map<String, Map<String, Object?>>? modules,
@@ -98,10 +106,21 @@ final class BackupDocument {
     createdAt: createdAt,
     modules: modules ?? this.modules,
     settings: settings,
+    meta: meta,
+  );
+
+  BackupDocument withMeta(BackupMeta meta) => BackupDocument(
+    schemaVersion: schemaVersion,
+    appVersion: appVersion,
+    createdAt: createdAt,
+    modules: modules,
+    settings: settings,
+    meta: meta,
   );
 
   Map<String, Object?> toJson() => {
     'format': format,
+    'meta': ?meta?.toJson(),
     'schemaVersion': schemaVersion,
     'appVersion': appVersion,
     'createdAt': createdAt,

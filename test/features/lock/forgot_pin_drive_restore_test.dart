@@ -21,9 +21,11 @@ void main() {
   late FakeDriveBackupStore drive;
   late FakeRestoreService restore;
   late FakeAppResetService reset;
+  late FakeAccountAuth auth;
 
   setUp(() {
     drive = FakeDriveBackupStore();
+    auth = FakeAccountAuth();
     restore = FakeRestoreService();
     reset = FakeAppResetService();
   });
@@ -39,6 +41,7 @@ void main() {
           biometricEnabled: true,
         ),
         reset: reset,
+        accountAuth: auth,
         overrides: [
           driveAvailableProvider.overrideWithValue(available),
           driveBackupStoreProvider.overrideWithValue(drive),
@@ -100,7 +103,7 @@ void main() {
     await tapForgot(tester);
     await tester.tap(find.byKey(const Key('forgot_pin_restore')));
     await tester.pumpAndSettle();
-    expect(drive.connects, 1);
+    expect(auth.signIns, 1);
     expect(w.settings.current.backupAccountEmail, 'me@example.com');
     expect(find.byKey(const Key('drive_restore_picker')), findsOneWidget);
 
@@ -140,7 +143,7 @@ void main() {
 
   testWidgets('US8-4 cancelling Google sign-in changes nothing and shows no '
       'error', (tester) async {
-    drive.connectResult = const DriveAuthRequired();
+    auth.signInResult = const DriveAuthRequired();
     final w = await open(tester);
     await tapForgot(tester);
     await tester.tap(find.byKey(const Key('forgot_pin_restore')));

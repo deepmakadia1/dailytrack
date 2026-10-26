@@ -36,6 +36,12 @@ abstract final class Routes {
   /// Relative path of [backup] under [more].
   static const String backupSegment = 'backup';
 
+  /// ACC-01 Account, pushed inside the More branch (feature 010).
+  static const String account = '/more/account';
+
+  /// Relative path of [account] under [more].
+  static const String accountSegment = 'account';
+
   /// SET-03, above the shell so EXP-11 can open it (feature 008).
   static const String export = '/more/export';
 
@@ -188,12 +194,17 @@ abstract final class Routes {
 
   static String webPagePath(String page) =>
       '/more/web/${Uri.encodeComponent(page)}';
+
+  /// PRM-01 Premium / Remove Ads, a full-screen modal above everything
+  /// (feature 009 contracts/routes.md).
+  static const String premium = '/premium';
 }
 
 abstract final class RouteNames {
   static const String splash = 'splash';
   static const String onboarding = 'onboarding';
   static const String lock = 'lock';
+  static const String premium = 'premium';
   static const String home = 'home';
   static const String expenses = 'expenses';
   static const String expenseAdd = 'expenseAdd';
@@ -218,5 +229,6 @@ abstract final class RouteNames {
   static const String pin = 'pin';
   static const String security = 'security';
   static const String backup = 'backup';
+  static const String account = 'account';
   static const String export = 'export';
 }

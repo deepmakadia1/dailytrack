@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/ad_providers.dart';
+import 'package:dailytrack/core/ads/domain/ad_trigger.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/module/root_navigator.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
@@ -81,6 +83,11 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
   Future<void> _save({bool addAnother = false}) async {
     final l10n = AppLocalizations.of(context);
     final messenger = rootMessengerKey.currentState;
+    // Only new entries count toward the interstitial (clarification Q4);
+    // a duplicate opens as a new entry.
+    final before = ref.read(_provider);
+    final newEntry = !before.isEdit && !before.isRuleEdit;
+    final ads = ref.read(adServiceProvider);
     final result = await ref
         .read(_provider.notifier)
         .save(addAnother: addAnother);
@@ -100,6 +107,13 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
     } else {
       setState(() => _leaving = true);
       _close();
+    }
+    // After the screen has closed, never over the form (EXP-02 AC); the
+    // ad service waits for the transition and checks the cap.
+    if (newEntry && result.kind == SaveKind.saved) {
+      unawaited(
+        ads.maybeShowInterstitial(ExpenseSaved(screenClosing: !addAnother)),
+      );
     }
   }
 

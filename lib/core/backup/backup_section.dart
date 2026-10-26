@@ -23,6 +23,14 @@ abstract class BackupSection implements SectionUpgrader {
   /// engine's write transaction, with foreign keys deferred.
   Future<void> restore(AppDatabase db, Map<String, Object?> section);
 
+  /// SQL names of the module's tables. Each one needs the change-counter
+  /// triggers (feature 010 research R5); a test checks they exist.
+  Set<String> get tables;
+
+  /// True when the module holds data the user made, not only its seeded
+  /// defaults (feature 010 research R11). Soft-deleted rows don't count.
+  Future<bool> hasUserData(AppDatabase db);
+
   /// Row counts for the restore summary, by kind.
   Map<String, int> counts(Map<String, Object?> section);
 

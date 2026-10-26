@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/module/root_navigator.dart';
 import 'package:dailytrack/core/share/text_sharer.dart';
@@ -92,6 +93,8 @@ class _TransactionDetailScreenState
 
     return AppScaffold(
       title: l10n.expense_detailTitle,
+      // Spec §11: the bottom banner (no space until an ad loads).
+      bannerSlot: const AppBannerAd(),
       body: switch (async) {
         AsyncValue(:final value?) => _Details(
           view: value,

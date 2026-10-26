@@ -24,26 +24,39 @@ import 'package:flutter/material.dart';
 ///  4. "Replace current data?" (§15.5: a restore can't be undone),
 ///  5. a progress dialog, then a snackbar or a plain-language error.
 /// Nothing changes until step 4 is confirmed. Returns true when restored.
+/// [apply] replaces the plain write, e.g. to keep "Encrypt backup" on
+/// after an encrypted file (feature 010 FR-019b).
 Future<bool> showRestoreFromFileFlow(
   BuildContext context,
   RestoreService service, {
   required Map<String, String Function(Map<String, int>)> moduleSummaries,
+  RestoreApply? apply,
 }) => showRestoreFlow(
   context,
   service,
   source: service.pickFile,
   moduleSummaries: moduleSummaries,
+  apply: apply,
+);
+
+/// Writes a confirmed backup; [password] is the one that opened it, null
+/// for a plain file. Throws a `BackupFailure` with nothing written.
+typedef RestoreApply = Future<RestoreOutcome> Function(
+  RestoreCandidate candidate,
+  String? password,
 );
 
 /// The restore steps for any [source] of backup bytes: the file picker, or
 /// a Google Drive download (with [progressLabel] shown while it runs).
-/// [source] returning null means the user cancelled.
+/// [source] returning null means the user cancelled. [apply] replaces the
+/// plain write (feature 010: the safety copy and account bookkeeping).
 Future<bool> showRestoreFlow(
   BuildContext context,
   RestoreService service, {
   required Future<Uint8List?> Function() source,
   required Map<String, String Function(Map<String, int>)> moduleSummaries,
   String? progressLabel,
+  RestoreApply? apply,
 }) async {
   final l10n = AppLocalizations.of(context);
   final Uint8List? bytes;
@@ -113,7 +126,9 @@ Future<bool> showRestoreFlow(
   Object? error;
   var outcome = RestoreOutcome.done;
   try {
-    outcome = await service.apply(candidate);
+    outcome = apply == null
+        ? await service.apply(candidate)
+        : await apply(candidate, password);
   } on Object catch (e) {
     error = e;
   }

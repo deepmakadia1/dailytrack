@@ -97,7 +97,7 @@ void main() {
       await openFab(tester);
       expect(find.text('Check in habit'), findsNothing);
       expect(find.text('Add expense'), findsOneWidget);
-      expect(anyAdWidget, findsNothing);
+      expectNoVisibleAd(tester);
     });
 
     testWidgets('only habit', (tester) async {

@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:dailytrack/core/backup/domain/backup_meta.dart';
+
 /// Whether a Drive backup came from "Back up now" or from auto backup
 /// (clarification Q1: only auto backups rotate).
 enum BackupKind { manual, auto }
@@ -13,6 +15,7 @@ final class DriveBackupEntry {
     required this.sizeBytes,
     required this.kind,
     this.device,
+    this.meta,
   });
 
   final String id;
@@ -23,35 +26,37 @@ final class DriveBackupEntry {
   final int sizeBytes;
   final BackupKind kind;
 
-  /// The device that made it, shown in the list.
+  /// The device that made it, shown in the list. Backups made before
+  /// feature 010 have only this.
   final String? device;
+
+  /// From `appProperties`; null for backups made before feature 010
+  /// (FR-043).
+  final BackupMeta? meta;
 }
 
 /// The user's Google Drive app folder (`appDataFolder`, `drive.appdata`
-/// scope only; FR-014, research R10). Every failure is a `BackupFailure`
+/// scope only; FR-014, research R10). Signing in is `AccountService`'s job
+/// (feature 010 research R1). Every failure is a `BackupFailure`
 /// (`DriveAuthRequired`, `DriveQuotaExceeded`, `DriveOffline`,
 /// `DriveUnavailable`).
 abstract interface class DriveBackupStore {
-  /// Interactive sign-in and authorization. Returns the account email.
-  Future<String> connect();
-
-  /// Signs out and revokes access. Backups in Drive are kept.
-  Future<void> disconnect();
-
   /// DailyTrack backups, newest first.
   Future<List<DriveBackupEntry>> list();
 
+  /// Uploads a backup with [meta] as its `appProperties`.
   Future<void> upload(
     Uint8List bytes, {
     required String fileName,
-    required BackupKind kind,
+    required BackupMeta meta,
   });
 
   Future<Uint8List> download(String fileId);
 
   Future<void> delete(String fileId);
 
-  /// Deletes all but the [keep] newest auto backups; never a manual one
-  /// (FR-017).
-  Future<void> pruneAuto({int keep = 5});
+  /// ACC-01 "Delete my backups": every DailyTrack file, manual and auto.
+  /// Keeps going past a failed delete, then throws the first failure
+  /// (research R16).
+  Future<void> deleteAll();
 }

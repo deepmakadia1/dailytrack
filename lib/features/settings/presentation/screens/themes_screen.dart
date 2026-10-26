@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/rewarded_unlock.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
+import 'package:dailytrack/core/l10n/l10n_lookup.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
@@ -15,6 +18,7 @@ import 'package:dailytrack/features/settings/presentation/widgets/theme_preview_
 import 'package:dailytrack/features/settings/presentation/widgets/theme_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// Smallest color tile width; the grid fits as many as the screen allows.
 const double _minTileWidth = 96;
@@ -76,6 +80,8 @@ class _ThemesBody extends ConsumerWidget {
           theme: preview,
           themeMode: state.themeMode,
           locked: previewLocked,
+          onWatchAd: () => unawaited(unlockThemeWithAd(context, ref, preview)),
+          onGetPro: () => unawaited(context.push(Routes.premium)),
         ),
         heading(l10n.themes_mode),
         ChipSelector<String>(
@@ -145,11 +151,31 @@ class _Tile extends ConsumerWidget {
       theme: theme,
       selected: selected,
       locked: !unlocked,
-      onTap: () => unawaited(
-        ref
+      onTap: () async {
+        await ref
             .read(themesControllerProvider.notifier)
-            .tapTheme(theme.id, unlocked: unlocked),
-      ),
+            .tapTheme(theme.id, unlocked: unlocked);
+        // A locked theme is previewed, then PRM-02 offers it (spec SET-04).
+        if (!unlocked && context.mounted) {
+          await unlockThemeWithAd(context, ref, theme);
+        }
+      },
     );
   }
+}
+
+/// PRM-02 for [theme]: an earned reward unlocks it for good and applies it
+/// (spec SET-04, feature 009 FR-031).
+Future<void> unlockThemeWithAd(
+  BuildContext context,
+  WidgetRef ref,
+  AppColorTheme theme,
+) async {
+  final key = theme.featureKey;
+  if (key == null) return;
+  final name =
+      l10nByKey(AppLocalizations.of(context), theme.labelKey) ?? theme.id;
+  final controller = ref.read(themesControllerProvider.notifier);
+  final unlocked = await showRewardedUnlock(context, key, subjectName: name);
+  if (unlocked) await controller.tapTheme(theme.id, unlocked: true);
 }

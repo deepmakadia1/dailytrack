@@ -67,6 +67,7 @@ void main() {
     );
     await tester.tap(find.text('More'));
     await tester.pumpAndSettle();
+    await scrollSettingsTo(tester, find.text('Modules'));
     expect(find.text('Modules'), findsOneWidget);
   });
 }

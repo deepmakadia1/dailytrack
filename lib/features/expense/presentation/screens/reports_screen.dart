@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/rewarded_unlock.dart';
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
+import 'package:dailytrack/core/feature_gate/domain/feature_key.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/theme/app_icons.dart';
@@ -107,6 +110,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen>
 
     return AppScaffold(
       title: l10n.expense_reportsTitle,
+      // Spec §11: the bottom banner (no space until an ad loads).
+      bannerSlot: const AppBannerAd(),
       actions: [
         IconButton(
           key: const Key('reports_export'),
@@ -229,6 +234,16 @@ class _LockedPreview extends StatelessWidget {
       children: [
         LockedFeatureOverlay(
           message: l10n.premium_advancedReportsMessage,
+          watchAdLabel: l10n.locked_watchAdReports,
+          // PRM-02: 24 hours of advanced reports; the gate reopens the tab.
+          onWatchAd: () => unawaited(
+            showRewardedUnlock(
+              context,
+              FeatureKey.advancedReports,
+              duration: const Duration(hours: 24),
+            ),
+          ),
+          onGetPro: () => unawaited(context.push(Routes.premium)),
           child: sample,
         ),
       ],

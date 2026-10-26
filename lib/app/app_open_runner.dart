@@ -49,7 +49,7 @@ final class AppOpenRunner {
       await _checkTimeZone(settings.deviceTimeZoneId, modules);
       // An overdue auto backup runs now, unawaited (feature 008 R11).
       if (autoBackupCatchUpDue(settings, now.millisecondsSinceEpoch)) {
-        unawaited(runAutoBackup(_ref.read));
+        unawaited(runAutoBackup(_ref.read, foreground: true));
       }
     } on Object {
       // App-open work is best effort; the next open retries.

@@ -11,11 +11,14 @@ part of 'bootstrap.dart';
 /// SYS-01 startup (T080):
 ///  1. open the database (runs migrations) and load settings,
 ///  2. seed defaults for every registered module, exactly once,
-///  3. start the ads SDK unless Remove Ads was purchased (never blocks),
+///  3. resolve ad consent, then start the ads SDK, unless Remove Ads was
+///     purchased (waits only while consent is still unknown; never fails),
 ///  4. start notifications, the app-open hooks, and the home screen widget
 ///     host (never block),
 ///  5. pick the first route (a tapped notification's or the widget's
 ///     location if allowed).
+/// Feature 010: the device ID is checked before routing, and the Google
+/// account's silent sign-in runs behind the first screen (spec §16).
 /// A failure in steps 1–2 gives [BootstrapFailed], shown with "Retry".
 
 @ProviderFor(Bootstrap)
@@ -24,22 +27,28 @@ final bootstrapProvider = BootstrapProvider._();
 /// SYS-01 startup (T080):
 ///  1. open the database (runs migrations) and load settings,
 ///  2. seed defaults for every registered module, exactly once,
-///  3. start the ads SDK unless Remove Ads was purchased (never blocks),
+///  3. resolve ad consent, then start the ads SDK, unless Remove Ads was
+///     purchased (waits only while consent is still unknown; never fails),
 ///  4. start notifications, the app-open hooks, and the home screen widget
 ///     host (never block),
 ///  5. pick the first route (a tapped notification's or the widget's
 ///     location if allowed).
+/// Feature 010: the device ID is checked before routing, and the Google
+/// account's silent sign-in runs behind the first screen (spec §16).
 /// A failure in steps 1–2 gives [BootstrapFailed], shown with "Retry".
 final class BootstrapProvider
     extends $AsyncNotifierProvider<Bootstrap, BootstrapResult> {
   /// SYS-01 startup (T080):
   ///  1. open the database (runs migrations) and load settings,
   ///  2. seed defaults for every registered module, exactly once,
-  ///  3. start the ads SDK unless Remove Ads was purchased (never blocks),
+  ///  3. resolve ad consent, then start the ads SDK, unless Remove Ads was
+  ///     purchased (waits only while consent is still unknown; never fails),
   ///  4. start notifications, the app-open hooks, and the home screen widget
   ///     host (never block),
   ///  5. pick the first route (a tapped notification's or the widget's
   ///     location if allowed).
+  /// Feature 010: the device ID is checked before routing, and the Google
+  /// account's silent sign-in runs behind the first screen (spec §16).
   /// A failure in steps 1–2 gives [BootstrapFailed], shown with "Retry".
   BootstrapProvider._()
     : super(
@@ -60,16 +69,19 @@ final class BootstrapProvider
   Bootstrap create() => Bootstrap();
 }
 
-String _$bootstrapHash() => r'06a4575f6e8ea0e2169a613deb52887b2507bbc8';
+String _$bootstrapHash() => r'2328e8a20f490ecbff43cc23f9227face42fc853';
 
 /// SYS-01 startup (T080):
 ///  1. open the database (runs migrations) and load settings,
 ///  2. seed defaults for every registered module, exactly once,
-///  3. start the ads SDK unless Remove Ads was purchased (never blocks),
+///  3. resolve ad consent, then start the ads SDK, unless Remove Ads was
+///     purchased (waits only while consent is still unknown; never fails),
 ///  4. start notifications, the app-open hooks, and the home screen widget
 ///     host (never block),
 ///  5. pick the first route (a tapped notification's or the widget's
 ///     location if allowed).
+/// Feature 010: the device ID is checked before routing, and the Google
+/// account's silent sign-in runs behind the first screen (spec §16).
 /// A failure in steps 1–2 gives [BootstrapFailed], shown with "Retry".
 
 abstract class _$Bootstrap extends $AsyncNotifier<BootstrapResult> {

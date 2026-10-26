@@ -143,7 +143,7 @@ void main() {
           location: Routes.backup,
           driveAvailable: true,
         );
-        expect(find.byKey(const Key('backup_connect')), findsOneWidget);
+        expect(find.byKey(const Key('backup_signIn')), findsOneWidget);
         await scrollAndCheck(tester, BackupScreen);
       });
 

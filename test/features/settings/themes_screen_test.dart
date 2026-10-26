@@ -19,13 +19,20 @@ void main() {
     WidgetTester tester, {
     AppSettings initial = const AppSettings(onboardingDone: true, locale: 'en'),
     FakeFeatureGate? gate,
+    FakeRewardedUnlockPresenter? presenter,
   }) async {
     tester.view
       ..physicalSize = const Size(412, 1600)
       ..devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     final settings = FakeSettingsRepository(initial: initial);
-    await pumpTestApp(tester, settings: settings, gate: gate);
+    await pumpTestApp(
+      tester,
+      settings: settings,
+      gate: gate,
+      // Feature 009: tapping a locked theme opens PRM-02; scripted here.
+      rewardedPresenter: presenter ?? FakeRewardedUnlockPresenter(earn: false),
+    );
     routerOf(tester).go(Routes.themes);
     await tester.pumpAndSettle();
     return settings;
@@ -93,11 +100,12 @@ void main() {
     expect(settings.current.selectedTheme, 'default');
     expect(find.byType(LockedFeatureOverlay), findsOneWidget);
     expect(find.text('Get Pro to use this theme'), findsOneWidget);
-    expect(find.text('Watch an ad'), findsNothing);
+    // Feature 009: "Watch an ad" and an enabled "Get Pro".
+    expect(find.text('Watch an ad to unlock this theme'), findsOneWidget);
     final getPro = tester.widget<FilledButton>(
       find.widgetWithText(FilledButton, 'Get Pro'),
     );
-    expect(getPro.onPressed, isNull);
+    expect(getPro.onPressed, isNotNull);
     // The app keeps Default teal.
     expect(
       appTheme(tester).colorScheme.primary,
@@ -180,5 +188,29 @@ void main() {
       final size = tester.getSize(find.byKey(Key('theme_$id')));
       expect(size.height, greaterThanOrEqualTo(48), reason: id);
     }
+  });
+
+  // --- 009-ads-rewarded-pro (T067): SET-04 rewarded themes. ---
+  group('SET-04 tapping a locked theme opens PRM-02', () {
+    testWidgets('the offer names the theme; an earned reward unlocks it for '
+        'good and applies it', (tester) async {
+      final presenter = FakeRewardedUnlockPresenter();
+      final settings = await open(tester, presenter: presenter);
+      await tapTile(tester, 'saffron');
+      final request = presenter.requests.single;
+      expect(request.key, FeatureKey.premiumTheme('saffron'));
+      expect(request.duration, isNull, reason: 'permanent');
+      expect(request.subjectName, 'Saffron');
+      expect(settings.current.selectedTheme, 'saffron');
+    });
+
+    testWidgets('"Not now" keeps the old theme and the preview overlay with '
+        'both buttons', (tester) async {
+      final settings = await open(tester);
+      await tapTile(tester, 'forest');
+      expect(settings.current.selectedTheme, 'default');
+      expect(find.byKey(const Key('theme_preview_locked')), findsOneWidget);
+      expect(find.byKey(const Key('locked_watch_ad')), findsOneWidget);
+    });
   });
 }

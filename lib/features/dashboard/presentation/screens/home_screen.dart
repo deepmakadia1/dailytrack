@@ -1,3 +1,5 @@
+import 'package:dailytrack/core/ads/domain/ad_placement.dart';
+import 'package:dailytrack/core/ads/widgets/app_native_ad.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
 import 'package:dailytrack/core/widgets/app_scaffold.dart';
@@ -37,7 +39,7 @@ class HomeScreen extends ConsumerWidget {
       );
     }
 
-    final slots = [
+    final cards = [
       for (final m in state.modules)
         DashboardSlot(
           key: ValueKey('slot_card_${m.id}'),
@@ -46,6 +48,21 @@ class HomeScreen extends ConsumerWidget {
             child: Builder(builder: m.dashboardCard),
           ),
         ),
+    ];
+    // Spec §11: one native ad after the second module card (after the only
+    // one when a single module is on), never above the first.
+    final adAfter = cards.length < 2 ? cards.length : 2;
+    final slots = [
+      ...cards.take(adAfter),
+      if (cards.isNotEmpty)
+        const KeyedSubtree(
+          key: ValueKey('slot_native'),
+          child: AppNativeAd(
+            key: Key('home_native'),
+            placement: NativePlacement.home,
+          ),
+        ),
+      ...cards.skip(adAfter),
       for (final m in state.modules)
         for (final section in m.dashboardSections())
           DashboardSlot(

@@ -1,3 +1,5 @@
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
+import 'package:dailytrack/core/ads/widgets/app_native_ad.dart';
 import 'package:dailytrack/core/module/insight.dart';
 import 'package:dailytrack/core/module/insight_source.dart';
 import 'package:dailytrack/core/module/provider_reader.dart';
@@ -31,11 +33,14 @@ final class FakeInsightSource implements InsightSource {
   }
 }
 
-/// The ad widgets arrive in feature 008 (T4.1); matching them by name keeps
-/// this check valid once they exist. DSH-01 shows no ads in feature 006.
-final Finder anyAdWidget = find.byWidgetPredicate(
-  (w) => const {'AppNativeAd', 'AppBannerAd'}.contains('${w.runtimeType}'),
-);
+/// DSH-01 has no banner and one native slot (feature 009, spec §11). Widget
+/// tests use `NoAdsService`, so the slot must take no space at all.
+void expectNoVisibleAd(WidgetTester tester) {
+  expect(find.byType(AppBannerAd), findsNothing);
+  for (final e in find.byType(AppNativeAd).evaluate()) {
+    expect(tester.getSize(find.byWidget(e.widget)).height, 0);
+  }
+}
 
 /// Shorthand for an [Insight] with a route.
 Insight insight(String ruleId, {String? location}) =>

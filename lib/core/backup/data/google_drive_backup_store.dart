@@ -3,41 +3,25 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
+import 'package:dailytrack/core/backup/domain/backup_meta.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 
 /// [DriveBackupStore] over the Drive v3 API in `appDataFolder` (feature 008
-/// research R10, data-model §5). Files carry `appProperties` so manual and
-/// auto backups are told apart on any device, without a local record.
+/// research R10, data-model §5). Files carry the backup metadata as
+/// `appProperties` (feature 010 research R8), so backups are listed and
+/// compared on any device without a download.
 final class GoogleDriveBackupStore implements DriveBackupStore {
-  new({
-    required this._api,
-    required this._connect,
-    required this._disconnect,
-    required this._deviceName,
-    this.schemaVersion = 4,
-  });
+  new({required this._api});
 
   final Future<drive.DriveApi> Function() _api;
-  final Future<String> Function() _connect;
-  final Future<void> Function() _disconnect;
-  final Future<String?> Function() _deviceName;
-
-  /// Written to `appProperties.schemaVersion`.
-  final int schemaVersion;
 
   static const String folder = 'appDataFolder';
-  static const String appKey = 'app';
-  static const String appValue = 'dailytrack';
-  static const String kindKey = 'kind';
+  static const String appKey = BackupMetaCodec.appKey;
+  static const String appValue = BackupMetaCodec.appValue;
+  static const String kindKey = BackupMetaCodec.kindKey;
   static const String _query =
       "appProperties has { key='$appKey' and value='$appValue' }";
-
-  @override
-  Future<String> connect() => _connect();
-
-  @override
-  Future<void> disconnect() => _guard(_disconnect);
 
   @override
   Future<List<DriveBackupEntry>> list() => _guard(() async {
@@ -66,7 +50,8 @@ final class GoogleDriveBackupStore implements DriveBackupStore {
             kind: props[kindKey] == BackupKind.auto.name
                 ? BackupKind.auto
                 : BackupKind.manual,
-            device: props['device'],
+            device: props[BackupMetaCodec.deviceKey],
+            meta: BackupMetaCodec.fromProperties(props),
           ),
         );
       }
@@ -80,18 +65,12 @@ final class GoogleDriveBackupStore implements DriveBackupStore {
   Future<void> upload(
     Uint8List bytes, {
     required String fileName,
-    required BackupKind kind,
+    required BackupMeta meta,
   }) => _guard(() async {
-    final device = await _deviceName();
     final file = drive.File()
       ..name = fileName
       ..parents = [folder]
-      ..appProperties = {
-        appKey: appValue,
-        kindKey: kind.name,
-        'schemaVersion': '$schemaVersion',
-        'device': ?device,
-      };
+      ..appProperties = BackupMetaCodec.toProperties(meta);
     // Drive creates the file only when the upload completes, so a broken
     // upload never shows up as a backup (spec Edge Cases).
     await (await _api()).files.create(
@@ -118,16 +97,17 @@ final class GoogleDriveBackupStore implements DriveBackupStore {
       _guard(() async => await (await _api()).files.delete(fileId));
 
   @override
-  Future<void> pruneAuto({int keep = 5}) => _guard(() async {
-    final auto = [
-      for (final e in await list())
-        if (e.kind == BackupKind.auto) e,
-    ];
-    final files = (await _api()).files;
-    for (final old in auto.skip(keep)) {
-      await files.delete(old.id);
+  Future<void> deleteAll() async {
+    BackupFailure? first;
+    for (final entry in await list()) {
+      try {
+        await delete(entry.id);
+      } on BackupFailure catch (e) {
+        first ??= e;
+      }
     }
-  });
+    if (first != null) throw first;
+  }
 
   /// Maps Drive and network errors to plain backup failures.
   static Future<T> _guard<T>(Future<T> Function() body) async {

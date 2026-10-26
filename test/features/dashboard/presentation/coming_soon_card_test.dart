@@ -98,7 +98,7 @@ void main() {
     expect(card, findsNothing);
     await tester.tap(find.text('More'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Enable or reorder trackers'));
+    await scrollSettingsTo(tester, find.text('Enable or reorder trackers'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Enable or reorder trackers'));
     await tester.pumpAndSettle();

@@ -11,7 +11,8 @@ import 'package:intl/intl.dart';
 const int maxFreezes = 2;
 
 /// HAB-03 streak freeze card (US5-7 – US5-9, FR-034 – FR-037): the count,
-/// "Use a freeze" on a missed day 1–3 days back, and the dev-only grant.
+/// "Use a freeze" on a missed day 1–3 days back, "Watch an ad to get a
+/// freeze" (PRM-02, feature 009 FR-034), and the dev-only grant.
 class FreezeCard extends StatelessWidget {
   const new({
     required this.freezes,
@@ -19,6 +20,9 @@ class FreezeCard extends StatelessWidget {
     required this.showDebugButton,
     required this.onUse,
     required this.onAddDebug,
+    required this.onWatchAd,
+    this.isPro = false,
+    this.onAddPro,
     super.key,
   });
 
@@ -27,6 +31,13 @@ class FreezeCard extends StatelessWidget {
   final bool showDebugButton;
   final ValueChanged<LocalDate> onUse;
   final VoidCallback onAddDebug;
+
+  /// Opens PRM-02 for one more freeze; disabled at [maxFreezes].
+  final VoidCallback onWatchAd;
+
+  /// Pro: freezes come without an ad, up to the cap (FR-044).
+  final bool isPro;
+  final VoidCallback? onAddPro;
 
   Future<void> _pick(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
@@ -119,6 +130,20 @@ class FreezeCard extends StatelessWidget {
                   icon: const Icon(Icons.ac_unit),
                   label: Text(l10n.habit_useFreeze),
                 ),
+                if (isPro)
+                  OutlinedButton.icon(
+                    key: const Key('add_freeze_pro'),
+                    onPressed: freezes < maxFreezes ? onAddPro : null,
+                    icon: const Icon(Icons.add),
+                    label: Text(l10n.habit_addFreezePro),
+                  )
+                else
+                  OutlinedButton.icon(
+                    key: const Key('watch_ad_freeze'),
+                    onPressed: freezes < maxFreezes ? onWatchAd : null,
+                    icon: const Icon(Icons.play_circle_outline),
+                    label: Text(l10n.locked_watchAdFreeze),
+                  ),
                 if (showDebugButton)
                   OutlinedButton(
                     key: const Key('add_freeze_debug'),

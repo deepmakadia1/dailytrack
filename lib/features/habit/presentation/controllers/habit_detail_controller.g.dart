@@ -68,7 +68,7 @@ final class HabitDetailControllerProvider
 }
 
 String _$habitDetailControllerHash() =>
-    r'ac55ccb26ecc92a107712bf8a34db1be7f959c7f';
+    r'19bae22236a5b3739a63a4f80905d47eace9e2dd';
 
 /// HAB-03 Habit detail (T082, contracts/screens.md). The screen's only
 /// notifier. Family argument: the habit id. Builds the view model once per

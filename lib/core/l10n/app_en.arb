@@ -4048,10 +4048,6 @@
   "@backup_driveUnavailable": {
     "description": "SET-02 Drive card when no client ID is configured."
   },
-  "backup_connect": "Connect Google account",
-  "@backup_connect": {
-    "description": "SET-02 button."
-  },
   "backup_connected": "Connected as {email}",
   "@backup_connected": {
     "description": "SET-02 connected account line.",
@@ -4072,18 +4068,6 @@
   "backup_driveSaved": "Backed up to Google Drive",
   "@backup_driveSaved": {
     "description": "Snackbar after a Drive backup."
-  },
-  "backup_disconnect": "Disconnect",
-  "@backup_disconnect": {
-    "description": "SET-02 text button."
-  },
-  "backup_disconnectTitle": "Disconnect Google account?",
-  "@backup_disconnectTitle": {
-    "description": "Disconnect confirmation title."
-  },
-  "backup_disconnectBody": "Automatic backup turns off. Backups already in Google Drive are kept.",
-  "@backup_disconnectBody": {
-    "description": "Disconnect confirmation consequence."
   },
   "backup_autoTitle": "Auto backup",
   "@backup_autoTitle": {
@@ -4286,9 +4270,9 @@
   "@export_working": {
     "description": "SET-03 progress."
   },
-  "export_locked": "Exports are part of DailyTrack Pro. Unlocking them is coming soon.",
+  "export_locked": "Exports are part of DailyTrack Pro. Watch an ad for one export, or get Pro.",
   "@export_locked": {
-    "description": "SET-03 locked overlay message until rewarded ads and Pro exist."
+    "description": "SET-03 locked overlay message (feature 009)."
   },
   "export_nothing": "Nothing to export for this period",
   "@export_nothing": {
@@ -4639,6 +4623,571 @@
         "type": "String"
       },
       "progress": {
+        "type": "String"
+      }
+    }
+  },
+  "ads_badge": "Ad",
+  "@ads_badge": {
+    "description": "Label on every native ad (spec §15.8)."
+  },
+  "ads_bannerLabel": "Advertisement",
+  "@ads_bannerLabel": {
+    "description": "Semantic label of a banner or native ad."
+  },
+  "privacy_adChoices": "Ad privacy choices",
+  "@privacy_adChoices": {
+    "description": "SET-01 Privacy row; reopens the consent form (FR-014)."
+  },
+  "ads_resetCounters": "Reset ad counters",
+  "@ads_resetCounters": {
+    "description": "Dev-only SET-01 action (FR-048)."
+  },
+  "ads_resetCountersDone": "Ad counters reset",
+  "@ads_resetCountersDone": {
+    "description": "Snackbar after Reset ad counters."
+  },
+  "premium_title": "DailyTrack Pro",
+  "@premium_title": {
+    "description": "PRM-01 headline."
+  },
+  "premium_benefitNoAds": "No ads",
+  "@premium_benefitNoAds": {
+    "description": "PRM-01 benefit."
+  },
+  "premium_benefitThemes": "All themes",
+  "@premium_benefitThemes": {
+    "description": "PRM-01 benefit."
+  },
+  "premium_benefitReports": "Advanced reports",
+  "@premium_benefitReports": {
+    "description": "PRM-01 benefit."
+  },
+  "premium_benefitExports": "Unlimited exports",
+  "@premium_benefitExports": {
+    "description": "PRM-01 benefit."
+  },
+  "premium_benefitFreezes": "Unlimited streak freezes up to the cap",
+  "@premium_benefitFreezes": {
+    "description": "PRM-01 benefit."
+  },
+  "rewarded_titleReports": "Unlock advanced reports for 24 hours",
+  "@rewarded_titleReports": {
+    "description": "PRM-02 title."
+  },
+  "rewarded_titleCsv": "Unlock one CSV export",
+  "@rewarded_titleCsv": {
+    "description": "PRM-02 title."
+  },
+  "rewarded_titlePdf": "Unlock one PDF export",
+  "@rewarded_titlePdf": {
+    "description": "PRM-02 title."
+  },
+  "rewarded_titleTheme": "Unlock the {theme} theme for good",
+  "@rewarded_titleTheme": {
+    "description": "PRM-02 title; theme name.",
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
+  "rewarded_titleFreeze": "Get 1 streak freeze for {habit}",
+  "@rewarded_titleFreeze": {
+    "description": "PRM-02 title; habit name.",
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      }
+    }
+  },
+  "rewarded_explainReports": "Watch a short ad to see Trends, Accounts, and every period for the next 24 hours.",
+  "@rewarded_explainReports": {
+    "description": "PRM-02 explanation."
+  },
+  "rewarded_explainExport": "Watch a short ad to create one export file in this format.",
+  "@rewarded_explainExport": {
+    "description": "PRM-02 explanation."
+  },
+  "rewarded_explainTheme": "Watch a short ad to keep this color theme for good.",
+  "@rewarded_explainTheme": {
+    "description": "PRM-02 explanation."
+  },
+  "rewarded_explainFreeze": "Watch a short ad to add one streak freeze to this habit (up to 2).",
+  "@rewarded_explainFreeze": {
+    "description": "PRM-02 explanation."
+  },
+  "rewarded_watch": "Watch a short ad",
+  "@rewarded_watch": {
+    "description": "PRM-02 primary button."
+  },
+  "rewarded_getPro": "Get Pro instead",
+  "@rewarded_getPro": {
+    "description": "PRM-02 secondary button."
+  },
+  "rewarded_notNow": "Not now",
+  "@rewarded_notNow": {
+    "description": "PRM-02 text button."
+  },
+  "rewarded_loadingAd": "Loading ad",
+  "@rewarded_loadingAd": {
+    "description": "Semantic label of the PRM-02 spinner."
+  },
+  "rewarded_unavailable": "Ad not available, try again later",
+  "@rewarded_unavailable": {
+    "description": "PRM-02 when no ad loads in 8 s."
+  },
+  "rewarded_tryAgain": "Try again",
+  "@rewarded_tryAgain": {
+    "description": "PRM-02 button after a failed load."
+  },
+  "rewarded_closedEarly": "Watch the whole ad to unlock",
+  "@rewarded_closedEarly": {
+    "description": "PRM-02 after the ad was closed early."
+  },
+  "rewarded_limitReached": "You've reached today's limit for this unlock. Try again tomorrow, or get Pro.",
+  "@rewarded_limitReached": {
+    "description": "PRM-02 at 10 rewards per feature per day (FR-053)."
+  },
+  "locked_watchAdReports": "Watch an ad to unlock for 24 hours",
+  "@locked_watchAdReports": {
+    "description": "EXP-11 and HAB-03 locked overlay."
+  },
+  "locked_watchAdExport": "Watch an ad to unlock one export",
+  "@locked_watchAdExport": {
+    "description": "SET-03 locked overlay."
+  },
+  "locked_watchAdTheme": "Watch an ad to unlock this theme",
+  "@locked_watchAdTheme": {
+    "description": "SET-04 locked overlay."
+  },
+  "locked_watchAdFreeze": "Watch an ad to get a freeze",
+  "@locked_watchAdFreeze": {
+    "description": "HAB-03 freeze card button."
+  },
+  "premium_buyFor": "Get Pro for {price}",
+  "@premium_buyFor": {
+    "description": "PRM-01 primary button; price from Google Play.",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "premium_restore": "Restore purchase",
+  "@premium_restore": {
+    "description": "PRM-01 text button."
+  },
+  "premium_restored": "Pro restored",
+  "@premium_restored": {
+    "description": "Snackbar after Restore purchase found Pro."
+  },
+  "premium_restoreNotFound": "No Pro purchase found for this Google account",
+  "@premium_restoreNotFound": {
+    "description": "Snackbar after Restore purchase found nothing."
+  },
+  "premium_storeUnavailable": "Store not available right now, try again later",
+  "@premium_storeUnavailable": {
+    "description": "PRM-01 when Google Play can't sell Pro."
+  },
+  "premium_accountNote": "Your purchase is tied to your Google account.",
+  "@premium_accountNote": {
+    "description": "PRM-01 note."
+  },
+  "premium_pending": "Pro unlocks when the payment completes",
+  "@premium_pending": {
+    "description": "PRM-01 pending payment."
+  },
+  "premium_purchaseError": "Couldn't complete the purchase. Try again.",
+  "@premium_purchaseError": {
+    "description": "PRM-01 purchase error."
+  },
+  "premium_owned": "You have Pro. Thanks for your support.",
+  "@premium_owned": {
+    "description": "PRM-01 when Pro is owned."
+  },
+  "premium_cardTitle": "Remove ads and unlock everything",
+  "@premium_cardTitle": {
+    "description": "SET-01 premium card title."
+  },
+  "premium_cardSubtitle": "DailyTrack Pro: one purchase, yours for good",
+  "@premium_cardSubtitle": {
+    "description": "SET-01 premium card subtitle."
+  },
+  "habit_addFreezePro": "Add a freeze",
+  "@habit_addFreezePro": {
+    "description": "HAB-03 freeze card button for Pro users."
+  },
+  "account_title": "Account",
+  "@account_title": {
+    "description": "ACC-01 title."
+  },
+  "account_signedOutTitle": "Back up with your Google account",
+  "@account_signedOutTitle": {
+    "description": "ACC-01 signed-out title."
+  },
+  "account_pointDrive": "Your data is saved to your own Google Drive",
+  "@account_pointDrive": {
+    "description": "ACC-01 signed-out point 1."
+  },
+  "account_pointRestore": "Restore it on a new phone",
+  "@account_pointRestore": {
+    "description": "ACC-01 signed-out point 2."
+  },
+  "account_pointOptional": "Optional: the app works fully without an account",
+  "@account_pointOptional": {
+    "description": "ACC-01 signed-out point 3."
+  },
+  "account_signIn": "Sign in with Google",
+  "@account_signIn": {
+    "description": "ACC-01 and SET-02 sign-in button."
+  },
+  "account_pinFootnote": "Your app lock PIN is never backed up.",
+  "@account_pinFootnote": {
+    "description": "ACC-01 signed-out footnote."
+  },
+  "account_signInFailed": "Couldn't sign in. Check your connection and try again.",
+  "@account_signInFailed": {
+    "description": "Sign-in failure message."
+  },
+  "account_signedInBackedUp": "Signed in. Your data is backed up.",
+  "@account_signedInBackedUp": {
+    "description": "Snackbar after signing in to an account without backups."
+  },
+  "account_lastBackupFrom": "Last backup: {time} · {device}",
+  "@account_lastBackupFrom": {
+    "description": "ACC-01 last backup line with the device that made it.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "account_lastBackup": "Last backup: {time}",
+  "@account_lastBackup": {
+    "description": "ACC-01 last backup line.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "account_noBackupYet": "No backup in this account yet",
+  "@account_noBackupYet": {
+    "description": "ACC-01 status when the account has no backups."
+  },
+  "account_statusBackedUp": "Backed up",
+  "@account_statusBackedUp": {
+    "description": "ACC-01 state line."
+  },
+  "account_statusBackingUp": "Backing up…",
+  "@account_statusBackingUp": {
+    "description": "ACC-01 state line."
+  },
+  "account_statusPaused": "Backup paused: a newer backup from another phone exists",
+  "@account_statusPaused": {
+    "description": "ACC-01 state line."
+  },
+  "account_statusFailed": "Backup failed",
+  "@account_statusFailed": {
+    "description": "ACC-01 state line."
+  },
+  "account_statusError": "Couldn't read your backups.",
+  "@account_statusError": {
+    "description": "ACC-01 status area error."
+  },
+  "account_autoSummaryWifi": "{frequency} · Wi-Fi only",
+  "@account_autoSummaryWifi": {
+    "description": "ACC-01 Auto backup row.",
+    "placeholders": {
+      "frequency": {
+        "type": "String"
+      }
+    }
+  },
+  "account_signOut": "Sign out",
+  "@account_signOut": {
+    "description": "ACC-01 text button."
+  },
+  "account_signedOut": "Signed out. Your data is still on this phone.",
+  "@account_signedOut": {
+    "description": "Snackbar after signing out."
+  },
+  "account_deleteBackups": "Delete my backups",
+  "@account_deleteBackups": {
+    "description": "ACC-01 destructive text button."
+  },
+  "account_deleteTitle": "Delete your backups?",
+  "@account_deleteTitle": {
+    "description": "Delete my backups confirmation title."
+  },
+  "account_deleteBody": "{count, plural, =1{Delete 1 DailyTrack backup from {email}? Data on this phone stays. This can't be undone.} other{Delete all {count} DailyTrack backups from {email}? Data on this phone stays. This can't be undone.}}",
+  "@account_deleteBody": {
+    "description": "Delete my backups confirmation consequence.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "account_deleteAction": "Delete backups",
+  "@account_deleteAction": {
+    "description": "Delete my backups destructive button."
+  },
+  "account_deleted": "Your backups were deleted",
+  "@account_deleted": {
+    "description": "Snackbar after Delete my backups."
+  },
+  "account_photoOf": "Profile photo of {name}",
+  "@account_photoOf": {
+    "description": "ACC-01 account photo semantic label.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_manageAccount": "Manage your account",
+  "@backup_manageAccount": {
+    "description": "SET-02 account row subtitle; opens ACC-01."
+  },
+  "backup_conflictTitle": "Back up anyway?",
+  "@backup_conflictTitle": {
+    "description": "Conflict dialog title."
+  },
+  "backup_conflictNewer": "A newer backup from {device} ({time}) exists. Backing up now makes this phone's data the latest.",
+  "@backup_conflictNewer": {
+    "description": "Conflict dialog: another phone backed up newer data.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_conflictEmpty": "This phone has no data. Backing up now makes an empty backup the latest.",
+  "@backup_conflictEmpty": {
+    "description": "Conflict dialog: empty phone over a backup with data."
+  },
+  "backup_backUpAnyway": "Back up anyway",
+  "@backup_backUpAnyway": {
+    "description": "Conflict dialog confirm button."
+  },
+  "backup_unknownDevice": "Unknown device",
+  "@backup_unknownDevice": {
+    "description": "Device name when a backup doesn't say."
+  },
+  "notif_backupPausedTitle": "Backup paused",
+  "@notif_backupPausedTitle": {
+    "description": "Pause notification title."
+  },
+  "notif_backupPausedBody": "Another phone made a newer backup. Tap to review.",
+  "@notif_backupPausedBody": {
+    "description": "Pause notification body."
+  },
+  "account_choiceTitle": "Backup found on {email}",
+  "@account_choiceTitle": {
+    "description": "ACC-02 title.",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "account_fromThisPhone": "From this phone",
+  "@account_fromThisPhone": {
+    "description": "ACC-02 device line when the backup came from this phone."
+  },
+  "account_fromDevice": "From {device}",
+  "@account_fromDevice": {
+    "description": "ACC-02 device line.",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "account_encrypted": "Encrypted",
+  "@account_encrypted": {
+    "description": "ACC-02 label next to a lock icon."
+  },
+  "account_thisPhone": "This phone: {counts}",
+  "@account_thisPhone": {
+    "description": "ACC-02 line with this phone's data counts.",
+    "placeholders": {
+      "counts": {
+        "type": "String"
+      }
+    }
+  },
+  "account_thisPhoneEmpty": "This phone: no data yet",
+  "@account_thisPhoneEmpty": {
+    "description": "ACC-02 line when this phone has no counts."
+  },
+  "account_replaceNote": "Restoring replaces the data on this phone.",
+  "@account_replaceNote": {
+    "description": "ACC-02 note above the buttons."
+  },
+  "account_restoreFromAccount": "Restore from account",
+  "@account_restoreFromAccount": {
+    "description": "ACC-02 primary button."
+  },
+  "account_keepThisPhone": "Keep this phone's data",
+  "@account_keepThisPhone": {
+    "description": "ACC-02 secondary button."
+  },
+  "account_seeAllBackups": "See all backups",
+  "@account_seeAllBackups": {
+    "description": "ACC-02 link to the SET-02 Drive list."
+  },
+  "account_close": "Close",
+  "@account_close": {
+    "description": "ACC-02 close button when opened from ACC-01."
+  },
+  "account_wrongPassword": "That password didn't work",
+  "@account_wrongPassword": {
+    "description": "Inline error for a wrong backup password."
+  },
+  "account_restoreFailed": "Couldn't restore. Your data on this phone wasn't changed.",
+  "@account_restoreFailed": {
+    "description": "Restore from the account failed."
+  },
+  "account_safetyCopyFailed": "Not enough free space to save a copy of this phone's data first, so nothing was restored. Free up space and try again.",
+  "@account_safetyCopyFailed": {
+    "description": "The safety copy couldn't be saved; nothing was restored."
+  },
+  "account_restoredCounts": "Restored {summary}",
+  "@account_restoredCounts": {
+    "description": "Snackbar after a restore, e.g. 'Restored 1,240 transactions · 8 habits'.",
+    "placeholders": {
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
+  "account_restoring": "Restoring your data…",
+  "@account_restoring": {
+    "description": "Progress while restoring from the account."
+  },
+  "account_restore": "Restore",
+  "@account_restore": {
+    "description": "ACC-01 secondary button."
+  },
+  "account_review": "Review",
+  "@account_review": {
+    "description": "ACC-01 link next to Backup paused."
+  },
+  "account_switch": "Switch account",
+  "@account_switch": {
+    "description": "ACC-01 text button."
+  },
+  "account_switchFailedTitle": "Couldn't back up first",
+  "@account_switchFailedTitle": {
+    "description": "Switch account: the backup to the current account failed."
+  },
+  "account_switchFailedBody": "Your latest changes aren't in {email} yet. Switch anyway? Your data stays on this phone.",
+  "@account_switchFailedBody": {
+    "description": "Switch account failure dialog body.",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "account_switchAnyway": "Switch anyway",
+  "@account_switchAnyway": {
+    "description": "Switch account failure dialog button."
+  },
+  "account_sessionExpired": "Your Google sign-in expired. Sign in again to keep backing up.",
+  "@account_sessionExpired": {
+    "description": "Shown when Drive says the sign-in expired or access was removed."
+  },
+  "account_signOutSheetTitle": "Sign out of {email}?",
+  "@account_signOutSheetTitle": {
+    "description": "ACC-03 title.",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "account_signOutBackingUp": "Backing up your latest changes…",
+  "@account_signOutBackingUp": {
+    "description": "ACC-03 step 1 progress."
+  },
+  "account_signOutBackupFailed": "Couldn't back up your latest changes",
+  "@account_signOutBackupFailed": {
+    "description": "ACC-03 step 1 failure."
+  },
+  "account_signOutAnyway": "Sign out anyway",
+  "@account_signOutAnyway": {
+    "description": "ACC-03 button after a failed backup."
+  },
+  "account_keepData": "Keep data on this phone",
+  "@account_keepData": {
+    "description": "ACC-03 option."
+  },
+  "account_keepDataHelp": "You can keep using the app without an account.",
+  "@account_keepDataHelp": {
+    "description": "ACC-03 option helper."
+  },
+  "account_removeData": "Remove data from this phone",
+  "@account_removeData": {
+    "description": "ACC-03 option."
+  },
+  "account_removeDataHelp": "Your backup stays in your Google account.",
+  "@account_removeDataHelp": {
+    "description": "ACC-03 option helper."
+  },
+  "onboarding_restoreWithGoogle": "Restore with Google",
+  "@onboarding_restoreWithGoogle": {
+    "description": "SYS-02 step 1 secondary button."
+  },
+  "onboarding_noBackupFound": "No backup found on this account",
+  "@onboarding_noBackupFound": {
+    "description": "SYS-02 message when the account has no backup."
+  },
+  "finishSetup_title": "Finish setting up",
+  "@finishSetup_title": {
+    "description": "Finish setting up sheet title."
+  },
+  "finishSetup_body": "Your data is back. Your app lock PIN is never backed up, so set a new one to keep your data private.",
+  "@finishSetup_body": {
+    "description": "Finish setting up sheet body."
+  },
+  "finishSetup_setLock": "Set app lock",
+  "@finishSetup_setLock": {
+    "description": "Finish setting up primary button."
+  },
+  "finishSetup_allowNotifications": "Allow notifications",
+  "@finishSetup_allowNotifications": {
+    "description": "Finish setting up button (Android 13+)."
+  },
+  "finishSetup_notNow": "Not now",
+  "@finishSetup_notNow": {
+    "description": "Finish setting up dismiss button."
+  },
+  "backup_previousTitle": "Restore previous phone data",
+  "@backup_previousTitle": {
+    "description": "SET-02 safety copy tile."
+  },
+  "backup_previousDetail": "Saved {date} · {counts}",
+  "@backup_previousDetail": {
+    "description": "SET-02 safety copy tile subtitle.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "counts": {
         "type": "String"
       }
     }

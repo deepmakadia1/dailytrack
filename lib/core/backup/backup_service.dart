@@ -1,10 +1,15 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:dailytrack/core/account/domain/device_identity.dart';
 import 'package:dailytrack/core/backup/data/backup_coordinator.dart';
 import 'package:dailytrack/core/backup/data/backup_engine.dart';
+import 'package:dailytrack/core/backup/domain/auto_backup_rotation.dart';
+import 'package:dailytrack/core/backup/domain/backup_conflict_policy.dart';
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
 import 'package:dailytrack/core/backup/domain/backup_ports.dart';
+import 'package:dailytrack/core/backup/domain/change_counter.dart';
+import 'package:dailytrack/core/backup/domain/drive_backup_result.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
 import 'package:dailytrack/core/backup/domain/restore_types.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
@@ -33,6 +38,7 @@ class BackupService {
     required this._cacheDir,
     required this._nowUtcMs,
     required this._drive,
+    required this._device,
   });
 
   final BackupEngine _engine;
@@ -45,12 +51,19 @@ class BackupService {
   final int Function() _nowUtcMs;
   final DriveBackupStore _drive;
 
+  /// This install's ID and the phone's name, for backup metadata (feature
+  /// 010 research R8).
+  final Future<DeviceIdentity> Function() _device;
+
   File? _lastFile;
 
   /// The backup file, encrypted when encryption is on. Throws
   /// [BackupNeedsPassword] if the password can't be read; never falls back
   /// to a plain file (research R4).
-  Future<BackupFile> _build() async {
+  Future<BackupFile> _build({
+    BackupKind kind = BackupKind.manual,
+    DeviceIdentity? device,
+  }) async {
     final s = await _settings.load();
     String? password;
     if (s.backupEncrypt) {
@@ -62,6 +75,8 @@ class BackupService {
     return await _engine.create(
       includeReceipts: s.backupIncludeReceipts,
       password: password,
+      device: device ?? await _device(),
+      kind: kind,
     );
   }
 
@@ -88,27 +103,89 @@ class BackupService {
     return SavedBackup(fileName: file.fileName, sizeBytes: file.bytes.length);
   });
 
-  /// Uploads a backup to Google Drive (FR-015). After an auto backup only
-  /// the 5 newest auto backups are kept; manual ones are never pruned
-  /// (FR-017). On failure nothing is recorded.
-  Future<SavedBackup> backupToDrive({required BackupKind kind}) =>
-      _coordinator.run(() async {
-        final file = await _build();
-        await _drive.upload(file.bytes, fileName: file.fileName, kind: kind);
-        if (kind == BackupKind.auto) {
-          await _settings.setLastAutoBackupAt(_nowUtcMs());
-          try {
-            await _drive.pruneAuto();
-          } on BackupFailure {
-            // The backup is safe in Drive; the next run prunes again.
-          }
-        }
-        await _recordSuccess(BackupLocation.drive, file.bytes.length);
-        return SavedBackup(
-          fileName: file.fileName,
-          sizeBytes: file.bytes.length,
-        );
-      });
+  /// Uploads a backup to Google Drive (FR-015) after the conflict check
+  /// (spec §16 "Conflict rule", research R9, R10), which [conflict]
+  /// decides how to treat. On success it records the counter from the
+  /// backup's own snapshot, the new last known backup, and ends a conflict
+  /// pause; after an auto backup, older auto backups rotate by day (FR-035).
+  /// On failure nothing is recorded.
+  Future<DriveBackupResult> backupToDrive({
+    required BackupKind kind,
+    required ConflictMode conflict,
+  }) => _coordinator.run(() async {
+    final s = await _settings.load();
+    final device = await _device();
+    if (conflict != ConflictMode.overwrite) {
+      final check = BackupConflictPolicy.check(
+        newest: (await _drive.list()).firstOrNull?.meta,
+        thisDeviceId: device.id,
+        lastKnownAt: s.lastKnownDriveBackupAt,
+        phoneHasData: await _engine.hasUserData(),
+      );
+      switch ((check, conflict)) {
+        case (NoConflict(), _):
+          break;
+        case (NewerFromOtherDevice(:final newest), ConflictMode.pause):
+          await _settings.setAutoBackupPause(
+            paused: true,
+            notified: s.autoBackupPauseNotified,
+          );
+          return PausedByConflict(newest);
+        case (EmptyOverData(), ConflictMode.pause):
+          return const SkippedEmpty();
+        case (_, _):
+          return NeedsConfirmation(check);
+      }
+    }
+
+    final file = await _build(kind: kind, device: device);
+    final meta = file.meta!;
+    await _drive.upload(file.bytes, fileName: file.fileName, meta: meta);
+    await _settings.setBackedUpChangeCounter(file.changeCounter);
+    await _settings.setLastKnownDriveBackup(
+      at: meta.createdAt,
+      deviceId: meta.deviceId,
+    );
+    await _settings.setAutoBackupPause(paused: false, notified: false);
+    if (kind == BackupKind.auto) {
+      await _settings.setLastAutoBackupAt(_nowUtcMs());
+      await _rotate();
+    }
+    await _recordSuccess(BackupLocation.drive, file.bytes.length);
+    return Uploaded(meta: meta, sizeBytes: file.bytes.length);
+  });
+
+  /// The auto backup job (scheduled or on background): [Unchanged] when
+  /// nothing changed since the last backup (FR-033, research R7);
+  /// otherwise an auto backup that pauses on a conflict.
+  Future<DriveBackupResult> backupIfChanged() async {
+    final s = await _settings.load();
+    final changed = ChangeCounter.changed(
+      current: s.dataChangeCounter,
+      backedUp: s.backedUpChangeCounter,
+    );
+    if (!changed) return const Unchanged();
+    return await backupToDrive(
+      kind: BackupKind.auto,
+      conflict: ConflictMode.pause,
+    );
+  }
+
+  /// Day-based rotation (research R15). The new backup is safe in Drive,
+  /// so a failure here is left for the next run.
+  Future<void> _rotate() async {
+    try {
+      final old = AutoBackupRotation.toDelete(
+        await _drive.list(),
+        nowLocal: DateTime.fromMillisecondsSinceEpoch(_nowUtcMs()),
+      );
+      for (final entry in old) {
+        await _drive.delete(entry.id);
+      }
+    } on BackupFailure {
+      // The next auto backup rotates again.
+    }
+  }
 
   /// Sends the last saved file through the share sheet.
   Future<void> shareLastFile() async {

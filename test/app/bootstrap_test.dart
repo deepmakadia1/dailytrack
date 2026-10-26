@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:dailytrack/app/app_open_runner.dart';
 import 'package:dailytrack/app/bootstrap.dart';
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/ad_providers.dart';
+import 'package:dailytrack/core/ads/domain/consent_service.dart';
+import 'package:dailytrack/core/billing/billing_providers.dart';
+import 'package:dailytrack/core/billing/domain/pro_store.dart';
 import 'package:dailytrack/core/database/app_database.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
@@ -22,11 +26,20 @@ void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   late AppDatabase db;
   late MockAdService ads;
+  late FakeConsentService consent;
 
   setUp(() {
     db = AppDatabase(NativeDatabase.memory());
     ads = MockAdService();
-    when(() => ads.initialize()).thenAnswer((_) async {});
+    when(() => ads.init()).thenAnswer((_) async {});
+    // Consent from an earlier session already allows ads.
+    consent = FakeConsentService(
+      stored: true,
+      gatherResult: const ConsentResult(
+        canRequestAds: true,
+        privacyOptionsRequired: false,
+      ),
+    );
   });
   tearDown(() => db.close());
 
@@ -41,7 +54,11 @@ void main() {
     bool removeAdsPurchased = false,
     List<String>? enabled,
   }) async {
-    final c = makeRealContainer(db, ads: ads);
+    final c = makeRealContainer(
+      db,
+      ads: ads,
+      overrides: [consentServiceProvider.overrideWithValue(consent)],
+    );
     final repo = c.read(settingsRepositoryProvider);
     if (onboardingDone) {
       await db.customStatement(
@@ -89,21 +106,130 @@ void main() {
   });
 
   group('SYS-01 ads SDK is not initialized when Remove Ads is purchased', () {
-    test('purchased → initialize is never called', () async {
+    test('purchased → neither the consent SDK nor the ads SDK is touched, '
+        'and the session starts without ads', () async {
       final c = await containerWith(removeAdsPurchased: true);
       await boot(c);
-      verifyNever(() => ads.initialize());
+      await pumpEventQueue();
+      verifyNever(() => ads.init());
+      expect(consent.canRequestCalls, 0);
+      expect(consent.gatherCalls, 0);
+      expect(c.read(adsSessionGateProvider), isFalse);
     });
 
-    test('not purchased → initialize is called once', () async {
+    test('not purchased → init is called once', () async {
       final c = await containerWith();
       await boot(c);
-      verify(() => ads.initialize()).called(1);
+      verify(() => ads.init()).called(1);
+    });
+  });
+
+  // --- 009-ads-rewarded-pro (T084, T086): Pro at startup. ---
+  group('Pro at startup', () {
+    test('PRM-01 AC no ad of any kind after purchase, including after '
+        'restart: three cold starts with Pro touch neither SDK', () async {
+      final c1 = await containerWith(removeAdsPurchased: true);
+      await boot(c1);
+      for (var i = 0; i < 2; i++) {
+        final c = makeRealContainer(
+          db,
+          ads: ads,
+          overrides: [consentServiceProvider.overrideWithValue(consent)],
+        );
+        await boot(c);
+      }
+      await pumpEventQueue();
+      verifyNever(() => ads.init());
+      expect(consent.canRequestCalls, 0);
+      expect(consent.gatherCalls, 0);
+    });
+
+    test('a removal staged by an earlier start is applied before ads and '
+        'locks are decided: this start has ads again', () async {
+      final c = await containerWith(onboardingDone: true);
+      await db.customStatement(
+        "INSERT INTO settings VALUES ('removeAdsPurchased', 'true', 0)",
+      );
+      await db.customStatement(
+        "INSERT INTO settings VALUES ('proRemovalPending', 'true', 0)",
+      );
+      await boot(c);
+      final s = await c.read(settingsRepositoryProvider).load();
+      expect(s.removeAdsPurchased, isFalse);
+      expect(s.proRemovalPending, isFalse);
+      verify(() => ads.init()).called(1);
+      expect(c.read(adsSessionGateProvider), isTrue);
+    });
+
+    test('the purchase stream is listened to at startup and ownership is '
+        'checked in the background', () async {
+      final store = FakeProStore(ownership: OwnershipCheck.owned);
+      final c = makeRealContainer(
+        db,
+        ads: ads,
+        overrides: [
+          consentServiceProvider.overrideWithValue(consent),
+          proStoreProvider.overrideWithValue(store),
+        ],
+      );
+      await boot(c);
+      await pumpEventQueue();
+      expect(store.listens, 1);
+      expect(store.ownershipQueries, 1);
+      // A reinstall gets Pro back from Play on its own.
+      final s = await c.read(settingsRepositoryProvider).load();
+      expect(s.removeAdsPurchased, isTrue);
+    });
+  });
+
+  // --- 009-ads-rewarded-pro (T030): consent before the ads SDK. ---
+  group('§11 no ad request is made before consent is resolved', () {
+    test('stored consent allows ads → the SDK starts without waiting, and '
+        'consent is refreshed once in the background', () async {
+      final c = await containerWith(onboardingDone: true);
+      final r = await boot(c);
+      expect(r, isA<BootstrapReady>());
+      verify(() => ads.init()).called(1);
+      expect(c.read(adsSessionGateProvider), isTrue);
+      await pumpEventQueue();
+      expect(consent.gatherCalls, 1);
+    });
+
+    test('consent still unknown → the check (and form) finishes before the '
+        'SDK starts', () async {
+      consent
+        ..stored = false
+        ..showsForm = true;
+      final c = await containerWith(onboardingDone: true);
+      await boot(c);
+      expect(consent.gatherCalls, 1);
+      expect(consent.beforeFormCalls, 1);
+      verify(() => ads.init()).called(1);
+      expect(c.read(adsSessionGateProvider), isTrue);
+    });
+
+    test('consent does not allow ads → the SDK never starts', () async {
+      consent
+        ..stored = false
+        ..gatherResult = ConsentResult.none;
+      final c = await containerWith(onboardingDone: true);
+      await boot(c);
+      await pumpEventQueue();
+      verifyNever(() => ads.init());
+      expect(c.read(adsSessionGateProvider), isFalse);
+    });
+
+    test('FR-013 a failing consent check never blocks startup', () async {
+      consent.throwOnCheck = true;
+      final c = await containerWith(onboardingDone: true);
+      expect(await boot(c), isA<BootstrapReady>());
+      verifyNever(() => ads.init());
+      expect(c.read(adsSessionGateProvider), isFalse);
     });
   });
 
   test('an ads failure never blocks startup', () async {
-    when(() => ads.initialize()).thenThrow(StateError('ads down'));
+    when(() => ads.init()).thenThrow(StateError('ads down'));
     final c = await containerWith(onboardingDone: true);
     expect(await boot(c), isA<BootstrapReady>());
   });
@@ -115,7 +241,7 @@ void main() {
     // Never opened, so there is nothing to close (closing would rethrow).
     final c = makeRealContainer(broken, ads: ads);
     expect(await boot(c), isA<BootstrapFailed>());
-    verifyNever(() => ads.initialize());
+    verifyNever(() => ads.init());
   });
 
   test('seeds every registered module, even disabled ones', () async {

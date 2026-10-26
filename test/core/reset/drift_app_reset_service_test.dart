@@ -217,4 +217,29 @@ void main() {
       expect(order, ['lock', 'after']);
     },
   );
+
+  // --- 009-ads-rewarded-pro (T011): the install time survives. ---
+  test('the interstitial install time is kept; every other ad counter and '
+      'Pro go (feature 009 research R9)', () async {
+    final settings = SettingsRepositoryImpl(
+      db,
+      knownModuleIds: const ['expense', 'habit'],
+    );
+    await settings.setAdsInstallAtIfMissing(1234);
+    await settings.recordInterstitialShown(
+      at: 5000,
+      dayKey: '2026-10-21',
+      countToday: 2,
+    );
+    await db.customStatement(
+      "INSERT INTO settings VALUES ('removeAdsPurchased', 'true', 0)",
+    );
+    await service().eraseAll();
+    final s = await settings.load();
+    expect(s.adsInstallAt, 1234);
+    expect(s.adsLastInterstitialAt, isNull);
+    expect(s.adsInterstitialsToday, 0);
+    expect(s.removeAdsPurchased, isFalse);
+    expect(await db.select(db.settings).get(), hasLength(1));
+  });
 }

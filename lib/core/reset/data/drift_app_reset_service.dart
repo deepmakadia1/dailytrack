@@ -2,6 +2,7 @@ import 'package:dailytrack/core/database/app_database.dart';
 import 'package:dailytrack/core/module/tracker_module.dart';
 import 'package:dailytrack/core/notifications/notification_service.dart';
 import 'package:dailytrack/core/reset/domain/app_reset_service.dart';
+import 'package:dailytrack/core/settings/data/settings_codec.dart';
 
 /// [AppResetService] over the Drift database (feature 007 data-model §6).
 ///
@@ -41,10 +42,28 @@ final class DriftAppResetService implements AppResetService {
   @override
   Future<void> eraseAll() async {
     await _db.transaction(() async {
+      // The install time survives, so erasing can't reset the 2-day
+      // interstitial rule (feature 009 research R9); so does the settings
+      // copy of the device ID, which belongs to this install (feature 010
+      // research R4).
+      final kept =
+          await (_db.select(_db.settings)..where(
+                (t) => t.key.isIn([
+                  SettingsCodec.adsInstallAt,
+                  SettingsCodec.deviceId,
+                ]),
+              ))
+              .get();
       // Foreign keys are checked at commit, when every table is empty.
       await _db.customStatement('PRAGMA defer_foreign_keys = ON');
       for (final table in _db.allTables) {
         await _db.delete(table).go();
+      }
+      // The change-counter triggers (feature 010) count the deletes above
+      // into a new settings row; the erased phone starts at 0.
+      await _db.delete(_db.settings).go();
+      for (final row in kept) {
+        await _db.into(_db.settings).insert(row);
       }
     });
 

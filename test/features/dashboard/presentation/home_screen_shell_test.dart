@@ -46,7 +46,7 @@ void main() {
     expect(find.text('Module habit card'), findsOneWidget);
   });
 
-  testWidgets('a disabled module has no card; no ad widgets', (tester) async {
+  testWidgets('a disabled module has no card; no visible ad', (tester) async {
     await pumpTestApp(
       tester,
       registry: registry(),
@@ -59,6 +59,6 @@ void main() {
     );
     expect(find.byKey(const Key('home_card_expense')), findsOneWidget);
     expect(find.byKey(const Key('home_card_habit')), findsNothing);
-    expect(anyAdWidget, findsNothing);
+    expectNoVisibleAd(tester);
   });
 }

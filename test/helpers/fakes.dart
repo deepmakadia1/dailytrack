@@ -4,11 +4,21 @@ import 'dart:typed_data';
 
 import 'package:clock/clock.dart';
 import 'package:dailytrack/app/bootstrap.dart';
+import 'package:dailytrack/core/account/data/no_backup_device_id_store.dart';
+import 'package:dailytrack/core/account/domain/account.dart';
 import 'package:dailytrack/core/ads/ad_service.dart';
+import 'package:dailytrack/core/ads/ad_view.dart';
+import 'package:dailytrack/core/ads/domain/ad_placement.dart';
+import 'package:dailytrack/core/ads/domain/ad_trigger.dart';
+import 'package:dailytrack/core/ads/domain/consent_service.dart';
+import 'package:dailytrack/core/ads/domain/rewarded_outcome.dart';
+import 'package:dailytrack/core/ads/rewarded_unlock.dart';
 import 'package:dailytrack/core/background/background_scheduler.dart';
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
+import 'package:dailytrack/core/backup/domain/backup_meta.dart';
 import 'package:dailytrack/core/backup/domain/backup_ports.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
+import 'package:dailytrack/core/billing/domain/pro_store.dart';
 import 'package:dailytrack/core/database/seeding.dart';
 import 'package:dailytrack/core/feature_gate/domain/feature_gate.dart';
 import 'package:dailytrack/core/feature_gate/domain/feature_key.dart';
@@ -75,6 +85,10 @@ class FakeSettingsRepository implements SettingsRepository {
     calls[name] = (calls[name] ?? 0) + 1;
     if (name != 'load' && name != 'isSeeded') onWrite?.call(name);
   }
+
+  /// Replaces the settings as another part of the app would (e.g. a Pro
+  /// purchase), and notifies watchers.
+  void replace(AppSettings next) => _set(next);
 
   void _set(AppSettings next) {
     _settings = next;
@@ -363,6 +377,139 @@ class FakeSettingsRepository implements SettingsRepository {
     _count('setDeviceTimeZoneId');
     _set(_settings.copyWith(deviceTimeZoneId: id));
   }
+
+  @override
+  Future<void> setAdsInstallAtIfMissing(int utcMs) async {
+    _count('setAdsInstallAtIfMissing');
+    if (_settings.adsInstallAt != null) return;
+    _set(_settings.copyWith(adsInstallAt: utcMs));
+  }
+
+  @override
+  Future<void> recordInterstitialShown({
+    required int at,
+    required String dayKey,
+    required int countToday,
+  }) async {
+    _count('recordInterstitialShown');
+    _set(
+      _settings.copyWith(
+        adsLastInterstitialAt: at,
+        adsInterstitialDay: dayKey,
+        adsInterstitialsToday: countToday,
+      ),
+    );
+  }
+
+  @override
+  Future<void> setAdsLastSessionDay(String dayKey) async {
+    _count('setAdsLastSessionDay');
+    _set(_settings.copyWith(adsLastSessionDay: dayKey));
+  }
+
+  @override
+  Future<void> setProState({
+    required bool owned,
+    required int notOwnedStreak,
+    required bool pending,
+    bool removalPending = false,
+  }) async {
+    _count('setProState');
+    _set(
+      _settings.copyWith(
+        removeAdsPurchased: owned,
+        proNotOwnedStreak: notOwnedStreak,
+        proPurchasePending: pending,
+        proRemovalPending: removalPending,
+      ),
+    );
+  }
+
+  @override
+  Future<void> setRewardedCounts({
+    required String dayKey,
+    required Map<String, int> counts,
+  }) async {
+    _count('setRewardedCounts');
+    _set(_settings.copyWith(rewardedDay: dayKey, rewardedCounts: counts));
+  }
+
+  @override
+  Future<void> setAccount(AccountProfile? profile) async {
+    _count('setAccount');
+    _set(
+      _settings.copyWith(
+        backupAccountEmail: profile?.email,
+        accountDisplayName: profile?.displayName,
+        accountPhotoUrl: profile?.photoUrl,
+      ),
+    );
+  }
+
+  @override
+  Future<void> setDeviceIdCopy(String id) async {
+    _count('setDeviceIdCopy');
+    _set(_settings.copyWith(deviceId: id));
+  }
+
+  @override
+  Future<void> setBackedUpChangeCounter(int value) async {
+    _count('setBackedUpChangeCounter');
+    _set(_settings.copyWith(backedUpChangeCounter: value));
+  }
+
+  @override
+  Future<void> setLastBackgroundBackupAt(int? at) async {
+    _count('setLastBackgroundBackupAt');
+    _set(_settings.copyWith(lastBackgroundBackupAt: at));
+  }
+
+  @override
+  Future<void> setLastKnownDriveBackup({
+    required int? at,
+    required String? deviceId,
+  }) async {
+    _count('setLastKnownDriveBackup');
+    _set(
+      _settings.copyWith(
+        lastKnownDriveBackupAt: at,
+        lastKnownDriveBackupDeviceId: deviceId,
+      ),
+    );
+  }
+
+  @override
+  Future<void> setFinishSetupPending({required bool pending}) async {
+    _count('setFinishSetupPending');
+    _set(_settings.copyWith(finishSetupPending: pending));
+  }
+
+  @override
+  Future<void> setAutoBackupPause({
+    required bool paused,
+    required bool notified,
+  }) async {
+    _count('setAutoBackupPause');
+    _set(
+      _settings.copyWith(
+        autoBackupPausedByConflict: paused,
+        autoBackupPauseNotified: notified,
+      ),
+    );
+  }
+
+  @override
+  Future<void> resetAdCounters({required int installAt}) async {
+    _count('resetAdCounters');
+    _set(
+      _settings.copyWith(
+        adsInstallAt: installAt,
+        adsLastInterstitialAt: null,
+        adsInterstitialDay: null,
+        adsInterstitialsToday: 0,
+      ),
+    );
+  }
 }
 
 /// Stand-in for `bootstrapProvider` in widget tests: no database involved.
@@ -427,6 +574,260 @@ class FakeNotificationPermission implements NotificationPermission {
 }
 
 class MockAdService extends Mock implements AdService;
+
+/// Scripted ad consent (feature 009). [stored] is what the SDK remembers from
+/// earlier sessions; [gatherResult] is what a fresh check (and form) gives.
+class FakeConsentService implements ConsentService {
+  new({
+    this.stored = false,
+    this.gatherResult = ConsentResult.none,
+    this.showsForm = false,
+    this.throwOnCheck = false,
+    bool privacyRequired = false,
+  }) : _privacy = privacyRequired;
+
+  bool stored;
+  ConsentResult gatherResult;
+
+  /// [gather] calls `beforeForm` first, as when a form must show.
+  bool showsForm;
+  bool throwOnCheck;
+  int canRequestCalls = 0;
+  int gatherCalls = 0;
+  int beforeFormCalls = 0;
+  int privacyFormCalls = 0;
+  bool _privacy;
+  final _privacyChanges = StreamController<bool>.broadcast();
+
+  @override
+  Future<bool> canRequestAds() async {
+    canRequestCalls++;
+    if (throwOnCheck) throw StateError('consent down');
+    return stored;
+  }
+
+  @override
+  Future<ConsentResult> gather({
+    required Future<void> Function() beforeForm,
+    required Duration timeout,
+  }) async {
+    gatherCalls++;
+    if (throwOnCheck) throw StateError('consent down');
+    if (showsForm) {
+      beforeFormCalls++;
+      await beforeForm();
+    }
+    stored = gatherResult.canRequestAds;
+    setPrivacyRequired(required: gatherResult.privacyOptionsRequired);
+    return gatherResult;
+  }
+
+  void setPrivacyRequired({required bool required}) {
+    _privacy = required;
+    _privacyChanges.add(required);
+  }
+
+  @override
+  Stream<bool> get privacyOptionsRequired async* {
+    yield _privacy;
+    yield* _privacyChanges.stream;
+  }
+
+  @override
+  Future<void> showPrivacyOptionsForm() async => privacyFormCalls++;
+
+  int resetCalls = 0;
+
+  @override
+  Future<void> resetForDebug() async => resetCalls++;
+}
+
+/// A scripted PRM-02 (feature 009): records requests and, when [earn] is
+/// true, runs the grant as an earned reward would.
+class FakeRewardedUnlockPresenter implements RewardedUnlockPresenter {
+  new({this.earn = true, this.runGrant = false});
+
+  bool earn;
+
+  /// Runs the request's grant on an earned reward. Off by default, since
+  /// the default grant needs the unlocks store.
+  bool runGrant;
+  final List<RewardedUnlockRequest> requests = [];
+
+  @override
+  Future<bool> present(
+    BuildContext context,
+    RewardedUnlockRequest request,
+  ) async {
+    requests.add(request);
+    if (earn && runGrant) await request.grant();
+    return earn;
+  }
+}
+
+/// Google Play Billing for Pro, scripted (feature 009). [purchases] pushes
+/// purchase updates as the store would.
+class FakeProStore implements ProStore {
+  new({
+    this.available = true,
+    this.product = const StoreProduct(
+      id: proProductId,
+      title: 'DailyTrack Pro',
+      price: '₹299.00',
+    ),
+    this.ownership = OwnershipCheck.notOwned,
+  });
+
+  bool available;
+  StoreProduct? product;
+  OwnershipCheck ownership;
+  final purchases = StreamController<List<StorePurchase>>.broadcast();
+  final List<StoreProduct> bought = [];
+  final List<StorePurchase> completed = [];
+  int ownershipQueries = 0;
+  int listens = 0;
+
+  @override
+  Stream<List<StorePurchase>> get purchaseUpdates {
+    listens++;
+    return purchases.stream;
+  }
+
+  @override
+  Future<bool> isAvailable() async => available;
+
+  @override
+  Future<StoreProduct?> loadProduct() async => available ? product : null;
+
+  @override
+  Future<void> buy(StoreProduct product) async => bought.add(product);
+
+  @override
+  Future<OwnershipCheck> queryOwnership() async {
+    ownershipQueries++;
+    return available ? ownership : OwnershipCheck.unavailable;
+  }
+
+  @override
+  Future<void> complete(StorePurchase purchase) async =>
+      completed.add(purchase);
+
+  /// Sends one Pro purchase update.
+  void emit(StorePurchaseStatus status, {bool needsCompletion = false}) =>
+      purchases.add([
+        StorePurchase(
+          productId: proProductId,
+          status: status,
+          needsCompletion: needsCompletion,
+        ),
+      ]);
+}
+
+/// A loaded ad of a fixed [height] (feature 009 widget tests).
+class FakeAdView implements AdView {
+  new({this.height = 60});
+
+  @override
+  final double height;
+  int disposeCalls = 0;
+
+  @override
+  Widget build(BuildContext context) =>
+      SizedBox(key: const Key('fake_ad_view'), height: height);
+
+  @override
+  void dispose() => disposeCalls++;
+}
+
+/// An [AdService] that hands out [FakeAdView]s (or null) and records loads,
+/// without any ads SDK (constitution 1.0.3, IV).
+class FakeAdService implements AdService {
+  new({this.enabled = true, this.view, this.bannerView});
+
+  /// What the next [prepareRewarded] answers; null never answers (PRM-02's
+  /// 8 s timeout).
+  bool? rewardedReady = true;
+
+  /// Outcomes of the next [showRewarded] calls, in order; then `earned`.
+  final List<RewardedOutcome> rewardedOutcomes = [];
+  int prepareCalls = 0;
+  int rewardedShows = 0;
+
+  final bool enabled;
+
+  /// What every load returns; null means a failed load.
+  FakeAdView? view;
+
+  /// What banner loads return instead of [view], when set (a real adaptive
+  /// banner is at most 15% of the screen height).
+  FakeAdView? bannerView;
+  int bannerLoads = 0;
+  int nativeLoads = 0;
+
+  /// Every interstitial trigger, in order.
+  final List<AdTrigger> triggers = [];
+
+  /// Runs on each trigger, e.g. to see which screen is showing then.
+  void Function(AdTrigger trigger)? onTrigger;
+
+  @override
+  bool get adsEnabled => enabled;
+
+  @override
+  Stream<bool> get adsEnabledStream => Stream.value(enabled);
+
+  @override
+  Future<AdView?> loadBanner({required double width}) async {
+    bannerLoads++;
+    return bannerView ?? view;
+  }
+
+  @override
+  Future<AdView?> loadNative(
+    NativePlacement placement,
+    NativeAdLook look,
+  ) async {
+    nativeLoads++;
+    return view;
+  }
+
+  @override
+  Future<void> init() async {}
+
+  @override
+  Future<void> preloadInterstitial() async {}
+
+  @override
+  Future<void> maybeShowInterstitial(AdTrigger trigger) async {
+    triggers.add(trigger);
+    onTrigger?.call(trigger);
+  }
+
+  @override
+  Future<bool> prepareRewarded() {
+    prepareCalls++;
+    final ready = rewardedReady;
+    return ready == null ? Completer<bool>().future : Future.value(ready);
+  }
+
+  /// Like the SDK: [onEarned] runs only for an earned reward, before the
+  /// outcome completes.
+  @override
+  Future<RewardedOutcome> showRewarded(
+    FeatureKey key, {
+    required Future<void> Function() onEarned,
+  }) async {
+    rewardedShows++;
+    final outcome = rewardedOutcomes.isEmpty
+        ? RewardedOutcome.earned
+        : rewardedOutcomes.removeAt(0);
+    if (outcome == RewardedOutcome.earned) await onEarned();
+    return outcome;
+  }
+
+  @override
+  Future<void> dispose() async {}
+}
 
 /// Configurable [TrackerModule] that records enable/disable calls
 /// (used by T047, T086 and T111).
@@ -852,6 +1253,9 @@ class TestLock {
 class FakeAppResetService implements AppResetService {
   int calls = 0;
 
+  /// What the erase does to the app, e.g. clear settings (feature 010).
+  void Function()? onErase;
+
   /// When set, the next run throws it once (nothing was deleted).
   Exception? failNext;
 
@@ -862,6 +1266,7 @@ class FakeAppResetService implements AppResetService {
       failNext = null;
       throw e;
     }
+    onErase?.call();
   }
 }
 
@@ -894,13 +1299,33 @@ class FakeAppInfoSource implements AppInfoSource {
 }
 
 /// Fixed device facts for the feedback email.
-class FakeDeviceInfoSource implements DeviceInfoSource {
+/// The no-backup device ID file in memory (feature 010 research R4).
+/// [unavailable] acts like a platform without the folder.
+class FakeDeviceIdFile implements DeviceIdFile {
+  String? value;
+  bool unavailable = false;
+
   @override
-  Future<DeviceInfo> load() async => const DeviceInfo(
+  Future<String?> read() async => unavailable ? null : value;
+
+  @override
+  Future<void> write(String id) async {
+    if (unavailable) throw StateError('no no-backup folder');
+    value = id;
+  }
+}
+
+class FakeDeviceInfoSource implements DeviceInfoSource {
+  new({this.sdkInt = 34});
+
+  final int sdkInt;
+
+  @override
+  Future<DeviceInfo> load() async => DeviceInfo(
     manufacturer: 'Google',
     model: 'Pixel 7',
     release: '14',
-    sdkInt: 34,
+    sdkInt: sdkInt,
   );
 }
 
@@ -965,6 +1390,18 @@ class FakeBackgroundScheduler implements BackgroundScheduler {
     periodic[uniqueName] = (every, network);
   }
 
+  /// One-off jobs by name: the network each waits for (feature 010).
+  final Map<String, NetworkRequirement> oneOff = {};
+
+  @override
+  Future<void> enqueueOnce(
+    String uniqueName, {
+    NetworkRequirement network = NetworkRequirement.none,
+  }) async {
+    ensured.add(uniqueName);
+    oneOff[uniqueName] = network;
+  }
+
   @override
   Future<void> cancel(String uniqueName) async => cancelled.add(uniqueName);
 }
@@ -1011,21 +1448,24 @@ class FakeBackupPasswordStore implements BackupPasswordStore {
 }
 
 /// The user's Drive app folder in memory (feature 008 research R10).
-/// [connectResult] is the email a connect returns, or a `BackupFailure` to
-/// throw; [failNext] makes the next call of any other method throw.
+/// [failNext] makes the next call of any method throw. Uploads keep their
+/// metadata like Drive's `appProperties` (feature 010).
 class FakeDriveBackupStore implements DriveBackupStore {
-  Object connectResult = 'me@example.com';
   BackupFailure? failNext;
   final files = <DriveBackupEntry>[];
   final contents = <String, Uint8List>{};
   final deleted = <String>[];
-  int connects = 0;
-  int disconnects = 0;
-  int pruneCalls = 0;
+  final uploads = <BackupMeta>[];
+
+  /// Every call by name, to check that nothing reached Drive.
+  final calls = <String>[];
   int _next = 0;
 
   /// Upload time for the next file (UTC ms); increases by one per upload.
   int clockMs = 1792540800000;
+
+  /// Ids whose delete fails once.
+  final failDeleteOf = <String>{};
 
   void _maybeFail() {
     final failure = failNext;
@@ -1035,22 +1475,30 @@ class FakeDriveBackupStore implements DriveBackupStore {
     }
   }
 
-  @override
-  Future<String> connect() async {
-    connects++;
-    final result = connectResult;
-    if (result is BackupFailure) throw result;
-    return result as String;
-  }
-
-  @override
-  Future<void> disconnect() async {
-    disconnects++;
-    _maybeFail();
+  /// Adds a backup as if another phone (or an older app) had made it.
+  DriveBackupEntry seed({
+    int? createdAt,
+    BackupKind kind = BackupKind.manual,
+    BackupMeta? meta,
+    String? device = 'Test phone',
+  }) {
+    final entry = DriveBackupEntry(
+      id: 'f${_next++}',
+      name: 'dailytrack_backup.json',
+      createdAt: createdAt ?? meta?.createdAt ?? clockMs++,
+      sizeBytes: 10,
+      kind: kind,
+      device: device,
+      meta: meta,
+    );
+    files.add(entry);
+    contents[entry.id] = Uint8List(10);
+    return entry;
   }
 
   @override
   Future<List<DriveBackupEntry>> list() async {
+    calls.add('list');
     _maybeFail();
     return [...files]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
@@ -1059,9 +1507,11 @@ class FakeDriveBackupStore implements DriveBackupStore {
   Future<void> upload(
     Uint8List bytes, {
     required String fileName,
-    required BackupKind kind,
+    required BackupMeta meta,
   }) async {
+    calls.add('upload');
     _maybeFail();
+    uploads.add(meta);
     final id = 'f${_next++}';
     files.add(
       DriveBackupEntry(
@@ -1069,8 +1519,9 @@ class FakeDriveBackupStore implements DriveBackupStore {
         name: fileName,
         createdAt: clockMs++,
         sizeBytes: bytes.length,
-        kind: kind,
-        device: 'Test phone',
+        kind: meta.kind,
+        device: meta.deviceName,
+        meta: meta,
       ),
     );
     contents[id] = bytes;
@@ -1078,34 +1529,33 @@ class FakeDriveBackupStore implements DriveBackupStore {
 
   @override
   Future<Uint8List> download(String fileId) async {
+    calls.add('download');
     _maybeFail();
     return contents[fileId]!;
   }
 
   @override
   Future<void> delete(String fileId) async {
+    calls.add('delete');
     _maybeFail();
+    if (failDeleteOf.remove(fileId)) throw const DriveUnavailable('test');
     deleted.add(fileId);
     files.removeWhere((f) => f.id == fileId);
     contents.remove(fileId);
   }
 
-  /// Thrown by the next prune only.
-  BackupFailure? failPrune;
-
   @override
-  Future<void> pruneAuto({int keep = 5}) async {
-    pruneCalls++;
-    final failure = failPrune;
-    if (failure != null) {
-      failPrune = null;
-      throw failure;
+  Future<void> deleteAll() async {
+    calls.add('deleteAll');
+    BackupFailure? first;
+    for (final entry in await list()) {
+      try {
+        await delete(entry.id);
+      } on BackupFailure catch (e) {
+        first ??= e;
+      }
     }
-    _maybeFail();
-    final auto = (await list()).where((f) => f.kind == BackupKind.auto);
-    for (final old in auto.skip(keep).toList()) {
-      await delete(old.id);
-    }
+    if (first != null) throw first;
   }
 }
 

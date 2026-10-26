@@ -4,10 +4,13 @@ import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/core/background/background_providers.dart';
 import 'package:dailytrack/core/background/background_scheduler.dart';
 import 'package:dailytrack/core/backup/auto_backup_schedule.dart';
+import 'package:dailytrack/core/backup/background_backup_scheduler.dart';
 import 'package:dailytrack/core/backup/backup_providers.dart';
 import 'package:dailytrack/core/backup/backup_service.dart';
 import 'package:dailytrack/core/backup/domain/auto_backup_policy.dart';
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
+import 'package:dailytrack/core/backup/domain/backup_meta.dart';
+import 'package:dailytrack/core/backup/domain/drive_backup_result.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
 import 'package:dailytrack/core/notifications/notification_providers.dart';
@@ -20,17 +23,37 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../helpers/fakes.dart';
 
 final class _ScriptedBackupService implements BackupService {
-  /// One entry per run: null succeeds, a failure is thrown.
-  final results = <BackupFailure?>[];
+  /// One entry per run: null uploads, a [DriveBackupResult] is returned,
+  /// a failure is thrown.
+  final results = <Object?>[];
   final kinds = <BackupKind>[];
 
+  static const _meta = BackupMeta(
+    deviceId: 'this-phone',
+    deviceName: 'Pixel 7',
+    appVersion: '1.0.0+7',
+    createdAt: 1792540800000,
+    kind: BackupKind.auto,
+    counts: {},
+    schemaVersion: 5,
+    encrypted: false,
+  );
+
   @override
-  Future<SavedBackup> backupToDrive({required BackupKind kind}) async {
+  Future<DriveBackupResult> backupToDrive({
+    required BackupKind kind,
+    required ConflictMode conflict,
+  }) async {
     kinds.add(kind);
     final result = results.isEmpty ? null : results.removeAt(0);
-    if (result != null) throw result;
-    return const SavedBackup(fileName: 'x.json', sizeBytes: 1);
+    if (result is BackupFailure) throw result;
+    if (result is DriveBackupResult) return result;
+    return const Uploaded(meta: _meta, sizeBytes: 1);
   }
+
+  @override
+  Future<DriveBackupResult> backupIfChanged() =>
+      backupToDrive(kind: BackupKind.auto, conflict: ConflictMode.pause);
 
   @override
   Future<SavedBackup?> backupToDevice() => throw UnimplementedError();
@@ -132,7 +155,10 @@ void main() {
       ]) {
         final scheduler = FakeBackgroundScheduler();
         await syncAutoBackupSchedule(s, scheduler);
-        expect(scheduler.cancelled, [autoBackupTaskName]);
+        expect(scheduler.cancelled, [
+          autoBackupTaskName,
+          backgroundBackupTaskName,
+        ]);
         expect(scheduler.periodic, isEmpty);
       }
     });
@@ -239,6 +265,50 @@ void main() {
     test('the dispatcher runs core.autoBackup before module tasks', () async {
       expect(await runBackgroundTask(autoBackupTaskName, container), isTrue);
       expect(backups.kinds, [BackupKind.auto]);
+    });
+
+    test('§16 the background backup task runs the same job', () async {
+      expect(
+        await runBackgroundTask(backgroundBackupTaskName, container),
+        isTrue,
+      );
+      expect(backups.kinds, [BackupKind.auto]);
+    });
+
+    test('§16 unchanged data is a finished run, not a failure', () async {
+      await settings.setAutoBackupFailures(failures: 2, notified: false);
+      backups.results.add(const Unchanged());
+      await runAutoBackup(container.read);
+      expect(settings.current.autoBackupFailures, 0);
+      expect(settings.current.lastAutoBackupAt, isNotNull);
+      expect(notifications.shown, isEmpty);
+    });
+
+    test('§16 a conflict pause notifies once, opening ACC-01', () async {
+      const newer = BackupMeta(
+        deviceId: 'other-phone',
+        deviceName: 'Redmi Note 12',
+        appVersion: '1.0.0+7',
+        createdAt: 1792540900000,
+        kind: BackupKind.auto,
+        counts: {'expense.transactions': 3},
+        schemaVersion: 5,
+        encrypted: false,
+      );
+      backups.results.addAll(const [
+        PausedByConflict(newer),
+        PausedByConflict(newer),
+      ]);
+      // The service sets the pause; the job shows the notice once.
+      await settings.setAutoBackupPause(paused: true, notified: false);
+      await runAutoBackup(container.read);
+      await runAutoBackup(container.read);
+      final n = notifications.shown.single;
+      expect(n.id, backupPausedNotificationId);
+      expect(n.payload, Routes.account);
+      expect(n.title, 'Backup paused');
+      expect(settings.current.autoBackupPauseNotified, isTrue);
+      expect(settings.current.autoBackupFailures, 0);
     });
   });
 }

@@ -1,4 +1,5 @@
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
 import 'package:dailytrack/core/feature_gate/domain/feature_key.dart';
 import 'package:dailytrack/core/widgets/app_scaffold.dart';
 import 'package:dailytrack/core/widgets/error_state.dart';
@@ -12,6 +13,7 @@ import 'package:dailytrack/features/expense/presentation/widgets/charts/category
 import 'package:dailytrack/features/expense/presentation/widgets/charts/income_expense_bar.dart';
 import 'package:dailytrack/features/expense/presentation/widgets/charts/trend_line.dart';
 import 'package:dailytrack/features/expense/presentation/widgets/summary_strip.dart';
+import 'package:dailytrack/features/premium/presentation/screens/premium_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -69,6 +71,7 @@ void main() {
     bool unlocked = false,
     FakeFeatureGate? gate,
     Size size = const Size(412, 915),
+    FakeRewardedUnlockPresenter? presenter,
   }) {
     final g = gate ?? FakeFeatureGate();
     if (unlocked) g.set(FeatureKey.advancedReports, unlocked: true);
@@ -78,6 +81,7 @@ void main() {
       location: Routes.expenseReports,
       gate: g,
       size: size,
+      rewardedPresenter: presenter,
     );
   }
 
@@ -245,11 +249,13 @@ void main() {
     );
   });
 
-  testWidgets('EXP-11 US4-7 "Export this report" is the only action, and no '
-      'ad of any kind (feature 008 adds the export action)', (tester) async {
+  testWidgets('EXP-11 US4-7 "Export this report" is the only action, and '
+      'the bottom banner is the only ad (feature 009, spec §11)', (
+    tester,
+  ) async {
     await open(tester);
     final scaffold = tester.widget<AppScaffold>(find.byType(AppScaffold).last);
-    expect(scaffold.bannerSlot, isNull);
+    expect(scaffold.bannerSlot, isA<AppBannerAd>());
     expect(scaffold.actions, hasLength(1));
     expect(find.byKey(const Key('reports_export')), findsOneWidget);
     expect(find.byTooltip('Export this report'), findsOneWidget);
@@ -281,8 +287,8 @@ void main() {
   });
 
   group('locked (US5 s1, s2, FR-040)', () {
-    testWidgets('EXP-11 locked tabs show blurred preview (watch-ad button '
-        'deferred to feature 008)', (tester) async {
+    testWidgets('EXP-11 AC locked tabs show a blurred preview and a "Watch '
+        'an ad to unlock for 24 hours" button (feature 009)', (tester) async {
       await open(tester);
       for (final t in ['trends', 'accounts']) {
         expect(find.byKey(ValueKey('tab_lock_$t')), findsOneWidget);
@@ -294,11 +300,11 @@ void main() {
           findsOneWidget,
         );
         expect(find.text('Advanced reports are part of Pro.'), findsOneWidget);
+        expect(find.text('Watch an ad to unlock for 24 hours'), findsOneWidget);
         final getPro = tester.widget<FilledButton>(
           find.widgetWithText(FilledButton, 'Get Pro'),
         );
-        expect(getPro.onPressed, isNull);
-        expect(find.text('Watch an ad'), findsNothing);
+        expect(getPro.onPressed, isNotNull);
         // Sample data only: none of the user's amounts are in the tree.
         for (final amount in ['5,000.00', '250.00', '120.00', '5,370.00']) {
           expect(find.textContaining(amount), findsNothing, reason: amount);
@@ -307,6 +313,31 @@ void main() {
       expect(find.byKey(const ValueKey('tab_lock_overview')), findsNothing);
       // Tabs merge their own role text into the label.
       expect(find.bySemanticsLabel(RegExp('Trends, locked')), findsOneWidget);
+    });
+
+    testWidgets('FR-032 "Watch an ad" opens PRM-02 for 24 hours of advanced '
+        'reports; the tab opens when the gate does', (tester) async {
+      final gate = FakeFeatureGate();
+      final presenter = FakeRewardedUnlockPresenter();
+      await open(tester, gate: gate, presenter: presenter);
+      await tab(tester, 'trends');
+      await tester.tap(find.byKey(const Key('locked_watch_ad')));
+      await tester.pumpAndSettle();
+      final request = presenter.requests.single;
+      expect(request.key, FeatureKey.advancedReports);
+      expect(request.duration, const Duration(hours: 24));
+      // The reward's unlock reaches the gate; the tab opens in place.
+      gate.set(FeatureKey.advancedReports, unlocked: true);
+      await tester.pumpAndSettle();
+      expect(find.byType(LockedFeatureOverlay), findsNothing);
+    });
+
+    testWidgets('"Get Pro" opens PRM-01', (tester) async {
+      await open(tester);
+      await tab(tester, 'trends');
+      await tester.tap(find.byKey(const Key('locked_get_pro')));
+      await tester.pumpAndSettle();
+      expect(find.byType(PremiumScreen), findsOneWidget);
     });
 
     testWidgets('EXP-11 US5-2 Year and older months lock every tab', (

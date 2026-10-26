@@ -48,6 +48,36 @@ abstract final class SettingsCodec {
   static const String showDataOnWidget = 'showDataOnWidget';
   static const String deviceTimeZoneId = 'deviceTimeZoneId';
 
+  // Feature 009: the interstitial cap (data-model §1). Never restored.
+  static const String adsInstallAt = 'adsInstallAt';
+  static const String adsLastInterstitialAt = 'adsLastInterstitialAt';
+  static const String adsInterstitialDay = 'adsInterstitialDay';
+  static const String adsInterstitialsToday = 'adsInterstitialsToday';
+  static const String adsLastSessionDay = 'adsLastSessionDay';
+
+  // Feature 009: rewarded unlocks per feature key per day (FR-053).
+  static const String rewardedDay = 'rewardedDay';
+  static const String rewardedCounts = 'rewardedCounts';
+
+  // Feature 009: Pro ownership checks (data-model §1, §5).
+  static const String proNotOwnedStreak = 'proNotOwnedStreak';
+  static const String proPurchasePending = 'proPurchasePending';
+  static const String proRemovalPending = 'proRemovalPending';
+
+  // Feature 010: account, device, and auto backup state (data-model §1).
+  static const String accountDisplayName = 'accountDisplayName';
+  static const String accountPhotoUrl = 'accountPhotoUrl';
+  static const String deviceId = 'deviceId';
+  static const String dataChangeCounter = 'dataChangeCounter';
+  static const String backedUpChangeCounter = 'backedUpChangeCounter';
+  static const String lastBackgroundBackupAt = 'lastBackgroundBackupAt';
+  static const String lastKnownDriveBackupAt = 'lastKnownDriveBackupAt';
+  static const String lastKnownDriveBackupDeviceId =
+      'lastKnownDriveBackupDeviceId';
+  static const String autoBackupPausedByConflict = 'autoBackupPausedByConflict';
+  static const String autoBackupPauseNotified = 'autoBackupPauseNotified';
+  static const String finishSetupPending = 'finishSetupPending';
+
   static String seedKey(String seederId) => 'seed.$seederId';
 
   /// A module's own state, e.g. `module.expense.budgetRolloverMonth`.
@@ -80,6 +110,16 @@ abstract final class SettingsCodec {
       return v.cast<String>();
     }
 
+    // A JSON object of non-negative ints; anything else is dropped.
+    Map<String, int> readCounts(String key) {
+      final v = read<Map<String, dynamic>?>(key, null);
+      if (v == null) return const {};
+      return {
+        for (final MapEntry(:key, :value) in v.entries)
+          if (value is int && value >= 0) key: value,
+      };
+    }
+
     // Must parse as a `yyyy-MM-dd` date key, otherwise null.
     String? readDateKey(String key) {
       final v = read<String?>(key, null);
@@ -107,6 +147,21 @@ abstract final class SettingsCodec {
     final rawFailures = read<int?>(autoBackupFailures, null);
     final rawEmail = read<String?>(backupAccountEmail, null);
     final rawZone = read<String?>(deviceTimeZoneId, null);
+    final rawShownToday = read<int?>(adsInterstitialsToday, null);
+    final rawStreak = read<int?>(proNotOwnedStreak, null);
+
+    // Non-empty text, otherwise null.
+    String? readText(String key) {
+      final v = read<String?>(key, null);
+      return v == null || v.isEmpty ? null : v;
+    }
+
+    // A non-negative count, otherwise 0.
+    int readCounter(String key) {
+      final v = read<int?>(key, null);
+      return v != null && v >= 0 ? v : 0;
+    }
+
     final order = [
       ...readList(moduleOrder, d.moduleOrder).where(knownModuleIds.contains),
     ];
@@ -192,6 +247,35 @@ abstract final class SettingsCodec {
       ),
       showDataOnWidget: read(showDataOnWidget, d.showDataOnWidget),
       deviceTimeZoneId: rawZone == null || rawZone.isEmpty ? null : rawZone,
+      adsInstallAt: read<int?>(adsInstallAt, null),
+      adsLastInterstitialAt: read<int?>(adsLastInterstitialAt, null),
+      adsInterstitialDay: readDateKey(adsInterstitialDay),
+      adsInterstitialsToday: rawShownToday != null && rawShownToday >= 0
+          ? rawShownToday
+          : d.adsInterstitialsToday,
+      adsLastSessionDay: readDateKey(adsLastSessionDay),
+      rewardedDay: readDateKey(rewardedDay),
+      rewardedCounts: readCounts(rewardedCounts),
+      proNotOwnedStreak: rawStreak == null ? 0 : rawStreak.clamp(0, 2),
+      proPurchasePending: read(proPurchasePending, d.proPurchasePending),
+      proRemovalPending: read(proRemovalPending, d.proRemovalPending),
+      accountDisplayName: readText(accountDisplayName),
+      accountPhotoUrl: readText(accountPhotoUrl),
+      deviceId: readText(deviceId),
+      dataChangeCounter: readCounter(dataChangeCounter),
+      backedUpChangeCounter: readCounter(backedUpChangeCounter),
+      lastBackgroundBackupAt: read<int?>(lastBackgroundBackupAt, null),
+      lastKnownDriveBackupAt: read<int?>(lastKnownDriveBackupAt, null),
+      lastKnownDriveBackupDeviceId: readText(lastKnownDriveBackupDeviceId),
+      autoBackupPausedByConflict: read(
+        autoBackupPausedByConflict,
+        d.autoBackupPausedByConflict,
+      ),
+      autoBackupPauseNotified: read(
+        autoBackupPauseNotified,
+        d.autoBackupPauseNotified,
+      ),
+      finishSetupPending: read(finishSetupPending, d.finishSetupPending),
     );
   }
 }

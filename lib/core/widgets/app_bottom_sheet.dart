@@ -9,23 +9,31 @@ class AppBottomSheet extends StatelessWidget {
   final String title;
   final Widget child;
 
+  /// [dismissible] false keeps the sheet open until it pops itself: no
+  /// drag, no tap outside, no back (feature 010 FR-021).
   static Future<T?> show<T>(
     BuildContext context, {
     required String title,
     required Widget child,
+    bool dismissible = true,
   }) {
     final tokens = AppTokens.of(context);
     return showModalBottomSheet<T>(
       context: context,
       isScrollControlled: true,
-      showDragHandle: true,
+      showDragHandle: dismissible,
+      isDismissible: dismissible,
+      enableDrag: dismissible,
       useSafeArea: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(tokens.radiusSheet),
         ),
       ),
-      builder: (context) => AppBottomSheet(title: title, child: child),
+      builder: (context) => PopScope(
+        canPop: dismissible,
+        child: AppBottomSheet(title: title, child: child),
+      ),
     );
   }
 

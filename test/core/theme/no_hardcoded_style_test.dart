@@ -202,11 +202,13 @@ void main() {
     expect(offenders, isEmpty);
   });
 
-  test('(e) the expense feature never imports ad code (FR-038)', () {
+  // Relaxed by feature 009 (T005): expense screens now place AppBannerAd
+  // and AppNativeAd (spec §11), but never the plugin or its adapters.
+  test('(e) the expense feature never imports ads SDK code', () {
     final offenders = [
       for (final f in _dartFiles('lib/features/expense'))
         for (final i in _importsOf(f))
-          if (i.contains('/core/ads/') ||
+          if (i.contains('/core/ads/data/') ||
               i.startsWith('package:google_mobile_ads'))
             '${_rel(f)} -> $i',
     ];

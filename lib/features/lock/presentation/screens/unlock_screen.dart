@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/account/account_providers.dart';
 import 'package:dailytrack/core/backup/backup_providers.dart';
 import 'package:dailytrack/core/backup/presentation/backup_summaries.dart';
 import 'package:dailytrack/core/backup/presentation/drive_restore_flow.dart';
@@ -63,7 +64,8 @@ class _UnlockScreenState extends ConsumerState<UnlockScreen> {
       drive: ref.read(driveBackupStoreProvider),
       restore: ref.read(restoreServiceProvider),
       moduleSummaries: backupSummaries(ref.read(moduleRegistryProvider), l10n),
-      onConnected: settings.setBackupAccountEmail,
+      signIn: () async =>
+          await ref.read(accountServiceProvider).signIn() != null,
     );
     if (result != DriveRestoreResult.restored) return result;
     await ref.read(lockServiceProvider).reset();

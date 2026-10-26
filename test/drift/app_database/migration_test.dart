@@ -20,20 +20,20 @@ void main() {
     verifier = SchemaVerifier(GeneratedHelper());
   });
 
-  test('a fresh database matches the committed v4 schema', () async {
+  test('a fresh database matches the committed v5 schema', () async {
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(db.close);
-    final schema = await verifier.schemaAt(4);
-    await verifier.migrateAndValidate(AppDatabase(schema.newConnection()), 4);
-    // Opening the app database itself must also work at v4.
-    expect(db.schemaVersion, 4);
+    final schema = await verifier.schemaAt(5);
+    await verifier.migrateAndValidate(AppDatabase(schema.newConnection()), 5);
+    // Opening the app database itself must also work at v5.
+    expect(db.schemaVersion, 5);
     await db.customSelect('SELECT 1').get();
   });
 
   test('every committed schema version is known to the helper', () async {
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(db.close);
-    expect(GeneratedHelper.versions, containsAll([1, 2, 3, 4]));
+    expect(GeneratedHelper.versions, containsAll([1, 2, 3, 4, 5]));
     expect(GeneratedHelper.versions, contains(db.schemaVersion));
   });
 
@@ -261,6 +261,68 @@ void main() {
       );
     });
   }
+
+  // --- 010-google-account-backup (T014, data-model §2) ---
+
+  test('upgrade from v4 to v5', () async {
+    final connection = await verifier.startAt(4);
+    final db = AppDatabase(connection);
+    addTearDown(db.close);
+    await verifier.migrateAndValidate(db, 5);
+  });
+
+  test('upgrade from v4 to v5 keeps every row and adds only the '
+      'change-counter triggers', () async {
+    final schema = await verifier.schemaAt(4);
+    final raw = schema.rawDatabase;
+    _insertV1Data(raw.execute);
+    _insertV2Transactions(raw.execute);
+    _insertV3Data(raw.execute);
+    const tables = [
+      'settings',
+      'categories',
+      'accounts',
+      'transactions',
+      'recurring_rules',
+      'budgets',
+      'unlocks',
+    ];
+    List<Map<String, Object?>> snapshot(String table) => raw
+        .select('SELECT * FROM $table ORDER BY 1')
+        .map(Map<String, Object?>.of)
+        .toList();
+    final before = {for (final t in tables) t: snapshot(t)};
+    final objectsBefore = raw
+        .select("SELECT name FROM sqlite_master WHERE type != 'trigger'")
+        .map((r) => r['name'])
+        .toSet();
+
+    final db = AppDatabase(schema.newConnection());
+    addTearDown(db.close);
+    await verifier.migrateAndValidate(db, 5);
+
+    Future<List<Map<String, Object?>>> rows(String sql) async =>
+        (await db.customSelect(sql).get()).map((r) => r.data).toList();
+    for (final t in tables) {
+      expect(
+        await rows('SELECT * FROM $t ORDER BY 1'),
+        before[t],
+        reason: '$t rows must be identical after the upgrade',
+      );
+    }
+    final objectsAfter = {
+      for (final r in await rows(
+        "SELECT name FROM sqlite_master WHERE type != 'trigger'",
+      ))
+        r['name'],
+    };
+    expect(objectsAfter, objectsBefore);
+    final triggers = await rows(
+      "SELECT name FROM sqlite_master WHERE type = 'trigger'",
+    );
+    // 8 backed-up tables and settings, 3 each.
+    expect(triggers, hasLength(27));
+  });
 }
 
 /// Feature-003-shaped rows (a recurring rule, two budgets, an unlock) written

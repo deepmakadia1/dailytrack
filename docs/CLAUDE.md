@@ -54,8 +54,12 @@ The master spec is `docs/spec.md` and is the source of truth for every feature.
   the backup's rows in one transaction. Every schema change needs a Drift migration and a
   migration test.
 - User data leaves the device only through actions the user starts or schedules: Google Drive
-  backups (manual or auto) to their own account, and backup or export files they save or share.
-  Never send financial or habit data to ad, crash, or analytics SDKs.
+  backups (manual, or auto while signed in) to their own account, and backup or export files
+  they save or share. It may also leave through Android's own device backup and device transfer,
+  which the user controls in system settings. Those backup rules use an include list that covers
+  only the database file; secure storage, receipts, and everything else stay out (constitution
+  III). The PIN hash, lockout state, and backup password never leave the device. Never send
+  financial or habit data to ad, crash, or analytics SDKs.
 
 ## UI rules (spec §15)
 - Use only `AppTokens` and shared widgets from `lib/core/widgets/`. No hard-coded colors,

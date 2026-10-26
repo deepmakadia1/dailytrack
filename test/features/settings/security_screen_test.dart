@@ -7,6 +7,7 @@ import 'package:dailytrack/features/settings/presentation/screens/security_scree
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../helpers/test_app.dart';
 import '../expense/expense_test_app.dart';
 import '../lock/lock_test_app.dart';
 
@@ -44,11 +45,7 @@ void main() {
     routerOf(tester).go(Routes.more);
     await tester.pumpAndSettle();
     final row = find.byKey(const Key('settings_app_lock'));
-    await tester.scrollUntilVisible(
-      row,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await scrollSettingsTo(tester, row);
     expect(
       find.descendant(of: row, matching: find.text('Off')),
       findsOneWidget,

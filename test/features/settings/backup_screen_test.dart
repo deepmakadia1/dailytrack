@@ -5,10 +5,15 @@ import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/core/background/background_scheduler.dart';
 import 'package:dailytrack/core/backup/auto_backup_schedule.dart';
 import 'package:dailytrack/core/backup/backup_providers.dart';
+import 'package:dailytrack/core/backup/domain/backup_conflict_policy.dart';
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
+import 'package:dailytrack/core/backup/domain/backup_meta.dart';
+import 'package:dailytrack/core/backup/domain/drive_backup_result.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
+import 'package:dailytrack/core/backup/domain/safety_copy.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/share/file_sharer.dart';
+import 'package:dailytrack/features/account/presentation/screens/account_screen.dart';
 import 'package:dailytrack/features/settings/presentation/screens/backup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,6 +32,8 @@ void main() {
   late FakeFileSharer sharer;
   late FakeDriveBackupStore drive;
   late FakeBackgroundScheduler scheduler;
+  late FakeAccountAuth auth;
+  late FakeAccountRestore accountRestore;
 
   setUp(() {
     backup = FakeBackupService();
@@ -35,6 +42,7 @@ void main() {
     sharer = FakeFileSharer();
     drive = FakeDriveBackupStore();
     scheduler = FakeBackgroundScheduler();
+    auth = FakeAccountAuth();
   });
 
   Future<FakeSettingsRepository> open(
@@ -42,14 +50,20 @@ void main() {
     AppSettings initial = const AppSettings(onboardingDone: true, locale: 'en'),
     String location = Routes.backup,
     bool driveAvailable = false,
+    bool phoneHasData = false,
+    void Function()? arrange,
   }) async {
     tester.view
       ..physicalSize = const Size(412, 1800)
       ..devicePixelRatio = 1;
     addTearDown(tester.view.reset);
+    final repo = FakeSettingsRepository(initial: initial);
+    accountRestore = FakeAccountRestore(settings: repo)..hasData = phoneHasData;
+    arrange?.call();
     final settings = await pumpTestApp(
       tester,
-      settings: FakeSettingsRepository(initial: initial),
+      settings: repo,
+      accountRestore: accountRestore,
       overrides: [
         backupServiceProvider.overrideWithValue(backup),
         restoreServiceProvider.overrideWithValue(restore),
@@ -59,6 +73,7 @@ void main() {
         driveBackupStoreProvider.overrideWithValue(drive),
       ],
       background: scheduler,
+      accountAuth: auth,
     );
     routerOf(tester).go(location);
     await tester.pumpAndSettle();
@@ -372,25 +387,31 @@ void main() {
         'unavailable', (tester) async {
       await open(tester);
       expect(find.byKey(const Key('backup_drive_unavailable')), findsOneWidget);
-      expect(find.byKey(const Key('backup_connect')), findsNothing);
+      expect(find.byKey(const Key('backup_signIn')), findsNothing);
     });
 
-    testWidgets('SET-02 US2-1/3 Connect shows the account, Back up now, Auto '
-        'backup, and Disconnect', (tester) async {
+    testWidgets('SET-02 "Sign in with Google" is the shared sign-in: it '
+        'shows the account, Back up now, and Auto backup, turns Auto backup '
+        'to Daily, and makes the first backup', (tester) async {
       final settings = await open(tester, driveAvailable: true);
       expect(find.byKey(const Key('backup_now')), findsNothing);
-      await tapKey(tester, 'backup_connect');
-      expect(drive.connects, 1);
+      await tapKey(tester, 'backup_signIn');
+      expect(auth.signIns, 1);
       expect(settings.current.backupAccountEmail, 'me@example.com');
-      expect(find.text('Connected as me@example.com'), findsOneWidget);
+      expect(settings.current.accountDisplayName, 'Asha Patel');
+      expect(settings.current.autoBackupFrequency, AutoBackupFrequency.daily);
+      expect(backup.driveBackups, 1);
+      expect(find.text('Signed in. Your data is backed up.'), findsOneWidget);
+      expect(find.text('me@example.com'), findsOneWidget);
       for (final key in [
+        'backup_account',
         'backup_now',
         'backup_auto',
         'backup_wifi_only',
-        'backup_disconnect',
       ]) {
         expect(find.byKey(Key(key)), findsOneWidget, reason: key);
       }
+      expect(find.byKey(const Key('backup_disconnect')), findsNothing);
       // One primary action: Back up now; saving a file is secondary.
       expect(
         tester.widget(find.byKey(const Key('backup_save_file'))),
@@ -398,14 +419,52 @@ void main() {
       );
     });
 
-    testWidgets('SET-02 US2-2 cancelling sign-in stays disconnected with no '
-        'error', (tester) async {
-      drive.connectResult = const DriveAuthRequired();
+    testWidgets('SET-02 US2-2 cancelling sign-in changes nothing and shows '
+        'no error', (tester) async {
+      auth.signInResult = const DriveAuthRequired();
       final settings = await open(tester, driveAvailable: true);
-      await tapKey(tester, 'backup_connect');
+      await tapKey(tester, 'backup_signIn');
       expect(settings.current.backupAccountEmail, isNull);
+      expect(settings.current.autoBackupFrequency, AutoBackupFrequency.off);
+      expect(backup.driveBackups, 0);
       expect(find.byKey(const Key('backup_error')), findsNothing);
-      expect(find.byKey(const Key('backup_connect')), findsOneWidget);
+      expect(find.byKey(const Key('backup_signIn')), findsOneWidget);
+    });
+
+    testWidgets('SET-02 signing in to an account with a backup opens ACC-02 '
+        'when this phone has data, and uploads nothing', (tester) async {
+      drive.files.add(entry('theirs', BackupKind.manual, 2));
+      final settings = await open(
+        tester,
+        driveAvailable: true,
+        phoneHasData: true,
+      );
+      await tapKey(tester, 'backup_signIn');
+      expect(settings.current.backupAccountEmail, 'me@example.com');
+      expect(backup.driveBackups, 0);
+      expect(find.byKey(const Key('acc02_sheet')), findsOneWidget);
+      expect(find.byKey(const Key('acc02_close')), findsNothing);
+    });
+
+    testWidgets('SET-02 signing in to an account with a backup on a phone '
+        'with no data restores it without the choice', (tester) async {
+      drive.files.add(entry('theirs', BackupKind.manual, 2));
+      await open(tester, driveAvailable: true);
+      await tapKey(tester, 'backup_signIn');
+      expect(find.byKey(const Key('acc02_sheet')), findsNothing);
+      expect(accountRestore.applied, [('theirs', true)]);
+      expect(backup.driveBackups, 0);
+    });
+
+    testWidgets('SET-02 a failed sign-in says so', (tester) async {
+      auth.signInResult = const DriveOffline();
+      final settings = await open(tester, driveAvailable: true);
+      await tapKey(tester, 'backup_signIn');
+      expect(settings.current.backupAccountEmail, isNull);
+      expect(
+        find.text("Couldn't sign in. Check your connection and try again."),
+        findsOneWidget,
+      );
     });
 
     testWidgets('SET-02 US2-4 Back up now shows "Backed up to Google Drive"', (
@@ -414,6 +473,39 @@ void main() {
       await open(tester, initial: connected, driveAvailable: true);
       await tapKey(tester, 'backup_now');
       expect(backup.driveBackups, 1);
+      expect(find.text('Backed up to Google Drive'), findsOneWidget);
+    });
+
+    testWidgets('§16 Back up now over a newer backup from another phone '
+        'warns first; Cancel uploads nothing', (tester) async {
+      backup.conflict = const NewerFromOtherDevice(
+        BackupMeta(
+          deviceId: 'other-phone',
+          deviceName: 'Redmi Note 12',
+          appVersion: '1.0.0+7',
+          createdAt: 1792540800000,
+          kind: BackupKind.manual,
+          counts: {'expense.transactions': 4},
+          schemaVersion: 5,
+          encrypted: false,
+        ),
+      );
+      await open(tester, initial: connected, driveAvailable: true);
+      await tapKey(tester, 'backup_now');
+      expect(find.text('Back up anyway?'), findsOneWidget);
+      expect(
+        find.textContaining('A newer backup from Redmi Note 12'),
+        findsOne,
+      );
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(backup.driveBackups, 0);
+
+      await tapKey(tester, 'backup_now');
+      await tester.tap(find.text('Back up anyway'));
+      await tester.pumpAndSettle();
+      expect(backup.driveBackups, 1);
+      expect(backup.conflicts.last, ConflictMode.overwrite);
       expect(find.text('Backed up to Google Drive'), findsOneWidget);
     });
 
@@ -453,16 +545,20 @@ void main() {
       expect(find.text('Manual · Pixel 8a'), findsOneWidget);
     });
 
-    testWidgets('SET-02 an auth error in the list offers "Reconnect Google '
-        'account"', (tester) async {
+    testWidgets('token expiry: when Drive refuses the sign-in, SET-02 shows '
+        'the account signed out and says to sign in again', (tester) async {
       drive.failNext = const DriveAuthRequired();
-      await open(tester, initial: connected, driveAvailable: true);
-      expect(find.byKey(const Key('backup_drive_error')), findsOneWidget);
-      await tapKey(tester, 'backup_drive_error');
-      await tester.tap(find.text('Reconnect Google account'));
-      await tester.pumpAndSettle();
-      expect(drive.connects, 1);
-      expect(find.byKey(const Key('backup_drive_error')), findsNothing);
+      final settings = await open(
+        tester,
+        initial: connected,
+        driveAvailable: true,
+      );
+      expect(settings.current.backupAccountEmail, isNull);
+      expect(find.byKey(const Key('backup_sessionExpired')), findsOneWidget);
+      await tapKey(tester, 'backup_signIn');
+      expect(auth.signIns, 1);
+      expect(find.byKey(const Key('backup_sessionExpired')), findsNothing);
+      expect(find.byKey(const Key('backup_account')), findsOneWidget);
     });
 
     testWidgets('SET-02 US2-10 Delete asks first, then removes the backup', (
@@ -499,8 +595,75 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Replace data'));
       await tester.pumpAndSettle();
-      expect(restore.applies, 1);
+      // Through the account restore: the safety copy and FR-019b.
+      expect(accountRestore.applied, [('a', false)]);
       expect(find.text('Backup restored'), findsOneWidget);
+    });
+
+    testWidgets('ACC-02 US3-5 "Restore previous phone data" shows the copy\'s '
+        'date and counts, restores it after the usual steps, and is gone '
+        'afterwards', (tester) async {
+      await open(
+        tester,
+        initial: connected,
+        driveAvailable: true,
+        arrange: () => accountRestore.copy = SafetyCopyInfo(
+          createdAt: DateTime(2026, 10, 25, 21).toUtc().millisecondsSinceEpoch,
+          counts: const {'expense.transactions': 12},
+          fileName: 'dailytrack_backup_20261025_2100.json',
+        ),
+      );
+      expect(find.text('Restore previous phone data'), findsWidgets);
+      expect(find.textContaining('12 transactions'), findsOneWidget);
+      await tapKey(tester, 'backup_previous');
+      expect(find.byKey(const Key('restore_preview')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('restore_continue')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Replace data'));
+      await tester.pumpAndSettle();
+      expect(restore.applies, 1);
+      expect(accountRestore.copyDeletes, 1);
+      expect(find.byKey(const Key('backup_previous')), findsNothing);
+    });
+
+    testWidgets('SET-02 without a safety copy there is no "Restore previous '
+        'phone data"', (tester) async {
+      await open(tester, initial: connected, driveAvailable: true);
+      expect(find.byKey(const Key('backup_previous')), findsNothing);
+    });
+
+    testWidgets('FR-019b restoring an encrypted file turns "Encrypt backup" on '
+        'with that password; a failed restore saves nothing', (tester) async {
+      restore.onOpen = (password) => switch (password) {
+        null => const BackupNeedsPassword(),
+        'pw' => FakeAccountRestore.candidate(encrypted: true),
+        _ => const BackupWrongPassword(),
+      };
+      final settings = await open(tester);
+      Future<void> restoreFile() async {
+        await tapKey(tester, 'backup_restore_file');
+        await tester.enterText(
+          find.byKey(const Key('restore_password_field')),
+          'pw',
+        );
+        await tapKey(tester, 'restore_password_open');
+        await tester.tap(find.byKey(const Key('restore_continue')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Replace data'));
+        await tester.pumpAndSettle();
+      }
+
+      restore.applyError = const BackupStorageFull();
+      await restoreFile();
+      expect(accountRestore.remembered, isNull);
+      expect(settings.current.backupEncrypt, isFalse);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+
+      restore.applyError = null;
+      await restoreFile();
+      expect(accountRestore.remembered, 'pw');
+      expect(settings.current.backupEncrypt, isTrue);
     });
 
     testWidgets('SET-02 US3-1 Daily with Wi-Fi only schedules an unmetered '
@@ -533,31 +696,13 @@ void main() {
       );
     });
 
-    testWidgets('SET-02 US2-8 Disconnect asks first, signs out, turns auto '
-        'backup off, and keeps Drive backups', (tester) async {
-      drive.files.add(entry('keep', BackupKind.manual, 2));
-      final settings = await open(
-        tester,
-        initial: connected.copyWith(
-          autoBackupFrequency: AutoBackupFrequency.weekly,
-        ),
-        driveAvailable: true,
-      );
-      await tapKey(tester, 'backup_disconnect');
-      expect(find.text('Disconnect Google account?'), findsOneWidget);
-      await tester.tap(
-        find.descendant(
-          of: find.byType(AlertDialog),
-          matching: find.byType(FilledButton),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(drive.disconnects, 1);
-      expect(settings.current.backupAccountEmail, isNull);
-      expect(settings.current.autoBackupFrequency, AutoBackupFrequency.off);
-      expect(scheduler.cancelled, contains(autoBackupTaskName));
-      expect(drive.files, hasLength(1));
-      expect(find.byKey(const Key('backup_connect')), findsOneWidget);
+    testWidgets('SET-02 signed in, the account row opens ACC-01; sign-out '
+        'lives there', (tester) async {
+      await open(tester, initial: connected, driveAvailable: true);
+      expect(find.byKey(const Key('backup_disconnect')), findsNothing);
+      await tapKey(tester, 'backup_account');
+      expect(find.byType(AccountScreen), findsOneWidget);
+      expect(find.byKey(const Key('acc01.signOut')), findsOneWidget);
     });
   });
 }

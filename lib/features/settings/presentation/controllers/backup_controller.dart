@@ -1,11 +1,20 @@
 import 'dart:async';
+import 'dart:typed_data';
 
+import 'package:dailytrack/core/account/account_providers.dart';
+import 'package:dailytrack/core/account/account_restore.dart';
+import 'package:dailytrack/core/account/account_sign_in.dart';
+import 'package:dailytrack/core/account/domain/account.dart';
 import 'package:dailytrack/core/background/background_providers.dart';
 import 'package:dailytrack/core/backup/auto_backup_schedule.dart';
 import 'package:dailytrack/core/backup/backup_providers.dart';
 import 'package:dailytrack/core/backup/backup_service.dart';
+import 'package:dailytrack/core/backup/domain/backup_errors.dart';
+import 'package:dailytrack/core/backup/domain/drive_backup_result.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
+import 'package:dailytrack/core/backup/domain/safety_copy.dart';
 import 'package:dailytrack/core/backup/presentation/backup_summaries.dart';
+import 'package:dailytrack/core/backup/presentation/restore_flow.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
@@ -33,10 +42,17 @@ abstract class BackupState with _$BackupState {
     BackupLocation? lastBackupLocation,
     int? lastBackupSizeBytes,
 
-    /// The connected Google account, or null.
+    /// The signed-in Google account, or null (also when this run's silent
+    /// sign-in failed; feature 010 research R2).
     String? accountEmail,
 
-    /// The Drive backups; null while no account is connected.
+    /// Signed out because the Google sign-in expired (research R2).
+    @Default(false) bool sessionExpired,
+
+    /// The 7-day copy of the data a restore replaced (FR-019a).
+    SafetyCopyInfo? safetyCopy,
+
+    /// The Drive backups; null while signed out.
     AsyncValue<List<DriveBackupEntry>>? drive,
 
     /// True while a backup file is being saved.
@@ -52,11 +68,27 @@ abstract class BackupState with _$BackupState {
 class BackupController extends _$BackupController {
   @override
   Future<BackupState> build() async {
-    final s = await ref.watch(appSettingsProvider.future);
+    final settings = ref.watch(appSettingsProvider.future);
+    // Rebuilds when this run's silent sign-in result changes.
+    ref.watch(accountStateProvider);
     final available = ref.watch(driveAvailableProvider);
-    final connected = available && s.backupAccountEmail != null;
+    final s = await settings;
+    final account = ref.read(accountServiceProvider).stateOf(s);
+    final connected = available && account is SignedIn && account.verified;
+    SafetyCopyInfo? safetyCopy;
+    try {
+      safetyCopy = await ref.read(accountRestoreProvider).safetyCopy();
+    } on Object {
+      safetyCopy = null;
+    }
+    // Settings change often (every backup writes several keys); the Drive
+    // list is read again only for a different account.
+    final previous = state.value;
+    final kept = connected && previous?.accountEmail == s.backupAccountEmail
+        ? previous?.drive
+        : null;
     // After build returns, so the list lands on the new state.
-    if (connected) unawaited(Future<void>(refreshDrive));
+    if (connected && kept == null) unawaited(Future<void>(refreshDrive));
     return BackupState(
       lastBackupAt: s.lastBackupAt,
       lastBackupLocation: s.lastBackupLocation,
@@ -67,8 +99,53 @@ class BackupController extends _$BackupController {
       accountEmail: connected ? s.backupAccountEmail : null,
       autoFrequency: s.autoBackupFrequency,
       wifiOnly: s.autoBackupWifiOnly,
-      drive: connected ? const AsyncLoading() : null,
+      drive: connected ? kept ?? const AsyncLoading() : null,
+      sessionExpired: account is SignedOut && account.expired,
+      safetyCopy: safetyCopy,
     );
+  }
+
+  /// Drive calls made on this screen: an expired sign-in signs the account
+  /// out (research R2).
+  Future<T> _drive<T>(Future<T> Function() body) =>
+      ref.read(accountServiceProvider).guardAuth(body);
+
+  /// A Drive backup through the account restore: the safety copy first,
+  /// then the account's bookkeeping and FR-019b (US4 scenario 7).
+  RestoreApply applyFromDrive(DriveBackupEntry entry) =>
+      (candidate, password) async {
+        final result = await ref
+            .read(accountRestoreProvider)
+            .apply(
+              OpenedBackup(candidate, password: password),
+              entry: entry,
+              fromEmptyPhone: false,
+            );
+        ref.invalidateSelf();
+        return switch (result) {
+          Restored(:final outcome) => outcome,
+          SafetyCopyFailed() => throw const BackupStorageFull(),
+        };
+      };
+
+  /// A local file: keeps "Encrypt backup" on with the password that opened
+  /// an encrypted one (FR-019b).
+  RestoreApply applyFromFile() => (candidate, password) async {
+    final outcome = await ref.read(restoreServiceProvider).apply(candidate);
+    if (candidate.preview.encrypted && password != null) {
+      await ref.read(accountRestoreProvider).rememberEncryption(password);
+    }
+    return outcome;
+  };
+
+  /// "Restore previous phone data": the safety copy's bytes.
+  Future<Uint8List?> readSafetyCopy() =>
+      ref.read(accountRestoreProvider).readSafetyCopy();
+
+  /// After the safety copy was restored, it is gone.
+  Future<void> safetyCopyRestored() async {
+    await ref.read(accountRestoreProvider).deleteSafetyCopy();
+    ref.invalidateSelf();
   }
 
   /// Error state "Try again".
@@ -115,43 +192,39 @@ class BackupController extends _$BackupController {
 
   // ---- Google Drive (US2, US3) ------------------------------------------
 
-  /// Interactive sign-in with the `drive.appdata` scope only (FR-014).
-  /// Throws `DriveAuthRequired` when the user cancels.
-  Future<void> connect() async {
-    final email = await ref.read(driveBackupStoreProvider).connect();
-    await ref.read(settingsRepositoryProvider).setBackupAccountEmail(email);
-    await _syncSchedule();
-  }
-
-  /// Signs out, turns auto backup off, and keeps the Drive backups
-  /// (FR-015).
-  Future<void> disconnect() async {
-    try {
-      await ref.read(driveBackupStoreProvider).disconnect();
-    } on Object {
-      // Forgetting the account locally is enough to stop backups.
-    }
-    final settings = ref.read(settingsRepositoryProvider);
-    final s = await settings.load();
-    await settings.setAutoBackup(
-      frequency: AutoBackupFrequency.off,
-      wifiOnly: s.autoBackupWifiOnly,
-    );
-    await settings.setBackupAccountEmail(null);
-    await _syncSchedule();
-  }
-
-  /// "Back up now" (manual; never pruned). Throws a `BackupFailure`.
-  Future<void> backUpNow() async {
+  /// "Sign in with Google", the same sign-in as ACC-01 (spec SET-02,
+  /// feature 010 research R1). Throws a `BackupFailure` when signing in
+  /// fails. Signing out is in ACC-01.
+  Future<SignInOutcome> signIn() async {
     _update((s) => s.copyWith(uploading: true));
     try {
-      await ref
-          .read(backupServiceProvider)
-          .backupToDrive(kind: BackupKind.manual);
+      return await ref.read(accountSignInProvider).run();
+    } finally {
+      _update((s) => s.copyWith(uploading: false));
+      await refreshDrive();
+    }
+  }
+
+  /// "Back up now" (manual; never rotated) with the conflict rule;
+  /// [overwrite] is "Back up anyway" after the warning. Throws a
+  /// `BackupFailure`.
+  Future<DriveBackupResult> backUpNow({bool overwrite = false}) async {
+    _update((s) => s.copyWith(uploading: true));
+    final DriveBackupResult result;
+    try {
+      result = await _drive(
+        () => ref
+            .read(backupServiceProvider)
+            .backupToDrive(
+              kind: BackupKind.manual,
+              conflict: overwrite ? ConflictMode.overwrite : ConflictMode.ask,
+            ),
+      );
     } finally {
       _update((s) => s.copyWith(uploading: false));
     }
-    await refreshDrive();
+    if (result is Uploaded) await refreshDrive();
+    return result;
   }
 
   /// Reloads the Drive list (FR-016).
@@ -159,14 +232,14 @@ class BackupController extends _$BackupController {
     if (state.value?.accountEmail == null) return;
     _update((s) => s.copyWith(drive: const AsyncLoading()));
     final result = await AsyncValue.guard(
-      ref.read(driveBackupStoreProvider).list,
+      () => _drive(ref.read(driveBackupStoreProvider).list),
     );
     _update((s) => s.copyWith(drive: result));
   }
 
   /// Deletes one Drive backup after the screen's confirmation (FR-016).
   Future<void> deleteBackup(String fileId) async {
-    await ref.read(driveBackupStoreProvider).delete(fileId);
+    await _drive(() => ref.read(driveBackupStoreProvider).delete(fileId));
     await refreshDrive();
   }
 

@@ -3,6 +3,691 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
+class $AccountsTable extends Accounts
+    with TableInfo<$AccountsTable, AccountRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AccountsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    check: () => ComparableExpr(name.length).isBetweenValues(1, 40),
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 40,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<AccountType, int> type =
+      GeneratedColumn<int>(
+        'type',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<AccountType>($AccountsTable.$convertertype);
+  static const VerificationMeta _openingBalanceMinorMeta =
+      const VerificationMeta('openingBalanceMinor');
+  @override
+  late final GeneratedColumn<int> openingBalanceMinor = GeneratedColumn<int>(
+    'opening_balance_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _iconKeyMeta = const VerificationMeta(
+    'iconKey',
+  );
+  @override
+  late final GeneratedColumn<String> iconKey = GeneratedColumn<String>(
+    'icon_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _colorHexMeta = const VerificationMeta(
+    'colorHex',
+  );
+  @override
+  late final GeneratedColumn<String> colorHex = GeneratedColumn<String>(
+    'color_hex',
+    aliasedName,
+    false,
+    check: () => StringExpressionOperators(colorHex).like('#%'),
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 7,
+      maxTextLength: 7,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isArchivedMeta = const VerificationMeta(
+    'isArchived',
+  );
+  @override
+  late final GeneratedColumn<bool> isArchived = GeneratedColumn<bool>(
+    'is_archived',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_archived" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    type,
+    openingBalanceMinor,
+    iconKey,
+    colorHex,
+    isArchived,
+    sortOrder,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'accounts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AccountRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('opening_balance_minor')) {
+      context.handle(
+        _openingBalanceMinorMeta,
+        openingBalanceMinor.isAcceptableOrUnknown(
+          data['opening_balance_minor']!,
+          _openingBalanceMinorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('icon_key')) {
+      context.handle(
+        _iconKeyMeta,
+        iconKey.isAcceptableOrUnknown(data['icon_key']!, _iconKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_iconKeyMeta);
+    }
+    if (data.containsKey('color_hex')) {
+      context.handle(
+        _colorHexMeta,
+        colorHex.isAcceptableOrUnknown(data['color_hex']!, _colorHexMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_colorHexMeta);
+    }
+    if (data.containsKey('is_archived')) {
+      context.handle(
+        _isArchivedMeta,
+        isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sortOrderMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AccountRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AccountRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      type: $AccountsTable.$convertertype.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}type'],
+        )!,
+      ),
+      openingBalanceMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}opening_balance_minor'],
+      )!,
+      iconKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}icon_key'],
+      )!,
+      colorHex: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color_hex'],
+      )!,
+      isArchived: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_archived'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}deleted_at'],
+      ),
+    );
+  }
+
+  @override
+  $AccountsTable createAlias(String alias) {
+    return $AccountsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<AccountType, int, int> $convertertype =
+      const EnumIndexConverter<AccountType>(AccountType.values);
+}
+
+class AccountRow extends DataClass implements Insertable<AccountRow> {
+  /// UUID v4.
+  final String id;
+
+  /// l10n key for the seeded Cash account (`expense_account_cash`).
+  final String name;
+  final AccountType type;
+
+  /// Minor units (paise). Never a double.
+  final int openingBalanceMinor;
+  final String iconKey;
+  final String colorHex;
+  final bool isArchived;
+  final int sortOrder;
+
+  /// UTC epoch milliseconds.
+  final int createdAt;
+  final int updatedAt;
+
+  /// Soft delete (Constitution III).
+  final int? deletedAt;
+  const AccountRow({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.openingBalanceMinor,
+    required this.iconKey,
+    required this.colorHex,
+    required this.isArchived,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    {
+      map['type'] = Variable<int>($AccountsTable.$convertertype.toSql(type));
+    }
+    map['opening_balance_minor'] = Variable<int>(openingBalanceMinor);
+    map['icon_key'] = Variable<String>(iconKey);
+    map['color_hex'] = Variable<String>(colorHex);
+    map['is_archived'] = Variable<bool>(isArchived);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    return map;
+  }
+
+  AccountsCompanion toCompanion(bool nullToAbsent) {
+    return AccountsCompanion(
+      id: Value(id),
+      name: Value(name),
+      type: Value(type),
+      openingBalanceMinor: Value(openingBalanceMinor),
+      iconKey: Value(iconKey),
+      colorHex: Value(colorHex),
+      isArchived: Value(isArchived),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory AccountRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AccountRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      type: $AccountsTable.$convertertype.fromJson(
+        serializer.fromJson<int>(json['type']),
+      ),
+      openingBalanceMinor: serializer.fromJson<int>(
+        json['openingBalanceMinor'],
+      ),
+      iconKey: serializer.fromJson<String>(json['iconKey']),
+      colorHex: serializer.fromJson<String>(json['colorHex']),
+      isArchived: serializer.fromJson<bool>(json['isArchived']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'type': serializer.toJson<int>(
+        $AccountsTable.$convertertype.toJson(type),
+      ),
+      'openingBalanceMinor': serializer.toJson<int>(openingBalanceMinor),
+      'iconKey': serializer.toJson<String>(iconKey),
+      'colorHex': serializer.toJson<String>(colorHex),
+      'isArchived': serializer.toJson<bool>(isArchived),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+    };
+  }
+
+  AccountRow copyWith({
+    String? id,
+    String? name,
+    AccountType? type,
+    int? openingBalanceMinor,
+    String? iconKey,
+    String? colorHex,
+    bool? isArchived,
+    int? sortOrder,
+    int? createdAt,
+    int? updatedAt,
+    Value<int?> deletedAt = const Value.absent(),
+  }) => AccountRow(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    type: type ?? this.type,
+    openingBalanceMinor: openingBalanceMinor ?? this.openingBalanceMinor,
+    iconKey: iconKey ?? this.iconKey,
+    colorHex: colorHex ?? this.colorHex,
+    isArchived: isArchived ?? this.isArchived,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  AccountRow copyWithCompanion(AccountsCompanion data) {
+    return AccountRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      type: data.type.present ? data.type.value : this.type,
+      openingBalanceMinor: data.openingBalanceMinor.present
+          ? data.openingBalanceMinor.value
+          : this.openingBalanceMinor,
+      iconKey: data.iconKey.present ? data.iconKey.value : this.iconKey,
+      colorHex: data.colorHex.present ? data.colorHex.value : this.colorHex,
+      isArchived: data.isArchived.present
+          ? data.isArchived.value
+          : this.isArchived,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AccountRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('openingBalanceMinor: $openingBalanceMinor, ')
+          ..write('iconKey: $iconKey, ')
+          ..write('colorHex: $colorHex, ')
+          ..write('isArchived: $isArchived, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    type,
+    openingBalanceMinor,
+    iconKey,
+    colorHex,
+    isArchived,
+    sortOrder,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AccountRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.type == this.type &&
+          other.openingBalanceMinor == this.openingBalanceMinor &&
+          other.iconKey == this.iconKey &&
+          other.colorHex == this.colorHex &&
+          other.isArchived == this.isArchived &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt);
+}
+
+class AccountsCompanion extends UpdateCompanion<AccountRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<AccountType> type;
+  final Value<int> openingBalanceMinor;
+  final Value<String> iconKey;
+  final Value<String> colorHex;
+  final Value<bool> isArchived;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<int> rowid;
+  const AccountsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.type = const Value.absent(),
+    this.openingBalanceMinor = const Value.absent(),
+    this.iconKey = const Value.absent(),
+    this.colorHex = const Value.absent(),
+    this.isArchived = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AccountsCompanion.insert({
+    required String id,
+    required String name,
+    required AccountType type,
+    this.openingBalanceMinor = const Value.absent(),
+    required String iconKey,
+    required String colorHex,
+    this.isArchived = const Value.absent(),
+    required int sortOrder,
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       type = Value(type),
+       iconKey = Value(iconKey),
+       colorHex = Value(colorHex),
+       sortOrder = Value(sortOrder),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<AccountRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<int>? type,
+    Expression<int>? openingBalanceMinor,
+    Expression<String>? iconKey,
+    Expression<String>? colorHex,
+    Expression<bool>? isArchived,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (type != null) 'type': type,
+      if (openingBalanceMinor != null)
+        'opening_balance_minor': openingBalanceMinor,
+      if (iconKey != null) 'icon_key': iconKey,
+      if (colorHex != null) 'color_hex': colorHex,
+      if (isArchived != null) 'is_archived': isArchived,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AccountsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<AccountType>? type,
+    Value<int>? openingBalanceMinor,
+    Value<String>? iconKey,
+    Value<String>? colorHex,
+    Value<bool>? isArchived,
+    Value<int>? sortOrder,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int?>? deletedAt,
+    Value<int>? rowid,
+  }) {
+    return AccountsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      openingBalanceMinor: openingBalanceMinor ?? this.openingBalanceMinor,
+      iconKey: iconKey ?? this.iconKey,
+      colorHex: colorHex ?? this.colorHex,
+      isArchived: isArchived ?? this.isArchived,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<int>(
+        $AccountsTable.$convertertype.toSql(type.value),
+      );
+    }
+    if (openingBalanceMinor.present) {
+      map['opening_balance_minor'] = Variable<int>(openingBalanceMinor.value);
+    }
+    if (iconKey.present) {
+      map['icon_key'] = Variable<String>(iconKey.value);
+    }
+    if (colorHex.present) {
+      map['color_hex'] = Variable<String>(colorHex.value);
+    }
+    if (isArchived.present) {
+      map['is_archived'] = Variable<bool>(isArchived.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AccountsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('openingBalanceMinor: $openingBalanceMinor, ')
+          ..write('iconKey: $iconKey, ')
+          ..write('colorHex: $colorHex, ')
+          ..write('isArchived: $isArchived, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $SettingsTable extends Settings
     with TableInfo<$SettingsTable, SettingRow> {
   @override
@@ -939,691 +1624,6 @@ class CategoriesCompanion extends UpdateCompanion<CategoryRow> {
           ..write('iconKey: $iconKey, ')
           ..write('colorHex: $colorHex, ')
           ..write('isDefault: $isDefault, ')
-          ..write('isArchived: $isArchived, ')
-          ..write('sortOrder: $sortOrder, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('deletedAt: $deletedAt, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $AccountsTable extends Accounts
-    with TableInfo<$AccountsTable, AccountRow> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $AccountsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-    'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-    'name',
-    aliasedName,
-    false,
-    check: () => ComparableExpr(name.length).isBetweenValues(1, 40),
-    additionalChecks: GeneratedColumn.checkTextLength(
-      minTextLength: 1,
-      maxTextLength: 40,
-    ),
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  @override
-  late final GeneratedColumnWithTypeConverter<AccountType, int> type =
-      GeneratedColumn<int>(
-        'type',
-        aliasedName,
-        false,
-        type: DriftSqlType.int,
-        requiredDuringInsert: true,
-      ).withConverter<AccountType>($AccountsTable.$convertertype);
-  static const VerificationMeta _openingBalanceMinorMeta =
-      const VerificationMeta('openingBalanceMinor');
-  @override
-  late final GeneratedColumn<int> openingBalanceMinor = GeneratedColumn<int>(
-    'opening_balance_minor',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
-  static const VerificationMeta _iconKeyMeta = const VerificationMeta(
-    'iconKey',
-  );
-  @override
-  late final GeneratedColumn<String> iconKey = GeneratedColumn<String>(
-    'icon_key',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _colorHexMeta = const VerificationMeta(
-    'colorHex',
-  );
-  @override
-  late final GeneratedColumn<String> colorHex = GeneratedColumn<String>(
-    'color_hex',
-    aliasedName,
-    false,
-    check: () => StringExpressionOperators(colorHex).like('#%'),
-    additionalChecks: GeneratedColumn.checkTextLength(
-      minTextLength: 7,
-      maxTextLength: 7,
-    ),
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _isArchivedMeta = const VerificationMeta(
-    'isArchived',
-  );
-  @override
-  late final GeneratedColumn<bool> isArchived = GeneratedColumn<bool>(
-    'is_archived',
-    aliasedName,
-    false,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_archived" IN (0, 1))',
-    ),
-    defaultValue: const Constant(false),
-  );
-  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
-    'sortOrder',
-  );
-  @override
-  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
-    'sort_order',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
-    'updated_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
-    'deletedAt',
-  );
-  @override
-  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
-    'deleted_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    name,
-    type,
-    openingBalanceMinor,
-    iconKey,
-    colorHex,
-    isArchived,
-    sortOrder,
-    createdAt,
-    updatedAt,
-    deletedAt,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'accounts';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<AccountRow> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('opening_balance_minor')) {
-      context.handle(
-        _openingBalanceMinorMeta,
-        openingBalanceMinor.isAcceptableOrUnknown(
-          data['opening_balance_minor']!,
-          _openingBalanceMinorMeta,
-        ),
-      );
-    }
-    if (data.containsKey('icon_key')) {
-      context.handle(
-        _iconKeyMeta,
-        iconKey.isAcceptableOrUnknown(data['icon_key']!, _iconKeyMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_iconKeyMeta);
-    }
-    if (data.containsKey('color_hex')) {
-      context.handle(
-        _colorHexMeta,
-        colorHex.isAcceptableOrUnknown(data['color_hex']!, _colorHexMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_colorHexMeta);
-    }
-    if (data.containsKey('is_archived')) {
-      context.handle(
-        _isArchivedMeta,
-        isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta),
-      );
-    }
-    if (data.containsKey('sort_order')) {
-      context.handle(
-        _sortOrderMeta,
-        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_sortOrderMeta);
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_updatedAtMeta);
-    }
-    if (data.containsKey('deleted_at')) {
-      context.handle(
-        _deletedAtMeta,
-        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  AccountRow map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return AccountRow(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      )!,
-      type: $AccountsTable.$convertertype.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.int,
-          data['${effectivePrefix}type'],
-        )!,
-      ),
-      openingBalanceMinor: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}opening_balance_minor'],
-      )!,
-      iconKey: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}icon_key'],
-      )!,
-      colorHex: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}color_hex'],
-      )!,
-      isArchived: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_archived'],
-      )!,
-      sortOrder: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}sort_order'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}created_at'],
-      )!,
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}updated_at'],
-      )!,
-      deletedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}deleted_at'],
-      ),
-    );
-  }
-
-  @override
-  $AccountsTable createAlias(String alias) {
-    return $AccountsTable(attachedDatabase, alias);
-  }
-
-  static JsonTypeConverter2<AccountType, int, int> $convertertype =
-      const EnumIndexConverter<AccountType>(AccountType.values);
-}
-
-class AccountRow extends DataClass implements Insertable<AccountRow> {
-  /// UUID v4.
-  final String id;
-
-  /// l10n key for the seeded Cash account (`expense_account_cash`).
-  final String name;
-  final AccountType type;
-
-  /// Minor units (paise). Never a double.
-  final int openingBalanceMinor;
-  final String iconKey;
-  final String colorHex;
-  final bool isArchived;
-  final int sortOrder;
-
-  /// UTC epoch milliseconds.
-  final int createdAt;
-  final int updatedAt;
-
-  /// Soft delete (Constitution III).
-  final int? deletedAt;
-  const AccountRow({
-    required this.id,
-    required this.name,
-    required this.type,
-    required this.openingBalanceMinor,
-    required this.iconKey,
-    required this.colorHex,
-    required this.isArchived,
-    required this.sortOrder,
-    required this.createdAt,
-    required this.updatedAt,
-    this.deletedAt,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['name'] = Variable<String>(name);
-    {
-      map['type'] = Variable<int>($AccountsTable.$convertertype.toSql(type));
-    }
-    map['opening_balance_minor'] = Variable<int>(openingBalanceMinor);
-    map['icon_key'] = Variable<String>(iconKey);
-    map['color_hex'] = Variable<String>(colorHex);
-    map['is_archived'] = Variable<bool>(isArchived);
-    map['sort_order'] = Variable<int>(sortOrder);
-    map['created_at'] = Variable<int>(createdAt);
-    map['updated_at'] = Variable<int>(updatedAt);
-    if (!nullToAbsent || deletedAt != null) {
-      map['deleted_at'] = Variable<int>(deletedAt);
-    }
-    return map;
-  }
-
-  AccountsCompanion toCompanion(bool nullToAbsent) {
-    return AccountsCompanion(
-      id: Value(id),
-      name: Value(name),
-      type: Value(type),
-      openingBalanceMinor: Value(openingBalanceMinor),
-      iconKey: Value(iconKey),
-      colorHex: Value(colorHex),
-      isArchived: Value(isArchived),
-      sortOrder: Value(sortOrder),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
-      deletedAt: deletedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(deletedAt),
-    );
-  }
-
-  factory AccountRow.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return AccountRow(
-      id: serializer.fromJson<String>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      type: $AccountsTable.$convertertype.fromJson(
-        serializer.fromJson<int>(json['type']),
-      ),
-      openingBalanceMinor: serializer.fromJson<int>(
-        json['openingBalanceMinor'],
-      ),
-      iconKey: serializer.fromJson<String>(json['iconKey']),
-      colorHex: serializer.fromJson<String>(json['colorHex']),
-      isArchived: serializer.fromJson<bool>(json['isArchived']),
-      sortOrder: serializer.fromJson<int>(json['sortOrder']),
-      createdAt: serializer.fromJson<int>(json['createdAt']),
-      updatedAt: serializer.fromJson<int>(json['updatedAt']),
-      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'name': serializer.toJson<String>(name),
-      'type': serializer.toJson<int>(
-        $AccountsTable.$convertertype.toJson(type),
-      ),
-      'openingBalanceMinor': serializer.toJson<int>(openingBalanceMinor),
-      'iconKey': serializer.toJson<String>(iconKey),
-      'colorHex': serializer.toJson<String>(colorHex),
-      'isArchived': serializer.toJson<bool>(isArchived),
-      'sortOrder': serializer.toJson<int>(sortOrder),
-      'createdAt': serializer.toJson<int>(createdAt),
-      'updatedAt': serializer.toJson<int>(updatedAt),
-      'deletedAt': serializer.toJson<int?>(deletedAt),
-    };
-  }
-
-  AccountRow copyWith({
-    String? id,
-    String? name,
-    AccountType? type,
-    int? openingBalanceMinor,
-    String? iconKey,
-    String? colorHex,
-    bool? isArchived,
-    int? sortOrder,
-    int? createdAt,
-    int? updatedAt,
-    Value<int?> deletedAt = const Value.absent(),
-  }) => AccountRow(
-    id: id ?? this.id,
-    name: name ?? this.name,
-    type: type ?? this.type,
-    openingBalanceMinor: openingBalanceMinor ?? this.openingBalanceMinor,
-    iconKey: iconKey ?? this.iconKey,
-    colorHex: colorHex ?? this.colorHex,
-    isArchived: isArchived ?? this.isArchived,
-    sortOrder: sortOrder ?? this.sortOrder,
-    createdAt: createdAt ?? this.createdAt,
-    updatedAt: updatedAt ?? this.updatedAt,
-    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
-  );
-  AccountRow copyWithCompanion(AccountsCompanion data) {
-    return AccountRow(
-      id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
-      type: data.type.present ? data.type.value : this.type,
-      openingBalanceMinor: data.openingBalanceMinor.present
-          ? data.openingBalanceMinor.value
-          : this.openingBalanceMinor,
-      iconKey: data.iconKey.present ? data.iconKey.value : this.iconKey,
-      colorHex: data.colorHex.present ? data.colorHex.value : this.colorHex,
-      isArchived: data.isArchived.present
-          ? data.isArchived.value
-          : this.isArchived,
-      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('AccountRow(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('type: $type, ')
-          ..write('openingBalanceMinor: $openingBalanceMinor, ')
-          ..write('iconKey: $iconKey, ')
-          ..write('colorHex: $colorHex, ')
-          ..write('isArchived: $isArchived, ')
-          ..write('sortOrder: $sortOrder, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('deletedAt: $deletedAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    id,
-    name,
-    type,
-    openingBalanceMinor,
-    iconKey,
-    colorHex,
-    isArchived,
-    sortOrder,
-    createdAt,
-    updatedAt,
-    deletedAt,
-  );
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is AccountRow &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.type == this.type &&
-          other.openingBalanceMinor == this.openingBalanceMinor &&
-          other.iconKey == this.iconKey &&
-          other.colorHex == this.colorHex &&
-          other.isArchived == this.isArchived &&
-          other.sortOrder == this.sortOrder &&
-          other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt &&
-          other.deletedAt == this.deletedAt);
-}
-
-class AccountsCompanion extends UpdateCompanion<AccountRow> {
-  final Value<String> id;
-  final Value<String> name;
-  final Value<AccountType> type;
-  final Value<int> openingBalanceMinor;
-  final Value<String> iconKey;
-  final Value<String> colorHex;
-  final Value<bool> isArchived;
-  final Value<int> sortOrder;
-  final Value<int> createdAt;
-  final Value<int> updatedAt;
-  final Value<int?> deletedAt;
-  final Value<int> rowid;
-  const AccountsCompanion({
-    this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.type = const Value.absent(),
-    this.openingBalanceMinor = const Value.absent(),
-    this.iconKey = const Value.absent(),
-    this.colorHex = const Value.absent(),
-    this.isArchived = const Value.absent(),
-    this.sortOrder = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.deletedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  AccountsCompanion.insert({
-    required String id,
-    required String name,
-    required AccountType type,
-    this.openingBalanceMinor = const Value.absent(),
-    required String iconKey,
-    required String colorHex,
-    this.isArchived = const Value.absent(),
-    required int sortOrder,
-    required int createdAt,
-    required int updatedAt,
-    this.deletedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       name = Value(name),
-       type = Value(type),
-       iconKey = Value(iconKey),
-       colorHex = Value(colorHex),
-       sortOrder = Value(sortOrder),
-       createdAt = Value(createdAt),
-       updatedAt = Value(updatedAt);
-  static Insertable<AccountRow> custom({
-    Expression<String>? id,
-    Expression<String>? name,
-    Expression<int>? type,
-    Expression<int>? openingBalanceMinor,
-    Expression<String>? iconKey,
-    Expression<String>? colorHex,
-    Expression<bool>? isArchived,
-    Expression<int>? sortOrder,
-    Expression<int>? createdAt,
-    Expression<int>? updatedAt,
-    Expression<int>? deletedAt,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (type != null) 'type': type,
-      if (openingBalanceMinor != null)
-        'opening_balance_minor': openingBalanceMinor,
-      if (iconKey != null) 'icon_key': iconKey,
-      if (colorHex != null) 'color_hex': colorHex,
-      if (isArchived != null) 'is_archived': isArchived,
-      if (sortOrder != null) 'sort_order': sortOrder,
-      if (createdAt != null) 'created_at': createdAt,
-      if (updatedAt != null) 'updated_at': updatedAt,
-      if (deletedAt != null) 'deleted_at': deletedAt,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  AccountsCompanion copyWith({
-    Value<String>? id,
-    Value<String>? name,
-    Value<AccountType>? type,
-    Value<int>? openingBalanceMinor,
-    Value<String>? iconKey,
-    Value<String>? colorHex,
-    Value<bool>? isArchived,
-    Value<int>? sortOrder,
-    Value<int>? createdAt,
-    Value<int>? updatedAt,
-    Value<int?>? deletedAt,
-    Value<int>? rowid,
-  }) {
-    return AccountsCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      type: type ?? this.type,
-      openingBalanceMinor: openingBalanceMinor ?? this.openingBalanceMinor,
-      iconKey: iconKey ?? this.iconKey,
-      colorHex: colorHex ?? this.colorHex,
-      isArchived: isArchived ?? this.isArchived,
-      sortOrder: sortOrder ?? this.sortOrder,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      deletedAt: deletedAt ?? this.deletedAt,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (type.present) {
-      map['type'] = Variable<int>(
-        $AccountsTable.$convertertype.toSql(type.value),
-      );
-    }
-    if (openingBalanceMinor.present) {
-      map['opening_balance_minor'] = Variable<int>(openingBalanceMinor.value);
-    }
-    if (iconKey.present) {
-      map['icon_key'] = Variable<String>(iconKey.value);
-    }
-    if (colorHex.present) {
-      map['color_hex'] = Variable<String>(colorHex.value);
-    }
-    if (isArchived.present) {
-      map['is_archived'] = Variable<bool>(isArchived.value);
-    }
-    if (sortOrder.present) {
-      map['sort_order'] = Variable<int>(sortOrder.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<int>(createdAt.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<int>(updatedAt.value);
-    }
-    if (deletedAt.present) {
-      map['deleted_at'] = Variable<int>(deletedAt.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('AccountsCompanion(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('type: $type, ')
-          ..write('openingBalanceMinor: $openingBalanceMinor, ')
-          ..write('iconKey: $iconKey, ')
-          ..write('colorHex: $colorHex, ')
           ..write('isArchived: $isArchived, ')
           ..write('sortOrder: $sortOrder, ')
           ..write('createdAt: $createdAt, ')
@@ -4177,488 +4177,6 @@ class BudgetsCompanion extends UpdateCompanion<BudgetRow> {
   }
 }
 
-class $UnlocksTable extends Unlocks with TableInfo<$UnlocksTable, UnlockRow> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $UnlocksTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-    'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _featureKeyMeta = const VerificationMeta(
-    'featureKey',
-  );
-  @override
-  late final GeneratedColumn<String> featureKey = GeneratedColumn<String>(
-    'feature_key',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _expiresAtMeta = const VerificationMeta(
-    'expiresAt',
-  );
-  @override
-  late final GeneratedColumn<int> expiresAt = GeneratedColumn<int>(
-    'expires_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  @override
-  late final GeneratedColumnWithTypeConverter<UnlockSource, int> source =
-      GeneratedColumn<int>(
-        'source',
-        aliasedName,
-        false,
-        type: DriftSqlType.int,
-        requiredDuringInsert: true,
-      ).withConverter<UnlockSource>($UnlocksTable.$convertersource);
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
-    'updated_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
-    'deletedAt',
-  );
-  @override
-  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
-    'deleted_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    featureKey,
-    expiresAt,
-    source,
-    createdAt,
-    updatedAt,
-    deletedAt,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'unlocks';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<UnlockRow> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('feature_key')) {
-      context.handle(
-        _featureKeyMeta,
-        featureKey.isAcceptableOrUnknown(data['feature_key']!, _featureKeyMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_featureKeyMeta);
-    }
-    if (data.containsKey('expires_at')) {
-      context.handle(
-        _expiresAtMeta,
-        expiresAt.isAcceptableOrUnknown(data['expires_at']!, _expiresAtMeta),
-      );
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_updatedAtMeta);
-    }
-    if (data.containsKey('deleted_at')) {
-      context.handle(
-        _deletedAtMeta,
-        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  UnlockRow map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return UnlockRow(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      featureKey: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}feature_key'],
-      )!,
-      expiresAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}expires_at'],
-      ),
-      source: $UnlocksTable.$convertersource.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.int,
-          data['${effectivePrefix}source'],
-        )!,
-      ),
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}created_at'],
-      )!,
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}updated_at'],
-      )!,
-      deletedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}deleted_at'],
-      ),
-    );
-  }
-
-  @override
-  $UnlocksTable createAlias(String alias) {
-    return $UnlocksTable(attachedDatabase, alias);
-  }
-
-  static JsonTypeConverter2<UnlockSource, int, int> $convertersource =
-      const EnumIndexConverter<UnlockSource>(UnlockSource.values);
-}
-
-class UnlockRow extends DataClass implements Insertable<UnlockRow> {
-  /// UUID v4.
-  final String id;
-
-  /// `FeatureKey.storageKey`, e.g. `advancedReports` or
-  /// `premiumTheme_saffron` (research R13).
-  final String featureKey;
-
-  /// UTC epoch milliseconds. NULL = permanent.
-  final int? expiresAt;
-  final UnlockSource source;
-
-  /// UTC epoch milliseconds.
-  final int createdAt;
-  final int updatedAt;
-
-  /// Soft delete; `revoke` sets it (Constitution III).
-  final int? deletedAt;
-  const UnlockRow({
-    required this.id,
-    required this.featureKey,
-    this.expiresAt,
-    required this.source,
-    required this.createdAt,
-    required this.updatedAt,
-    this.deletedAt,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['feature_key'] = Variable<String>(featureKey);
-    if (!nullToAbsent || expiresAt != null) {
-      map['expires_at'] = Variable<int>(expiresAt);
-    }
-    {
-      map['source'] = Variable<int>(
-        $UnlocksTable.$convertersource.toSql(source),
-      );
-    }
-    map['created_at'] = Variable<int>(createdAt);
-    map['updated_at'] = Variable<int>(updatedAt);
-    if (!nullToAbsent || deletedAt != null) {
-      map['deleted_at'] = Variable<int>(deletedAt);
-    }
-    return map;
-  }
-
-  UnlocksCompanion toCompanion(bool nullToAbsent) {
-    return UnlocksCompanion(
-      id: Value(id),
-      featureKey: Value(featureKey),
-      expiresAt: expiresAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(expiresAt),
-      source: Value(source),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
-      deletedAt: deletedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(deletedAt),
-    );
-  }
-
-  factory UnlockRow.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return UnlockRow(
-      id: serializer.fromJson<String>(json['id']),
-      featureKey: serializer.fromJson<String>(json['featureKey']),
-      expiresAt: serializer.fromJson<int?>(json['expiresAt']),
-      source: $UnlocksTable.$convertersource.fromJson(
-        serializer.fromJson<int>(json['source']),
-      ),
-      createdAt: serializer.fromJson<int>(json['createdAt']),
-      updatedAt: serializer.fromJson<int>(json['updatedAt']),
-      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'featureKey': serializer.toJson<String>(featureKey),
-      'expiresAt': serializer.toJson<int?>(expiresAt),
-      'source': serializer.toJson<int>(
-        $UnlocksTable.$convertersource.toJson(source),
-      ),
-      'createdAt': serializer.toJson<int>(createdAt),
-      'updatedAt': serializer.toJson<int>(updatedAt),
-      'deletedAt': serializer.toJson<int?>(deletedAt),
-    };
-  }
-
-  UnlockRow copyWith({
-    String? id,
-    String? featureKey,
-    Value<int?> expiresAt = const Value.absent(),
-    UnlockSource? source,
-    int? createdAt,
-    int? updatedAt,
-    Value<int?> deletedAt = const Value.absent(),
-  }) => UnlockRow(
-    id: id ?? this.id,
-    featureKey: featureKey ?? this.featureKey,
-    expiresAt: expiresAt.present ? expiresAt.value : this.expiresAt,
-    source: source ?? this.source,
-    createdAt: createdAt ?? this.createdAt,
-    updatedAt: updatedAt ?? this.updatedAt,
-    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
-  );
-  UnlockRow copyWithCompanion(UnlocksCompanion data) {
-    return UnlockRow(
-      id: data.id.present ? data.id.value : this.id,
-      featureKey: data.featureKey.present
-          ? data.featureKey.value
-          : this.featureKey,
-      expiresAt: data.expiresAt.present ? data.expiresAt.value : this.expiresAt,
-      source: data.source.present ? data.source.value : this.source,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('UnlockRow(')
-          ..write('id: $id, ')
-          ..write('featureKey: $featureKey, ')
-          ..write('expiresAt: $expiresAt, ')
-          ..write('source: $source, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('deletedAt: $deletedAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    id,
-    featureKey,
-    expiresAt,
-    source,
-    createdAt,
-    updatedAt,
-    deletedAt,
-  );
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is UnlockRow &&
-          other.id == this.id &&
-          other.featureKey == this.featureKey &&
-          other.expiresAt == this.expiresAt &&
-          other.source == this.source &&
-          other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt &&
-          other.deletedAt == this.deletedAt);
-}
-
-class UnlocksCompanion extends UpdateCompanion<UnlockRow> {
-  final Value<String> id;
-  final Value<String> featureKey;
-  final Value<int?> expiresAt;
-  final Value<UnlockSource> source;
-  final Value<int> createdAt;
-  final Value<int> updatedAt;
-  final Value<int?> deletedAt;
-  final Value<int> rowid;
-  const UnlocksCompanion({
-    this.id = const Value.absent(),
-    this.featureKey = const Value.absent(),
-    this.expiresAt = const Value.absent(),
-    this.source = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.deletedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  UnlocksCompanion.insert({
-    required String id,
-    required String featureKey,
-    this.expiresAt = const Value.absent(),
-    required UnlockSource source,
-    required int createdAt,
-    required int updatedAt,
-    this.deletedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       featureKey = Value(featureKey),
-       source = Value(source),
-       createdAt = Value(createdAt),
-       updatedAt = Value(updatedAt);
-  static Insertable<UnlockRow> custom({
-    Expression<String>? id,
-    Expression<String>? featureKey,
-    Expression<int>? expiresAt,
-    Expression<int>? source,
-    Expression<int>? createdAt,
-    Expression<int>? updatedAt,
-    Expression<int>? deletedAt,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (featureKey != null) 'feature_key': featureKey,
-      if (expiresAt != null) 'expires_at': expiresAt,
-      if (source != null) 'source': source,
-      if (createdAt != null) 'created_at': createdAt,
-      if (updatedAt != null) 'updated_at': updatedAt,
-      if (deletedAt != null) 'deleted_at': deletedAt,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  UnlocksCompanion copyWith({
-    Value<String>? id,
-    Value<String>? featureKey,
-    Value<int?>? expiresAt,
-    Value<UnlockSource>? source,
-    Value<int>? createdAt,
-    Value<int>? updatedAt,
-    Value<int?>? deletedAt,
-    Value<int>? rowid,
-  }) {
-    return UnlocksCompanion(
-      id: id ?? this.id,
-      featureKey: featureKey ?? this.featureKey,
-      expiresAt: expiresAt ?? this.expiresAt,
-      source: source ?? this.source,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      deletedAt: deletedAt ?? this.deletedAt,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (featureKey.present) {
-      map['feature_key'] = Variable<String>(featureKey.value);
-    }
-    if (expiresAt.present) {
-      map['expires_at'] = Variable<int>(expiresAt.value);
-    }
-    if (source.present) {
-      map['source'] = Variable<int>(
-        $UnlocksTable.$convertersource.toSql(source.value),
-      );
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<int>(createdAt.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<int>(updatedAt.value);
-    }
-    if (deletedAt.present) {
-      map['deleted_at'] = Variable<int>(deletedAt.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('UnlocksCompanion(')
-          ..write('id: $id, ')
-          ..write('featureKey: $featureKey, ')
-          ..write('expiresAt: $expiresAt, ')
-          ..write('source: $source, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('deletedAt: $deletedAt, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $HabitsTable extends Habits with TableInfo<$HabitsTable, HabitRow> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -7109,22 +6627,635 @@ class HabitEntriesCompanion extends UpdateCompanion<HabitEntryRow> {
   }
 }
 
+class $UnlocksTable extends Unlocks with TableInfo<$UnlocksTable, UnlockRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UnlocksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _featureKeyMeta = const VerificationMeta(
+    'featureKey',
+  );
+  @override
+  late final GeneratedColumn<String> featureKey = GeneratedColumn<String>(
+    'feature_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expiresAtMeta = const VerificationMeta(
+    'expiresAt',
+  );
+  @override
+  late final GeneratedColumn<int> expiresAt = GeneratedColumn<int>(
+    'expires_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<UnlockSource, int> source =
+      GeneratedColumn<int>(
+        'source',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<UnlockSource>($UnlocksTable.$convertersource);
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<int> deletedAt = GeneratedColumn<int>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    featureKey,
+    expiresAt,
+    source,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'unlocks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UnlockRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('feature_key')) {
+      context.handle(
+        _featureKeyMeta,
+        featureKey.isAcceptableOrUnknown(data['feature_key']!, _featureKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_featureKeyMeta);
+    }
+    if (data.containsKey('expires_at')) {
+      context.handle(
+        _expiresAtMeta,
+        expiresAt.isAcceptableOrUnknown(data['expires_at']!, _expiresAtMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UnlockRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UnlockRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      featureKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}feature_key'],
+      )!,
+      expiresAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}expires_at'],
+      ),
+      source: $UnlocksTable.$convertersource.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}source'],
+        )!,
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}deleted_at'],
+      ),
+    );
+  }
+
+  @override
+  $UnlocksTable createAlias(String alias) {
+    return $UnlocksTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<UnlockSource, int, int> $convertersource =
+      const EnumIndexConverter<UnlockSource>(UnlockSource.values);
+}
+
+class UnlockRow extends DataClass implements Insertable<UnlockRow> {
+  /// UUID v4.
+  final String id;
+
+  /// `FeatureKey.storageKey`, e.g. `advancedReports` or
+  /// `premiumTheme_saffron` (research R13).
+  final String featureKey;
+
+  /// UTC epoch milliseconds. NULL = permanent.
+  final int? expiresAt;
+  final UnlockSource source;
+
+  /// UTC epoch milliseconds.
+  final int createdAt;
+  final int updatedAt;
+
+  /// Soft delete; `revoke` sets it (Constitution III).
+  final int? deletedAt;
+  const UnlockRow({
+    required this.id,
+    required this.featureKey,
+    this.expiresAt,
+    required this.source,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['feature_key'] = Variable<String>(featureKey);
+    if (!nullToAbsent || expiresAt != null) {
+      map['expires_at'] = Variable<int>(expiresAt);
+    }
+    {
+      map['source'] = Variable<int>(
+        $UnlocksTable.$convertersource.toSql(source),
+      );
+    }
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    return map;
+  }
+
+  UnlocksCompanion toCompanion(bool nullToAbsent) {
+    return UnlocksCompanion(
+      id: Value(id),
+      featureKey: Value(featureKey),
+      expiresAt: expiresAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(expiresAt),
+      source: Value(source),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory UnlockRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UnlockRow(
+      id: serializer.fromJson<String>(json['id']),
+      featureKey: serializer.fromJson<String>(json['featureKey']),
+      expiresAt: serializer.fromJson<int?>(json['expiresAt']),
+      source: $UnlocksTable.$convertersource.fromJson(
+        serializer.fromJson<int>(json['source']),
+      ),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'featureKey': serializer.toJson<String>(featureKey),
+      'expiresAt': serializer.toJson<int?>(expiresAt),
+      'source': serializer.toJson<int>(
+        $UnlocksTable.$convertersource.toJson(source),
+      ),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'deletedAt': serializer.toJson<int?>(deletedAt),
+    };
+  }
+
+  UnlockRow copyWith({
+    String? id,
+    String? featureKey,
+    Value<int?> expiresAt = const Value.absent(),
+    UnlockSource? source,
+    int? createdAt,
+    int? updatedAt,
+    Value<int?> deletedAt = const Value.absent(),
+  }) => UnlockRow(
+    id: id ?? this.id,
+    featureKey: featureKey ?? this.featureKey,
+    expiresAt: expiresAt.present ? expiresAt.value : this.expiresAt,
+    source: source ?? this.source,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  UnlockRow copyWithCompanion(UnlocksCompanion data) {
+    return UnlockRow(
+      id: data.id.present ? data.id.value : this.id,
+      featureKey: data.featureKey.present
+          ? data.featureKey.value
+          : this.featureKey,
+      expiresAt: data.expiresAt.present ? data.expiresAt.value : this.expiresAt,
+      source: data.source.present ? data.source.value : this.source,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UnlockRow(')
+          ..write('id: $id, ')
+          ..write('featureKey: $featureKey, ')
+          ..write('expiresAt: $expiresAt, ')
+          ..write('source: $source, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    featureKey,
+    expiresAt,
+    source,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UnlockRow &&
+          other.id == this.id &&
+          other.featureKey == this.featureKey &&
+          other.expiresAt == this.expiresAt &&
+          other.source == this.source &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt);
+}
+
+class UnlocksCompanion extends UpdateCompanion<UnlockRow> {
+  final Value<String> id;
+  final Value<String> featureKey;
+  final Value<int?> expiresAt;
+  final Value<UnlockSource> source;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> deletedAt;
+  final Value<int> rowid;
+  const UnlocksCompanion({
+    this.id = const Value.absent(),
+    this.featureKey = const Value.absent(),
+    this.expiresAt = const Value.absent(),
+    this.source = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  UnlocksCompanion.insert({
+    required String id,
+    required String featureKey,
+    this.expiresAt = const Value.absent(),
+    required UnlockSource source,
+    required int createdAt,
+    required int updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       featureKey = Value(featureKey),
+       source = Value(source),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<UnlockRow> custom({
+    Expression<String>? id,
+    Expression<String>? featureKey,
+    Expression<int>? expiresAt,
+    Expression<int>? source,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (featureKey != null) 'feature_key': featureKey,
+      if (expiresAt != null) 'expires_at': expiresAt,
+      if (source != null) 'source': source,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  UnlocksCompanion copyWith({
+    Value<String>? id,
+    Value<String>? featureKey,
+    Value<int?>? expiresAt,
+    Value<UnlockSource>? source,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int?>? deletedAt,
+    Value<int>? rowid,
+  }) {
+    return UnlocksCompanion(
+      id: id ?? this.id,
+      featureKey: featureKey ?? this.featureKey,
+      expiresAt: expiresAt ?? this.expiresAt,
+      source: source ?? this.source,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (featureKey.present) {
+      map['feature_key'] = Variable<String>(featureKey.value);
+    }
+    if (expiresAt.present) {
+      map['expires_at'] = Variable<int>(expiresAt.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<int>(
+        $UnlocksTable.$convertersource.toSql(source.value),
+      );
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(deletedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UnlocksCompanion(')
+          ..write('id: $id, ')
+          ..write('featureKey: $featureKey, ')
+          ..write('expiresAt: $expiresAt, ')
+          ..write('source: $source, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
-  late final $SettingsTable settings = $SettingsTable(this);
-  late final $CategoriesTable categories = $CategoriesTable(this);
   late final $AccountsTable accounts = $AccountsTable(this);
+  late final $SettingsTable settings = $SettingsTable(this);
+  late final Trigger bkAccountsIns = Trigger(
+    'CREATE TRIGGER bk_accounts_ins AFTER INSERT ON accounts BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_accounts_ins',
+  );
+  late final Trigger bkAccountsUpd = Trigger(
+    'CREATE TRIGGER bk_accounts_upd AFTER UPDATE ON accounts BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_accounts_upd',
+  );
+  late final Trigger bkAccountsDel = Trigger(
+    'CREATE TRIGGER bk_accounts_del AFTER DELETE ON accounts BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_accounts_del',
+  );
+  late final $CategoriesTable categories = $CategoriesTable(this);
+  late final Trigger bkCategoriesIns = Trigger(
+    'CREATE TRIGGER bk_categories_ins AFTER INSERT ON categories BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_categories_ins',
+  );
+  late final Trigger bkCategoriesUpd = Trigger(
+    'CREATE TRIGGER bk_categories_upd AFTER UPDATE ON categories BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_categories_upd',
+  );
+  late final Trigger bkCategoriesDel = Trigger(
+    'CREATE TRIGGER bk_categories_del AFTER DELETE ON categories BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_categories_del',
+  );
   late final $RecurringRulesTable recurringRules = $RecurringRulesTable(this);
   late final $TransactionsTable transactions = $TransactionsTable(this);
+  late final Trigger bkTransactionsIns = Trigger(
+    'CREATE TRIGGER bk_transactions_ins AFTER INSERT ON transactions BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_transactions_ins',
+  );
+  late final Trigger bkTransactionsUpd = Trigger(
+    'CREATE TRIGGER bk_transactions_upd AFTER UPDATE ON transactions BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_transactions_upd',
+  );
+  late final Trigger bkTransactionsDel = Trigger(
+    'CREATE TRIGGER bk_transactions_del AFTER DELETE ON transactions BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_transactions_del',
+  );
   late final $BudgetsTable budgets = $BudgetsTable(this);
-  late final $UnlocksTable unlocks = $UnlocksTable(this);
+  late final Trigger bkBudgetsIns = Trigger(
+    'CREATE TRIGGER bk_budgets_ins AFTER INSERT ON budgets BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_budgets_ins',
+  );
+  late final Trigger bkBudgetsUpd = Trigger(
+    'CREATE TRIGGER bk_budgets_upd AFTER UPDATE ON budgets BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_budgets_upd',
+  );
+  late final Trigger bkBudgetsDel = Trigger(
+    'CREATE TRIGGER bk_budgets_del AFTER DELETE ON budgets BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_budgets_del',
+  );
+  late final Trigger bkRecurringRulesIns = Trigger(
+    'CREATE TRIGGER bk_recurring_rules_ins AFTER INSERT ON recurring_rules BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_recurring_rules_ins',
+  );
+  late final Trigger bkRecurringRulesUpd = Trigger(
+    'CREATE TRIGGER bk_recurring_rules_upd AFTER UPDATE ON recurring_rules BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_recurring_rules_upd',
+  );
+  late final Trigger bkRecurringRulesDel = Trigger(
+    'CREATE TRIGGER bk_recurring_rules_del AFTER DELETE ON recurring_rules BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_recurring_rules_del',
+  );
   late final $HabitsTable habits = $HabitsTable(this);
+  late final Trigger bkHabitsIns = Trigger(
+    'CREATE TRIGGER bk_habits_ins AFTER INSERT ON habits BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habits_ins',
+  );
+  late final Trigger bkHabitsUpd = Trigger(
+    'CREATE TRIGGER bk_habits_upd AFTER UPDATE ON habits BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habits_upd',
+  );
+  late final Trigger bkHabitsDel = Trigger(
+    'CREATE TRIGGER bk_habits_del AFTER DELETE ON habits BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habits_del',
+  );
   late final $HabitSchedulesTable habitSchedules = $HabitSchedulesTable(this);
+  late final Trigger bkHabitSchedulesIns = Trigger(
+    'CREATE TRIGGER bk_habit_schedules_ins AFTER INSERT ON habit_schedules BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habit_schedules_ins',
+  );
+  late final Trigger bkHabitSchedulesUpd = Trigger(
+    'CREATE TRIGGER bk_habit_schedules_upd AFTER UPDATE ON habit_schedules BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habit_schedules_upd',
+  );
+  late final Trigger bkHabitSchedulesDel = Trigger(
+    'CREATE TRIGGER bk_habit_schedules_del AFTER DELETE ON habit_schedules BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habit_schedules_del',
+  );
   late final $HabitEntriesTable habitEntries = $HabitEntriesTable(this);
-  late final Index categoriesTypeSort = Index(
-    'categories_type_sort',
-    'CREATE INDEX categories_type_sort ON categories (type, sort_order)',
+  late final Trigger bkHabitEntriesIns = Trigger(
+    'CREATE TRIGGER bk_habit_entries_ins AFTER INSERT ON habit_entries BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habit_entries_ins',
+  );
+  late final Trigger bkHabitEntriesUpd = Trigger(
+    'CREATE TRIGGER bk_habit_entries_upd AFTER UPDATE ON habit_entries BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habit_entries_upd',
+  );
+  late final Trigger bkHabitEntriesDel = Trigger(
+    'CREATE TRIGGER bk_habit_entries_del AFTER DELETE ON habit_entries BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_habit_entries_del',
+  );
+  late final Trigger bkSettingsIns = Trigger(
+    'CREATE TRIGGER bk_settings_ins AFTER INSERT ON settings WHEN(NEW."key" IN (\'locale\', \'currencyCode\', \'firstDayOfWeek\', \'dateFormat\', \'themeMode\', \'selectedTheme\', \'fontSize\', \'enabledModules\', \'moduleOrder\', \'notificationsEnabled\', \'budgetAlertsEnabled\', \'habitRemindersEnabled\', \'dailySummaryTime\', \'homeComingSoonDismissed\') OR NEW."key" LIKE \'module.%\')BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_settings_ins',
+  );
+  late final Trigger bkSettingsUpd = Trigger(
+    'CREATE TRIGGER bk_settings_upd AFTER UPDATE ON settings WHEN(NEW."key" IN (\'locale\', \'currencyCode\', \'firstDayOfWeek\', \'dateFormat\', \'themeMode\', \'selectedTheme\', \'fontSize\', \'enabledModules\', \'moduleOrder\', \'notificationsEnabled\', \'budgetAlertsEnabled\', \'habitRemindersEnabled\', \'dailySummaryTime\', \'homeComingSoonDismissed\') OR NEW."key" LIKE \'module.%\')AND NEW.value IS NOT OLD.value BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_settings_upd',
+  );
+  late final Trigger bkSettingsDel = Trigger(
+    'CREATE TRIGGER bk_settings_del AFTER DELETE ON settings WHEN(OLD."key" IN (\'locale\', \'currencyCode\', \'firstDayOfWeek\', \'dateFormat\', \'themeMode\', \'selectedTheme\', \'fontSize\', \'enabledModules\', \'moduleOrder\', \'notificationsEnabled\', \'budgetAlertsEnabled\', \'habitRemindersEnabled\', \'dailySummaryTime\', \'homeComingSoonDismissed\') OR OLD."key" LIKE \'module.%\')BEGIN INSERT INTO settings ("key", value, updated_at) VALUES (\'dataChangeCounter\', \'1\', CAST(strftime(\'%s\', \'now\') AS INTEGER) * 1000) ON CONFLICT ("key") DO UPDATE SET value = CAST(value AS INTEGER) + 1;END',
+    'bk_settings_del',
+  );
+  late final Index habitEntriesHabitDateUnique = Index(
+    'habit_entries_habit_date_unique',
+    'CREATE UNIQUE INDEX habit_entries_habit_date_unique ON habit_entries (habit_id, date_key)',
+  );
+  late final Index habitEntriesDate = Index(
+    'habit_entries_date',
+    'CREATE INDEX habit_entries_date ON habit_entries (date_key)',
+  );
+  late final Index habitSchedulesHabitFromUnique = Index(
+    'habit_schedules_habit_from_unique',
+    'CREATE UNIQUE INDEX habit_schedules_habit_from_unique ON habit_schedules (habit_id, effective_from_key) WHERE deleted_at IS NULL',
+  );
+  late final Index habitsActiveOrder = Index(
+    'habits_active_order',
+    'CREATE INDEX habits_active_order ON habits (deleted_at, is_archived, sort_order)',
+  );
+  late final Index recurringRulesDue = Index(
+    'recurring_rules_due',
+    'CREATE INDEX recurring_rules_due ON recurring_rules (is_active, next_run_at)',
+  );
+  late final Index budgetsMonth = Index(
+    'budgets_month',
+    'CREATE INDEX budgets_month ON budgets (month_key)',
+  );
+  late final Index budgetsMonthCategoryUnique = Index(
+    'budgets_month_category_unique',
+    'CREATE UNIQUE INDEX budgets_month_category_unique ON budgets (month_key, IFNULL(category_id, \'\')) WHERE deleted_at IS NULL',
   );
   late final Index transactionsOccurred = Index(
     'transactions_occurred',
@@ -7142,69 +7273,588 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'transactions_rule',
     'CREATE INDEX transactions_rule ON transactions (recurring_rule_id)',
   );
-  late final Index recurringRulesDue = Index(
-    'recurring_rules_due',
-    'CREATE INDEX recurring_rules_due ON recurring_rules (is_active, next_run_at)',
+  late final Index categoriesTypeSort = Index(
+    'categories_type_sort',
+    'CREATE INDEX categories_type_sort ON categories (type, sort_order)',
   );
-  late final Index budgetsMonth = Index(
-    'budgets_month',
-    'CREATE INDEX budgets_month ON budgets (month_key)',
-  );
-  late final Index budgetsMonthCategoryUnique = Index(
-    'budgets_month_category_unique',
-    'CREATE UNIQUE INDEX budgets_month_category_unique ON budgets (month_key, IFNULL(category_id, \'\')) WHERE deleted_at IS NULL',
-  );
+  late final $UnlocksTable unlocks = $UnlocksTable(this);
   late final Index unlocksFeature = Index(
     'unlocks_feature',
     'CREATE INDEX unlocks_feature ON unlocks (feature_key)',
-  );
-  late final Index habitsActiveOrder = Index(
-    'habits_active_order',
-    'CREATE INDEX habits_active_order ON habits (deleted_at, is_archived, sort_order)',
-  );
-  late final Index habitSchedulesHabitFromUnique = Index(
-    'habit_schedules_habit_from_unique',
-    'CREATE UNIQUE INDEX habit_schedules_habit_from_unique ON habit_schedules (habit_id, effective_from_key) WHERE deleted_at IS NULL',
-  );
-  late final Index habitEntriesHabitDateUnique = Index(
-    'habit_entries_habit_date_unique',
-    'CREATE UNIQUE INDEX habit_entries_habit_date_unique ON habit_entries (habit_id, date_key)',
-  );
-  late final Index habitEntriesDate = Index(
-    'habit_entries_date',
-    'CREATE INDEX habit_entries_date ON habit_entries (date_key)',
   );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
-    settings,
-    categories,
     accounts,
+    settings,
+    bkAccountsIns,
+    bkAccountsUpd,
+    bkAccountsDel,
+    categories,
+    bkCategoriesIns,
+    bkCategoriesUpd,
+    bkCategoriesDel,
     recurringRules,
     transactions,
+    bkTransactionsIns,
+    bkTransactionsUpd,
+    bkTransactionsDel,
     budgets,
-    unlocks,
+    bkBudgetsIns,
+    bkBudgetsUpd,
+    bkBudgetsDel,
+    bkRecurringRulesIns,
+    bkRecurringRulesUpd,
+    bkRecurringRulesDel,
     habits,
+    bkHabitsIns,
+    bkHabitsUpd,
+    bkHabitsDel,
     habitSchedules,
+    bkHabitSchedulesIns,
+    bkHabitSchedulesUpd,
+    bkHabitSchedulesDel,
     habitEntries,
-    categoriesTypeSort,
+    bkHabitEntriesIns,
+    bkHabitEntriesUpd,
+    bkHabitEntriesDel,
+    bkSettingsIns,
+    bkSettingsUpd,
+    bkSettingsDel,
+    habitEntriesHabitDateUnique,
+    habitEntriesDate,
+    habitSchedulesHabitFromUnique,
+    habitsActiveOrder,
+    recurringRulesDue,
+    budgetsMonth,
+    budgetsMonthCategoryUnique,
     transactionsOccurred,
     transactionsCategoryOccurred,
     transactionsAccountOccurred,
     transactionsRule,
-    recurringRulesDue,
-    budgetsMonth,
-    budgetsMonthCategoryUnique,
+    categoriesTypeSort,
+    unlocks,
     unlocksFeature,
-    habitsActiveOrder,
-    habitSchedulesHabitFromUnique,
-    habitEntriesHabitDateUnique,
-    habitEntriesDate,
   ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'accounts',
+        limitUpdateKind: UpdateKind.insert,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'accounts',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'accounts',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'categories',
+        limitUpdateKind: UpdateKind.insert,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'categories',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'categories',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'transactions',
+        limitUpdateKind: UpdateKind.insert,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'transactions',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'transactions',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'budgets',
+        limitUpdateKind: UpdateKind.insert,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'budgets',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'budgets',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'recurring_rules',
+        limitUpdateKind: UpdateKind.insert,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'recurring_rules',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'recurring_rules',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'habits',
+        limitUpdateKind: UpdateKind.insert,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'habits',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'habits',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'habit_schedules',
+        limitUpdateKind: UpdateKind.insert,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'habit_schedules',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'habit_schedules',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'habit_entries',
+        limitUpdateKind: UpdateKind.insert,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'habit_entries',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'habit_entries',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'settings',
+        limitUpdateKind: UpdateKind.insert,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'settings',
+        limitUpdateKind: UpdateKind.update,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'settings',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('settings', kind: UpdateKind.insert)],
+    ),
+  ]);
 }
 
+typedef $$AccountsTableCreateCompanionBuilder = AccountsCompanion Function({
+  required String id,
+  required String name,
+  required AccountType type,
+  Value<int> openingBalanceMinor,
+  required String iconKey,
+  required String colorHex,
+  Value<bool> isArchived,
+  required int sortOrder,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  Value<int> rowid,
+});
+typedef $$AccountsTableUpdateCompanionBuilder = AccountsCompanion Function({
+  Value<String> id,
+  Value<String> name,
+  Value<AccountType> type,
+  Value<int> openingBalanceMinor,
+  Value<String> iconKey,
+  Value<String> colorHex,
+  Value<bool> isArchived,
+  Value<int> sortOrder,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<int> rowid,
+});
+
+class $$AccountsTableFilterComposer
+    extends Composer<_$AppDatabase, $AccountsTable> {
+  $$AccountsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<AccountType, AccountType, int> get type =>
+      $composableBuilder(
+        column: $table.type,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<int> get openingBalanceMinor => $composableBuilder(
+    column: $table.openingBalanceMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get iconKey => $composableBuilder(
+    column: $table.iconKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get colorHex => $composableBuilder(
+    column: $table.colorHex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isArchived => $composableBuilder(
+    column: $table.isArchived,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AccountsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AccountsTable> {
+  $$AccountsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get openingBalanceMinor => $composableBuilder(
+    column: $table.openingBalanceMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get iconKey => $composableBuilder(
+    column: $table.iconKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get colorHex => $composableBuilder(
+    column: $table.colorHex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isArchived => $composableBuilder(
+    column: $table.isArchived,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AccountsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AccountsTable> {
+  $$AccountsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<AccountType, int> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<int> get openingBalanceMinor => $composableBuilder(
+    column: $table.openingBalanceMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get iconKey =>
+      $composableBuilder(column: $table.iconKey, builder: (column) => column);
+
+  GeneratedColumn<String> get colorHex =>
+      $composableBuilder(column: $table.colorHex, builder: (column) => column);
+
+  GeneratedColumn<bool> get isArchived => $composableBuilder(
+    column: $table.isArchived,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+}
+
+class $$AccountsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AccountsTable,
+          AccountRow,
+          $$AccountsTableFilterComposer,
+          $$AccountsTableOrderingComposer,
+          $$AccountsTableAnnotationComposer,
+          $$AccountsTableCreateCompanionBuilder,
+          $$AccountsTableUpdateCompanionBuilder,
+          (
+            AccountRow,
+            BaseReferences<_$AppDatabase, $AccountsTable, AccountRow>,
+          ),
+          AccountRow,
+          PrefetchHooks Function()
+        > {
+  $$AccountsTableTableManager(_$AppDatabase db, $AccountsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AccountsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AccountsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AccountsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<AccountType> type = const Value.absent(),
+                Value<int> openingBalanceMinor = const Value.absent(),
+                Value<String> iconKey = const Value.absent(),
+                Value<String> colorHex = const Value.absent(),
+                Value<bool> isArchived = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AccountsCompanion(
+                id: id,
+                name: name,
+                type: type,
+                openingBalanceMinor: openingBalanceMinor,
+                iconKey: iconKey,
+                colorHex: colorHex,
+                isArchived: isArchived,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required AccountType type,
+                Value<int> openingBalanceMinor = const Value.absent(),
+                required String iconKey,
+                required String colorHex,
+                Value<bool> isArchived = const Value.absent(),
+                required int sortOrder,
+                required int createdAt,
+                required int updatedAt,
+                Value<int?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AccountsCompanion.insert(
+                id: id,
+                name: name,
+                type: type,
+                openingBalanceMinor: openingBalanceMinor,
+                iconKey: iconKey,
+                colorHex: colorHex,
+                isArchived: isArchived,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$AccountsTable, AccountRow>(table),
+                  BaseReferences<_$AppDatabase, $AccountsTable, AccountRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AccountsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AccountsTable,
+      AccountRow,
+      $$AccountsTableFilterComposer,
+      $$AccountsTableOrderingComposer,
+      $$AccountsTableAnnotationComposer,
+      $$AccountsTableCreateCompanionBuilder,
+      $$AccountsTableUpdateCompanionBuilder,
+      (AccountRow, BaseReferences<_$AppDatabase, $AccountsTable, AccountRow>),
+      AccountRow,
+      PrefetchHooks Function()
+    >;
 typedef $$SettingsTableCreateCompanionBuilder = SettingsCompanion Function({
   required String key,
   required String value,
@@ -7984,329 +8634,6 @@ typedef $$CategoriesTableProcessedTableManager =
         bool transactionsRefs,
         bool budgetsRefs,
       })
-    >;
-typedef $$AccountsTableCreateCompanionBuilder = AccountsCompanion Function({
-  required String id,
-  required String name,
-  required AccountType type,
-  Value<int> openingBalanceMinor,
-  required String iconKey,
-  required String colorHex,
-  Value<bool> isArchived,
-  required int sortOrder,
-  required int createdAt,
-  required int updatedAt,
-  Value<int?> deletedAt,
-  Value<int> rowid,
-});
-typedef $$AccountsTableUpdateCompanionBuilder = AccountsCompanion Function({
-  Value<String> id,
-  Value<String> name,
-  Value<AccountType> type,
-  Value<int> openingBalanceMinor,
-  Value<String> iconKey,
-  Value<String> colorHex,
-  Value<bool> isArchived,
-  Value<int> sortOrder,
-  Value<int> createdAt,
-  Value<int> updatedAt,
-  Value<int?> deletedAt,
-  Value<int> rowid,
-});
-
-class $$AccountsTableFilterComposer
-    extends Composer<_$AppDatabase, $AccountsTable> {
-  $$AccountsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnWithTypeConverterFilters<AccountType, AccountType, int> get type =>
-      $composableBuilder(
-        column: $table.type,
-        builder: (column) => ColumnWithTypeConverterFilters(column),
-      );
-
-  ColumnFilters<int> get openingBalanceMinor => $composableBuilder(
-    column: $table.openingBalanceMinor,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get iconKey => $composableBuilder(
-    column: $table.iconKey,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get colorHex => $composableBuilder(
-    column: $table.colorHex,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<bool> get isArchived => $composableBuilder(
-    column: $table.isArchived,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get sortOrder => $composableBuilder(
-    column: $table.sortOrder,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-}
-
-class $$AccountsTableOrderingComposer
-    extends Composer<_$AppDatabase, $AccountsTable> {
-  $$AccountsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get type => $composableBuilder(
-    column: $table.type,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get openingBalanceMinor => $composableBuilder(
-    column: $table.openingBalanceMinor,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get iconKey => $composableBuilder(
-    column: $table.iconKey,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get colorHex => $composableBuilder(
-    column: $table.colorHex,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<bool> get isArchived => $composableBuilder(
-    column: $table.isArchived,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get sortOrder => $composableBuilder(
-    column: $table.sortOrder,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$AccountsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $AccountsTable> {
-  $$AccountsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<AccountType, int> get type =>
-      $composableBuilder(column: $table.type, builder: (column) => column);
-
-  GeneratedColumn<int> get openingBalanceMinor => $composableBuilder(
-    column: $table.openingBalanceMinor,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get iconKey =>
-      $composableBuilder(column: $table.iconKey, builder: (column) => column);
-
-  GeneratedColumn<String> get colorHex =>
-      $composableBuilder(column: $table.colorHex, builder: (column) => column);
-
-  GeneratedColumn<bool> get isArchived => $composableBuilder(
-    column: $table.isArchived,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get sortOrder =>
-      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
-
-  GeneratedColumn<int> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<int> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
-
-  GeneratedColumn<int> get deletedAt =>
-      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
-}
-
-class $$AccountsTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $AccountsTable,
-          AccountRow,
-          $$AccountsTableFilterComposer,
-          $$AccountsTableOrderingComposer,
-          $$AccountsTableAnnotationComposer,
-          $$AccountsTableCreateCompanionBuilder,
-          $$AccountsTableUpdateCompanionBuilder,
-          (
-            AccountRow,
-            BaseReferences<_$AppDatabase, $AccountsTable, AccountRow>,
-          ),
-          AccountRow,
-          PrefetchHooks Function()
-        > {
-  $$AccountsTableTableManager(_$AppDatabase db, $AccountsTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$AccountsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$AccountsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$AccountsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<String> id = const Value.absent(),
-                Value<String> name = const Value.absent(),
-                Value<AccountType> type = const Value.absent(),
-                Value<int> openingBalanceMinor = const Value.absent(),
-                Value<String> iconKey = const Value.absent(),
-                Value<String> colorHex = const Value.absent(),
-                Value<bool> isArchived = const Value.absent(),
-                Value<int> sortOrder = const Value.absent(),
-                Value<int> createdAt = const Value.absent(),
-                Value<int> updatedAt = const Value.absent(),
-                Value<int?> deletedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => AccountsCompanion(
-                id: id,
-                name: name,
-                type: type,
-                openingBalanceMinor: openingBalanceMinor,
-                iconKey: iconKey,
-                colorHex: colorHex,
-                isArchived: isArchived,
-                sortOrder: sortOrder,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-                deletedAt: deletedAt,
-                rowid: rowid,
-              ),
-          createCompanionCallback:
-              ({
-                required String id,
-                required String name,
-                required AccountType type,
-                Value<int> openingBalanceMinor = const Value.absent(),
-                required String iconKey,
-                required String colorHex,
-                Value<bool> isArchived = const Value.absent(),
-                required int sortOrder,
-                required int createdAt,
-                required int updatedAt,
-                Value<int?> deletedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => AccountsCompanion.insert(
-                id: id,
-                name: name,
-                type: type,
-                openingBalanceMinor: openingBalanceMinor,
-                iconKey: iconKey,
-                colorHex: colorHex,
-                isArchived: isArchived,
-                sortOrder: sortOrder,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-                deletedAt: deletedAt,
-                rowid: rowid,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable<$AccountsTable, AccountRow>(table),
-                  BaseReferences<_$AppDatabase, $AccountsTable, AccountRow>(
-                    db,
-                    table,
-                    e,
-                  ),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$AccountsTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $AccountsTable,
-      AccountRow,
-      $$AccountsTableFilterComposer,
-      $$AccountsTableOrderingComposer,
-      $$AccountsTableAnnotationComposer,
-      $$AccountsTableCreateCompanionBuilder,
-      $$AccountsTableUpdateCompanionBuilder,
-      (AccountRow, BaseReferences<_$AppDatabase, $AccountsTable, AccountRow>),
-      AccountRow,
-      PrefetchHooks Function()
     >;
 typedef $$RecurringRulesTableCreateCompanionBuilder =
     RecurringRulesCompanion Function({
@@ -10325,248 +10652,6 @@ typedef $$BudgetsTableProcessedTableManager =
       BudgetRow,
       PrefetchHooks Function({bool categoryId})
     >;
-typedef $$UnlocksTableCreateCompanionBuilder = UnlocksCompanion Function({
-  required String id,
-  required String featureKey,
-  Value<int?> expiresAt,
-  required UnlockSource source,
-  required int createdAt,
-  required int updatedAt,
-  Value<int?> deletedAt,
-  Value<int> rowid,
-});
-typedef $$UnlocksTableUpdateCompanionBuilder = UnlocksCompanion Function({
-  Value<String> id,
-  Value<String> featureKey,
-  Value<int?> expiresAt,
-  Value<UnlockSource> source,
-  Value<int> createdAt,
-  Value<int> updatedAt,
-  Value<int?> deletedAt,
-  Value<int> rowid,
-});
-
-class $$UnlocksTableFilterComposer
-    extends Composer<_$AppDatabase, $UnlocksTable> {
-  $$UnlocksTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get featureKey => $composableBuilder(
-    column: $table.featureKey,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get expiresAt => $composableBuilder(
-    column: $table.expiresAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnWithTypeConverterFilters<UnlockSource, UnlockSource, int> get source =>
-      $composableBuilder(
-        column: $table.source,
-        builder: (column) => ColumnWithTypeConverterFilters(column),
-      );
-
-  ColumnFilters<int> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-}
-
-class $$UnlocksTableOrderingComposer
-    extends Composer<_$AppDatabase, $UnlocksTable> {
-  $$UnlocksTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get featureKey => $composableBuilder(
-    column: $table.featureKey,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get expiresAt => $composableBuilder(
-    column: $table.expiresAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get source => $composableBuilder(
-    column: $table.source,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$UnlocksTableAnnotationComposer
-    extends Composer<_$AppDatabase, $UnlocksTable> {
-  $$UnlocksTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get featureKey => $composableBuilder(
-    column: $table.featureKey,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get expiresAt =>
-      $composableBuilder(column: $table.expiresAt, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<UnlockSource, int> get source =>
-      $composableBuilder(column: $table.source, builder: (column) => column);
-
-  GeneratedColumn<int> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<int> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
-
-  GeneratedColumn<int> get deletedAt =>
-      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
-}
-
-class $$UnlocksTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $UnlocksTable,
-          UnlockRow,
-          $$UnlocksTableFilterComposer,
-          $$UnlocksTableOrderingComposer,
-          $$UnlocksTableAnnotationComposer,
-          $$UnlocksTableCreateCompanionBuilder,
-          $$UnlocksTableUpdateCompanionBuilder,
-          (UnlockRow, BaseReferences<_$AppDatabase, $UnlocksTable, UnlockRow>),
-          UnlockRow,
-          PrefetchHooks Function()
-        > {
-  $$UnlocksTableTableManager(_$AppDatabase db, $UnlocksTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$UnlocksTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$UnlocksTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$UnlocksTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<String> id = const Value.absent(),
-                Value<String> featureKey = const Value.absent(),
-                Value<int?> expiresAt = const Value.absent(),
-                Value<UnlockSource> source = const Value.absent(),
-                Value<int> createdAt = const Value.absent(),
-                Value<int> updatedAt = const Value.absent(),
-                Value<int?> deletedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => UnlocksCompanion(
-                id: id,
-                featureKey: featureKey,
-                expiresAt: expiresAt,
-                source: source,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-                deletedAt: deletedAt,
-                rowid: rowid,
-              ),
-          createCompanionCallback:
-              ({
-                required String id,
-                required String featureKey,
-                Value<int?> expiresAt = const Value.absent(),
-                required UnlockSource source,
-                required int createdAt,
-                required int updatedAt,
-                Value<int?> deletedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => UnlocksCompanion.insert(
-                id: id,
-                featureKey: featureKey,
-                expiresAt: expiresAt,
-                source: source,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-                deletedAt: deletedAt,
-                rowid: rowid,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable<$UnlocksTable, UnlockRow>(table),
-                  BaseReferences<_$AppDatabase, $UnlocksTable, UnlockRow>(
-                    db,
-                    table,
-                    e,
-                  ),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$UnlocksTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $UnlocksTable,
-      UnlockRow,
-      $$UnlocksTableFilterComposer,
-      $$UnlocksTableOrderingComposer,
-      $$UnlocksTableAnnotationComposer,
-      $$UnlocksTableCreateCompanionBuilder,
-      $$UnlocksTableUpdateCompanionBuilder,
-      (UnlockRow, BaseReferences<_$AppDatabase, $UnlocksTable, UnlockRow>),
-      UnlockRow,
-      PrefetchHooks Function()
-    >;
 typedef $$HabitsTableCreateCompanionBuilder = HabitsCompanion Function({
   required String id,
   required String name,
@@ -12113,28 +12198,270 @@ typedef $$HabitEntriesTableProcessedTableManager =
       HabitEntryRow,
       PrefetchHooks Function({bool habitId})
     >;
+typedef $$UnlocksTableCreateCompanionBuilder = UnlocksCompanion Function({
+  required String id,
+  required String featureKey,
+  Value<int?> expiresAt,
+  required UnlockSource source,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> deletedAt,
+  Value<int> rowid,
+});
+typedef $$UnlocksTableUpdateCompanionBuilder = UnlocksCompanion Function({
+  Value<String> id,
+  Value<String> featureKey,
+  Value<int?> expiresAt,
+  Value<UnlockSource> source,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> deletedAt,
+  Value<int> rowid,
+});
+
+class $$UnlocksTableFilterComposer
+    extends Composer<_$AppDatabase, $UnlocksTable> {
+  $$UnlocksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get featureKey => $composableBuilder(
+    column: $table.featureKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get expiresAt => $composableBuilder(
+    column: $table.expiresAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<UnlockSource, UnlockSource, int> get source =>
+      $composableBuilder(
+        column: $table.source,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$UnlocksTableOrderingComposer
+    extends Composer<_$AppDatabase, $UnlocksTable> {
+  $$UnlocksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get featureKey => $composableBuilder(
+    column: $table.featureKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get expiresAt => $composableBuilder(
+    column: $table.expiresAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UnlocksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UnlocksTable> {
+  $$UnlocksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get featureKey => $composableBuilder(
+    column: $table.featureKey,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get expiresAt =>
+      $composableBuilder(column: $table.expiresAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<UnlockSource, int> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+}
+
+class $$UnlocksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UnlocksTable,
+          UnlockRow,
+          $$UnlocksTableFilterComposer,
+          $$UnlocksTableOrderingComposer,
+          $$UnlocksTableAnnotationComposer,
+          $$UnlocksTableCreateCompanionBuilder,
+          $$UnlocksTableUpdateCompanionBuilder,
+          (UnlockRow, BaseReferences<_$AppDatabase, $UnlocksTable, UnlockRow>),
+          UnlockRow,
+          PrefetchHooks Function()
+        > {
+  $$UnlocksTableTableManager(_$AppDatabase db, $UnlocksTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UnlocksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UnlocksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UnlocksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> featureKey = const Value.absent(),
+                Value<int?> expiresAt = const Value.absent(),
+                Value<UnlockSource> source = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UnlocksCompanion(
+                id: id,
+                featureKey: featureKey,
+                expiresAt: expiresAt,
+                source: source,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String featureKey,
+                Value<int?> expiresAt = const Value.absent(),
+                required UnlockSource source,
+                required int createdAt,
+                required int updatedAt,
+                Value<int?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UnlocksCompanion.insert(
+                id: id,
+                featureKey: featureKey,
+                expiresAt: expiresAt,
+                source: source,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$UnlocksTable, UnlockRow>(table),
+                  BaseReferences<_$AppDatabase, $UnlocksTable, UnlockRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$UnlocksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UnlocksTable,
+      UnlockRow,
+      $$UnlocksTableFilterComposer,
+      $$UnlocksTableOrderingComposer,
+      $$UnlocksTableAnnotationComposer,
+      $$UnlocksTableCreateCompanionBuilder,
+      $$UnlocksTableUpdateCompanionBuilder,
+      (UnlockRow, BaseReferences<_$AppDatabase, $UnlocksTable, UnlockRow>),
+      UnlockRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
+  $$AccountsTableTableManager get accounts =>
+      $$AccountsTableTableManager(_db, _db.accounts);
   $$SettingsTableTableManager get settings =>
       $$SettingsTableTableManager(_db, _db.settings);
   $$CategoriesTableTableManager get categories =>
       $$CategoriesTableTableManager(_db, _db.categories);
-  $$AccountsTableTableManager get accounts =>
-      $$AccountsTableTableManager(_db, _db.accounts);
   $$RecurringRulesTableTableManager get recurringRules =>
       $$RecurringRulesTableTableManager(_db, _db.recurringRules);
   $$TransactionsTableTableManager get transactions =>
       $$TransactionsTableTableManager(_db, _db.transactions);
   $$BudgetsTableTableManager get budgets =>
       $$BudgetsTableTableManager(_db, _db.budgets);
-  $$UnlocksTableTableManager get unlocks =>
-      $$UnlocksTableTableManager(_db, _db.unlocks);
   $$HabitsTableTableManager get habits =>
       $$HabitsTableTableManager(_db, _db.habits);
   $$HabitSchedulesTableTableManager get habitSchedules =>
       $$HabitSchedulesTableTableManager(_db, _db.habitSchedules);
   $$HabitEntriesTableTableManager get habitEntries =>
       $$HabitEntriesTableTableManager(_db, _db.habitEntries);
+  $$UnlocksTableTableManager get unlocks =>
+      $$UnlocksTableTableManager(_db, _db.unlocks);
 }

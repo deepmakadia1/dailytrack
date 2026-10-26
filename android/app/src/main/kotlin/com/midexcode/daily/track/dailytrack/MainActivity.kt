@@ -61,6 +61,9 @@ class MainActivity : FlutterFragmentActivity() {
                             "sdkInt" to Build.VERSION.SDK_INT,
                         ),
                     )
+                    // Android's no-backup folder for the device ID file, which
+                    // is never backed up or transferred (feature 010 R4).
+                    "getNoBackupDir" -> result.success(noBackupFilesDir.absolutePath)
                     // The system notification settings for this app.
                     "openNotificationSettings" -> {
                         val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

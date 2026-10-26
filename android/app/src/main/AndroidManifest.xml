@@ -9,12 +9,17 @@
     <!-- Google Drive backup (feature 008 research R10); release builds
          otherwise have no network access. -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- allowBackup="false": Android Auto Backup would copy the database off the
-         device without the user starting it, and restored secure storage is
-         unreadable without its Keystore key (feature 007 research R8). -->
+    <!-- Android Auto Backup and device transfer are on for the database file
+         only (feature 010, spec §16, research R14; constitution 1.1.0): both
+         rules files use an include list, and secure storage (PIN hash,
+         lockout, backup password) is excluded, as is everything else. The
+         first start after such a restore turns app lock off when the PIN
+         didn't come along, so the user is never locked out (FR-046). -->
     <application
         android:label="@string/app_name"
-        android:allowBackup="false"
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -95,6 +100,18 @@
         <receiver
             android:name=".system.MidnightAlarmReceiver"
             android:exported="false" />
+        <!-- AdMob App ID (feature 009 research R2). The value comes from the
+             admobAppId placeholder in build.gradle.kts: Google's test App ID
+             for dev and debug builds, the real one only for prod release. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="${admobAppId}" />
+        <meta-data
+            android:name="com.google.android.gms.ads.flag.OPTIMIZE_INITIALIZATION"
+            android:value="true" />
+        <meta-data
+            android:name="com.google.android.gms.ads.flag.OPTIMIZE_AD_LOADING"
+            android:value="true" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

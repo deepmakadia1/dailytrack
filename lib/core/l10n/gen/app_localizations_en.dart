@@ -2878,9 +2878,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Google Drive isn\'t available in this build.';
 
   @override
-  String get backup_connect => 'Connect Google account';
-
-  @override
   String backup_connected(String email) {
     return 'Connected as $email';
   }
@@ -2893,16 +2890,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backup_driveSaved => 'Backed up to Google Drive';
-
-  @override
-  String get backup_disconnect => 'Disconnect';
-
-  @override
-  String get backup_disconnectTitle => 'Disconnect Google account?';
-
-  @override
-  String get backup_disconnectBody =>
-      'Automatic backup turns off. Backups already in Google Drive are kept.';
 
   @override
   String get backup_autoTitle => 'Auto backup';
@@ -3066,7 +3053,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get export_locked =>
-      'Exports are part of DailyTrack Pro. Unlocking them is coming soon.';
+      'Exports are part of DailyTrack Pro. Watch an ad for one export, or get Pro.';
 
   @override
   String get export_nothing => 'Nothing to export for this period';
@@ -3278,6 +3265,429 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String widget_habitCountA11y(String name, String progress) {
     return '$name, $progress. Double tap to add one';
+  }
+
+  @override
+  String get ads_badge => 'Ad';
+
+  @override
+  String get ads_bannerLabel => 'Advertisement';
+
+  @override
+  String get privacy_adChoices => 'Ad privacy choices';
+
+  @override
+  String get ads_resetCounters => 'Reset ad counters';
+
+  @override
+  String get ads_resetCountersDone => 'Ad counters reset';
+
+  @override
+  String get premium_title => 'DailyTrack Pro';
+
+  @override
+  String get premium_benefitNoAds => 'No ads';
+
+  @override
+  String get premium_benefitThemes => 'All themes';
+
+  @override
+  String get premium_benefitReports => 'Advanced reports';
+
+  @override
+  String get premium_benefitExports => 'Unlimited exports';
+
+  @override
+  String get premium_benefitFreezes => 'Unlimited streak freezes up to the cap';
+
+  @override
+  String get rewarded_titleReports => 'Unlock advanced reports for 24 hours';
+
+  @override
+  String get rewarded_titleCsv => 'Unlock one CSV export';
+
+  @override
+  String get rewarded_titlePdf => 'Unlock one PDF export';
+
+  @override
+  String rewarded_titleTheme(String theme) {
+    return 'Unlock the $theme theme for good';
+  }
+
+  @override
+  String rewarded_titleFreeze(String habit) {
+    return 'Get 1 streak freeze for $habit';
+  }
+
+  @override
+  String get rewarded_explainReports =>
+      'Watch a short ad to see Trends, Accounts, and every period for the next 24 hours.';
+
+  @override
+  String get rewarded_explainExport =>
+      'Watch a short ad to create one export file in this format.';
+
+  @override
+  String get rewarded_explainTheme =>
+      'Watch a short ad to keep this color theme for good.';
+
+  @override
+  String get rewarded_explainFreeze =>
+      'Watch a short ad to add one streak freeze to this habit (up to 2).';
+
+  @override
+  String get rewarded_watch => 'Watch a short ad';
+
+  @override
+  String get rewarded_getPro => 'Get Pro instead';
+
+  @override
+  String get rewarded_notNow => 'Not now';
+
+  @override
+  String get rewarded_loadingAd => 'Loading ad';
+
+  @override
+  String get rewarded_unavailable => 'Ad not available, try again later';
+
+  @override
+  String get rewarded_tryAgain => 'Try again';
+
+  @override
+  String get rewarded_closedEarly => 'Watch the whole ad to unlock';
+
+  @override
+  String get rewarded_limitReached =>
+      'You\'ve reached today\'s limit for this unlock. Try again tomorrow, or get Pro.';
+
+  @override
+  String get locked_watchAdReports => 'Watch an ad to unlock for 24 hours';
+
+  @override
+  String get locked_watchAdExport => 'Watch an ad to unlock one export';
+
+  @override
+  String get locked_watchAdTheme => 'Watch an ad to unlock this theme';
+
+  @override
+  String get locked_watchAdFreeze => 'Watch an ad to get a freeze';
+
+  @override
+  String premium_buyFor(String price) {
+    return 'Get Pro for $price';
+  }
+
+  @override
+  String get premium_restore => 'Restore purchase';
+
+  @override
+  String get premium_restored => 'Pro restored';
+
+  @override
+  String get premium_restoreNotFound =>
+      'No Pro purchase found for this Google account';
+
+  @override
+  String get premium_storeUnavailable =>
+      'Store not available right now, try again later';
+
+  @override
+  String get premium_accountNote =>
+      'Your purchase is tied to your Google account.';
+
+  @override
+  String get premium_pending => 'Pro unlocks when the payment completes';
+
+  @override
+  String get premium_purchaseError =>
+      'Couldn\'t complete the purchase. Try again.';
+
+  @override
+  String get premium_owned => 'You have Pro. Thanks for your support.';
+
+  @override
+  String get premium_cardTitle => 'Remove ads and unlock everything';
+
+  @override
+  String get premium_cardSubtitle =>
+      'DailyTrack Pro: one purchase, yours for good';
+
+  @override
+  String get habit_addFreezePro => 'Add a freeze';
+
+  @override
+  String get account_title => 'Account';
+
+  @override
+  String get account_signedOutTitle => 'Back up with your Google account';
+
+  @override
+  String get account_pointDrive =>
+      'Your data is saved to your own Google Drive';
+
+  @override
+  String get account_pointRestore => 'Restore it on a new phone';
+
+  @override
+  String get account_pointOptional =>
+      'Optional: the app works fully without an account';
+
+  @override
+  String get account_signIn => 'Sign in with Google';
+
+  @override
+  String get account_pinFootnote => 'Your app lock PIN is never backed up.';
+
+  @override
+  String get account_signInFailed =>
+      'Couldn\'t sign in. Check your connection and try again.';
+
+  @override
+  String get account_signedInBackedUp => 'Signed in. Your data is backed up.';
+
+  @override
+  String account_lastBackupFrom(String time, String device) {
+    return 'Last backup: $time · $device';
+  }
+
+  @override
+  String account_lastBackup(String time) {
+    return 'Last backup: $time';
+  }
+
+  @override
+  String get account_noBackupYet => 'No backup in this account yet';
+
+  @override
+  String get account_statusBackedUp => 'Backed up';
+
+  @override
+  String get account_statusBackingUp => 'Backing up…';
+
+  @override
+  String get account_statusPaused =>
+      'Backup paused: a newer backup from another phone exists';
+
+  @override
+  String get account_statusFailed => 'Backup failed';
+
+  @override
+  String get account_statusError => 'Couldn\'t read your backups.';
+
+  @override
+  String account_autoSummaryWifi(String frequency) {
+    return '$frequency · Wi-Fi only';
+  }
+
+  @override
+  String get account_signOut => 'Sign out';
+
+  @override
+  String get account_signedOut =>
+      'Signed out. Your data is still on this phone.';
+
+  @override
+  String get account_deleteBackups => 'Delete my backups';
+
+  @override
+  String get account_deleteTitle => 'Delete your backups?';
+
+  @override
+  String account_deleteBody(int count, String email) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Delete all $countString DailyTrack backups from $email? Data on this phone stays. This can\'t be undone.',
+      one:
+          'Delete 1 DailyTrack backup from $email? Data on this phone stays. This can\'t be undone.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get account_deleteAction => 'Delete backups';
+
+  @override
+  String get account_deleted => 'Your backups were deleted';
+
+  @override
+  String account_photoOf(String name) {
+    return 'Profile photo of $name';
+  }
+
+  @override
+  String get backup_manageAccount => 'Manage your account';
+
+  @override
+  String get backup_conflictTitle => 'Back up anyway?';
+
+  @override
+  String backup_conflictNewer(String device, String time) {
+    return 'A newer backup from $device ($time) exists. Backing up now makes this phone\'s data the latest.';
+  }
+
+  @override
+  String get backup_conflictEmpty =>
+      'This phone has no data. Backing up now makes an empty backup the latest.';
+
+  @override
+  String get backup_backUpAnyway => 'Back up anyway';
+
+  @override
+  String get backup_unknownDevice => 'Unknown device';
+
+  @override
+  String get notif_backupPausedTitle => 'Backup paused';
+
+  @override
+  String get notif_backupPausedBody =>
+      'Another phone made a newer backup. Tap to review.';
+
+  @override
+  String account_choiceTitle(String email) {
+    return 'Backup found on $email';
+  }
+
+  @override
+  String get account_fromThisPhone => 'From this phone';
+
+  @override
+  String account_fromDevice(String device) {
+    return 'From $device';
+  }
+
+  @override
+  String get account_encrypted => 'Encrypted';
+
+  @override
+  String account_thisPhone(String counts) {
+    return 'This phone: $counts';
+  }
+
+  @override
+  String get account_thisPhoneEmpty => 'This phone: no data yet';
+
+  @override
+  String get account_replaceNote =>
+      'Restoring replaces the data on this phone.';
+
+  @override
+  String get account_restoreFromAccount => 'Restore from account';
+
+  @override
+  String get account_keepThisPhone => 'Keep this phone\'s data';
+
+  @override
+  String get account_seeAllBackups => 'See all backups';
+
+  @override
+  String get account_close => 'Close';
+
+  @override
+  String get account_wrongPassword => 'That password didn\'t work';
+
+  @override
+  String get account_restoreFailed =>
+      'Couldn\'t restore. Your data on this phone wasn\'t changed.';
+
+  @override
+  String get account_safetyCopyFailed =>
+      'Not enough free space to save a copy of this phone\'s data first, so nothing was restored. Free up space and try again.';
+
+  @override
+  String account_restoredCounts(String summary) {
+    return 'Restored $summary';
+  }
+
+  @override
+  String get account_restoring => 'Restoring your data…';
+
+  @override
+  String get account_restore => 'Restore';
+
+  @override
+  String get account_review => 'Review';
+
+  @override
+  String get account_switch => 'Switch account';
+
+  @override
+  String get account_switchFailedTitle => 'Couldn\'t back up first';
+
+  @override
+  String account_switchFailedBody(String email) {
+    return 'Your latest changes aren\'t in $email yet. Switch anyway? Your data stays on this phone.';
+  }
+
+  @override
+  String get account_switchAnyway => 'Switch anyway';
+
+  @override
+  String get account_sessionExpired =>
+      'Your Google sign-in expired. Sign in again to keep backing up.';
+
+  @override
+  String account_signOutSheetTitle(String email) {
+    return 'Sign out of $email?';
+  }
+
+  @override
+  String get account_signOutBackingUp => 'Backing up your latest changes…';
+
+  @override
+  String get account_signOutBackupFailed =>
+      'Couldn\'t back up your latest changes';
+
+  @override
+  String get account_signOutAnyway => 'Sign out anyway';
+
+  @override
+  String get account_keepData => 'Keep data on this phone';
+
+  @override
+  String get account_keepDataHelp =>
+      'You can keep using the app without an account.';
+
+  @override
+  String get account_removeData => 'Remove data from this phone';
+
+  @override
+  String get account_removeDataHelp =>
+      'Your backup stays in your Google account.';
+
+  @override
+  String get onboarding_restoreWithGoogle => 'Restore with Google';
+
+  @override
+  String get onboarding_noBackupFound => 'No backup found on this account';
+
+  @override
+  String get finishSetup_title => 'Finish setting up';
+
+  @override
+  String get finishSetup_body =>
+      'Your data is back. Your app lock PIN is never backed up, so set a new one to keep your data private.';
+
+  @override
+  String get finishSetup_setLock => 'Set app lock';
+
+  @override
+  String get finishSetup_allowNotifications => 'Allow notifications';
+
+  @override
+  String get finishSetup_notNow => 'Not now';
+
+  @override
+  String get backup_previousTitle => 'Restore previous phone data';
+
+  @override
+  String backup_previousDetail(String date, String counts) {
+    return 'Saved $date · $counts';
   }
 
   @override

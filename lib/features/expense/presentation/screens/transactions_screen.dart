@@ -1,6 +1,10 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/domain/ad_placement.dart';
+import 'package:dailytrack/core/ads/domain/native_ad_slots.dart';
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
+import 'package:dailytrack/core/ads/widgets/app_native_ad.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
@@ -32,8 +36,8 @@ import 'package:go_router/go_router.dart';
 
 /// EXP-01 Transactions list, the Expenses tab (spec §8, contracts/
 /// screens.md, research R4 and R6): period selector, exact summary strip,
-/// filter chips, and rows grouped under sticky day headers. No ads (the
-/// banner slot stays empty until T4.2).
+/// filter chips, and rows grouped under sticky day headers, with the
+/// bottom banner and native ads after row 8, then every 15 rows (spec §11).
 class TransactionsScreen extends ConsumerStatefulWidget {
   const new({super.key, this.accountId});
 
@@ -308,6 +312,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
 
     return AppScaffold(
       title: l10n.expense_listTitle,
+      // Spec §11: the bottom banner (no space until an ad loads).
+      bannerSlot: const AppBannerAd(),
       largeTitle: true,
       showBack: false,
       actions: [
@@ -379,7 +385,9 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
   }
 
   /// One sliver group per local day: a pinned header and fixed-extent rows
-  /// (research R6), so 10,000 rows scroll smoothly.
+  /// (research R6), so 10,000 rows scroll smoothly. Native ads go after row
+  /// 8, then every 15 rows, at most 3 per load (spec §11); a day holding an
+  /// ad is split into two fixed-extent lists around it (feature 009 R8).
   List<Widget> _dayGroups({
     required List<TransactionView> rows,
     required PeriodLedger ledger,
@@ -392,8 +400,37 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
       (groups[key] ??= []).add(v);
     }
     final extent = MediaQuery.textScalerOf(context).scale(transactionRowHeight);
-    return [
-      for (final MapEntry(key: dayKey, value: dayRows) in groups.entries)
+    // Global row indexes an ad goes in front of.
+    final adSlots = nativeAdRowIndexes(rows.length);
+    var start = 0;
+    var adNumber = 0;
+    final slivers = <Widget>[];
+    for (final MapEntry(key: dayKey, value: dayRows) in groups.entries) {
+      final end = start + dayRows.length;
+      // Ads that fall inside this day, or right after its last row.
+      final cuts = [
+        for (final s in adSlots)
+          if (s > start && s <= end) s - start,
+      ];
+      final parts = <Widget>[];
+      var from = 0;
+      for (final cut in cuts) {
+        parts
+          ..add(_rowList(dayRows.sublist(from, cut), extent, currency))
+          ..add(
+            SliverToBoxAdapter(
+              child: AppNativeAd(
+                key: Key('transactions_native_${adNumber++}'),
+                placement: NativePlacement.transactions,
+              ),
+            ),
+          );
+        from = cut;
+      }
+      if (from < dayRows.length) {
+        parts.add(_rowList(dayRows.sublist(from), extent, currency));
+      }
+      slivers.add(
         SliverMainAxisGroup(
           key: ValueKey('day_$dayKey'),
           slivers: [
@@ -405,15 +442,21 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                 currency: currency,
               ),
             ),
-            SliverFixedExtentList.builder(
-              itemExtent: extent,
-              itemCount: dayRows.length,
-              itemBuilder: (context, i) => _dismissible(dayRows[i], currency),
-            ),
+            ...parts,
           ],
         ),
-    ];
+      );
+      start = end;
+    }
+    return slivers;
   }
+
+  Widget _rowList(List<TransactionView> rows, double extent, String currency) =>
+      SliverFixedExtentList.builder(
+        itemExtent: extent,
+        itemCount: rows.length,
+        itemBuilder: (context, i) => _dismissible(rows[i], currency),
+      );
 
   /// Swipe left deletes with Undo (no dialog); swipe right duplicates
   /// (§15.5). Both are also in the long-press menu.

@@ -58,6 +58,50 @@ android {
     }
 }
 
+// AdMob App ID (feature 009 research R2, contracts/android.md). Google's
+// public test App ID is safe to commit; the real one never is. Prod release
+// reads it from android/local.properties (`admob.appId`, git-ignored) or the
+// ADMOB_APP_ID environment variable. Every other variant uses the test ID.
+val admobTestAppId = "ca-app-pub-3940256099942544~3347511713"
+val localProperties = java.util.Properties().apply {
+    rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+}
+val prodAdmobAppId: String? =
+    localProperties.getProperty("admob.appId")?.takeIf { it.isNotBlank() }
+        ?: System.getenv("ADMOB_APP_ID")?.takeIf { it.isNotBlank() }
+
+// A build meant for Play upload: -PstoreBuild=true, DAILYTRACK_STORE_BUILD=true,
+// or the upload-key signing config (android/key.properties) is present.
+val isStoreBuild: Boolean =
+    (findProperty("storeBuild") as String?) == "true" ||
+        System.getenv("DAILYTRACK_STORE_BUILD") == "true" ||
+        rootProject.file("key.properties").exists()
+
+androidComponents {
+    onVariants { variant ->
+        val isProdRelease = variant.flavorName == "prod" && variant.buildType == "release"
+        if (isProdRelease && prodAdmobAppId == null && !isStoreBuild) {
+            logger.warn("AdMob App ID not set; using the test App ID, no ads will be requested")
+        }
+        val appId = if (isProdRelease) prodAdmobAppId ?: admobTestAppId else admobTestAppId
+        variant.manifestPlaceholders.put("admobAppId", appId)
+    }
+}
+
+// Only Play-upload builds must have the real App ID (clarification Q2).
+val checkAdmobAppId by tasks.registering {
+    doLast {
+        if (isStoreBuild && prodAdmobAppId == null) {
+            throw GradleException(
+                "AdMob App ID missing: set admob.appId in android/local.properties or ADMOB_APP_ID",
+            )
+        }
+    }
+}
+tasks.matching { it.name == "preProdReleaseBuild" }.configureEach {
+    dependsOn(checkAdmobAppId)
+}
+
 kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17

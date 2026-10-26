@@ -27,6 +27,10 @@ final class _FailingHabitSection extends BackupSection {
   @override
   int get sinceSchemaVersion => _real.sinceSchemaVersion;
   @override
+  Set<String> get tables => _real.tables;
+  @override
+  Future<bool> hasUserData(AppDatabase db) => _real.hasUserData(db);
+  @override
   Future<Map<String, Object?>> export(AppDatabase db) => _real.export(db);
   @override
   void validate(Map<String, Object?> section) => _real.validate(section);

@@ -1,16 +1,29 @@
 import 'dart:typed_data';
 
 import 'package:dailytrack/core/backup/domain/backup_document.dart';
+import 'package:dailytrack/core/backup/domain/backup_meta.dart';
 import 'package:dailytrack/core/backup/domain/backup_ports.dart';
 
 /// A finished backup file, ready to save or share.
 final class BackupFile {
-  const new({required this.bytes, required this.fileName});
+  const new({
+    required this.bytes,
+    required this.fileName,
+    this.meta,
+    this.changeCounter = 0,
+  });
 
   final Uint8List bytes;
 
   /// `dailytrack_backup_<yyyyMMdd_HHmm>.<json|zip|dtbk>` (FR-001).
   final String fileName;
+
+  /// The file's `meta`; null when made without a device identity.
+  final BackupMeta? meta;
+
+  /// `dataChangeCounter` read inside the backup's own snapshot (feature
+  /// 010 research R5).
+  final int changeCounter;
 }
 
 /// A backup that has been read, checked, and upgraded, but not written

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:dailytrack/core/billing/billing_providers.dart';
 import 'package:dailytrack/core/feature_gate/domain/feature_key.dart';
 import 'package:dailytrack/core/feature_gate/feature_gate_providers.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
@@ -204,6 +205,22 @@ class HabitDetailController extends _$HabitDetailController {
       return await ref.read(habitRepositoryProvider).addFreeze(id);
     } on Object {
       return null;
+    }
+  }
+
+  /// A rewarded freeze (PRM-02, feature 009): runs only from the ad's
+  /// reward callback. The repository caps freezes at 2.
+  Future<void> addRewardedFreeze() async {
+    await ref.read(habitRepositoryProvider).addFreeze(id);
+  }
+
+  /// Pro adds a freeze without an ad, up to the cap (FR-044).
+  Future<void> addProFreeze() async {
+    if (!ref.read(proOwnedProvider)) return;
+    try {
+      await ref.read(habitRepositoryProvider).addFreeze(id);
+    } on Object {
+      // The card keeps its count; the user can tap again.
     }
   }
 

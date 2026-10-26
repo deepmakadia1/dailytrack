@@ -20,6 +20,13 @@ abstract interface class BackgroundScheduler {
     NetworkRequirement network = NetworkRequirement.none,
   });
 
+  /// A one-off job named [uniqueName] that runs once [network] is there,
+  /// replacing one still waiting (feature 010 research R6).
+  Future<void> enqueueOnce(
+    String uniqueName, {
+    NetworkRequirement network = NetworkRequirement.none,
+  });
+
   Future<void> cancel(String uniqueName);
 }
 

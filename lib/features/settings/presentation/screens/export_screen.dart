@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/rewarded_unlock.dart';
 import 'package:dailytrack/core/export/export_dataset.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
@@ -17,6 +19,7 @@ import 'package:dailytrack/features/settings/domain/export/export_use_case.dart'
 import 'package:dailytrack/features/settings/presentation/controllers/export_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// SET-03 Export data (spec §10, feature 008 contracts/screens.md): data
 /// type, period, format, filters (Transactions only), and one Export
@@ -206,6 +209,17 @@ class _ExportForm extends ConsumerWidget {
               : LockedFeatureOverlay(
                   key: const Key('export_locked'),
                   message: l10n.export_locked,
+                  watchAdLabel: l10n.locked_watchAdExport,
+                  // PRM-02: one export of this format, which then starts;
+                  // a cancelled ad starts nothing (SET-03 AC).
+                  onWatchAd: () => unawaited(() async {
+                    final unlocked = await showRewardedUnlock(
+                      context,
+                      state.format.featureKey,
+                    );
+                    if (unlocked && context.mounted) await runExport();
+                  }()),
+                  onGetPro: () => unawaited(context.push(Routes.premium)),
                   child: exportButton,
                 ),
         ),

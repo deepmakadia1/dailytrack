@@ -7,11 +7,13 @@ import 'package:dailytrack/core/module/root_navigator.dart';
 import 'package:dailytrack/core/security/lock_session.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
+import 'package:dailytrack/features/account/presentation/screens/account_screen.dart';
 import 'package:dailytrack/features/dashboard/presentation/screens/home_screen.dart';
 import 'package:dailytrack/features/lock/presentation/pin_flow_mode.dart';
 import 'package:dailytrack/features/lock/presentation/screens/pin_screen.dart';
 import 'package:dailytrack/features/lock/presentation/screens/unlock_screen.dart';
 import 'package:dailytrack/features/onboarding/presentation/screens/onboarding_screen.dart';
+import 'package:dailytrack/features/premium/presentation/screens/premium_screen.dart';
 import 'package:dailytrack/features/settings/presentation/controllers/web_page_controller.dart';
 import 'package:dailytrack/features/settings/presentation/screens/backup_screen.dart';
 import 'package:dailytrack/features/settings/presentation/screens/export_screen.dart';
@@ -91,6 +93,13 @@ GoRouter appRouter(Ref ref) {
           from: state.uri.queryParameters['from'],
         ),
       ),
+      // PRM-01, a full-screen modal above everything (feature 009).
+      GoRoute(
+        path: Routes.premium,
+        name: RouteNames.premium,
+        pageBuilder: (context, state) =>
+            const MaterialPage(fullscreenDialog: true, child: PremiumScreen()),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(navigationShell: shell),
         branches: [
@@ -131,6 +140,12 @@ GoRouter appRouter(Ref ref) {
                     path: Routes.backupSegment,
                     name: RouteNames.backup,
                     builder: (context, state) => const BackupScreen(),
+                  ),
+                  // ACC-01 (feature 010 contracts/routes.md).
+                  GoRoute(
+                    path: Routes.accountSegment,
+                    name: RouteNames.account,
+                    builder: (context, state) => const AccountScreen(),
                   ),
                   // Full screen above the shell, so EXP-11 can push it and
                   // back returns to Reports (feature 008 contracts/routes.md).

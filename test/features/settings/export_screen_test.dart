@@ -38,6 +38,7 @@ void main() {
     WidgetTester tester, {
     String location = Routes.export,
     AppSettings initial = const AppSettings(onboardingDone: true, locale: 'en'),
+    FakeRewardedUnlockPresenter? presenter,
   }) async {
     tester.view
       ..physicalSize = const Size(412, 1400)
@@ -49,6 +50,7 @@ void main() {
       settings: FakeSettingsRepository(initial: initial),
       expense: expense,
       gate: gate,
+      rewardedPresenter: presenter,
       overrides: [
         exportUseCaseProvider.overrideWithValue(useCase),
         fileSharerProvider.overrideWithValue(sharer),
@@ -101,10 +103,9 @@ void main() {
     expect(find.text('Habits'), findsNothing);
   });
 
-  testWidgets('SET-03 US5-7 a locked format shows the locked overlay with no '
-      'ad action, and Export does nothing; the debug unlock opens it live', (
-    tester,
-  ) async {
+  testWidgets('SET-03 US5-7 a locked format shows the locked overlay with '
+      '"Watch an ad" and "Get Pro", and Export does nothing; the debug unlock '
+      'opens it live', (tester) async {
     gate
       ..set(FeatureKey.exportCsv, unlocked: false)
       ..set(FeatureKey.exportPdf, unlocked: false);
@@ -112,12 +113,12 @@ void main() {
     expect(find.byType(LockedFeatureOverlay), findsOneWidget);
     expect(
       find.text(
-        'Exports are part of DailyTrack Pro. Unlocking them is '
-        'coming soon.',
+        'Exports are part of DailyTrack Pro. Watch an ad for one export, '
+        'or get Pro.',
       ),
       findsOneWidget,
     );
-    expect(find.textContaining('Watch'), findsNothing);
+    expect(find.text('Watch an ad to unlock one export'), findsOneWidget);
     final button = tester.widget<ButtonStyleButton>(
       find.byKey(const Key('export_button')),
     );
@@ -252,5 +253,40 @@ void main() {
         for (final d in m.exportDatasets()) d.id,
     ];
     expect(ids, ['transactions', 'habits']);
+  });
+
+  // --- 009-ads-rewarded-pro (T066): one rewarded export. ---
+  group('SET-03 rewarded export', () {
+    Future<void> watchAd(WidgetTester tester) async {
+      await tester.ensureVisible(find.byKey(const Key('locked_watch_ad')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('locked_watch_ad')));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('SET-03 AC cancelling the rewarded ad does not start the '
+        'export', (tester) async {
+      gate.set(FeatureKey.exportCsv, unlocked: false);
+      final presenter = FakeRewardedUnlockPresenter(earn: false);
+      await open(tester, presenter: presenter);
+      await watchAd(tester);
+      expect(presenter.requests.single.key, FeatureKey.exportCsv);
+      expect(useCase.requests, isEmpty);
+    });
+
+    testWidgets('an earned reward unlocks one export of that format, which '
+        'starts at once', (tester) async {
+      gate
+        ..set(FeatureKey.exportCsv, unlocked: false)
+        ..set(FeatureKey.exportPdf, unlocked: false);
+      final presenter = FakeRewardedUnlockPresenter();
+      await open(tester, presenter: presenter);
+      await tester.tap(find.text('PDF'));
+      await tester.pumpAndSettle();
+      await watchAd(tester);
+      expect(presenter.requests.single.key, FeatureKey.exportPdf);
+      expect(presenter.requests.single.duration, isNull);
+      expect(useCase.requests, hasLength(1));
+    });
   });
 }

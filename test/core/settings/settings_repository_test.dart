@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dailytrack/core/backup/domain/backup_settings_policy.dart';
 import 'package:dailytrack/core/database/app_database.dart';
 import 'package:dailytrack/core/settings/data/settings_repository_impl.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
@@ -270,6 +271,102 @@ void main() {
     test('bad JSON falls back to on', () async {
       await putRaw('habitRemindersEnabled', '"no"');
       expect((await repo.load()).habitRemindersEnabled, isTrue);
+    });
+  });
+
+  // --- 009-ads-rewarded-pro (T010): the interstitial cap keys. ---
+  group('interstitial cap keys (feature 009 data-model §1)', () {
+    test('the install time is written once and never moved', () async {
+      await repo.setAdsInstallAtIfMissing(1000);
+      await repo.setAdsInstallAtIfMissing(2000);
+      expect((await repo.load()).adsInstallAt, 1000);
+    });
+
+    test('a shown interstitial, the session day, and the dev reset '
+        'round-trip', () async {
+      await repo.recordInterstitialShown(
+        at: 5000,
+        dayKey: '2026-10-22',
+        countToday: 3,
+      );
+      await repo.setAdsLastSessionDay('2026-10-22');
+      var s = await repo.load();
+      expect(s.adsLastInterstitialAt, 5000);
+      expect(s.adsInterstitialDay, '2026-10-22');
+      expect(s.adsInterstitialsToday, 3);
+      expect(s.adsLastSessionDay, '2026-10-22');
+      await repo.resetAdCounters(installAt: 42);
+      s = await repo.load();
+      expect(s.adsInstallAt, 42);
+      expect(s.adsLastInterstitialAt, isNull);
+      expect(s.adsInterstitialDay, isNull);
+      expect(s.adsInterstitialsToday, 0);
+      expect(s.adsLastSessionDay, '2026-10-22');
+    });
+
+    test('corrupt values fall back to defaults', () async {
+      await putRaw('adsInterstitialsToday', '-3');
+      await putRaw('adsInterstitialDay', '"not a day"');
+      final s = await repo.load();
+      expect(s.adsInterstitialsToday, 0);
+      expect(s.adsInterstitialDay, isNull);
+    });
+
+    test(
+      'FR-053 rewarded counts round-trip; bad entries are dropped',
+      () async {
+        await repo.setRewardedCounts(
+          dayKey: '2026-10-22',
+          counts: const {'advancedReports': 3, 'premiumTheme_rose': 1},
+        );
+        var s = await repo.load();
+        expect(s.rewardedDay, '2026-10-22');
+        expect(s.rewardedCounts, {
+          'advancedReports': 3,
+          'premiumTheme_rose': 1,
+        });
+        await putRaw(
+          'rewardedCounts',
+          '{"exportPdf": 2, "bad": "x", "neg": -1}',
+        );
+        s = await repo.load();
+        expect(s.rewardedCounts, {'exportPdf': 2});
+      },
+    );
+
+    test('Pro state is written together and clamps the streak', () async {
+      await repo.setProState(
+        owned: true,
+        notOwnedStreak: 1,
+        pending: true,
+        removalPending: true,
+      );
+      var s = await repo.load();
+      expect(s.removeAdsPurchased, isTrue);
+      expect(s.proNotOwnedStreak, 1);
+      expect(s.proPurchasePending, isTrue);
+      expect(s.proRemovalPending, isTrue);
+      await putRaw('proNotOwnedStreak', '9');
+      s = await repo.load();
+      expect(s.proNotOwnedStreak, 2);
+    });
+
+    test('FR-025 none of the keys travels in a backup', () {
+      for (final key in [
+        'removeAdsPurchased',
+        'proNotOwnedStreak',
+        'proPurchasePending',
+        'proRemovalPending',
+        'rewardedDay',
+        'rewardedCounts',
+        'adsInstallAt',
+        'adsLastInterstitialAt',
+        'adsInterstitialDay',
+        'adsInterstitialsToday',
+        'adsLastSessionDay',
+      ]) {
+        expect(BackupSettingsPolicy.isRestorable(key), isFalse, reason: key);
+      }
     });
   });
 }

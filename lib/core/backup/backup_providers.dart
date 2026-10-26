@@ -1,14 +1,19 @@
 import 'dart:io';
 
+import 'package:dailytrack/core/account/account_providers.dart';
+import 'package:dailytrack/core/background/background_providers.dart';
+import 'package:dailytrack/core/backup/background_backup_scheduler.dart';
 import 'package:dailytrack/core/backup/backup_service.dart';
 import 'package:dailytrack/core/backup/data/backup_coordinator.dart';
 import 'package:dailytrack/core/backup/data/backup_engine.dart';
 import 'package:dailytrack/core/backup/data/file_picker_local_backup_files.dart';
 import 'package:dailytrack/core/backup/data/google_auth.dart';
 import 'package:dailytrack/core/backup/data/google_drive_backup_store.dart';
+import 'package:dailytrack/core/backup/data/safety_copy_store.dart';
 import 'package:dailytrack/core/backup/data/secure_backup_password_store.dart';
 import 'package:dailytrack/core/backup/domain/backup_ports.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
+import 'package:dailytrack/core/backup/domain/safety_copy.dart';
 import 'package:dailytrack/core/config/google_config.dart';
 import 'package:dailytrack/core/database/database_provider.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
@@ -17,7 +22,6 @@ import 'package:dailytrack/core/security/external_activity_guard.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/share/file_sharer.dart';
 import 'package:dailytrack/core/support/app_info_source.dart';
-import 'package:dailytrack/core/support/device_info_source.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -44,19 +48,8 @@ GoogleAuth googleAuth(Ref ref) => GoogleAuth(
 /// The user's Drive app folder (feature 008 research R10). Widget tests
 /// override this with a fake.
 @Riverpod(keepAlive: true)
-DriveBackupStore driveBackupStore(Ref ref) {
-  final auth = ref.watch(googleAuthProvider);
-  return GoogleDriveBackupStore(
-    api: auth.driveApi,
-    connect: auth.connect,
-    disconnect: auth.disconnect,
-    deviceName: () async {
-      final info = await ref.read(deviceInfoSourceProvider).load();
-      final name = '${info.manufacturer} ${info.model}'.trim();
-      return name.isEmpty ? null : name;
-    },
-  );
-}
+DriveBackupStore driveBackupStore(Ref ref) =>
+    GoogleDriveBackupStore(api: ref.watch(googleAuthProvider).driveApi);
 
 /// The backup password in secure storage (feature 008 research R4).
 @Riverpod(keepAlive: true)
@@ -71,6 +64,12 @@ Future<Directory> Function() backupDocumentsDir(Ref ref) =>
 /// Where backup copies are kept for sharing.
 @Riverpod(keepAlive: true)
 Future<Directory> Function() backupCacheDir(Ref ref) => getTemporaryDirectory;
+
+/// The 7-day safety copy in app support (feature 010 data-model §5).
+/// Widget tests override it with a fake.
+@Riverpod(keepAlive: true)
+SafetyCopyStore safetyCopyStore(Ref ref) =>
+    FileSafetyCopyStore(getApplicationSupportDirectory);
 
 /// Runs after a restore: reschedule notifications and run app-open work
 /// (FR-010). Bound in `lib/app/production_overrides.dart`, because core never
@@ -113,6 +112,7 @@ BackupService backupService(Ref ref) => BackupService(
   cacheDir: ref.watch(backupCacheDirProvider),
   nowUtcMs: () => ref.read(clockProvider).now().toUtc().millisecondsSinceEpoch,
   drive: ref.watch(driveBackupStoreProvider),
+  device: () => ref.read(deviceIdentityServiceProvider).current(),
 );
 
 @Riverpod(keepAlive: true)
@@ -122,3 +122,12 @@ RestoreService restoreService(Ref ref) => RestoreService(
   files: ref.watch(localBackupFilesProvider),
   aftermath: ref.watch(restoreAftermathProvider),
 );
+
+/// Starts a background backup when the app is hidden (feature 010 R6).
+@Riverpod(keepAlive: true)
+BackgroundBackupScheduler backgroundBackupScheduler(Ref ref) =>
+    BackgroundBackupScheduler(
+      settings: ref.watch(settingsRepositoryProvider),
+      scheduler: ref.watch(backgroundSchedulerProvider),
+      clock: ref.watch(clockProvider),
+    );

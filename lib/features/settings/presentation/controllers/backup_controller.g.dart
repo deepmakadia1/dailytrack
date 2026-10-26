@@ -36,7 +36,7 @@ final class BackupControllerProvider
   BackupController create() => BackupController();
 }
 
-String _$backupControllerHash() => r'bf80a02c23a170c924d9df62490fc889d2e44b5e';
+String _$backupControllerHash() => r'c77929ac3e703bd0730f5dcd1c8a9c3f2842499c';
 
 /// SET-02 Backup and restore controller (FR-012 – FR-021).
 

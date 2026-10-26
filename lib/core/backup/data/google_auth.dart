@@ -1,15 +1,18 @@
+import 'package:dailytrack/core/account/domain/account.dart';
+import 'package:dailytrack/core/account/domain/account_auth.dart';
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
 import 'package:dailytrack/core/config/google_config.dart';
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 
-/// Google sign-in for Drive backup, `drive.appdata` scope only (FR-014,
-/// feature 008 research R10). Plugin calls, so it is covered by the device
-/// check (quickstart §4 step 4); the Drive store is tested with a fake
-/// client.
+/// Google sign-in for the account and Drive backup: the default `openid
+/// email profile` scopes plus `drive.appdata` only (FR-014, feature 010
+/// research R1, R2). The app's only `google_sign_in` wrapper. Plugin calls,
+/// so it is covered by the device check (quickstart §4 step 4); the Drive
+/// store is tested with a fake client.
 // coverage:ignore-start
-final class GoogleAuth {
+final class GoogleAuth implements AccountAuth {
   new({this.beforeLeaving});
 
   /// Called before the account picker opens, so the trip out does not lock
@@ -32,8 +35,15 @@ final class GoogleAuth {
         });
   }
 
-  /// Interactive: choose an account, then grant the scope. Returns the email.
-  Future<String> connect() async {
+  static AccountProfile _profile(GoogleSignInAccount account) => AccountProfile(
+    email: account.email,
+    displayName: account.displayName,
+    photoUrl: account.photoUrl,
+  );
+
+  /// Interactive: choose an account, then grant the scope.
+  @override
+  Future<AccountProfile> signIn() async {
     await _init();
     beforeLeaving?.call();
     try {
@@ -41,7 +51,7 @@ final class GoogleAuth {
         scopeHint: scopes,
       );
       await account.authorizationClient.authorizeScopes(scopes);
-      return account.email;
+      return _profile(account);
     } on GoogleSignInException catch (e) {
       if (e.code == GoogleSignInExceptionCode.canceled ||
           e.code == GoogleSignInExceptionCode.interrupted) {
@@ -70,7 +80,27 @@ final class GoogleAuth {
     }
   }
 
-  /// Revokes access; the next connect asks again.
+  /// The account of an earlier session, without UI (SYS-01, FR-004).
+  @override
+  Future<AccountProfile?> signInSilently() async {
+    await _init();
+    try {
+      final account = await GoogleSignIn.instance
+          .attemptLightweightAuthentication();
+      return account == null ? null : _profile(account);
+    } on GoogleSignInException {
+      return null;
+    }
+  }
+
+  /// Ends the session and keeps consent (research R16).
+  @override
+  Future<void> signOut() async {
+    await _init();
+    await GoogleSignIn.instance.signOut();
+  }
+
+  /// Revokes access; the next sign-in asks for consent again.
   Future<void> disconnect() async {
     await _init();
     try {

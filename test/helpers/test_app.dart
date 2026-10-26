@@ -1,9 +1,12 @@
 import 'package:dailytrack/app/app.dart';
 import 'package:dailytrack/app/bootstrap.dart';
 import 'package:dailytrack/app/module_registry.dart';
+import 'package:dailytrack/core/account/account_providers.dart';
 import 'package:dailytrack/core/ads/ad_providers.dart';
 import 'package:dailytrack/core/ads/ad_service.dart';
+import 'package:dailytrack/core/ads/rewarded_unlock.dart';
 import 'package:dailytrack/core/background/background_providers.dart';
+import 'package:dailytrack/core/billing/billing_providers.dart';
 import 'package:dailytrack/core/database/database_provider.dart';
 import 'package:dailytrack/core/feature_gate/feature_gate_providers.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
@@ -20,6 +23,8 @@ import 'package:dailytrack/core/support/app_review_service.dart';
 import 'package:dailytrack/core/support/device_info_source.dart';
 import 'package:dailytrack/core/support/external_launcher.dart';
 import 'package:dailytrack/core/widget/glance_refresher.dart';
+import 'package:dailytrack/features/account/presentation/widgets/restore_choice_sheet.dart';
+import 'package:dailytrack/features/premium/presentation/rewarded_unlock_sheet.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -27,6 +32,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../features/expense/fakes.dart';
 import '../features/habit/fakes.dart';
+import 'backup_fakes.dart';
 import 'fakes.dart';
 
 /// Pumps the whole app with fakes only (Constitution IV): fake settings,
@@ -47,6 +53,8 @@ Future<FakeSettingsRepository> pumpTestApp(
   FakeSettingsRepository? settings,
   FakeBootstrap? bootstrap,
   AdService? ads,
+  RewardedUnlockPresenter? rewardedPresenter,
+  FakeProStore? proStore,
   NotificationPermission? notif,
   ModuleRegistry? registry,
   ExpenseFakes? expense,
@@ -63,6 +71,9 @@ Future<FakeSettingsRepository> pumpTestApp(
   FakeSecureScreenService? secureScreen,
   FakeAppResetService? reset,
   FakeGlanceRefresher? glance,
+  FakeAccountAuth? accountAuth,
+  FakeAccountRestore? accountRestore,
+  int androidSdk = 34,
   bool debugTools = false,
   List<Override> overrides = const [],
   bool settle = true,
@@ -79,6 +90,13 @@ Future<FakeSettingsRepository> pumpTestApp(
           () => bootstrap ?? FakeBootstrap.fromSettings(repo),
         ),
         adServiceProvider.overrideWithValue(ads ?? const NoAdsService()),
+        // Feature 009: Google Play Billing is a fake; pass [proStore] to
+        // script purchases.
+        proStoreProvider.overrideWithValue(proStore ?? FakeProStore()),
+        // The real PRM-02 sheet over the (fake) ad service (feature 009).
+        rewardedUnlockPresenterProvider.overrideWithValue(
+          rewardedPresenter ?? const PremiumRewardedUnlockPresenter(),
+        ),
         notificationPermissionProvider.overrideWithValue(
           notif ?? FakeNotificationPermission(),
         ),
@@ -104,7 +122,9 @@ Future<FakeSettingsRepository> pumpTestApp(
         // (feature 007); pass [launcher], [review], or [appInfo] to
         // inspect them.
         appInfoSourceProvider.overrideWithValue(appInfo ?? FakeAppInfoSource()),
-        deviceInfoSourceProvider.overrideWithValue(FakeDeviceInfoSource()),
+        deviceInfoSourceProvider.overrideWithValue(
+          FakeDeviceInfoSource(sdkInt: androidSdk),
+        ),
         appReviewServiceProvider.overrideWithValue(
           review ?? FakeAppReviewService(),
         ),
@@ -124,6 +144,13 @@ Future<FakeSettingsRepository> pumpTestApp(
         glanceRefresherProvider.overrideWithValue(
           glance ?? FakeGlanceRefresher(),
         ),
+        // Feature 010: Google sign-in and the no-backup device ID file.
+        accountAuthProvider.overrideWithValue(accountAuth ?? FakeAccountAuth()),
+        deviceIdFileProvider.overrideWithValue(FakeDeviceIdFile()),
+        accountRestoreProvider.overrideWithValue(
+          accountRestore ?? FakeAccountRestore(settings: repo),
+        ),
+        accountUiProvider.overrideWithValue(const AccountFeatureUi()),
         ...overrides,
       ],
       child: const DailyTrackApp(),
@@ -157,4 +184,22 @@ Future<FakeSettingsRepository> restartTestApp(
     lock: lock,
     overrides: overrides,
   );
+}
+
+/// Scrolls SET-01 until [finder] is built and on screen. SET-01 is a lazy
+/// list and the premium card (feature 009) leads it, so lower rows are not
+/// built until scrolled to.
+Future<void> scrollSettingsTo(WidgetTester tester, Finder finder) async {
+  await tester.scrollUntilVisible(
+    finder,
+    200,
+    scrollable: find
+        .descendant(
+          of: find.byKey(const Key('settings_list')),
+          matching: find.byType(Scrollable),
+        )
+        .first,
+  );
+  await tester.ensureVisible(finder);
+  await tester.pumpAndSettle();
 }

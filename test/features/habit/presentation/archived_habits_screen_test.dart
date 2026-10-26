@@ -1,3 +1,4 @@
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
 import 'package:dailytrack/core/widgets/app_scaffold.dart';
 import 'package:dailytrack/features/habit/presentation/screens/archived_habits_screen.dart';
 import 'package:dailytrack/features/habit/presentation/screens/habits_today_screen.dart';
@@ -85,7 +86,9 @@ void main() {
     await flushTimers(tester);
   });
 
-  testWidgets('US6-4 empty state; no ad slot', (tester) async {
+  testWidgets('US6-4 empty state; the bottom banner slot (spec §11)', (
+    tester,
+  ) async {
     await pumpHabitApp(
       tester,
       habits: habitFakes()..addHabit('Read'),
@@ -98,7 +101,7 @@ void main() {
         matching: find.byType(AppScaffold),
       ),
     );
-    expect(scaffold.bannerSlot, isNull);
+    expect(scaffold.bannerSlot, isA<AppBannerAd>());
   });
 
   testWidgets('an error shows Try again', (tester) async {

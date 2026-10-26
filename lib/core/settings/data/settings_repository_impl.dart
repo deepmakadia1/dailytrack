@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dailytrack/core/account/domain/account.dart';
 import 'package:dailytrack/core/database/app_database.dart';
 import 'package:dailytrack/core/settings/data/settings_codec.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
@@ -23,9 +24,19 @@ class SettingsRepositoryImpl implements SettingsRepository {
   Future<AppSettings> load() async =>
       _decode(await _db.select(_db.settings).get());
 
+  /// Ignores `dataChangeCounter`: the triggers raise it on every data
+  /// write, and no screen shows it, so watchers aren't rebuilt for each
+  /// save. Read it with [load].
   @override
-  Stream<AppSettings> watch() =>
-      _db.select(_db.settings).watch().map(_decode).distinct();
+  Stream<AppSettings> watch() => _db
+      .select(_db.settings)
+      .watch()
+      .map(_decode)
+      .distinct(
+        (a, b) =>
+            a.copyWith(dataChangeCounter: 0) ==
+            b.copyWith(dataChangeCounter: 0),
+      );
 
   Future<void> _put(String key, Object? value) => _db
       .into(_db.settings)
@@ -230,11 +241,103 @@ class SettingsRepositoryImpl implements SettingsRepository {
       _put(SettingsCodec.deviceTimeZoneId, id);
 
   @override
+  Future<void> setAdsInstallAtIfMissing(int utcMs) => _db.transaction(() async {
+    if (await _row(SettingsCodec.adsInstallAt) != null) return;
+    await _put(SettingsCodec.adsInstallAt, utcMs);
+  });
+
+  @override
+  Future<void> recordInterstitialShown({
+    required int at,
+    required String dayKey,
+    required int countToday,
+  }) => _db.transaction(() async {
+    await _put(SettingsCodec.adsLastInterstitialAt, at);
+    await _put(SettingsCodec.adsInterstitialDay, dayKey);
+    await _put(SettingsCodec.adsInterstitialsToday, countToday);
+  });
+
+  @override
+  Future<void> setAdsLastSessionDay(String dayKey) =>
+      _put(SettingsCodec.adsLastSessionDay, dayKey);
+
+  @override
+  Future<void> resetAdCounters({required int installAt}) =>
+      _db.transaction(() async {
+        await _put(SettingsCodec.adsInstallAt, installAt);
+        await _put(SettingsCodec.adsLastInterstitialAt, null);
+        await _put(SettingsCodec.adsInterstitialDay, null);
+        await _put(SettingsCodec.adsInterstitialsToday, 0);
+      });
+
+  @override
+  Future<void> setProState({
+    required bool owned,
+    required int notOwnedStreak,
+    required bool pending,
+    bool removalPending = false,
+  }) => _db.transaction(() async {
+    await _put(SettingsCodec.removeAdsPurchased, owned);
+    await _put(SettingsCodec.proNotOwnedStreak, notOwnedStreak);
+    await _put(SettingsCodec.proPurchasePending, pending);
+    await _put(SettingsCodec.proRemovalPending, removalPending);
+  });
+
+  @override
+  Future<void> setRewardedCounts({
+    required String dayKey,
+    required Map<String, int> counts,
+  }) => _db.transaction(() async {
+    await _put(SettingsCodec.rewardedDay, dayKey);
+    await _put(SettingsCodec.rewardedCounts, counts);
+  });
+
+  @override
   Future<void> raiseLatestSeenAt(int utcMs) => _db.transaction(() async {
     final current = (await load()).latestSeenAt;
     if (current != null && current >= utcMs) return;
     await _put(SettingsCodec.latestSeenAt, utcMs);
   });
+
+  @override
+  Future<void> setAccount(AccountProfile? profile) => _db.transaction(() async {
+    await _put(SettingsCodec.backupAccountEmail, profile?.email);
+    await _put(SettingsCodec.accountDisplayName, profile?.displayName);
+    await _put(SettingsCodec.accountPhotoUrl, profile?.photoUrl);
+  });
+
+  @override
+  Future<void> setDeviceIdCopy(String id) => _put(SettingsCodec.deviceId, id);
+
+  @override
+  Future<void> setBackedUpChangeCounter(int value) =>
+      _put(SettingsCodec.backedUpChangeCounter, value);
+
+  @override
+  Future<void> setLastBackgroundBackupAt(int? at) =>
+      _put(SettingsCodec.lastBackgroundBackupAt, at);
+
+  @override
+  Future<void> setLastKnownDriveBackup({
+    required int? at,
+    required String? deviceId,
+  }) => _db.transaction(() async {
+    await _put(SettingsCodec.lastKnownDriveBackupAt, at);
+    await _put(SettingsCodec.lastKnownDriveBackupDeviceId, deviceId);
+  });
+
+  @override
+  Future<void> setAutoBackupPause({
+    required bool paused,
+    required bool notified,
+  }) => _db.transaction(() async {
+    await _put(SettingsCodec.autoBackupPausedByConflict, paused);
+    await _put(SettingsCodec.autoBackupPauseNotified, notified);
+  });
+
+  @override
+  Future<void> setFinishSetupPending({required bool pending}) =>
+      _put(SettingsCodec.finishSetupPending, pending);
 
   Future<SettingRow?> _row(String key) => (_db.select(
     _db.settings,

@@ -57,7 +57,7 @@ void main() {
 
   Future<void> openModules(WidgetTester tester) async {
     await tapNav(tester, 'More');
-    await tester.ensureVisible(find.text('Enable or reorder trackers'));
+    await scrollSettingsTo(tester, find.text('Enable or reorder trackers'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Enable or reorder trackers'));
     await tester.pumpAndSettle();

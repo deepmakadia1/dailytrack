@@ -1,3 +1,4 @@
+import 'package:dailytrack/core/account/domain/account.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 
 /// Read and write user settings (FR-013, contracts/services.md).
@@ -126,6 +127,73 @@ abstract interface class SettingsRepository {
 
   /// The device zone last seen (research R21).
   Future<void> setDeviceTimeZoneId(String id);
+
+  /// Records the install time for the interstitial cap, only if none is
+  /// stored yet (feature 009 data-model §1).
+  Future<void> setAdsInstallAtIfMissing(int utcMs);
+
+  /// An interstitial was shown at [at] (UTC ms); [countToday] is the count
+  /// for local day [dayKey]. Written together.
+  Future<void> recordInterstitialShown({
+    required int at,
+    required String dayKey,
+    required int countToday,
+  });
+
+  /// The local day the current app session started on.
+  Future<void> setAdsLastSessionDay(String dayKey);
+
+  /// Dev-only "Reset ad counters": sets the install time and clears the
+  /// last interstitial and today's count.
+  Future<void> resetAdCounters({required int installAt});
+
+  /// Pro ownership (feature 009 data-model §5): [owned] is
+  /// `removeAdsPurchased`. All four are written together.
+  Future<void> setProState({
+    required bool owned,
+    required int notOwnedStreak,
+    required bool pending,
+    bool removalPending = false,
+  });
+
+  /// Rewards earned on local day [dayKey], by feature key (FR-053).
+  /// Written together.
+  Future<void> setRewardedCounts({
+    required String dayKey,
+    required Map<String, int> counts,
+  });
+
+  // Feature 010 (data-model §1). `dataChangeCounter` has no setter: only
+  // the SQLite triggers write it.
+
+  /// The signed-in account (email, name, photo together), or null to clear
+  /// all three.
+  Future<void> setAccount(AccountProfile? profile);
+
+  /// The settings copy of the device ID (research R4).
+  Future<void> setDeviceIdCopy(String id);
+
+  /// The change counter inside the last successful backup's snapshot.
+  Future<void> setBackedUpChangeCounter(int value);
+
+  /// UTC ms of the last background backup request, or null.
+  Future<void> setLastBackgroundBackupAt(int? at);
+
+  /// The newest Drive backup this phone made or has seen (FR-040). Both
+  /// written together.
+  Future<void> setLastKnownDriveBackup({
+    required int? at,
+    required String? deviceId,
+  });
+
+  /// The conflict pause and whether its notification was shown.
+  Future<void> setAutoBackupPause({
+    required bool paused,
+    required bool notified,
+  });
+
+  /// Whether Home shows the "Finish setting up" sheet (research R13).
+  Future<void> setFinishSetupPending({required bool pending});
 
   /// A module's own string state, stored as `module.<key>`, or null.
   Future<String?> readModuleState(String key);

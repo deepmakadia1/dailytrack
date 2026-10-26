@@ -19,6 +19,22 @@ final class HabitBackupSection extends BackupSection {
   int get sinceSchemaVersion => 4;
 
   @override
+  Set<String> get tables => const {
+    'habits',
+    'habit_schedules',
+    'habit_entries',
+  };
+
+  /// Any habit that isn't deleted (research R11).
+  @override
+  Future<bool> hasUserData(AppDatabase db) async =>
+      await (db.select(db.habits)
+            ..where((t) => t.deletedAt.isNull())
+            ..limit(1))
+          .getSingleOrNull() !=
+      null;
+
+  @override
   Future<Map<String, Object?>> export(AppDatabase db) async => {
     'tables': {
       HabitCodec.table: [

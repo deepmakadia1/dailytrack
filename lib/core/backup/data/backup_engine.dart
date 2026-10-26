@@ -3,14 +3,17 @@ import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:clock/clock.dart';
+import 'package:dailytrack/core/account/domain/device_identity.dart';
 import 'package:dailytrack/core/backup/backup_section.dart';
 import 'package:dailytrack/core/backup/domain/backup_archive.dart';
 import 'package:dailytrack/core/backup/domain/backup_document.dart';
 import 'package:dailytrack/core/backup/domain/backup_envelope.dart';
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
+import 'package:dailytrack/core/backup/domain/backup_meta.dart';
 import 'package:dailytrack/core/backup/domain/backup_migrator.dart';
 import 'package:dailytrack/core/backup/domain/backup_ports.dart';
 import 'package:dailytrack/core/backup/domain/backup_settings_policy.dart';
+import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
 import 'package:dailytrack/core/backup/domain/restore_types.dart';
 import 'package:dailytrack/core/database/app_database.dart';
 import 'package:dailytrack/core/settings/data/settings_codec.dart';
@@ -48,33 +51,85 @@ final class BackupEngine {
 
   /// Every module's section and the restorable settings, from one
   /// consistent snapshot.
-  Future<BackupDocument> exportDocument() async {
+  Future<BackupDocument> exportDocument() async =>
+      (await exportSnapshot()).document;
+
+  /// [exportDocument] plus `dataChangeCounter` read in the same
+  /// transaction, so a write made after the snapshot still counts as
+  /// changed (feature 010 research R5, FR-031).
+  Future<({BackupDocument document, int changeCounter})>
+  exportSnapshot() async {
     final version = await _appVersion();
     return await _db.transaction(() async {
       final modules = <String, Map<String, Object?>>{};
       for (final s in _sections) {
         modules[s.moduleId] = await s.export(_db);
       }
-      final rows = await _db.select(_db.settings).get();
-      return BackupDocument(
-        schemaVersion: _db.schemaVersion,
-        appVersion: version,
-        createdAt: _clock.now().toUtc().millisecondsSinceEpoch,
-        modules: modules,
-        settings: BackupSettingsPolicy.exportable({
-          for (final r in rows) r.key: r.value,
-        }),
+      final rows = {
+        for (final r in await _db.select(_db.settings).get()) r.key: r.value,
+      };
+      final counter = SettingsCodec.decode(
+        rows,
+        knownModuleIds: const [],
+      ).dataChangeCounter;
+      return (
+        document: BackupDocument(
+          schemaVersion: _db.schemaVersion,
+          appVersion: version,
+          createdAt: _clock.now().toUtc().millisecondsSinceEpoch,
+          modules: modules,
+          settings: BackupSettingsPolicy.exportable(rows),
+        ),
+        changeCounter: counter,
       );
     });
   }
 
+  /// Non-deleted rows per module, keyed `"<moduleId>.<kind>"` like
+  /// `BackupMeta.counts` (ACC-02 "This phone", the safety copy).
+  Future<Map<String, int>> counts() async => _countsOf(await exportDocument());
+
+  Map<String, int> _countsOf(BackupDocument doc) => {
+    for (final s in _sections)
+      for (final MapEntry(:key, :value)
+          in s.counts(doc.modules[s.moduleId]!).entries)
+        '${s.moduleId}.$key': value,
+  };
+
+  /// True when any module holds data the user made (feature 010 research
+  /// R11).
+  Future<bool> hasUserData() async {
+    for (final s in _sections) {
+      if (await s.hasUserData(_db)) return true;
+    }
+    return false;
+  }
+
   /// Builds the backup file (FR-001, FR-003, FR-004). With [password] the
-  /// file is encrypted; never pass null when encryption is on.
+  /// file is encrypted; never pass null when encryption is on. With
+  /// [device] the file carries `meta` (feature 010 research R8).
   Future<BackupFile> create({
     required bool includeReceipts,
     String? password,
+    DeviceIdentity? device,
+    BackupKind kind = BackupKind.manual,
   }) async {
-    var doc = await exportDocument();
+    final snapshot = await exportSnapshot();
+    var doc = snapshot.document;
+    if (device != null) {
+      doc = doc.withMeta(
+        BackupMeta(
+          deviceId: device.id,
+          deviceName: device.name,
+          appVersion: doc.appVersion,
+          createdAt: doc.createdAt,
+          kind: kind,
+          counts: _countsOf(doc),
+          schemaVersion: doc.schemaVersion,
+          encrypted: password != null,
+        ),
+      );
+    }
     final files = <String, Uint8List>{};
     if (includeReceipts) {
       final docs = await _documentsDir();
@@ -117,6 +172,8 @@ final class BackupEngine {
     return BackupFile(
       bytes: bytes,
       fileName: 'dailytrack_backup_$stamp.${extensionFor(form)}',
+      meta: doc.meta,
+      changeCounter: snapshot.changeCounter,
     );
   }
 

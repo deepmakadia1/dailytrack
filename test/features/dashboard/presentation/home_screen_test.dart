@@ -290,7 +290,11 @@ void main() {
     ];
 
     Future<void> tapText(WidgetTester tester, String text) async {
-      // SET-01 rows can sit below the fold on the test surface.
+      // SET-01 rows can sit below the fold on the test surface, and the
+      // SET-01 list is lazy (feature 009 premium card).
+      if (text == 'Enable or reorder trackers') {
+        await scrollSettingsTo(tester, find.text(text));
+      }
       await tester.ensureVisible(find.text(text).last);
       await tester.pumpAndSettle();
       await tester.tap(find.text(text).last);

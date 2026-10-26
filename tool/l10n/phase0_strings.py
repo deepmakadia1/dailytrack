@@ -1170,14 +1170,10 @@ S.update({
     "backup_driveTitle": ("Google Drive", "Google Drive", "Google Drive", "SET-02 card title; product name, not translated."),
     "backup_driveBody": ("Back up to your own Google Drive. Backups are stored in a private app folder you won't see in your Drive files.", "अपनी Google Drive पर बैकअप लें। बैकअप एक निजी ऐप फ़ोल्डर में रखे जाते हैं, जो आपको अपनी Drive फ़ाइलों में नहीं दिखेगा।", "તમારી પોતાની Google Drive પર બેકઅપ લો. બેકઅપ એક ખાનગી એપ ફોલ્ડરમાં રાખવામાં આવે છે, જે તમને તમારી Drive ફાઇલોમાં દેખાશે નહીં.", "SET-02 Drive card explanation."),
     "backup_driveUnavailable": ("Google Drive isn't available in this build.", "इस बिल्ड में Google Drive उपलब्ध नहीं है।", "આ બિલ્ડમાં Google Drive ઉપલબ્ધ નથી.", "SET-02 Drive card when no client ID is configured."),
-    "backup_connect": ("Connect Google account", "Google खाता जोड़ें", "Google ખાતું જોડો", "SET-02 button."),
     "backup_connected": ("Connected as {email}", "{email} के रूप में जुड़ा है", "{email} તરીકે જોડાયેલું છે", "SET-02 connected account line."),
     "backup_backUpNow": ("Back up now", "अभी बैकअप लें", "હમણાં બેકઅપ લો", "SET-02 primary button when connected."),
     "backup_uploading": ("Backing up to Google Drive…", "Google Drive पर बैकअप हो रहा है…", "Google Drive પર બેકઅપ થઈ રહ્યું છે…", "SET-02 progress."),
     "backup_driveSaved": ("Backed up to Google Drive", "Google Drive पर बैकअप हो गया", "Google Drive પર બેકઅપ થઈ ગયું", "Snackbar after a Drive backup."),
-    "backup_disconnect": ("Disconnect", "डिस्कनेक्ट करें", "ડિસ્કનેક્ટ કરો", "SET-02 text button."),
-    "backup_disconnectTitle": ("Disconnect Google account?", "Google खाता डिस्कनेक्ट करें?", "Google ખાતું ડિસ્કનેક્ટ કરીએ?", "Disconnect confirmation title."),
-    "backup_disconnectBody": ("Automatic backup turns off. Backups already in Google Drive are kept.", "ऑटोमैटिक बैकअप बंद हो जाएगा। Google Drive में पहले से मौजूद बैकअप रखे रहेंगे।", "ઑટોમેટિક બેકઅપ બંધ થઈ જશે. Google Drive માં પહેલેથી રહેલા બેકઅપ રાખવામાં આવશે.", "Disconnect confirmation consequence."),
     "backup_autoTitle": ("Auto backup", "ऑटो बैकअप", "ઑટો બેકઅપ", "SET-02 row and choice sheet title."),
     "backup_autoOff": ("Off", "बंद", "બંધ", "Auto backup option."),
     "backup_autoDaily": ("Daily", "रोज़", "રોજ", "Auto backup option."),
@@ -1235,7 +1231,7 @@ S.update({
     "export_filterDone": ("Apply", "लागू करें", "લાગુ કરો", "Filter sheet button."),
     "export_button": ("Export", "एक्सपोर्ट करें", "એક્સપોર્ટ કરો", "SET-03 primary button."),
     "export_working": ("Creating your file…", "आपकी फ़ाइल बन रही है…", "તમારી ફાઇલ બની રહી છે…", "SET-03 progress."),
-    "export_locked": ("Exports are part of DailyTrack Pro. Unlocking them is coming soon.", "एक्सपोर्ट DailyTrack Pro का हिस्सा हैं। इन्हें अनलॉक करना जल्द आ रहा है।", "એક્સપોર્ટ DailyTrack Pro નો ભાગ છે. તેમને અનલૉક કરવાનું ટૂંક સમયમાં આવી રહ્યું છે.", "SET-03 locked overlay message until rewarded ads and Pro exist."),
+    "export_locked": ("Exports are part of DailyTrack Pro. Watch an ad for one export, or get Pro.", "एक्सपोर्ट DailyTrack Pro का हिस्सा हैं। एक एक्सपोर्ट के लिए विज्ञापन देखें, या Pro लें।", "એક્સપોર્ટ DailyTrack Pro નો ભાગ છે. એક એક્સપોર્ટ માટે જાહેરાત જુઓ, અથવા Pro મેળવો.", "SET-03 locked overlay message (feature 009)."),
     "export_nothing": ("Nothing to export for this period", "इस अवधि के लिए एक्सपोर्ट करने को कुछ नहीं है", "આ સમયગાળા માટે એક્સપોર્ટ કરવા જેવું કંઈ નથી", "Snackbar when the export would be empty."),
     "export_failedTitle": ("Couldn't export", "एक्सपोर्ट नहीं हो सका", "એક્સપોર્ટ થઈ શક્યું નહીં", "Export error dialog title."),
     "export_failed": ("Couldn't create the file. Nothing was shared. Try again.", "फ़ाइल नहीं बन सकी। कुछ भी शेयर नहीं किया गया। फिर से कोशिश करें।", "ફાઇલ બની શકી નહીં. કંઈ શેર કરાયું નથી. ફરી પ્રયાસ કરો.", "Export error message."),
@@ -1325,6 +1321,61 @@ PLACEHOLDERS.update({
     "widget_habitCountA11y": {"name": {"type": "String"}, "progress": {"type": "String"}},
 })
 
+# --- 009-ads-rewarded-pro (T004, T060) ---
+S.update({
+    "ads_badge": ("Ad", "विज्ञापन", "જાહેરાત", "Label on every native ad (spec §15.8)."),
+    "ads_bannerLabel": ("Advertisement", "विज्ञापन", "જાહેરાત", "Semantic label of a banner or native ad."),
+    "privacy_adChoices": ("Ad privacy choices", "विज्ञापन निजता विकल्प", "જાહેરાત ગોપનીયતા પસંદગીઓ", "SET-01 Privacy row; reopens the consent form (FR-014)."),
+    "ads_resetCounters": ("Reset ad counters", "विज्ञापन काउंटर रीसेट करें", "જાહેરાત કાઉન્ટર રીસેટ કરો", "Dev-only SET-01 action (FR-048)."),
+    "ads_resetCountersDone": ("Ad counters reset", "विज्ञापन काउंटर रीसेट हो गए", "જાહેરાત કાઉન્ટર રીસેટ થયા", "Snackbar after Reset ad counters."),
+    "premium_title": ("DailyTrack Pro", "DailyTrack Pro", "DailyTrack Pro", "PRM-01 headline."),
+    "premium_benefitNoAds": ("No ads", "कोई विज्ञापन नहीं", "કોઈ જાહેરાત નહીં", "PRM-01 benefit."),
+    "premium_benefitThemes": ("All themes", "सभी थीम", "બધી થીમ", "PRM-01 benefit."),
+    "premium_benefitReports": ("Advanced reports", "उन्नत रिपोर्ट", "અદ્યતન રિપોર્ટ", "PRM-01 benefit."),
+    "premium_benefitExports": ("Unlimited exports", "असीमित एक्सपोर्ट", "અમર્યાદિત એક્સપોર્ટ", "PRM-01 benefit."),
+    "premium_benefitFreezes": ("Unlimited streak freezes up to the cap", "सीमा तक असीमित स्ट्रीक फ़्रीज़", "મર્યાદા સુધી અમર્યાદિત સ્ટ્રીક ફ્રીઝ", "PRM-01 benefit."),    # PRM-02 (T071, T073) and the locked states (T075–T079).
+    "rewarded_titleReports": ("Unlock advanced reports for 24 hours", "24 घंटे के लिए उन्नत रिपोर्ट अनलॉक करें", "24 કલાક માટે અદ્યતન રિપોર્ટ અનલૉક કરો", "PRM-02 title."),
+    "rewarded_titleCsv": ("Unlock one CSV export", "एक CSV एक्सपोर्ट अनलॉक करें", "એક CSV એક્સપોર્ટ અનલૉક કરો", "PRM-02 title."),
+    "rewarded_titlePdf": ("Unlock one PDF export", "एक PDF एक्सपोर्ट अनलॉक करें", "એક PDF એક્સપોર્ટ અનલૉક કરો", "PRM-02 title."),
+    "rewarded_titleTheme": ("Unlock the {theme} theme for good", "{theme} थीम हमेशा के लिए अनलॉक करें", "{theme} થીમ હંમેશ માટે અનલૉક કરો", "PRM-02 title; theme name."),
+    "rewarded_titleFreeze": ("Get 1 streak freeze for {habit}", "{habit} के लिए 1 स्ट्रीक फ़्रीज़ पाएँ", "{habit} માટે 1 સ્ટ્રીક ફ્રીઝ મેળવો", "PRM-02 title; habit name."),
+    "rewarded_explainReports": ("Watch a short ad to see Trends, Accounts, and every period for the next 24 hours.", "अगले 24 घंटों तक रुझान, खाते और हर अवधि देखने के लिए एक छोटा विज्ञापन देखें।", "આગામી 24 કલાક સુધી વલણો, ખાતાં અને દરેક સમયગાળો જોવા માટે એક ટૂંકી જાહેરાત જુઓ.", "PRM-02 explanation."),
+    "rewarded_explainExport": ("Watch a short ad to create one export file in this format.", "इस फ़ॉर्मैट में एक एक्सपोर्ट फ़ाइल बनाने के लिए एक छोटा विज्ञापन देखें।", "આ ફોર્મેટમાં એક એક્સપોર્ટ ફાઇલ બનાવવા માટે એક ટૂંકી જાહેરાત જુઓ.", "PRM-02 explanation."),
+    "rewarded_explainTheme": ("Watch a short ad to keep this color theme for good.", "यह रंग थीम हमेशा के लिए पाने के लिए एक छोटा विज्ञापन देखें।", "આ રંગ થીમ હંમેશ માટે મેળવવા માટે એક ટૂંકી જાહેરાત જુઓ.", "PRM-02 explanation."),
+    "rewarded_explainFreeze": ("Watch a short ad to add one streak freeze to this habit (up to 2).", "इस आदत में एक स्ट्रीक फ़्रीज़ जोड़ने के लिए एक छोटा विज्ञापन देखें (अधिकतम 2)।", "આ આદતમાં એક સ્ટ્રીક ફ્રીઝ ઉમેરવા માટે એક ટૂંકી જાહેરાત જુઓ (વધુમાં વધુ 2).", "PRM-02 explanation."),
+    "rewarded_watch": ("Watch a short ad", "एक छोटा विज्ञापन देखें", "એક ટૂંકી જાહેરાત જુઓ", "PRM-02 primary button."),
+    "rewarded_getPro": ("Get Pro instead", "इसके बजाय Pro लें", "તેના બદલે Pro મેળવો", "PRM-02 secondary button."),
+    "rewarded_notNow": ("Not now", "अभी नहीं", "હમણાં નહીં", "PRM-02 text button."),
+    "rewarded_loadingAd": ("Loading ad", "विज्ञापन लोड हो रहा है", "જાહેરાત લોડ થઈ રહી છે", "Semantic label of the PRM-02 spinner."),
+    "rewarded_unavailable": ("Ad not available, try again later", "विज्ञापन उपलब्ध नहीं है, बाद में फिर कोशिश करें", "જાહેરાત ઉપલબ્ધ નથી, પછીથી ફરી પ્રયાસ કરો", "PRM-02 when no ad loads in 8 s."),
+    "rewarded_tryAgain": ("Try again", "फिर कोशिश करें", "ફરી પ્રયાસ કરો", "PRM-02 button after a failed load."),
+    "rewarded_closedEarly": ("Watch the whole ad to unlock", "अनलॉक करने के लिए पूरा विज्ञापन देखें", "અનલૉક કરવા માટે આખી જાહેરાત જુઓ", "PRM-02 after the ad was closed early."),
+    "rewarded_limitReached": ("You've reached today's limit for this unlock. Try again tomorrow, or get Pro.", "आज के लिए इस अनलॉक की सीमा पूरी हो गई है। कल फिर कोशिश करें, या Pro लें।", "આજ માટે આ અનલૉકની મર્યાદા પૂરી થઈ ગઈ છે. કાલે ફરી પ્રયાસ કરો, અથવા Pro મેળવો.", "PRM-02 at 10 rewards per feature per day (FR-053)."),
+    "locked_watchAdReports": ("Watch an ad to unlock for 24 hours", "24 घंटे के लिए अनलॉक करने को विज्ञापन देखें", "24 કલાક માટે અનલૉક કરવા જાહેરાત જુઓ", "EXP-11 and HAB-03 locked overlay."),
+    "locked_watchAdExport": ("Watch an ad to unlock one export", "एक एक्सपोर्ट अनलॉक करने को विज्ञापन देखें", "એક એક્સપોર્ટ અનલૉક કરવા જાહેરાત જુઓ", "SET-03 locked overlay."),
+    "locked_watchAdTheme": ("Watch an ad to unlock this theme", "यह थीम अनलॉक करने को विज्ञापन देखें", "આ થીમ અનલૉક કરવા જાહેરાત જુઓ", "SET-04 locked overlay."),
+    "locked_watchAdFreeze": ("Watch an ad to get a freeze", "फ़्रीज़ पाने के लिए विज्ञापन देखें", "ફ્રીઝ મેળવવા જાહેરાત જુઓ", "HAB-03 freeze card button."),
+    # PRM-01 (T091–T094).
+    "premium_buyFor": ("Get Pro for {price}", "{price} में Pro लें", "{price} માં Pro મેળવો", "PRM-01 primary button; price from Google Play."),
+    "premium_restore": ("Restore purchase", "खरीदारी वापस पाएँ", "ખરીદી પાછી મેળવો", "PRM-01 text button."),
+    "premium_restored": ("Pro restored", "Pro वापस मिल गया", "Pro પાછું મળ્યું", "Snackbar after Restore purchase found Pro."),
+    "premium_restoreNotFound": ("No Pro purchase found for this Google account", "इस Google खाते के लिए कोई Pro खरीदारी नहीं मिली", "આ Google ખાતા માટે કોઈ Pro ખરીદી મળી નથી", "Snackbar after Restore purchase found nothing."),
+    "premium_storeUnavailable": ("Store not available right now, try again later", "स्टोर अभी उपलब्ध नहीं है, बाद में फिर कोशिश करें", "સ્ટોર હમણાં ઉપલબ્ધ નથી, પછીથી ફરી પ્રયાસ કરો", "PRM-01 when Google Play can't sell Pro."),
+    "premium_accountNote": ("Your purchase is tied to your Google account.", "आपकी खरीदारी आपके Google खाते से जुड़ी है।", "તમારી ખરીદી તમારા Google ખાતા સાથે જોડાયેલી છે.", "PRM-01 note."),
+    "premium_pending": ("Pro unlocks when the payment completes", "भुगतान पूरा होते ही Pro अनलॉक हो जाएगा", "ચુકવણી પૂરી થતાં જ Pro અનલૉક થશે", "PRM-01 pending payment."),
+    "premium_purchaseError": ("Couldn't complete the purchase. Try again.", "खरीदारी पूरी नहीं हो सकी। फिर कोशिश करें।", "ખરીદી પૂરી થઈ શકી નહીં. ફરી પ્રયાસ કરો.", "PRM-01 purchase error."),
+    "premium_owned": ("You have Pro. Thanks for your support.", "आपके पास Pro है। आपके साथ के लिए धन्यवाद।", "તમારી પાસે Pro છે. તમારા સાથ બદલ આભાર.", "PRM-01 when Pro is owned."),
+    "premium_cardTitle": ("Remove ads and unlock everything", "विज्ञापन हटाएँ और सब कुछ अनलॉक करें", "જાહેરાતો દૂર કરો અને બધું અનલૉક કરો", "SET-01 premium card title."),
+    "premium_cardSubtitle": ("DailyTrack Pro: one purchase, yours for good", "DailyTrack Pro: एक बार खरीदें, हमेशा के लिए", "DailyTrack Pro: એક વાર ખરીદો, હંમેશ માટે", "SET-01 premium card subtitle."),
+    "habit_addFreezePro": ("Add a freeze", "फ़्रीज़ जोड़ें", "ફ્રીઝ ઉમેરો", "HAB-03 freeze card button for Pro users."),
+})
+
+PLACEHOLDERS.update({
+    "premium_buyFor": {"price": {"type": "String"}},
+    "rewarded_titleTheme": {"theme": {"type": "String"}},
+    "rewarded_titleFreeze": {"habit": {"type": "String"}},
+})
+
 # Android resources for the home screen widget, used before Dart writes a
 # payload (contracts/android.md). Generated so the native text never drifts.
 ANDROID_STRINGS = ["widget_label", "widget_description", "widget_open"]
@@ -1336,6 +1387,114 @@ def _android_escape(text: str) -> str:
         .replace("'", "\\'").replace('"', '\\"')
     )
 
+
+
+# --- 010-google-account-backup (ACC-01, SET-02 sign-in, conflict rule, auto backup pause) ---
+S.update({
+    "account_title": ("Account", "खाता", "ખાતું", "ACC-01 title."),
+    "account_signedOutTitle": ("Back up with your Google account", "अपने Google खाते से बैकअप लें", "તમારા Google ખાતાથી બેકઅપ લો", "ACC-01 signed-out title."),
+    "account_pointDrive": ("Your data is saved to your own Google Drive", "आपका डेटा आपकी अपनी Google Drive में सेव होता है", "તમારો ડેટા તમારી પોતાની Google Drive માં સેવ થાય છે", "ACC-01 signed-out point 1."),
+    "account_pointRestore": ("Restore it on a new phone", "नए फ़ोन पर इसे रीस्टोर करें", "નવા ફોન પર તેને રિસ્ટોર કરો", "ACC-01 signed-out point 2."),
+    "account_pointOptional": ("Optional: the app works fully without an account", "वैकल्पिक: ऐप बिना खाते के भी पूरी तरह काम करता है", "વૈકલ્પિક: એપ ખાતા વિના પણ પૂરેપૂરી કામ કરે છે", "ACC-01 signed-out point 3."),
+    "account_signIn": ("Sign in with Google", "Google से साइन इन करें", "Google થી સાઇન ઇન કરો", "ACC-01 and SET-02 sign-in button."),
+    "account_pinFootnote": ("Your app lock PIN is never backed up.", "आपके ऐप लॉक PIN का कभी बैकअप नहीं लिया जाता।", "તમારા એપ લૉક PIN નું ક્યારેય બેકઅપ લેવાતું નથી.", "ACC-01 signed-out footnote."),
+    "account_signInFailed": ("Couldn't sign in. Check your connection and try again.", "साइन इन नहीं हो सका। अपना कनेक्शन जाँचें और फिर से कोशिश करें।", "સાઇન ઇન થઈ શક્યું નહીં. તમારું કનેક્શન તપાસો અને ફરી પ્રયાસ કરો.", "Sign-in failure message."),
+    "account_signedInBackedUp": ("Signed in. Your data is backed up.", "साइन इन हो गया। आपके डेटा का बैकअप हो गया है।", "સાઇન ઇન થઈ ગયું. તમારા ડેટાનું બેકઅપ થઈ ગયું છે.", "Snackbar after signing in to an account without backups."),
+    "account_lastBackupFrom": ("Last backup: {time} · {device}", "पिछला बैकअप: {time} · {device}", "છેલ્લું બેકઅપ: {time} · {device}", "ACC-01 last backup line with the device that made it."),
+    "account_lastBackup": ("Last backup: {time}", "पिछला बैकअप: {time}", "છેલ્લું બેકઅપ: {time}", "ACC-01 last backup line."),
+    "account_noBackupYet": ("No backup in this account yet", "इस खाते में अभी तक कोई बैकअप नहीं", "આ ખાતામાં હજી સુધી કોઈ બેકઅપ નથી", "ACC-01 status when the account has no backups."),
+    "account_statusBackedUp": ("Backed up", "बैकअप हो गया", "બેકઅપ થઈ ગયું", "ACC-01 state line."),
+    "account_statusBackingUp": ("Backing up…", "बैकअप हो रहा है…", "બેકઅપ થઈ રહ્યું છે…", "ACC-01 state line."),
+    "account_statusPaused": ("Backup paused: a newer backup from another phone exists", "बैकअप रुका है: दूसरे फ़ोन का नया बैकअप मौजूद है", "બેકઅપ અટક્યું છે: બીજા ફોનનું નવું બેકઅપ છે", "ACC-01 state line."),
+    "account_statusFailed": ("Backup failed", "बैकअप विफल रहा", "બેકઅપ નિષ્ફળ ગયું", "ACC-01 state line."),
+    "account_statusError": ("Couldn't read your backups.", "आपके बैकअप पढ़े नहीं जा सके।", "તમારા બેકઅપ વાંચી શકાયા નહીં.", "ACC-01 status area error."),
+    "account_autoSummaryWifi": ("{frequency} · Wi-Fi only", "{frequency} · सिर्फ़ Wi-Fi पर", "{frequency} · ફક્ત Wi-Fi પર", "ACC-01 Auto backup row."),
+    "account_signOut": ("Sign out", "साइन आउट करें", "સાઇન આઉટ કરો", "ACC-01 text button."),
+    "account_signedOut": ("Signed out. Your data is still on this phone.", "साइन आउट हो गया। आपका डेटा अभी भी इसी फ़ोन पर है।", "સાઇન આઉટ થઈ ગયું. તમારો ડેટા હજી પણ આ ફોન પર છે.", "Snackbar after signing out."),
+    "account_deleteBackups": ("Delete my backups", "मेरे बैकअप हटाएँ", "મારા બેકઅપ કાઢી નાખો", "ACC-01 destructive text button."),
+    "account_deleteTitle": ("Delete your backups?", "अपने बैकअप हटाएँ?", "તમારા બેકઅપ કાઢી નાખીએ?", "Delete my backups confirmation title."),
+    "account_deleteBody": (
+        "{count, plural, =1{Delete 1 DailyTrack backup from {email}? Data on this phone stays. This can't be undone.} other{Delete all {count} DailyTrack backups from {email}? Data on this phone stays. This can't be undone.}}",
+        "{count, plural, =1{{email} से DailyTrack का 1 बैकअप हटाएँ? इस फ़ोन का डेटा रहेगा। इसे पहले जैसा नहीं किया जा सकता।} other{{email} से DailyTrack के सभी {count} बैकअप हटाएँ? इस फ़ोन का डेटा रहेगा। इसे पहले जैसा नहीं किया जा सकता।}}",
+        "{count, plural, =1{{email} માંથી DailyTrack નું 1 બેકઅપ કાઢી નાખીએ? આ ફોનનો ડેટા રહેશે. આને પૂર્વવત્ કરી શકાતું નથી.} other{{email} માંથી DailyTrack ના બધા {count} બેકઅપ કાઢી નાખીએ? આ ફોનનો ડેટા રહેશે. આને પૂર્વવત્ કરી શકાતું નથી.}}",
+        "Delete my backups confirmation consequence.",
+    ),
+    "account_deleteAction": ("Delete backups", "बैकअप हटाएँ", "બેકઅપ કાઢી નાખો", "Delete my backups destructive button."),
+    "account_deleted": ("Your backups were deleted", "आपके बैकअप हटा दिए गए", "તમારા બેકઅપ કાઢી નાખવામાં આવ્યા", "Snackbar after Delete my backups."),
+    "account_photoOf": ("Profile photo of {name}", "{name} की प्रोफ़ाइल फ़ोटो", "{name} નો પ્રોફાઇલ ફોટો", "ACC-01 account photo semantic label."),
+    "backup_manageAccount": ("Manage your account", "अपना खाता मैनेज करें", "તમારું ખાતું મેનેજ કરો", "SET-02 account row subtitle; opens ACC-01."),
+    "backup_conflictTitle": ("Back up anyway?", "फिर भी बैकअप लें?", "તો પણ બેકઅપ લઈએ?", "Conflict dialog title."),
+    "backup_conflictNewer": ("A newer backup from {device} ({time}) exists. Backing up now makes this phone's data the latest.", "{device} का एक नया बैकअप ({time}) मौजूद है। अभी बैकअप लेने पर इस फ़ोन का डेटा सबसे नया बन जाएगा।", "{device} નું એક નવું બેકઅપ ({time}) છે. હમણાં બેકઅપ લેવાથી આ ફોનનો ડેટા સૌથી નવો બની જશે.", "Conflict dialog: another phone backed up newer data."),
+    "backup_conflictEmpty": ("This phone has no data. Backing up now makes an empty backup the latest.", "इस फ़ोन पर कोई डेटा नहीं है। अभी बैकअप लेने पर खाली बैकअप सबसे नया बन जाएगा।", "આ ફોન પર કોઈ ડેટા નથી. હમણાં બેકઅપ લેવાથી ખાલી બેકઅપ સૌથી નવું બની જશે.", "Conflict dialog: empty phone over a backup with data."),
+    "backup_backUpAnyway": ("Back up anyway", "फिर भी बैकअप लें", "તો પણ બેકઅપ લો", "Conflict dialog confirm button."),
+    "backup_unknownDevice": ("Unknown device", "अज्ञात डिवाइस", "અજાણ્યું ડિવાઇસ", "Device name when a backup doesn't say."),
+    "notif_backupPausedTitle": ("Backup paused", "बैकअप रुका है", "બેકઅપ અટક્યું છે", "Pause notification title."),
+    "notif_backupPausedBody": ("Another phone made a newer backup. Tap to review.", "दूसरे फ़ोन ने नया बैकअप लिया है। देखने के लिए टैप करें।", "બીજા ફોને નવું બેકઅપ લીધું છે. જોવા માટે ટૅપ કરો.", "Pause notification body."),
+})
+
+PLACEHOLDERS.update({
+    "account_lastBackupFrom": {"time": {"type": "String"}, "device": {"type": "String"}},
+    "account_lastBackup": {"time": {"type": "String"}},
+    "account_autoSummaryWifi": {"frequency": {"type": "String"}},
+    "account_deleteBody": {"count": {"type": "int", "format": "decimalPattern"}, "email": {"type": "String"}},
+    "account_photoOf": {"name": {"type": "String"}},
+    "backup_conflictNewer": {"device": {"type": "String"}, "time": {"type": "String"}},
+})
+
+
+# --- 010-google-account-backup (ACC-02, ACC-03, Switch account, SYS-02 Restore with Google, Finish setting up) ---
+S.update({
+    "account_choiceTitle": ("Backup found on {email}", "{email} पर बैकअप मिला", "{email} પર બેકઅપ મળ્યું", "ACC-02 title."),
+    "account_fromThisPhone": ("From this phone", "इसी फ़ोन से", "આ ફોનમાંથી", "ACC-02 device line when the backup came from this phone."),
+    "account_fromDevice": ("From {device}", "{device} से", "{device} માંથી", "ACC-02 device line."),
+    "account_encrypted": ("Encrypted", "एन्क्रिप्टेड", "એન્ક્રિપ્ટેડ", "ACC-02 label next to a lock icon."),
+    "account_thisPhone": ("This phone: {counts}", "यह फ़ोन: {counts}", "આ ફોન: {counts}", "ACC-02 line with this phone's data counts."),
+    "account_thisPhoneEmpty": ("This phone: no data yet", "यह फ़ोन: अभी कोई डेटा नहीं", "આ ફોન: હજી કોઈ ડેટા નથી", "ACC-02 line when this phone has no counts."),
+    "account_replaceNote": ("Restoring replaces the data on this phone.", "रीस्टोर करने पर इस फ़ोन का डेटा बदल जाएगा।", "રિસ્ટોર કરવાથી આ ફોનનો ડેટા બદલાઈ જશે.", "ACC-02 note above the buttons."),
+    "account_restoreFromAccount": ("Restore from account", "खाते से रीस्टोर करें", "ખાતામાંથી રિસ્ટોર કરો", "ACC-02 primary button."),
+    "account_keepThisPhone": ("Keep this phone's data", "इस फ़ोन का डेटा रखें", "આ ફોનનો ડેટા રાખો", "ACC-02 secondary button."),
+    "account_seeAllBackups": ("See all backups", "सभी बैकअप देखें", "બધા બેકઅપ જુઓ", "ACC-02 link to the SET-02 Drive list."),
+    "account_close": ("Close", "बंद करें", "બંધ કરો", "ACC-02 close button when opened from ACC-01."),
+    "account_wrongPassword": ("That password didn't work", "वह पासवर्ड काम नहीं किया", "તે પાસવર્ડ કામ ન કર્યો", "Inline error for a wrong backup password."),
+    "account_restoreFailed": ("Couldn't restore. Your data on this phone wasn't changed.", "रीस्टोर नहीं हो सका। इस फ़ोन का आपका डेटा नहीं बदला गया।", "રિસ્ટોર થઈ શક્યું નહીં. આ ફોન પરનો તમારો ડેટા બદલાયો નથી.", "Restore from the account failed."),
+    "account_safetyCopyFailed": ("Not enough free space to save a copy of this phone's data first, so nothing was restored. Free up space and try again.", "पहले इस फ़ोन के डेटा की कॉपी सेव करने के लिए जगह नहीं है, इसलिए कुछ भी रीस्टोर नहीं हुआ। जगह खाली करके फिर से कोशिश करें।", "પહેલાં આ ફોનના ડેટાની કૉપિ સેવ કરવા માટે જગ્યા નથી, તેથી કંઈ રિસ્ટોર થયું નથી. જગ્યા ખાલી કરીને ફરી પ્રયાસ કરો.", "The safety copy couldn't be saved; nothing was restored."),
+    "account_restoredCounts": ("Restored {summary}", "रीस्टोर हो गया: {summary}", "રિસ્ટોર થઈ ગયું: {summary}", "Snackbar after a restore, e.g. 'Restored 1,240 transactions · 8 habits'."),
+    "account_restoring": ("Restoring your data…", "आपका डेटा रीस्टोर हो रहा है…", "તમારો ડેટા રિસ્ટોર થઈ રહ્યો છે…", "Progress while restoring from the account."),
+    "account_restore": ("Restore", "रीस्टोर करें", "રિસ્ટોર કરો", "ACC-01 secondary button."),
+    "account_review": ("Review", "देखें", "જુઓ", "ACC-01 link next to Backup paused."),
+    "account_switch": ("Switch account", "खाता बदलें", "ખાતું બદલો", "ACC-01 text button."),
+    "account_switchFailedTitle": ("Couldn't back up first", "पहले बैकअप नहीं हो सका", "પહેલાં બેકઅપ થઈ શક્યું નહીં", "Switch account: the backup to the current account failed."),
+    "account_switchFailedBody": ("Your latest changes aren't in {email} yet. Switch anyway? Your data stays on this phone.", "आपके नए बदलाव अभी {email} में नहीं हैं। फिर भी खाता बदलें? आपका डेटा इसी फ़ोन पर रहेगा।", "તમારા નવા ફેરફારો હજી {email} માં નથી. તો પણ ખાતું બદલીએ? તમારો ડેટા આ ફોન પર રહેશે.", "Switch account failure dialog body."),
+    "account_switchAnyway": ("Switch anyway", "फिर भी बदलें", "તો પણ બદલો", "Switch account failure dialog button."),
+    "account_sessionExpired": ("Your Google sign-in expired. Sign in again to keep backing up.", "आपका Google साइन-इन खत्म हो गया। बैकअप जारी रखने के लिए फिर से साइन इन करें।", "તમારું Google સાઇન-ઇન સમાપ્ત થયું. બેકઅપ ચાલુ રાખવા ફરીથી સાઇન ઇન કરો.", "Shown when Drive says the sign-in expired or access was removed."),
+    "account_signOutSheetTitle": ("Sign out of {email}?", "{email} से साइन आउट करें?", "{email} માંથી સાઇન આઉટ કરીએ?", "ACC-03 title."),
+    "account_signOutBackingUp": ("Backing up your latest changes…", "आपके नए बदलावों का बैकअप हो रहा है…", "તમારા નવા ફેરફારોનું બેકઅપ થઈ રહ્યું છે…", "ACC-03 step 1 progress."),
+    "account_signOutBackupFailed": ("Couldn't back up your latest changes", "आपके नए बदलावों का बैकअप नहीं हो सका", "તમારા નવા ફેરફારોનું બેકઅપ થઈ શક્યું નહીં", "ACC-03 step 1 failure."),
+    "account_signOutAnyway": ("Sign out anyway", "फिर भी साइन आउट करें", "તો પણ સાઇન આઉટ કરો", "ACC-03 button after a failed backup."),
+    "account_keepData": ("Keep data on this phone", "इस फ़ोन पर डेटा रखें", "આ ફોન પર ડેટા રાખો", "ACC-03 option."),
+    "account_keepDataHelp": ("You can keep using the app without an account.", "आप बिना खाते के ऐप का इस्तेमाल जारी रख सकते हैं।", "તમે ખાતા વિના એપનો ઉપયોગ ચાલુ રાખી શકો છો.", "ACC-03 option helper."),
+    "account_removeData": ("Remove data from this phone", "इस फ़ोन से डेटा हटाएँ", "આ ફોનમાંથી ડેટા કાઢી નાખો", "ACC-03 option."),
+    "account_removeDataHelp": ("Your backup stays in your Google account.", "आपका बैकअप आपके Google खाते में रहेगा।", "તમારું બેકઅપ તમારા Google ખાતામાં રહેશે.", "ACC-03 option helper."),
+    "onboarding_restoreWithGoogle": ("Restore with Google", "Google से रीस्टोर करें", "Google થી રિસ્ટોર કરો", "SYS-02 step 1 secondary button."),
+    "onboarding_noBackupFound": ("No backup found on this account", "इस खाते पर कोई बैकअप नहीं मिला", "આ ખાતા પર કોઈ બેકઅપ મળ્યું નથી", "SYS-02 message when the account has no backup."),
+    "finishSetup_title": ("Finish setting up", "सेटअप पूरा करें", "સેટઅપ પૂરું કરો", "Finish setting up sheet title."),
+    "finishSetup_body": ("Your data is back. Your app lock PIN is never backed up, so set a new one to keep your data private.", "आपका डेटा वापस आ गया। आपके ऐप लॉक PIN का कभी बैकअप नहीं होता, इसलिए अपना डेटा निजी रखने के लिए नया PIN सेट करें।", "તમારો ડેટા પાછો આવી ગયો. તમારા એપ લૉક PIN નું ક્યારેય બેકઅપ થતું નથી, તેથી તમારો ડેટા ખાનગી રાખવા નવો PIN સેટ કરો.", "Finish setting up sheet body."),
+    "finishSetup_setLock": ("Set app lock", "ऐप लॉक सेट करें", "એપ લૉક સેટ કરો", "Finish setting up primary button."),
+    "finishSetup_allowNotifications": ("Allow notifications", "सूचनाओं की अनुमति दें", "સૂચનાઓની મંજૂરી આપો", "Finish setting up button (Android 13+)."),
+    "finishSetup_notNow": ("Not now", "अभी नहीं", "હમણાં નહીં", "Finish setting up dismiss button."),
+    "backup_previousTitle": ("Restore previous phone data", "फ़ोन का पिछला डेटा रीस्टोर करें", "ફોનનો પાછલો ડેટા રિસ્ટોર કરો", "SET-02 safety copy tile."),
+    "backup_previousDetail": ("Saved {date} · {counts}", "{date} को सेव किया · {counts}", "{date} એ સેવ કર્યું · {counts}", "SET-02 safety copy tile subtitle."),
+})
+
+PLACEHOLDERS.update({
+    "account_choiceTitle": {"email": {"type": "String"}},
+    "account_fromDevice": {"device": {"type": "String"}},
+    "account_thisPhone": {"counts": {"type": "String"}},
+    "account_restoredCounts": {"summary": {"type": "String"}},
+    "account_switchFailedBody": {"email": {"type": "String"}},
+    "account_signOutSheetTitle": {"email": {"type": "String"}},
+    "backup_previousDetail": {"date": {"type": "String"}, "counts": {"type": "String"}},
+})
 
 def write_android_strings(root: pathlib.Path) -> None:
     res = root / "android" / "app" / "src" / "main" / "res"

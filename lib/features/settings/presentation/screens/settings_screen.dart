@@ -1,8 +1,12 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/ad_providers.dart';
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
+import 'package:dailytrack/core/billing/billing_providers.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/reset/reset_providers.dart';
+import 'package:dailytrack/core/theme/app_tokens.dart';
 import 'package:dailytrack/core/utils/date_formats.dart';
 import 'package:dailytrack/core/utils/date_keys.dart';
 import 'package:dailytrack/core/widgets/app_scaffold.dart';
@@ -22,8 +26,8 @@ import 'package:go_router/go_router.dart';
 /// SET-01 More / Settings (spec §10, feature 007 contracts/screens.md):
 /// General, Appearance, Modules, Notifications, Security, Data, Privacy, About,
 /// and, in the dev flavor only, Developer. The Data section has Erase all
-/// data; backup, export, the premium card, ad privacy, and the banner come
-/// in later features, with nothing in their place (§15.8).
+/// data. The premium card leads the list until Pro is owned; the bottom
+/// banner is in the banner slot (spec §11).
 class SettingsScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -57,6 +61,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final async = ref.watch(settingsControllerProvider);
     return AppScaffold(
       title: l10n.nav_more,
+      // Spec §11: the bottom banner (no space until an ad loads).
+      bannerSlot: const AppBannerAd(),
       largeTitle: true,
       showBack: false,
       padBody: false,
@@ -73,6 +79,44 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 }
 
+/// SET-01 premium banner card: "Remove ads and unlock everything" → PRM-01
+/// (spec §10 SET-01 item 1).
+class _PremiumCard extends StatelessWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final tokens = AppTokens.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(tokens.s16, tokens.s8, tokens.s16, 0),
+      child: Card(
+        key: const Key('premium_card'),
+        margin: EdgeInsets.zero,
+        color: scheme.primaryContainer,
+        clipBehavior: Clip.antiAlias,
+        child: ListTile(
+          leading: Icon(
+            Icons.workspace_premium,
+            color: scheme.onPrimaryContainer,
+          ),
+          title: Text(
+            l10n.premium_cardTitle,
+            style: TextStyle(color: scheme.onPrimaryContainer),
+          ),
+          subtitle: Text(
+            l10n.premium_cardSubtitle,
+            style: TextStyle(color: scheme.onPrimaryContainer),
+          ),
+          trailing: Icon(Icons.chevron_right, color: scheme.onPrimaryContainer),
+          onTap: () => unawaited(context.push(Routes.premium)),
+        ),
+      ),
+    );
+  }
+}
+
 class _SettingsList extends ConsumerWidget {
   const new({required this.data});
 
@@ -85,6 +129,8 @@ class _SettingsList extends ConsumerWidget {
     return ListView(
       key: const Key('settings_list'),
       children: [
+        // PRM-01 entry, hidden once Pro is owned (FR-045).
+        if (!ref.watch(proOwnedProvider)) const _PremiumCard(),
         GeneralSection(settings: settings),
         SettingsSection(
           title: l10n.settings_appearance,
@@ -194,6 +240,19 @@ class _SettingsList extends ConsumerWidget {
                       .read(settingsControllerProvider.notifier)
                       .setDebugUnlockAll(enabled: on),
                 ),
+              ),
+              // Lets the interstitial cap be tested in minutes (FR-048).
+              ListTile(
+                key: const Key('reset_ad_counters'),
+                leading: const Icon(Icons.restart_alt),
+                title: Text(l10n.ads_resetCounters),
+                onTap: () async {
+                  final messenger = ScaffoldMessenger.of(context);
+                  await ref.read(resetAdCountersProvider)();
+                  messenger.showSnackBar(
+                    SnackBar(content: Text(l10n.ads_resetCountersDone)),
+                  );
+                },
               ),
             ],
           ),

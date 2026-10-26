@@ -3,12 +3,18 @@ import 'dart:async';
 import 'package:dailytrack/app/app_open_runner.dart';
 import 'package:dailytrack/app/background_entry_points.dart';
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/account/account_providers.dart';
+import 'package:dailytrack/core/account/domain/device_identity.dart';
 import 'package:dailytrack/core/ads/ad_providers.dart';
+import 'package:dailytrack/core/backup/backup_providers.dart';
+import 'package:dailytrack/core/billing/billing_providers.dart';
 import 'package:dailytrack/core/database/database_provider.dart';
 import 'package:dailytrack/core/database/seed_runner.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
 import 'package:dailytrack/core/notifications/notification_providers.dart';
+import 'package:dailytrack/core/security/domain/lock_types.dart';
 import 'package:dailytrack/core/security/lock_session.dart';
+import 'package:dailytrack/core/security/security_providers.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/widget/glance_refresher.dart';
@@ -51,11 +57,14 @@ String initialLocationFor(AppSettings settings, {String? launchPayload}) {
 /// SYS-01 startup (T080):
 ///  1. open the database (runs migrations) and load settings,
 ///  2. seed defaults for every registered module, exactly once,
-///  3. start the ads SDK unless Remove Ads was purchased (never blocks),
+///  3. resolve ad consent, then start the ads SDK, unless Remove Ads was
+///     purchased (waits only while consent is still unknown; never fails),
 ///  4. start notifications, the app-open hooks, and the home screen widget
 ///     host (never block),
 ///  5. pick the first route (a tapped notification's or the widget's
 ///     location if allowed).
+/// Feature 010: the device ID is checked before routing, and the Google
+/// account's silent sign-in runs behind the first screen (spec §16).
 /// A failure in steps 1–2 gives [BootstrapFailed], shown with "Retry".
 @Riverpod(keepAlive: true)
 class Bootstrap extends _$Bootstrap {
@@ -76,7 +85,7 @@ class Bootstrap extends _$Bootstrap {
   }
 
   Future<BootstrapResult> _start() async {
-    final AppSettings settings;
+    AppSettings settings;
     try {
       final db = ref.read(appDatabaseProvider);
       // Drift opens lazily; the first query opens the file and migrates.
@@ -90,14 +99,15 @@ class Bootstrap extends _$Bootstrap {
       return BootstrapFailed(e);
     }
 
-    // Consent (UMP) is resolved before this in T4.1.
-    if (!settings.removeAdsPurchased) {
+    if (await _ensureDeviceId() == DeviceIdOrigin.restoredFromAndroidBackup) {
+      await _afterAndroidRestore(settings);
       try {
-        await ref.read(adServiceProvider).initialize();
-      } on Object {
-        // Ads must never block startup.
+        settings = await ref.read(settingsRepositoryProvider).load();
+      } on Object catch (e) {
+        return BootstrapFailed(e);
       }
     }
+    await _startAds(settings);
 
     final notifications = ref.read(notificationServiceProvider);
     unawaited(notifications.initialize().catchError((Object _) {}));
@@ -125,11 +135,131 @@ class Bootstrap extends _$Bootstrap {
     // The widget's background callback, midnight alarm, and live refresh
     // (feature 008 research R19 – R21).
     unawaited(_startWidgetHost());
+    // Best effort; a failure shows the account as signed out (FR-004).
+    unawaited(_restoreAccount());
     // A cold start with app lock on begins locked (feature 007 R7).
     ref
         .read(lockSessionProvider.notifier)
         .start(lockEnabled: settings.onboardingDone && settings.lockEnabled);
     return BootstrapReady(initialLocationFor(settings, launchPayload: payload));
+  }
+
+  /// Step 3: consent (UMP), then the ads SDK (feature 009 research R4,
+  /// contracts/services.md §12). With Pro cached, neither the consent SDK
+  /// nor the ads SDK is touched (SYS-01 AC). A user whose stored consent
+  /// already allows ads starts at once and refreshes consent in the
+  /// background; otherwise startup waits for the consent check (and form)
+  /// first, so no ad is requested before consent is resolved (§11 AC).
+  /// Never throws: on any failure ads stay off for this session.
+  Future<void> _startAds(AppSettings settings) async {
+    // A cold start is a new session for the interstitial cap; the first one
+    // ever also records the install time (research R9).
+    unawaited(ref.read(interstitialCoordinatorProvider).startSession());
+    // Pro (spec PRM-01, research R13): listen for purchases first, then
+    // apply a removal staged by an earlier start, so locks and ads return
+    // together (analysis I1). The ownership check runs in the background;
+    // this start decides ads from the saved flag (offline: trust it).
+    final pro = ref.read(proServiceProvider)..start();
+    var proOwned = settings.removeAdsPurchased;
+    if (await pro.applyStagedRemoval()) proOwned = false;
+    unawaited(pro.verifyOwnership());
+    final gate = ref.read(adsSessionGateProvider.notifier);
+    if (proOwned) {
+      gate.startedWithAds = false;
+      return;
+    }
+    try {
+      final consent = ref.read(consentServiceProvider);
+      final timeout = ref.read(adConfigProvider).consentUpdateTimeout;
+      // The form appears over the Flutter splash, not behind the system one.
+      Future<void> removeSplash() async => FlutterNativeSplash.remove();
+      final bool allowed;
+      if (await consent.canRequestAds()) {
+        allowed = true;
+        unawaited(
+          consent
+              .gather(beforeForm: removeSplash, timeout: timeout)
+              .then((_) {}, onError: (Object _) {}),
+        );
+      } else {
+        final result = await consent.gather(
+          beforeForm: removeSplash,
+          timeout: timeout,
+        );
+        allowed = result.canRequestAds;
+      }
+      gate.startedWithAds = allowed;
+      if (allowed) {
+        unawaited(ref.read(adServiceProvider).init().catchError((Object _) {}));
+      }
+    } on Object {
+      // Ads must never block startup.
+      gate.startedWithAds = false;
+    }
+  }
+
+  /// The device ID file and its settings copy agree (feature 010 R4).
+  Future<DeviceIdOrigin> _ensureDeviceId() async {
+    try {
+      return await ref.read(deviceIdentityServiceProvider).ensure();
+    } on Object {
+      // Backups read the ID again when they need it.
+      return DeviceIdOrigin.existing;
+    }
+  }
+
+  /// The first start after Android restored the database from its own
+  /// backup or a device transfer (spec §16, research R13, FR-046). The PIN
+  /// and backup password stayed behind (secure storage is excluded), so:
+  /// app lock and biometrics go off when no PIN can be read, instead of
+  /// locking the user out; the account is cleared, then a silent sign-in
+  /// is tried; the conflict rule applies as if no backup were known; Home
+  /// shows "Finish setting up"; notifications are rescheduled and Restore
+  /// purchase runs. Onboarding is not shown again. Each step is best
+  /// effort.
+  Future<void> _afterAndroidRestore(AppSettings settings) async {
+    final repo = ref.read(settingsRepositoryProvider);
+    Future<void> step(Future<void> Function() body) async {
+      try {
+        await body();
+      } on Object {
+        // The next step still runs.
+      }
+    }
+
+    await step(() async {
+      final lock = ref.read(lockServiceProvider);
+      if (await lock.status() == LockStatus.credentialUnavailable) {
+        await lock.reset();
+        await repo.setBiometricEnabled(enabled: false);
+        await repo.setLockEnabled(enabled: false);
+      }
+    });
+    await step(() => repo.setAccount(null));
+    await step(() => repo.setLastKnownDriveBackup(at: null, deviceId: null));
+    await step(() => repo.setAutoBackupPause(paused: false, notified: false));
+    if (settings.onboardingDone) {
+      await step(() => repo.setFinishSetupPending(pending: true));
+    }
+    unawaited(
+      step(() => ref.read(accountServiceProvider).adoptSilentSession()),
+    );
+    unawaited(step(() => ref.read(restoreAftermathProvider)()));
+    unawaited(step(() => ref.read(proServiceProvider).restore()));
+  }
+
+  Future<void> _restoreAccount() async {
+    try {
+      await ref.read(accountServiceProvider).restoreSession();
+    } on Object {
+      // No account binding (tests) or no Google services: stays as stored.
+    }
+    try {
+      // Deletes a safety copy older than 7 days (feature 010 FR-019a).
+      await ref.read(accountRestoreProvider).safetyCopy();
+    } on Object {
+      // Tried again at the next start.
+    }
   }
 
   Future<void> _startWidgetHost() async {

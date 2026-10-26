@@ -49,10 +49,11 @@ class HabitSchedules extends Table {
   @override
   Set<Column<Object>> get primaryKey => {id};
 
-  static const String _dateKeyFormat =
-      'CHECK (effective_from_key GLOB '
-      "'[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]')";
-
+  // A literal: `make-migrations` drops constraints given as constant
+  // references from the schema snapshot.
   @override
-  List<String> get customConstraints => const [_dateKeyFormat];
+  List<String> get customConstraints => const [
+    // ignore: lines_longer_than_80_chars, one literal for the snapshot
+    "CHECK (effective_from_key GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]')",
+  ];
 }

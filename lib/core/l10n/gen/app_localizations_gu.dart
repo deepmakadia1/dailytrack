@@ -2867,9 +2867,6 @@ class AppLocalizationsGu extends AppLocalizations {
   String get backup_driveUnavailable => 'આ બિલ્ડમાં Google Drive ઉપલબ્ધ નથી.';
 
   @override
-  String get backup_connect => 'Google ખાતું જોડો';
-
-  @override
   String backup_connected(String email) {
     return '$email તરીકે જોડાયેલું છે';
   }
@@ -2882,16 +2879,6 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get backup_driveSaved => 'Google Drive પર બેકઅપ થઈ ગયું';
-
-  @override
-  String get backup_disconnect => 'ડિસ્કનેક્ટ કરો';
-
-  @override
-  String get backup_disconnectTitle => 'Google ખાતું ડિસ્કનેક્ટ કરીએ?';
-
-  @override
-  String get backup_disconnectBody =>
-      'ઑટોમેટિક બેકઅપ બંધ થઈ જશે. Google Drive માં પહેલેથી રહેલા બેકઅપ રાખવામાં આવશે.';
 
   @override
   String get backup_autoTitle => 'ઑટો બેકઅપ';
@@ -3054,7 +3041,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get export_locked =>
-      'એક્સપોર્ટ DailyTrack Pro નો ભાગ છે. તેમને અનલૉક કરવાનું ટૂંક સમયમાં આવી રહ્યું છે.';
+      'એક્સપોર્ટ DailyTrack Pro નો ભાગ છે. એક એક્સપોર્ટ માટે જાહેરાત જુઓ, અથવા Pro મેળવો.';
 
   @override
   String get export_nothing => 'આ સમયગાળા માટે એક્સપોર્ટ કરવા જેવું કંઈ નથી';
@@ -3265,6 +3252,429 @@ class AppLocalizationsGu extends AppLocalizations {
   @override
   String widget_habitCountA11y(String name, String progress) {
     return '$name, $progress. એક ઉમેરવા માટે બે વાર ટૅપ કરો';
+  }
+
+  @override
+  String get ads_badge => 'જાહેરાત';
+
+  @override
+  String get ads_bannerLabel => 'જાહેરાત';
+
+  @override
+  String get privacy_adChoices => 'જાહેરાત ગોપનીયતા પસંદગીઓ';
+
+  @override
+  String get ads_resetCounters => 'જાહેરાત કાઉન્ટર રીસેટ કરો';
+
+  @override
+  String get ads_resetCountersDone => 'જાહેરાત કાઉન્ટર રીસેટ થયા';
+
+  @override
+  String get premium_title => 'DailyTrack Pro';
+
+  @override
+  String get premium_benefitNoAds => 'કોઈ જાહેરાત નહીં';
+
+  @override
+  String get premium_benefitThemes => 'બધી થીમ';
+
+  @override
+  String get premium_benefitReports => 'અદ્યતન રિપોર્ટ';
+
+  @override
+  String get premium_benefitExports => 'અમર્યાદિત એક્સપોર્ટ';
+
+  @override
+  String get premium_benefitFreezes => 'મર્યાદા સુધી અમર્યાદિત સ્ટ્રીક ફ્રીઝ';
+
+  @override
+  String get rewarded_titleReports => '24 કલાક માટે અદ્યતન રિપોર્ટ અનલૉક કરો';
+
+  @override
+  String get rewarded_titleCsv => 'એક CSV એક્સપોર્ટ અનલૉક કરો';
+
+  @override
+  String get rewarded_titlePdf => 'એક PDF એક્સપોર્ટ અનલૉક કરો';
+
+  @override
+  String rewarded_titleTheme(String theme) {
+    return '$theme થીમ હંમેશ માટે અનલૉક કરો';
+  }
+
+  @override
+  String rewarded_titleFreeze(String habit) {
+    return '$habit માટે 1 સ્ટ્રીક ફ્રીઝ મેળવો';
+  }
+
+  @override
+  String get rewarded_explainReports =>
+      'આગામી 24 કલાક સુધી વલણો, ખાતાં અને દરેક સમયગાળો જોવા માટે એક ટૂંકી જાહેરાત જુઓ.';
+
+  @override
+  String get rewarded_explainExport =>
+      'આ ફોર્મેટમાં એક એક્સપોર્ટ ફાઇલ બનાવવા માટે એક ટૂંકી જાહેરાત જુઓ.';
+
+  @override
+  String get rewarded_explainTheme =>
+      'આ રંગ થીમ હંમેશ માટે મેળવવા માટે એક ટૂંકી જાહેરાત જુઓ.';
+
+  @override
+  String get rewarded_explainFreeze =>
+      'આ આદતમાં એક સ્ટ્રીક ફ્રીઝ ઉમેરવા માટે એક ટૂંકી જાહેરાત જુઓ (વધુમાં વધુ 2).';
+
+  @override
+  String get rewarded_watch => 'એક ટૂંકી જાહેરાત જુઓ';
+
+  @override
+  String get rewarded_getPro => 'તેના બદલે Pro મેળવો';
+
+  @override
+  String get rewarded_notNow => 'હમણાં નહીં';
+
+  @override
+  String get rewarded_loadingAd => 'જાહેરાત લોડ થઈ રહી છે';
+
+  @override
+  String get rewarded_unavailable => 'જાહેરાત ઉપલબ્ધ નથી, પછીથી ફરી પ્રયાસ કરો';
+
+  @override
+  String get rewarded_tryAgain => 'ફરી પ્રયાસ કરો';
+
+  @override
+  String get rewarded_closedEarly => 'અનલૉક કરવા માટે આખી જાહેરાત જુઓ';
+
+  @override
+  String get rewarded_limitReached =>
+      'આજ માટે આ અનલૉકની મર્યાદા પૂરી થઈ ગઈ છે. કાલે ફરી પ્રયાસ કરો, અથવા Pro મેળવો.';
+
+  @override
+  String get locked_watchAdReports => '24 કલાક માટે અનલૉક કરવા જાહેરાત જુઓ';
+
+  @override
+  String get locked_watchAdExport => 'એક એક્સપોર્ટ અનલૉક કરવા જાહેરાત જુઓ';
+
+  @override
+  String get locked_watchAdTheme => 'આ થીમ અનલૉક કરવા જાહેરાત જુઓ';
+
+  @override
+  String get locked_watchAdFreeze => 'ફ્રીઝ મેળવવા જાહેરાત જુઓ';
+
+  @override
+  String premium_buyFor(String price) {
+    return '$price માં Pro મેળવો';
+  }
+
+  @override
+  String get premium_restore => 'ખરીદી પાછી મેળવો';
+
+  @override
+  String get premium_restored => 'Pro પાછું મળ્યું';
+
+  @override
+  String get premium_restoreNotFound =>
+      'આ Google ખાતા માટે કોઈ Pro ખરીદી મળી નથી';
+
+  @override
+  String get premium_storeUnavailable =>
+      'સ્ટોર હમણાં ઉપલબ્ધ નથી, પછીથી ફરી પ્રયાસ કરો';
+
+  @override
+  String get premium_accountNote =>
+      'તમારી ખરીદી તમારા Google ખાતા સાથે જોડાયેલી છે.';
+
+  @override
+  String get premium_pending => 'ચુકવણી પૂરી થતાં જ Pro અનલૉક થશે';
+
+  @override
+  String get premium_purchaseError => 'ખરીદી પૂરી થઈ શકી નહીં. ફરી પ્રયાસ કરો.';
+
+  @override
+  String get premium_owned => 'તમારી પાસે Pro છે. તમારા સાથ બદલ આભાર.';
+
+  @override
+  String get premium_cardTitle => 'જાહેરાતો દૂર કરો અને બધું અનલૉક કરો';
+
+  @override
+  String get premium_cardSubtitle => 'DailyTrack Pro: એક વાર ખરીદો, હંમેશ માટે';
+
+  @override
+  String get habit_addFreezePro => 'ફ્રીઝ ઉમેરો';
+
+  @override
+  String get account_title => 'ખાતું';
+
+  @override
+  String get account_signedOutTitle => 'તમારા Google ખાતાથી બેકઅપ લો';
+
+  @override
+  String get account_pointDrive =>
+      'તમારો ડેટા તમારી પોતાની Google Drive માં સેવ થાય છે';
+
+  @override
+  String get account_pointRestore => 'નવા ફોન પર તેને રિસ્ટોર કરો';
+
+  @override
+  String get account_pointOptional =>
+      'વૈકલ્પિક: એપ ખાતા વિના પણ પૂરેપૂરી કામ કરે છે';
+
+  @override
+  String get account_signIn => 'Google થી સાઇન ઇન કરો';
+
+  @override
+  String get account_pinFootnote =>
+      'તમારા એપ લૉક PIN નું ક્યારેય બેકઅપ લેવાતું નથી.';
+
+  @override
+  String get account_signInFailed =>
+      'સાઇન ઇન થઈ શક્યું નહીં. તમારું કનેક્શન તપાસો અને ફરી પ્રયાસ કરો.';
+
+  @override
+  String get account_signedInBackedUp =>
+      'સાઇન ઇન થઈ ગયું. તમારા ડેટાનું બેકઅપ થઈ ગયું છે.';
+
+  @override
+  String account_lastBackupFrom(String time, String device) {
+    return 'છેલ્લું બેકઅપ: $time · $device';
+  }
+
+  @override
+  String account_lastBackup(String time) {
+    return 'છેલ્લું બેકઅપ: $time';
+  }
+
+  @override
+  String get account_noBackupYet => 'આ ખાતામાં હજી સુધી કોઈ બેકઅપ નથી';
+
+  @override
+  String get account_statusBackedUp => 'બેકઅપ થઈ ગયું';
+
+  @override
+  String get account_statusBackingUp => 'બેકઅપ થઈ રહ્યું છે…';
+
+  @override
+  String get account_statusPaused =>
+      'બેકઅપ અટક્યું છે: બીજા ફોનનું નવું બેકઅપ છે';
+
+  @override
+  String get account_statusFailed => 'બેકઅપ નિષ્ફળ ગયું';
+
+  @override
+  String get account_statusError => 'તમારા બેકઅપ વાંચી શકાયા નહીં.';
+
+  @override
+  String account_autoSummaryWifi(String frequency) {
+    return '$frequency · ફક્ત Wi-Fi પર';
+  }
+
+  @override
+  String get account_signOut => 'સાઇન આઉટ કરો';
+
+  @override
+  String get account_signedOut =>
+      'સાઇન આઉટ થઈ ગયું. તમારો ડેટા હજી પણ આ ફોન પર છે.';
+
+  @override
+  String get account_deleteBackups => 'મારા બેકઅપ કાઢી નાખો';
+
+  @override
+  String get account_deleteTitle => 'તમારા બેકઅપ કાઢી નાખીએ?';
+
+  @override
+  String account_deleteBody(int count, String email) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$email માંથી DailyTrack ના બધા $countString બેકઅપ કાઢી નાખીએ? આ ફોનનો ડેટા રહેશે. આને પૂર્વવત્ કરી શકાતું નથી.',
+      one:
+          '$email માંથી DailyTrack નું 1 બેકઅપ કાઢી નાખીએ? આ ફોનનો ડેટા રહેશે. આને પૂર્વવત્ કરી શકાતું નથી.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get account_deleteAction => 'બેકઅપ કાઢી નાખો';
+
+  @override
+  String get account_deleted => 'તમારા બેકઅપ કાઢી નાખવામાં આવ્યા';
+
+  @override
+  String account_photoOf(String name) {
+    return '$name નો પ્રોફાઇલ ફોટો';
+  }
+
+  @override
+  String get backup_manageAccount => 'તમારું ખાતું મેનેજ કરો';
+
+  @override
+  String get backup_conflictTitle => 'તો પણ બેકઅપ લઈએ?';
+
+  @override
+  String backup_conflictNewer(String device, String time) {
+    return '$device નું એક નવું બેકઅપ ($time) છે. હમણાં બેકઅપ લેવાથી આ ફોનનો ડેટા સૌથી નવો બની જશે.';
+  }
+
+  @override
+  String get backup_conflictEmpty =>
+      'આ ફોન પર કોઈ ડેટા નથી. હમણાં બેકઅપ લેવાથી ખાલી બેકઅપ સૌથી નવું બની જશે.';
+
+  @override
+  String get backup_backUpAnyway => 'તો પણ બેકઅપ લો';
+
+  @override
+  String get backup_unknownDevice => 'અજાણ્યું ડિવાઇસ';
+
+  @override
+  String get notif_backupPausedTitle => 'બેકઅપ અટક્યું છે';
+
+  @override
+  String get notif_backupPausedBody =>
+      'બીજા ફોને નવું બેકઅપ લીધું છે. જોવા માટે ટૅપ કરો.';
+
+  @override
+  String account_choiceTitle(String email) {
+    return '$email પર બેકઅપ મળ્યું';
+  }
+
+  @override
+  String get account_fromThisPhone => 'આ ફોનમાંથી';
+
+  @override
+  String account_fromDevice(String device) {
+    return '$device માંથી';
+  }
+
+  @override
+  String get account_encrypted => 'એન્ક્રિપ્ટેડ';
+
+  @override
+  String account_thisPhone(String counts) {
+    return 'આ ફોન: $counts';
+  }
+
+  @override
+  String get account_thisPhoneEmpty => 'આ ફોન: હજી કોઈ ડેટા નથી';
+
+  @override
+  String get account_replaceNote => 'રિસ્ટોર કરવાથી આ ફોનનો ડેટા બદલાઈ જશે.';
+
+  @override
+  String get account_restoreFromAccount => 'ખાતામાંથી રિસ્ટોર કરો';
+
+  @override
+  String get account_keepThisPhone => 'આ ફોનનો ડેટા રાખો';
+
+  @override
+  String get account_seeAllBackups => 'બધા બેકઅપ જુઓ';
+
+  @override
+  String get account_close => 'બંધ કરો';
+
+  @override
+  String get account_wrongPassword => 'તે પાસવર્ડ કામ ન કર્યો';
+
+  @override
+  String get account_restoreFailed =>
+      'રિસ્ટોર થઈ શક્યું નહીં. આ ફોન પરનો તમારો ડેટા બદલાયો નથી.';
+
+  @override
+  String get account_safetyCopyFailed =>
+      'પહેલાં આ ફોનના ડેટાની કૉપિ સેવ કરવા માટે જગ્યા નથી, તેથી કંઈ રિસ્ટોર થયું નથી. જગ્યા ખાલી કરીને ફરી પ્રયાસ કરો.';
+
+  @override
+  String account_restoredCounts(String summary) {
+    return 'રિસ્ટોર થઈ ગયું: $summary';
+  }
+
+  @override
+  String get account_restoring => 'તમારો ડેટા રિસ્ટોર થઈ રહ્યો છે…';
+
+  @override
+  String get account_restore => 'રિસ્ટોર કરો';
+
+  @override
+  String get account_review => 'જુઓ';
+
+  @override
+  String get account_switch => 'ખાતું બદલો';
+
+  @override
+  String get account_switchFailedTitle => 'પહેલાં બેકઅપ થઈ શક્યું નહીં';
+
+  @override
+  String account_switchFailedBody(String email) {
+    return 'તમારા નવા ફેરફારો હજી $email માં નથી. તો પણ ખાતું બદલીએ? તમારો ડેટા આ ફોન પર રહેશે.';
+  }
+
+  @override
+  String get account_switchAnyway => 'તો પણ બદલો';
+
+  @override
+  String get account_sessionExpired =>
+      'તમારું Google સાઇન-ઇન સમાપ્ત થયું. બેકઅપ ચાલુ રાખવા ફરીથી સાઇન ઇન કરો.';
+
+  @override
+  String account_signOutSheetTitle(String email) {
+    return '$email માંથી સાઇન આઉટ કરીએ?';
+  }
+
+  @override
+  String get account_signOutBackingUp =>
+      'તમારા નવા ફેરફારોનું બેકઅપ થઈ રહ્યું છે…';
+
+  @override
+  String get account_signOutBackupFailed =>
+      'તમારા નવા ફેરફારોનું બેકઅપ થઈ શક્યું નહીં';
+
+  @override
+  String get account_signOutAnyway => 'તો પણ સાઇન આઉટ કરો';
+
+  @override
+  String get account_keepData => 'આ ફોન પર ડેટા રાખો';
+
+  @override
+  String get account_keepDataHelp =>
+      'તમે ખાતા વિના એપનો ઉપયોગ ચાલુ રાખી શકો છો.';
+
+  @override
+  String get account_removeData => 'આ ફોનમાંથી ડેટા કાઢી નાખો';
+
+  @override
+  String get account_removeDataHelp =>
+      'તમારું બેકઅપ તમારા Google ખાતામાં રહેશે.';
+
+  @override
+  String get onboarding_restoreWithGoogle => 'Google થી રિસ્ટોર કરો';
+
+  @override
+  String get onboarding_noBackupFound => 'આ ખાતા પર કોઈ બેકઅપ મળ્યું નથી';
+
+  @override
+  String get finishSetup_title => 'સેટઅપ પૂરું કરો';
+
+  @override
+  String get finishSetup_body =>
+      'તમારો ડેટા પાછો આવી ગયો. તમારા એપ લૉક PIN નું ક્યારેય બેકઅપ થતું નથી, તેથી તમારો ડેટા ખાનગી રાખવા નવો PIN સેટ કરો.';
+
+  @override
+  String get finishSetup_setLock => 'એપ લૉક સેટ કરો';
+
+  @override
+  String get finishSetup_allowNotifications => 'સૂચનાઓની મંજૂરી આપો';
+
+  @override
+  String get finishSetup_notNow => 'હમણાં નહીં';
+
+  @override
+  String get backup_previousTitle => 'ફોનનો પાછલો ડેટા રિસ્ટોર કરો';
+
+  @override
+  String backup_previousDetail(String date, String counts) {
+    return '$date એ સેવ કર્યું · $counts';
   }
 
   @override

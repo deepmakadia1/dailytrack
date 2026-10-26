@@ -1,6 +1,10 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/ads/domain/ad_config.dart';
+import 'package:dailytrack/core/ads/domain/ad_placement.dart';
+import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
+import 'package:dailytrack/core/ads/widgets/app_native_ad.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
 import 'package:dailytrack/core/widgets/app_scaffold.dart';
@@ -194,6 +198,8 @@ class _HabitsTodayScreenState extends ConsumerState<HabitsTodayScreen> {
 
     return AppScaffold(
       title: l10n.habit_title,
+      // Spec §11: the bottom banner (no space until an ad loads).
+      bannerSlot: const AppBannerAd(),
       largeTitle: true,
       showBack: false,
       // The week strip spans the full width; the rest pads itself.
@@ -373,7 +379,18 @@ class _Content extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                  for (final c in data.scheduled) _card(c),
+                  for (final (i, c) in data.scheduled.indexed) ...[
+                    _card(c),
+                    // Spec §11: one native ad after the 4th card, only with
+                    // 5 or more habits on the day.
+                    if (i == AdConfig.defaults.habitsNativeAfter - 1 &&
+                        data.scheduled.length >=
+                            AdConfig.defaults.habitsNativeMinCards)
+                      const AppNativeAd(
+                        key: Key('habits_native'),
+                        placement: NativePlacement.habits,
+                      ),
+                  ],
                   if (data.notScheduled.isNotEmpty)
                     ExpansionTile(
                       key: const Key('not_scheduled_section'),

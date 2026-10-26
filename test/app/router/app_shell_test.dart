@@ -101,7 +101,7 @@ void main() {
   testWidgets('SET-01 each tab keeps its own back stack', (tester) async {
     await pumpShell(tester);
     await tapTab(tester, 'More');
-    await tester.ensureVisible(find.text('Enable or reorder trackers'));
+    await scrollSettingsTo(tester, find.text('Enable or reorder trackers'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Enable or reorder trackers'));
     await tester.pumpAndSettle();
@@ -132,7 +132,7 @@ void main() {
   ) async {
     await pumpShell(tester);
     await tapTab(tester, 'More');
-    await tester.ensureVisible(find.text('Enable or reorder trackers'));
+    await scrollSettingsTo(tester, find.text('Enable or reorder trackers'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Enable or reorder trackers'));
     await tester.pumpAndSettle();
@@ -155,7 +155,7 @@ void main() {
   ) async {
     await pumpShell(tester);
     await tapTab(tester, 'More');
-    await tester.ensureVisible(find.text('Enable or reorder trackers'));
+    await scrollSettingsTo(tester, find.text('Enable or reorder trackers'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Enable or reorder trackers'));
     await tester.pumpAndSettle();

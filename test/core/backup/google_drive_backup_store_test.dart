@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:dailytrack/core/backup/data/google_drive_backup_store.dart';
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
+import 'package:dailytrack/core/backup/domain/backup_meta.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
@@ -38,12 +39,7 @@ void main() {
     files = _MockFiles();
     final api = _MockDriveApi();
     when(() => api.files).thenReturn(files);
-    store = GoogleDriveBackupStore(
-      api: () async => api,
-      connect: () async => 'me@example.com',
-      disconnect: () async {},
-      deviceName: () async => 'Pixel 8a',
-    );
+    store = GoogleDriveBackupStore(api: () async => api);
   });
 
   void stubList(List<drive.File> result) => when(
@@ -69,6 +65,8 @@ void main() {
     expect(entries.last.kind, BackupKind.manual);
     expect(entries.first.sizeBytes, 1009);
     expect(entries.first.device, 'Pixel');
+    // Backups made before feature 010 have no metadata (FR-043).
+    expect(entries.first.meta, isNull);
     expect(
       entries.first.createdAt,
       DateTime.utc(2026, 10, 9).millisecondsSinceEpoch,
@@ -90,8 +88,8 @@ void main() {
     );
   });
 
-  test('SET-02 US2-4 upload goes to appDataFolder with app, kind, schema, '
-      'and device, as a resumable upload', () async {
+  test('SET-02 US2-4 upload goes to appDataFolder with the backup metadata '
+      'as appProperties, as a resumable upload', () async {
     when(
       () => files.create(
         any(),
@@ -103,7 +101,16 @@ void main() {
     await store.upload(
       Uint8List.fromList([1, 2, 3]),
       fileName: 'dailytrack_backup_20261021_2130.json',
-      kind: BackupKind.manual,
+      meta: const BackupMeta(
+        deviceId: 'dev-1',
+        deviceName: 'Pixel 8a',
+        appVersion: '1.0.0+7',
+        createdAt: 1792540800000,
+        kind: BackupKind.manual,
+        counts: {'expense.transactions': 12, 'habit.habits': 2},
+        schemaVersion: 5,
+        encrypted: true,
+      ),
     );
     final captured = verify(
       () => files.create(
@@ -119,24 +126,50 @@ void main() {
     expect(file.appProperties, {
       'app': 'dailytrack',
       'kind': 'manual',
-      'schemaVersion': '4',
+      'schemaVersion': '5',
+      'deviceId': 'dev-1',
+      'createdAt': '1792540800000',
+      'encrypted': '1',
+      'appVersion': '1.0.0+7',
       'device': 'Pixel 8a',
+      'c.expense.transactions': '12',
+      'c.habit.habits': '2',
     });
     expect(captured.whereType<drive.Media>().single.length, 3);
     expect(captured.whereType<drive.ResumableUploadOptions>(), hasLength(1));
   });
 
-  test('SET-02 US2-9 Q1 pruneAuto keeps the 5 newest auto backups and never '
-      'deletes a manual one', () async {
+  test('§16 list reads the metadata back from appProperties', () async {
     stubList([
-      for (var d = 1; d <= 7; d++) _file('auto$d', kind: 'auto', day: d),
-      _file('manual-old', kind: 'manual', day: 0 + 1),
-      _file('manual-new', kind: 'manual', day: 20),
+      _file('a', kind: 'auto', day: 3)
+        ..appProperties = {
+          'app': 'dailytrack',
+          'kind': 'auto',
+          'device': 'Pixel 8a',
+          'deviceId': 'dev-1',
+          'createdAt': '1792540800000',
+          'c.expense.transactions': '12',
+        },
+    ]);
+    final meta = (await store.list()).single.meta!;
+    expect(meta.deviceId, 'dev-1');
+    expect(meta.deviceName, 'Pixel 8a');
+    expect(meta.kind, BackupKind.auto);
+    expect(meta.counts, {'expense.transactions': 12});
+  });
+
+  test('ACC-01 deleteAll removes every DailyTrack file and keeps going '
+      'after one failure', () async {
+    stubList([
+      _file('m', kind: 'manual', day: 1),
+      _file('bad', kind: 'auto', day: 2),
+      _file('a', kind: 'auto', day: 3),
     ]);
     when(() => files.delete(any())).thenAnswer((_) async {});
-    await store.pruneAuto();
+    when(() => files.delete('bad')).thenThrow(const SocketException('x'));
+    await expectLater(store.deleteAll(), throwsA(isA<DriveOffline>()));
     final deleted = verify(() => files.delete(captureAny())).captured;
-    expect(deleted, ['auto2', 'auto1']);
+    expect(deleted, unorderedEquals(['m', 'bad', 'a']));
   });
 
   test('download returns the file bytes', () async {

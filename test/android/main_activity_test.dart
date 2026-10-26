@@ -28,20 +28,25 @@ void main() {
       'setSecure',
       'getDeviceInfo',
       'openNotificationSettings',
+      'getNoBackupDir',
     ]) {
       expect(activity, contains('"$method"'), reason: method);
     }
     expect(activity, contains('FLAG_SECURE'));
+    // The device ID file lives where Android never backs up (feature 010).
+    expect(activity, contains('noBackupFilesDir'));
   });
 
-  test('the manifest declares biometrics and turns OS backup off', () {
+  test('the manifest declares biometrics; OS backup uses the include-list '
+      'rules (feature 010)', () {
     expect(
       manifest,
       contains(
         '<uses-permission android:name="android.permission.USE_BIOMETRIC"/>',
       ),
     );
-    expect(manifest, contains('android:allowBackup="false"'));
+    // test/android/backup_rules_test.dart checks the rules themselves.
+    expect(manifest, contains('android:allowBackup="true"'));
   });
 
   test('every launch and normal theme descends from Theme.AppCompat', () {
