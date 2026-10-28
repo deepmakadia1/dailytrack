@@ -1,0 +1,59 @@
+name: Regenerate goldens
+
+# Run by hand: Actions → "Regenerate goldens" → Run workflow. Renders the
+# golden baselines on Linux, the only reference platform (docs/CLAUDE.md,
+# feature 012 research R7), and offers them as the `golden-baselines`
+# artifact. It never commits, pushes, or opens a pull request (feature 012
+# clarification Q5). To update the baselines:
+#   1. Download `golden-baselines` and unzip it into test/goldens/.
+#   2. Open every changed PNG and check it (Gujarati glyphs, dark theme, no
+#      overflow).
+#   3. Commit the PNGs. Pull request CI then compares against them.
+on:
+  workflow_dispatch:
+    inputs:
+      filter:
+        description: Only tests whose name contains this text (optional)
+        type: string
+        default: ""
+
+jobs:
+  goldens:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.x
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Code generation
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Render goldens
+        env:
+          FILTER: ${{ inputs.filter }}
+        run: |
+          if [ -n "$FILTER" ]; then
+            flutter test --tags golden --update-goldens --plain-name "$FILTER"
+          else
+            flutter test --tags golden --update-goldens
+          fi
+
+      - name: Upload baselines
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-baselines
+          path: test/goldens/*.png
+          if-no-files-found: error

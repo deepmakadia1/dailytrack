@@ -6,7 +6,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 /// Loads the bundled Noto fonts and the SDK's Material Icons font before any
 /// test runs, so text and icons render with real glyphs and goldens are
-/// deterministic (research R11).
+/// deterministic (research R11). Every family the theme names
+/// (`AppTheme.fontFamily` and `AppTheme.fontFallback`) must be loaded here:
+/// goldens must never fall back to the machine's system fonts (feature 012
+/// research R7).
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   TestWidgetsFlutterBinding.ensureInitialized();
   await _loadFamily('NotoSans', [

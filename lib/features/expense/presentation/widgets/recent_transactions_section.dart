@@ -35,6 +35,7 @@ class RecentTransactionsSection extends ConsumerWidget {
               key: Key('recent_row_${view.transaction.id}'),
               view: view,
               currency: currency,
+              horizontalPadding: tokens.s16,
               onTap: () => unawaited(
                 context.push(Routes.expenseDetailPath(view.transaction.id)),
               ),

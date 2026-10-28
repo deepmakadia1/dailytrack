@@ -3401,6 +3401,29 @@ class AppLocalizationsGu extends AppLocalizations {
   String get habit_addFreezePro => 'ફ્રીઝ ઉમેરો';
 
   @override
+  String get more_seedTransactions => '10,000 વ્યવહારો ઉમેરો';
+
+  @override
+  String get more_seedConfirm =>
+      'પ્રદર્શન તપાસવા માટે 10,000 નમૂના વ્યવહારો ઉમેરીએ? આ સાચી એન્ટ્રીઓ છે અને તમે તેને કાઢી નાખો અથવા બધો ડેટા ભૂંસી નાખો ત્યાં સુધી રહેશે.';
+
+  @override
+  String get more_seedAdd => 'ઉમેરો';
+
+  @override
+  String more_seedDone(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString વ્યવહારો ઉમેર્યા';
+  }
+
+  @override
+  String get more_seedBusy =>
+      'બેકઅપ અથવા રિસ્ટોર ચાલી રહ્યું છે. તે પૂરું થાય પછી ફરી પ્રયાસ કરો.';
+
+  @override
   String get account_title => 'ખાતું';
 
   @override

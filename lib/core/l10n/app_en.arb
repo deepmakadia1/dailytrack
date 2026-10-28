@@ -4818,6 +4818,32 @@
   "@habit_addFreezePro": {
     "description": "HAB-03 freeze card button for Pro users."
   },
+  "more_seedTransactions": "Seed 10,000 transactions",
+  "@more_seedTransactions": {
+    "description": "Dev-only SET-01 Developer action (feature 012 FR-012)."
+  },
+  "more_seedConfirm": "Add 10,000 sample transactions to test performance? They are real entries and stay until you delete them or erase all data.",
+  "@more_seedConfirm": {
+    "description": "Confirm dialog body for Seed 10,000 transactions."
+  },
+  "more_seedAdd": "Add",
+  "@more_seedAdd": {
+    "description": "Confirm button of the seed dialog."
+  },
+  "more_seedDone": "Added {count} transactions",
+  "@more_seedDone": {
+    "description": "Snackbar after seeding.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "more_seedBusy": "A backup or restore is running. Try again when it finishes.",
+  "@more_seedBusy": {
+    "description": "Snackbar when seeding is refused during a backup or restore."
+  },
   "account_title": "Account",
   "@account_title": {
     "description": "ACC-01 title."

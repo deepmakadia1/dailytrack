@@ -107,19 +107,15 @@ void main() {
     expect(name, startsWith('dailytrack_backup_'));
     expect(name, endsWith('.zip'));
 
-    // 2. Erase all data, exactly as SET-01 does; the app restarts at
-    // onboarding.
+    // 2. Erase all data, exactly as SET-01 does. Onboarding and the sign-in
+    // mode are kept, so the app lands on Home (feature 011 clarification Q1).
     await container(tester).read(appResetServiceProvider).eraseAll();
-    await pumpUntil(
-      tester,
-      () => find.byType(OnboardingScreen).evaluate().isNotEmpty,
-    );
-    expect(File('${docs.path}/receipts/r1.jpg').existsSync(), isFalse);
-    await tester.tap(find.byKey(const Key('onboarding_skip')));
     await pumpUntil(
       tester,
       () => find.byType(HomeScreen).evaluate().isNotEmpty,
     );
+    expect(find.byType(OnboardingScreen), findsNothing);
+    expect(File('${docs.path}/receipts/r1.jpg').existsSync(), isFalse);
     final erased = await tableChecksums(
       container(tester).read(appDatabaseProvider),
     );

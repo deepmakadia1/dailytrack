@@ -6,6 +6,8 @@ import 'package:dailytrack/core/ads/ad_providers.dart';
 import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
 import 'package:dailytrack/core/billing/billing_providers.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
+import 'package:dailytrack/core/l10n/l10n_lookup.dart';
+import 'package:dailytrack/core/module/dev_action.dart';
 import 'package:dailytrack/core/reset/reset_providers.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
@@ -278,9 +280,67 @@ class _SettingsList extends ConsumerWidget {
                   );
                 },
               ),
+              // The modules' own Developer actions, e.g. "Seed 10,000
+              // transactions" (feature 012 T042).
+              for (final action in data.devActions)
+                ListTile(
+                  key: Key('dev_${action.id}'),
+                  leading: Icon(action.icon),
+                  title: Text(l10nByKey(l10n, action.labelKey) ?? action.id),
+                  subtitle: data.runningDevAction == action.id
+                      ? LinearProgressIndicator(
+                          key: const Key('dev_progress'),
+                          value: data.devProgress,
+                        )
+                      : null,
+                  enabled: data.runningDevAction == null,
+                  onTap: () => unawaited(_runDevAction(context, ref, action)),
+                ),
             ],
           ),
       ],
     );
+  }
+
+  Future<void> _runDevAction(
+    BuildContext context,
+    WidgetRef ref,
+    DevAction action,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final go = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        key: const Key('dev_confirm'),
+        content: Text(l10nByKey(l10n, action.confirmKey) ?? action.id),
+        actions: [
+          TextButton(
+            key: const Key('dev_confirm_cancel'),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.common_cancel),
+          ),
+          FilledButton(
+            key: const Key('dev_confirm_ok'),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.more_seedAdd),
+          ),
+        ],
+      ),
+    );
+    if (go != true) return;
+    final result = await ref
+        .read(settingsControllerProvider.notifier)
+        .runDevAction(action);
+    messenger.showSnackBar(switch (result) {
+      DevActionDone(:final count) => SnackBar(
+        key: const Key('dev_done'),
+        content: Text(l10n.more_seedDone(count)),
+      ),
+      DevActionBusy() => SnackBar(
+        key: const Key('dev_busy'),
+        content: Text(l10n.more_seedBusy),
+      ),
+    });
   }
 }

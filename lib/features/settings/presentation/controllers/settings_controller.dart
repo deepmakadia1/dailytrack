@@ -1,4 +1,5 @@
 import 'package:dailytrack/core/feature_gate/feature_gate_providers.dart';
+import 'package:dailytrack/core/module/dev_action.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
 import 'package:dailytrack/core/notifications/daily_summary_scheduler.dart';
 import 'package:dailytrack/core/notifications/notification_providers.dart';
@@ -23,6 +24,16 @@ abstract class SettingsViewData with _$SettingsViewData {
 
     /// Dev flavor only: shows the Developer section (FR-013).
     required bool devTools,
+
+    /// Dev flavor only: the enabled modules' Developer actions (feature 012
+    /// contracts/dev-seed.md). Always empty in prod.
+    @Default(<DevAction>[]) List<DevAction> devActions,
+
+    /// The [DevAction.id] that is running, or null.
+    String? runningDevAction,
+
+    /// Progress of [runningDevAction], from 0 to 1.
+    @Default(0) double devProgress,
   }) = _SettingsViewData;
 }
 
@@ -30,17 +41,53 @@ abstract class SettingsViewData with _$SettingsViewData {
 /// stored value right after a write.
 @riverpod
 class SettingsController extends _$SettingsController {
+  // Kept outside [build], which runs again on every settings change (a
+  // seeding run changes `dataChangeCounter` many times).
+  String? _runningDevAction;
+  double _devProgress = 0;
+
   @override
   Future<SettingsViewData> build() async {
     final settings = await ref.watch(appSettingsProvider.future);
+    final visible = ref.read(moduleRegistryProvider).visible(settings);
+    final devTools = ref.watch(debugToolsAvailableProvider);
     return SettingsViewData(
       settings: settings,
-      visibleModuleIds: [
-        for (final m in ref.read(moduleRegistryProvider).visible(settings))
-          m.id,
+      visibleModuleIds: [for (final m in visible) m.id],
+      devTools: devTools,
+      devActions: [
+        if (devTools)
+          for (final m in visible) ...m.devActions(ref.read),
       ],
-      devTools: ref.watch(debugToolsAvailableProvider),
+      runningDevAction: _runningDevAction,
+      devProgress: _devProgress,
     );
+  }
+
+  /// Runs a Developer action, one at a time (feature 012 T042).
+  Future<DevActionResult> runDevAction(DevAction action) async {
+    if (_runningDevAction != null) return const DevActionBusy();
+    _showDevProgress(action.id, 0);
+    try {
+      return await action.run(
+        ref.read,
+        (fraction) => _showDevProgress(action.id, fraction),
+      );
+    } finally {
+      _showDevProgress(null, 0);
+    }
+  }
+
+  void _showDevProgress(String? id, double fraction) {
+    _runningDevAction = id;
+    _devProgress = fraction;
+    if (!ref.mounted) return;
+    final data = state.value;
+    if (data != null) {
+      state = AsyncData(
+        data.copyWith(runningDevAction: id, devProgress: fraction),
+      );
+    }
   }
 
   /// Error state "Try again": reads settings again.

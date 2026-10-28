@@ -1,6 +1,7 @@
 import 'package:dailytrack/core/ads/domain/ad_placement.dart';
 import 'package:dailytrack/core/ads/widgets/app_native_ad.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
+import 'package:dailytrack/core/startup/startup_providers.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
 import 'package:dailytrack/core/widgets/app_scaffold.dart';
 import 'package:dailytrack/core/widgets/dashboard_slot.dart';
@@ -29,6 +30,11 @@ class HomeScreen extends ConsumerWidget {
     final tokens = AppTokens.of(context);
     final state = ref.watch(homeControllerProvider);
     final controller = ref.read(homeControllerProvider.notifier);
+    // §13 cold start to Home: report the first frame once per app run
+    // (feature 012 T043).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (context.mounted) ref.read(reportHomeShownProvider)();
+    });
 
     void dismissComingSoon() {
       controller.dismissComingSoon().ignore();

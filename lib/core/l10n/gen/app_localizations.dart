@@ -5872,6 +5872,36 @@ abstract class AppLocalizations {
   /// **'Add a freeze'**
   String get habit_addFreezePro;
 
+  /// Dev-only SET-01 Developer action (feature 012 FR-012).
+  ///
+  /// In en, this message translates to:
+  /// **'Seed 10,000 transactions'**
+  String get more_seedTransactions;
+
+  /// Confirm dialog body for Seed 10,000 transactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Add 10,000 sample transactions to test performance? They are real entries and stay until you delete them or erase all data.'**
+  String get more_seedConfirm;
+
+  /// Confirm button of the seed dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get more_seedAdd;
+
+  /// Snackbar after seeding.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {count} transactions'**
+  String more_seedDone(int count);
+
+  /// Snackbar when seeding is refused during a backup or restore.
+  ///
+  /// In en, this message translates to:
+  /// **'A backup or restore is running. Try again when it finishes.'**
+  String get more_seedBusy;
+
   /// ACC-01 title.
   ///
   /// In en, this message translates to:

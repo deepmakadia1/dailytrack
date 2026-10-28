@@ -27,6 +27,19 @@ class MainActivity : FlutterFragmentActivity() {
                     result.notImplemented()
                 }
             }
+        // DSH-01's first content frame: the "fully drawn" time that
+        // `am start -W` and Android vitals report (feature 012 research R10).
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "dailytrack/startup")
+            .setMethodCallHandler { call, result ->
+                if (call.method == "reportFullyDrawn") {
+                    runOnUiThread {
+                        reportFullyDrawn()
+                        result.success(null)
+                    }
+                } else {
+                    result.notImplemented()
+                }
+            }
         // The home screen widget's midnight alarm (feature 008 research R21).
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "dailytrack/glance")
             .setMethodCallHandler { call, result ->

@@ -3420,6 +3420,29 @@ class AppLocalizationsHi extends AppLocalizations {
   String get habit_addFreezePro => 'फ़्रीज़ जोड़ें';
 
   @override
+  String get more_seedTransactions => '10,000 लेन-देन जोड़ें';
+
+  @override
+  String get more_seedConfirm =>
+      'प्रदर्शन जाँचने के लिए 10,000 नमूना लेन-देन जोड़ें? ये असली प्रविष्टियाँ हैं और तब तक रहेंगी जब तक आप इन्हें हटा नहीं देते या सारा डेटा मिटा नहीं देते।';
+
+  @override
+  String get more_seedAdd => 'जोड़ें';
+
+  @override
+  String more_seedDone(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString लेन-देन जोड़े गए';
+  }
+
+  @override
+  String get more_seedBusy =>
+      'बैकअप या रीस्टोर चल रहा है। उसके पूरा होने पर फिर से कोशिश करें।';
+
+  @override
   String get account_title => 'खाता';
 
   @override

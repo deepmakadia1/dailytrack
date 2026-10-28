@@ -31,6 +31,8 @@ import 'package:integration_test/integration_test.dart';
 /// totals → it survives a restart. Plus budget alerts and a recurring rule.
 /// Real database, as `main()` wires it; notifications and the background
 /// scheduler are recording fakes so the flow is deterministic.
+/// A fresh install goes through SYS-02 Skip and AUTH-01 "Continue as guest"
+/// (feature 012 T016).
 /// Run with `flutter test integration_test --flavor dev` on an emulator.
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -83,6 +85,9 @@ void main() {
     await wipeData();
     await launchApp(tester);
     await tester.tap(find.byKey(const Key('onboarding_skip')));
+    await tester.pumpAndSettle();
+    // A fresh install opens AUTH-01 after Intro (feature 011).
+    await tester.tap(find.byKey(const Key('auth01_guest')));
     await tester.pumpAndSettle();
 
     await tester.tap(navLabel('Expenses'));
@@ -144,6 +149,9 @@ void main() {
     await wipeData();
     await launchApp(tester);
     await tester.tap(find.byKey(const Key('onboarding_skip')));
+    await tester.pumpAndSettle();
+    // A fresh install opens AUTH-01 after Intro (feature 011).
+    await tester.tap(find.byKey(const Key('auth01_guest')));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('home_fab')));
@@ -232,6 +240,9 @@ void main() {
     await launchApp(tester);
     await tester.tap(find.byKey(const Key('onboarding_skip')));
     await tester.pumpAndSettle();
+    // A fresh install opens AUTH-01 after Intro (feature 011).
+    await tester.tap(find.byKey(const Key('auth01_guest')));
+    await tester.pumpAndSettle();
     await tester.tap(navLabel('Expenses'));
     await tester.pumpAndSettle();
 
@@ -283,6 +294,9 @@ void main() {
     await wipeData();
     await launchApp(tester);
     await tester.tap(find.byKey(const Key('onboarding_skip')));
+    await tester.pumpAndSettle();
+    // A fresh install opens AUTH-01 after Intro (feature 011).
+    await tester.tap(find.byKey(const Key('auth01_guest')));
     await tester.pumpAndSettle();
 
     final c = containerOf(tester);

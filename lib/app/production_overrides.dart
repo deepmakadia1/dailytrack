@@ -8,6 +8,7 @@ import 'package:dailytrack/app/module_registry.dart';
 import 'package:dailytrack/app/router/app_router.dart';
 import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/app/router_ad_screen_probe.dart';
+import 'package:dailytrack/app/startup/channel_startup_reporter.dart';
 import 'package:dailytrack/core/account/account_providers.dart';
 import 'package:dailytrack/core/ads/ad_providers.dart';
 import 'package:dailytrack/core/ads/ad_service.dart';
@@ -44,6 +45,7 @@ import 'package:dailytrack/core/security/secure_screen_service.dart';
 import 'package:dailytrack/core/security/security_providers.dart';
 import 'package:dailytrack/core/settings/data/settings_repository_impl.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
+import 'package:dailytrack/core/startup/startup_providers.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
 import 'package:dailytrack/core/widget/data/home_widget_plugin_bridge.dart';
 import 'package:dailytrack/core/widget/glance_refresher.dart';
@@ -85,6 +87,8 @@ List<Override> productionOverrides() {
       ),
     ),
     adServiceProvider.overrideWith(bindAdService),
+    // Cold start "fully drawn" for the §13 measurement (feature 012 R10).
+    startupReporterProvider.overrideWithValue(const ChannelStartupReporter()),
     // Google Play Billing for Pro (research R13).
     proStoreProvider.overrideWithValue(InAppPurchaseProStore()),
     // PRM-02 lives in the premium feature (research R11).

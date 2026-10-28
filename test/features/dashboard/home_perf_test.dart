@@ -119,6 +119,9 @@ void main() {
     });
   }
 
+  // A fast regression proxy on the test machine (tag `perf`). The §13 cold
+  // start target is measured on a device by tool/perf/cold_start.sh
+  // (feature 012 research R10).
   testWidgets('DSH-01 SC-001 Home shows its content in under 300 ms with '
       '10,000 transactions and 20 habits', (tester) async {
     final clock = MutableClock(DateTime(2026, 10, 21, 10));

@@ -3416,6 +3416,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get habit_addFreezePro => 'Add a freeze';
 
   @override
+  String get more_seedTransactions => 'Seed 10,000 transactions';
+
+  @override
+  String get more_seedConfirm =>
+      'Add 10,000 sample transactions to test performance? They are real entries and stay until you delete them or erase all data.';
+
+  @override
+  String get more_seedAdd => 'Add';
+
+  @override
+  String more_seedDone(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Added $countString transactions';
+  }
+
+  @override
+  String get more_seedBusy =>
+      'A backup or restore is running. Try again when it finishes.';
+
+  @override
   String get account_title => 'Account';
 
   @override

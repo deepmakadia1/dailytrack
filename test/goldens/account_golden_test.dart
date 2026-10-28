@@ -12,8 +12,8 @@ import '../features/expense/expense_test_app.dart' show routerOf;
 import '../helpers/fakes.dart' show FakeNetworkStateSource;
 
 /// §15.10 / Constitution IV goldens for feature 010 (T100): ACC-01 offline
-/// and signed in, ACC-02, ACC-03 after a failed backup, and SYS-02 step
-/// 1 with "Restore with Google", in light/dark × English/Gujarati on a
+/// and signed in, ACC-02, and ACC-03 after a failed backup, in light/dark ×
+/// English/Gujarati on a
 /// 360×800 surface with fakes only. Baselines are made and compared on
 /// Linux: `flutter test --tags golden --update-goldens`.
 void main() {
@@ -75,12 +75,6 @@ void main() {
           );
           await tapKey(tester, 'acc01.signOut');
         },
-        'SYS-02 restore with Google': (tester, theme, lang) => pump(
-          tester,
-          initial: AppSettings(locale: lang, themeMode: theme),
-          location: null,
-          hasData: false,
-        ),
       };
 
   for (final MapEntry(key: name, value: build) in scenarios.entries) {

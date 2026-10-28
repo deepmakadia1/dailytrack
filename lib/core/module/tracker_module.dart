@@ -4,6 +4,7 @@ import 'package:dailytrack/core/database/seeding.dart';
 import 'package:dailytrack/core/export/export_dataset.dart';
 import 'package:dailytrack/core/module/app_action.dart';
 import 'package:dailytrack/core/module/dashboard_section.dart';
+import 'package:dailytrack/core/module/dev_action.dart';
 import 'package:dailytrack/core/module/insight_source.dart';
 import 'package:dailytrack/core/module/provider_reader.dart';
 import 'package:dailytrack/core/widget/domain/home_glance.dart';
@@ -124,6 +125,11 @@ abstract class TrackerModule {
   /// Background jobs by unique name, run by the background dispatcher for
   /// enabled modules only (research R10).
   Map<String, BackgroundTask> get backgroundTasks;
+
+  /// Developer-only actions shown in SET-01 Developer in the dev flavor
+  /// (feature 012 contracts/dev-seed.md). Return `const []` when
+  /// `debugToolsAvailableProvider` is false; never shown in prod.
+  List<DevAction> devActions(ProviderReader read) => const [];
 }
 
 final class QuickAddAction {

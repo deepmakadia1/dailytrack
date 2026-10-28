@@ -18,7 +18,11 @@ mixin _$SettingsViewData {
  AppSettings get settings;/// Enabled module ids in the user's order; the Habit reminders row is
 /// shown only when `habit` is here (clarification Q2).
  List<String> get visibleModuleIds;/// Dev flavor only: shows the Developer section (FR-013).
- bool get devTools;
+ bool get devTools;/// Dev flavor only: the enabled modules' Developer actions (feature 012
+/// contracts/dev-seed.md). Always empty in prod.
+ List<DevAction> get devActions;/// The [DevAction.id] that is running, or null.
+ String? get runningDevAction;/// Progress of [runningDevAction], from 0 to 1.
+ double get devProgress;
 /// Create a copy of SettingsViewData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,20 +34,20 @@ $SettingsViewDataCopyWith<SettingsViewData> get copyWith => _$SettingsViewDataCo
 @override
 bool operator ==(Object other) {
   final _this = this as SettingsViewData;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsViewData&&(identical(other.settings, _this.settings) || other.settings == _this.settings)&&const DeepCollectionEquality().equals(other.visibleModuleIds, _this.visibleModuleIds)&&(identical(other.devTools, _this.devTools) || other.devTools == _this.devTools));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsViewData&&(identical(other.settings, _this.settings) || other.settings == _this.settings)&&const DeepCollectionEquality().equals(other.visibleModuleIds, _this.visibleModuleIds)&&(identical(other.devTools, _this.devTools) || other.devTools == _this.devTools)&&const DeepCollectionEquality().equals(other.devActions, _this.devActions)&&(identical(other.runningDevAction, _this.runningDevAction) || other.runningDevAction == _this.runningDevAction)&&(identical(other.devProgress, _this.devProgress) || other.devProgress == _this.devProgress));
 }
 
 
 @override
 int get hashCode {
   final _this = this as SettingsViewData;
-  return Object.hash(runtimeType,_this.settings,const DeepCollectionEquality().hash(_this.visibleModuleIds),_this.devTools);
+  return Object.hash(runtimeType,_this.settings,const DeepCollectionEquality().hash(_this.visibleModuleIds),_this.devTools,const DeepCollectionEquality().hash(_this.devActions),_this.runningDevAction,_this.devProgress);
 }
 
 @override
 String toString() {
   final _this = this as SettingsViewData;
-  return 'SettingsViewData(settings: ${_this.settings}, visibleModuleIds: ${_this.visibleModuleIds}, devTools: ${_this.devTools})';
+  return 'SettingsViewData(settings: ${_this.settings}, visibleModuleIds: ${_this.visibleModuleIds}, devTools: ${_this.devTools}, devActions: ${_this.devActions}, runningDevAction: ${_this.runningDevAction}, devProgress: ${_this.devProgress})';
 }
 
 
@@ -54,7 +58,7 @@ abstract mixin class $SettingsViewDataCopyWith<$Res>  {
   factory $SettingsViewDataCopyWith(SettingsViewData value, $Res Function(SettingsViewData) _then) = _$SettingsViewDataCopyWithImpl;
 @useResult
 $Res call({
- AppSettings settings, List<String> visibleModuleIds, bool devTools
+ AppSettings settings, List<String> visibleModuleIds, bool devTools, List<DevAction> devActions, String? runningDevAction, double devProgress
 });
 
 
@@ -71,12 +75,15 @@ class _$SettingsViewDataCopyWithImpl<$Res>
 
 /// Create a copy of SettingsViewData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? settings = null,Object? visibleModuleIds = null,Object? devTools = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? settings = null,Object? visibleModuleIds = null,Object? devTools = null,Object? devActions = null,Object? runningDevAction = freezed,Object? devProgress = null,}) {
   return _then(SettingsViewData(
 settings: null == settings ? _self.settings : settings // ignore: cast_nullable_to_non_nullable
 as AppSettings,visibleModuleIds: null == visibleModuleIds ? _self.visibleModuleIds : visibleModuleIds // ignore: cast_nullable_to_non_nullable
 as List<String>,devTools: null == devTools ? _self.devTools : devTools // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,devActions: null == devActions ? _self.devActions : devActions // ignore: cast_nullable_to_non_nullable
+as List<DevAction>,runningDevAction: freezed == runningDevAction ? _self.runningDevAction : runningDevAction // ignore: cast_nullable_to_non_nullable
+as String?,devProgress: null == devProgress ? _self.devProgress : devProgress // ignore: cast_nullable_to_non_nullable
+as double,
   ));
 }
 /// Create a copy of SettingsViewData
@@ -170,10 +177,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AppSettings settings,  List<String> visibleModuleIds,  bool devTools)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AppSettings settings,  List<String> visibleModuleIds,  bool devTools,  List<DevAction> devActions,  String? runningDevAction,  double devProgress)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SettingsViewData() when $default != null:
-return $default(_that.settings,_that.visibleModuleIds,_that.devTools);case _:
+return $default(_that.settings,_that.visibleModuleIds,_that.devTools,_that.devActions,_that.runningDevAction,_that.devProgress);case _:
   return orElse();
 
 }
@@ -191,10 +198,10 @@ return $default(_that.settings,_that.visibleModuleIds,_that.devTools);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AppSettings settings,  List<String> visibleModuleIds,  bool devTools)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AppSettings settings,  List<String> visibleModuleIds,  bool devTools,  List<DevAction> devActions,  String? runningDevAction,  double devProgress)  $default,) {final _that = this;
 switch (_that) {
 case _SettingsViewData():
-return $default(_that.settings,_that.visibleModuleIds,_that.devTools);case _:
+return $default(_that.settings,_that.visibleModuleIds,_that.devTools,_that.devActions,_that.runningDevAction,_that.devProgress);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -211,10 +218,10 @@ return $default(_that.settings,_that.visibleModuleIds,_that.devTools);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AppSettings settings,  List<String> visibleModuleIds,  bool devTools)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AppSettings settings,  List<String> visibleModuleIds,  bool devTools,  List<DevAction> devActions,  String? runningDevAction,  double devProgress)?  $default,) {final _that = this;
 switch (_that) {
 case _SettingsViewData() when $default != null:
-return $default(_that.settings,_that.visibleModuleIds,_that.devTools);case _:
+return $default(_that.settings,_that.visibleModuleIds,_that.devTools,_that.devActions,_that.runningDevAction,_that.devProgress);case _:
   return null;
 
 }
@@ -226,7 +233,7 @@ return $default(_that.settings,_that.visibleModuleIds,_that.devTools);case _:
 
 
 class _SettingsViewData implements SettingsViewData {
-  const _SettingsViewData({required this.settings, required  List<String> visibleModuleIds, required this.devTools}): _visibleModuleIds = visibleModuleIds;
+  const _SettingsViewData({required this.settings, required  List<String> visibleModuleIds, required this.devTools,  List<DevAction> devActions = const <DevAction>[], this.runningDevAction, this.devProgress = 0}): _visibleModuleIds = visibleModuleIds,_devActions = devActions;
   
 
 @override final  AppSettings settings;
@@ -243,6 +250,21 @@ class _SettingsViewData implements SettingsViewData {
 
 /// Dev flavor only: shows the Developer section (FR-013).
 @override final  bool devTools;
+/// Dev flavor only: the enabled modules' Developer actions (feature 012
+/// contracts/dev-seed.md). Always empty in prod.
+ final  List<DevAction> _devActions;
+/// Dev flavor only: the enabled modules' Developer actions (feature 012
+/// contracts/dev-seed.md). Always empty in prod.
+@override@JsonKey() List<DevAction> get devActions {
+  if (_devActions is EqualUnmodifiableListView) return _devActions;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_devActions);
+}
+
+/// The [DevAction.id] that is running, or null.
+@override final  String? runningDevAction;
+/// Progress of [runningDevAction], from 0 to 1.
+@override@JsonKey() final  double devProgress;
 
 /// Create a copy of SettingsViewData
 /// with the given fields replaced by the non-null parameter values.
@@ -254,18 +276,18 @@ _$SettingsViewDataCopyWith<_SettingsViewData> get copyWith => __$SettingsViewDat
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SettingsViewData&&(identical(other.settings, settings) || other.settings == settings)&&const DeepCollectionEquality().equals(other.visibleModuleIds, _visibleModuleIds)&&(identical(other.devTools, devTools) || other.devTools == devTools));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SettingsViewData&&(identical(other.settings, settings) || other.settings == settings)&&const DeepCollectionEquality().equals(other.visibleModuleIds, _visibleModuleIds)&&(identical(other.devTools, devTools) || other.devTools == devTools)&&const DeepCollectionEquality().equals(other.devActions, _devActions)&&(identical(other.runningDevAction, runningDevAction) || other.runningDevAction == runningDevAction)&&(identical(other.devProgress, devProgress) || other.devProgress == devProgress));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,settings,const DeepCollectionEquality().hash(_visibleModuleIds),devTools);
+    return Object.hash(runtimeType,settings,const DeepCollectionEquality().hash(_visibleModuleIds),devTools,const DeepCollectionEquality().hash(_devActions),runningDevAction,devProgress);
 }
 
 @override
 String toString() {
-    return 'SettingsViewData(settings: $settings, visibleModuleIds: $visibleModuleIds, devTools: $devTools)';
+    return 'SettingsViewData(settings: $settings, visibleModuleIds: $visibleModuleIds, devTools: $devTools, devActions: $devActions, runningDevAction: $runningDevAction, devProgress: $devProgress)';
 }
 
 
@@ -276,7 +298,7 @@ abstract mixin class _$SettingsViewDataCopyWith<$Res> implements $SettingsViewDa
   factory _$SettingsViewDataCopyWith(_SettingsViewData value, $Res Function(_SettingsViewData) _then) = __$SettingsViewDataCopyWithImpl;
 @override @useResult
 $Res call({
- AppSettings settings, List<String> visibleModuleIds, bool devTools
+ AppSettings settings, List<String> visibleModuleIds, bool devTools, List<DevAction> devActions, String? runningDevAction, double devProgress
 });
 
 
@@ -293,12 +315,15 @@ class __$SettingsViewDataCopyWithImpl<$Res>
 
 /// Create a copy of SettingsViewData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? settings = null,Object? visibleModuleIds = null,Object? devTools = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? settings = null,Object? visibleModuleIds = null,Object? devTools = null,Object? devActions = null,Object? runningDevAction = freezed,Object? devProgress = null,}) {
   return _then(_SettingsViewData(
 settings: null == settings ? _self.settings : settings // ignore: cast_nullable_to_non_nullable
 as AppSettings,visibleModuleIds: null == visibleModuleIds ? _self._visibleModuleIds : visibleModuleIds // ignore: cast_nullable_to_non_nullable
 as List<String>,devTools: null == devTools ? _self.devTools : devTools // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,devActions: null == devActions ? _self._devActions : devActions // ignore: cast_nullable_to_non_nullable
+as List<DevAction>,runningDevAction: freezed == runningDevAction ? _self.runningDevAction : runningDevAction // ignore: cast_nullable_to_non_nullable
+as String?,devProgress: null == devProgress ? _self.devProgress : devProgress // ignore: cast_nullable_to_non_nullable
+as double,
   ));
 }
 

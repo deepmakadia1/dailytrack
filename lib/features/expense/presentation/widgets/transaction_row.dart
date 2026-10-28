@@ -19,6 +19,7 @@ class TransactionRow extends StatelessWidget {
     required this.currency,
     required this.onTap,
     required this.onLongPress,
+    this.horizontalPadding = 0,
     super.key,
   });
 
@@ -26,6 +27,9 @@ class TransactionRow extends StatelessWidget {
   final String currency;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
+
+  /// Inset inside the ink, so the ripple still spans the full width.
+  final double horizontalPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +74,10 @@ class TransactionRow extends StatelessWidget {
       onLongPress: onLongPress,
       // 4 dp padding keeps three text lines inside the 72 dp row.
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: tokens.s4),
+        padding: EdgeInsets.symmetric(
+          vertical: tokens.s4,
+          horizontal: horizontalPadding,
+        ),
         child: Row(
           children: [
             avatar,

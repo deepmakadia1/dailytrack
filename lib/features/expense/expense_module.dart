@@ -1,12 +1,17 @@
 import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/core/background/background_providers.dart';
+import 'package:dailytrack/core/backup/backup_providers.dart';
+import 'package:dailytrack/core/database/database_provider.dart';
 import 'package:dailytrack/core/database/seeding.dart';
+import 'package:dailytrack/core/feature_gate/feature_gate_providers.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
+import 'package:dailytrack/core/module/dev_action.dart';
 import 'package:dailytrack/core/module/root_navigator.dart';
 import 'package:dailytrack/core/module/tracker_module.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
 import 'package:dailytrack/features/expense/data/backup/expense_backup_section.dart';
+import 'package:dailytrack/features/expense/data/dev/large_data_seeder.dart';
 import 'package:dailytrack/features/expense/data/seed/expense_defaults_seeder.dart';
 import 'package:dailytrack/features/expense/domain/enums.dart';
 import 'package:dailytrack/features/expense/domain/usecases/budget_math.dart';
@@ -202,6 +207,24 @@ final class ExpenseModule extends TrackerModule {
   /// SET-03 export (feature 008 research R14).
   @override
   List<ExportDataset> exportDatasets() => const [TransactionsExportDataset()];
+
+  /// Dev flavor only: "Seed 10,000 transactions" for the §13 performance
+  /// pass (feature 012 T041). Empty in prod.
+  @override
+  List<DevAction> devActions(ProviderReader read) => [
+    if (read(debugToolsAvailableProvider))
+      DevAction(
+        id: 'expense.seed10k',
+        labelKey: 'more_seedTransactions',
+        confirmKey: 'more_seedConfirm',
+        icon: Icons.dataset_outlined,
+        run: (read, onProgress) => LargeDataSeeder(
+          read(appDatabaseProvider),
+          read(clockProvider),
+          read(backupCoordinatorProvider),
+        ).seed(onProgress: onProgress),
+      ),
+  ];
 
   @override
   BackupSection? backupSection() => const ExpenseBackupSection();

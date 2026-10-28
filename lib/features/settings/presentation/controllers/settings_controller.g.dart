@@ -40,7 +40,7 @@ final class SettingsControllerProvider
 }
 
 String _$settingsControllerHash() =>
-    r'425ced96037b5b4f7a2fc4f41ebe710517f61145';
+    r'29f71645532600396bbbffcb0c76bb172be90e78';
 
 /// SET-01 controller. Follows the settings stream, so every row shows the
 /// stored value right after a write.
