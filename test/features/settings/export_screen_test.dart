@@ -220,6 +220,9 @@ void main() {
     );
     final export = tester.getTopLeft(row);
     expect(backup.dy < export.dy && export.dy < erase.dy, isTrue);
+    // Clear of the navigation bar (the account card makes the list longer).
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -200));
+    await tester.pumpAndSettle();
     await tester.tap(row);
     await tester.pumpAndSettle();
     expect(find.byType(ExportScreen), findsOneWidget);
