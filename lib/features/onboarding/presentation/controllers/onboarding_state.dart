@@ -2,21 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'onboarding_state.freezed.dart';
 
-/// SYS-02 "Restore with Google" (feature 010 contracts/screens.md).
-enum GoogleRestoreStatus {
-  idle,
-  signingIn,
-
-  /// The full-screen "Restoring your data…" view.
-  restoring,
-
-  /// Signed in, but the account has no backup: onboarding goes on.
-  noBackup,
-
-  /// Nothing was written; the error shows with "Try again".
-  failed,
-}
-
 /// SYS-02 screen state (T065, data-model.md §6).
 @freezed
 abstract class OnboardingState with _$OnboardingState {
@@ -44,10 +29,6 @@ abstract class OnboardingState with _$OnboardingState {
 
     /// ARB key of the inline save error, if the last save failed.
     String? saveErrorKey,
-    @Default(GoogleRestoreStatus.idle) GoogleRestoreStatus googleRestore,
-
-    /// Why "Restore with Google" failed.
-    Object? googleRestoreError,
   }) = _OnboardingState;
 
   const new _();

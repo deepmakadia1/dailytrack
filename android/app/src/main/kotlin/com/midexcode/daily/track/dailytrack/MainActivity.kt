@@ -1,6 +1,8 @@
 package com.midexcode.daily.track.dailytrack
 
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -64,6 +66,18 @@ class MainActivity : FlutterFragmentActivity() {
                     // Android's no-backup folder for the device ID file, which
                     // is never backed up or transferred (feature 010 R4).
                     "getNoBackupDir" -> result.success(noBackupFilesDir.absolutePath)
+                    // Online and metered, for sign-in and the backup status
+                    // (feature 010 data-model §7). No connectivity plugin.
+                    "getNetworkState" -> {
+                        val manager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+                        val caps = manager.getNetworkCapabilities(manager.activeNetwork)
+                        val online = caps != null &&
+                            caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                            caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+                        result.success(
+                            mapOf("online" to online, "metered" to manager.isActiveNetworkMetered),
+                        )
+                    }
                     // The system notification settings for this app.
                     "openNotificationSettings" -> {
                         val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

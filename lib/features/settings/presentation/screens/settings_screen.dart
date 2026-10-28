@@ -1,11 +1,14 @@
 import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/account/account_providers.dart';
 import 'package:dailytrack/core/ads/ad_providers.dart';
 import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
 import 'package:dailytrack/core/billing/billing_providers.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/reset/reset_providers.dart';
+import 'package:dailytrack/core/settings/domain/app_settings.dart';
+import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
 import 'package:dailytrack/core/utils/date_formats.dart';
 import 'package:dailytrack/core/utils/date_keys.dart';
@@ -26,8 +29,9 @@ import 'package:go_router/go_router.dart';
 /// SET-01 More / Settings (spec §10, feature 007 contracts/screens.md):
 /// General, Appearance, Modules, Notifications, Security, Data, Privacy, About,
 /// and, in the dev flavor only, Developer. The Data section has Erase all
-/// data. The premium card leads the list until Pro is owned; the bottom
-/// banner is in the banner slot (spec §11).
+/// data. The account card (guest or Google, feature 011) is always first,
+/// then the premium card until Pro is owned; the bottom banner is in the
+/// banner slot (spec §11).
 class SettingsScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
@@ -129,6 +133,9 @@ class _SettingsList extends ConsumerWidget {
     return ListView(
       key: const Key('settings_list'),
       children: [
+        // The account card, always first, from the account feature through
+        // its port (feature 011 research R11).
+        ref.read(accountUiProvider).accountCard(),
         // PRM-01 entry, hidden once Pro is owned (FR-045).
         if (!ref.watch(proOwnedProvider)) const _PremiumCard(),
         GeneralSection(settings: settings),
@@ -221,6 +228,23 @@ class _SettingsList extends ConsumerWidget {
                 ),
               ),
             ),
+            // ACC-04, in the guest state only (feature 011 spec FR-026).
+            if (ref.watch(authModeProvider) == AuthMode.guest)
+              ListTile(
+                key: const Key('set01_logOutGuest'),
+                leading: Icon(
+                  Icons.logout,
+                  color: Theme.of(context).colorScheme.error,
+                  semanticLabel: l10n.settings_logOutGuest,
+                ),
+                title: Text(
+                  l10n.settings_logOutGuest,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+                onTap: () => unawaited(
+                  ref.read(accountUiProvider).showLogOutGuest(context),
+                ),
+              ),
           ],
         ),
         const PrivacySection(),

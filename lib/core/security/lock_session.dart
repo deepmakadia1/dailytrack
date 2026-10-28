@@ -1,4 +1,5 @@
 import 'package:dailytrack/core/security/domain/lock_rules.dart';
+import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -61,6 +62,7 @@ class LockSession extends _$LockSession {
     final lockNow =
         settings != null &&
         settings.lockEnabled &&
+        settings.authMode != AuthMode.none &&
         settings.lockAfterSeconds == 0 &&
         !state.externalActivity &&
         !state.locked;
@@ -80,7 +82,9 @@ class LockSession extends _$LockSession {
         !state.locked &&
         settings != null &&
         shouldLockOnResume(
-          lockEnabled: settings.lockEnabled,
+          // Never on AUTH-01: the lock follows login (feature 011 R7).
+          lockEnabled:
+              settings.lockEnabled && settings.authMode != AuthMode.none,
           backgroundedAt: state.backgroundedAt,
           now: now,
           lockAfterSeconds: settings.lockAfterSeconds,

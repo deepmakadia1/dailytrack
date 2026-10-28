@@ -7,7 +7,9 @@ import 'package:dailytrack/core/backup/domain/change_counter.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_result.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
 import 'package:dailytrack/core/reset/reset_providers.dart';
+import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
+import 'package:dailytrack/core/support/network_state_source.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -74,6 +76,11 @@ class SignOutController extends _$SignOutController {
       _set(state.copyWith(backup: SignOutBackup.backedUp));
       return;
     }
+    // Offline goes straight to the failed state, with no Drive request.
+    if (!(await ref.read(networkStateSourceProvider).load()).online) {
+      _set(state.copyWith(backup: SignOutBackup.failed));
+      return;
+    }
     _set(state.copyWith(backup: SignOutBackup.backingUp, conflict: null));
     try {
       final result = await ref
@@ -113,15 +120,17 @@ class SignOutController extends _$SignOutController {
 
   void choose(SignOutChoice choice) => _set(state.copyWith(choice: choice));
 
-  /// Signs out (FR-024); with "Remove data from this phone", then runs the
-  /// same erase as Erase all data, which also removes the safety copy and
-  /// leads to onboarding (FR-025). Drive backups are kept.
+  /// Signs out to `authMode = none` (FR-024, feature 011); with "Remove
+  /// data from this phone", then runs the same erase as Erase all data,
+  /// which also removes the safety copy and keeps onboarding and the
+  /// sign-in mode. The router then opens AUTH-01. Drive backups are kept.
   Future<void> signOut() async {
     if (!state.canSignOut) return;
     _set(state.copyWith(working: true));
     try {
-      await ref.read(accountServiceProvider).signOut();
+      await ref.read(accountServiceProvider).signOut(to: AuthMode.none);
       if (state.choice == SignOutChoice.remove) {
+        // EraseScope.thisPhoneData: the sign-in mode (`none`) is kept.
         await ref.read(appResetServiceProvider).eraseAll();
       }
     } finally {

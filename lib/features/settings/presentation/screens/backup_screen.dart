@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/core/account/account_providers.dart';
-import 'package:dailytrack/core/account/account_sign_in.dart';
 import 'package:dailytrack/core/ads/ad_providers.dart';
 import 'package:dailytrack/core/ads/domain/ad_trigger.dart';
 import 'package:dailytrack/core/ads/widgets/app_banner_ad.dart';
@@ -35,7 +34,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// SET-02 Backup and restore (spec §10, feature 008 contracts/screens.md):
+/// SET-02 Backup and restore (spec Â§10, feature 008 contracts/screens.md):
 /// last backup, Google Drive (connect, back up now, auto backup), the local
 /// backup file, the encrypt and receipt options, and the Drive backups to
 /// restore. A fixed set of controls, so it has no empty state (plan
@@ -49,7 +48,7 @@ class BackupScreen extends ConsumerWidget {
     final async = ref.watch(backupControllerProvider);
     return AppScaffold(
       title: l10n.backup_title,
-      // Spec §11: the bottom banner (no space until an ad loads).
+      // Spec Â§11: the bottom banner (no space until an ad loads).
       bannerSlot: const AppBannerAd(),
       padBody: false,
       body: switch (async) {
@@ -64,7 +63,7 @@ class BackupScreen extends ConsumerWidget {
   }
 }
 
-/// A plain-language error dialog (§15.6).
+/// A plain-language error dialog (Â§15.6).
 Future<void> _showError(BuildContext context, String title, Object error) {
   final l10n = AppLocalizations.of(context);
   return showDialog<void>(
@@ -83,46 +82,15 @@ Future<void> _showError(BuildContext context, String title, Object error) {
   );
 }
 
-/// "Sign in with Google" (the shared ACC-01 sign-in) and its next step:
-/// ACC-02 (through the account port, research R18) when the account has a
-/// backup.
+/// "Sign in with Google" on the Drive card: guest sign-in through the
+/// account port (feature 011 research R11), then the Drive list again.
 Future<void> _signIn(
   BuildContext context,
   WidgetRef ref,
   BackupController controller,
 ) async {
-  final l10n = AppLocalizations.of(context);
-  final messenger = ScaffoldMessenger.of(context);
-  final ui = ref.read(accountUiProvider);
-  final SignInOutcome outcome;
-  try {
-    outcome = await controller.signIn();
-  } on Object {
-    messenger.showSnackBar(
-      SnackBar(
-        key: const Key('backup_signInFailed'),
-        content: Text(l10n.account_signInFailed),
-      ),
-    );
-    return;
-  }
-  switch (outcome) {
-    case SignInCancelled():
-      break;
-    case SignedInAndBackedUp():
-      messenger.showSnackBar(
-        SnackBar(content: Text(l10n.account_signedInBackedUp)),
-      );
-    case SignedInWithBackups(:final newest):
-      if (context.mounted) {
-        await ui.showRestoreChoice(context, newest: newest, afterSignIn: true);
-      }
-      await controller.refreshDrive();
-    case SignedInBackupFailed(:final error):
-      if (context.mounted) {
-        await _showError(context, l10n.backup_failedTitle, error);
-      }
-  }
+  await ref.read(accountUiProvider).startGuestSignIn(context);
+  await controller.refreshDrive();
 }
 
 String _frequencyLabel(AppLocalizations l10n, AutoBackupFrequency f) =>
@@ -133,7 +101,7 @@ String _frequencyLabel(AppLocalizations l10n, AutoBackupFrequency f) =>
     };
 
 /// A manual backup succeeded: once its success message has closed, an
-/// interstitial may follow under the global cap (spec §11, SET-02 Ads).
+/// interstitial may follow under the global cap (spec Â§11, SET-02 Ads).
 /// Auto backups never get here.
 void _interstitialAfter(
   WidgetRef ref,
@@ -195,7 +163,7 @@ class _BackupList extends ConsumerWidget {
   }
 }
 
-/// Google Drive: sign in (the ACC-01 sign-in), the account (→ ACC-01),
+/// Google Drive: sign in (the ACC-01 sign-in), the account (â†’ ACC-01),
 /// back up now, auto backup (FR-014, FR-015, FR-018, FR-019; feature 010
 /// T063).
 class _DriveCard extends ConsumerWidget {
@@ -399,7 +367,7 @@ class _LocalCard extends ConsumerWidget {
     final tokens = AppTokens.of(context);
     final controller = ref.read(backupControllerProvider.notifier);
     final working = state.busy || state.uploading;
-    // One primary action per screen (§15.1): "Back up now" when connected.
+    // One primary action per screen (Â§15.1): "Back up now" when connected.
     final primary = state.accountEmail == null;
 
     Future<void> save() async {

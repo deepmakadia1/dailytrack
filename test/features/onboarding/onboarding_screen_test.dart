@@ -1,9 +1,9 @@
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
+import 'package:dailytrack/features/auth/presentation/screens/login_screen.dart';
 import 'package:dailytrack/features/dashboard/presentation/screens/home_screen.dart';
-import 'package:dailytrack/features/lock/presentation/screens/pin_screen.dart';
-import 'package:dailytrack/features/lock/presentation/screens/unlock_screen.dart';
 import 'package:dailytrack/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/fakes.dart';
@@ -31,6 +31,25 @@ Future<void> _goToStep(WidgetTester tester, int step) async {
 bool _switchValue(WidgetTester tester, String key) =>
     tester.widget<SwitchListTile>(find.byKey(Key(key))).value;
 
+/// Records `SystemNavigator.pop` (Android back closing the app).
+List<String> _recordSystemCalls(WidgetTester tester) {
+  final calls = <String>[];
+  tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+    SystemChannels.platform,
+    (call) async {
+      calls.add(call.method);
+      return null;
+    },
+  );
+  addTearDown(
+    () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      null,
+    ),
+  );
+  return calls;
+}
+
 void main() {
   testWidgets('SYS-02 selected language persists and applies after app '
       'restart', (tester) async {
@@ -46,6 +65,8 @@ void main() {
 
     await _goToStep(tester, 4);
     await _tap(tester, find.byKey(_primary));
+    expect(find.byType(LoginScreen), findsOneWidget);
+    await _tap(tester, find.byKey(const Key('auth01_guest')));
     expect(find.byType(HomeScreen), findsOneWidget);
 
     await restartTestApp(tester, settings: repo);
@@ -71,7 +92,7 @@ void main() {
         findsOneWidget,
       );
       await _tap(tester, find.byKey(_primary));
-      expect(find.byType(HomeScreen), findsOneWidget);
+      expect(find.byType(LoginScreen), findsOneWidget);
       expect(repo.current.onboardingDone, isTrue);
     });
   }
@@ -94,7 +115,7 @@ void main() {
   });
 
   group('SYS-02 scenarios', () {
-    testWidgets('Skip on step 1 saves the defaults and lands on Home', (
+    testWidgets('Skip on step 1 saves the defaults and opens AUTH-01', (
       tester,
     ) async {
       tester.platformDispatcher.localesTestValue = [const Locale('fr')];
@@ -108,7 +129,7 @@ void main() {
         reason: 'an unsupported device language falls back to English',
       );
       await _tap(tester, find.byKey(_skip));
-      expect(find.byType(HomeScreen), findsOneWidget);
+      expect(find.byType(LoginScreen), findsOneWidget);
       expect(repo.current.locale, isNull);
       expect(repo.current.currencyCode, 'INR');
       expect(repo.current.enabledModules, ['expense', 'habit']);
@@ -171,68 +192,6 @@ void main() {
       expect(find.text('Coming soon'), findsNWidgets(2));
     });
 
-    // --- Feature 007 US9 (T071): "Set app lock" on step 4 ---
-
-    Future<void> enterPin(WidgetTester tester, String pin) async {
-      for (final d in pin.split('')) {
-        await tester.tap(find.byKey(Key('pin_key_$d')));
-        await tester.pump();
-      }
-      await tester.pumpAndSettle();
-    }
-
-    testWidgets('US9-1 step 4 offers "Set app lock" under "Allow '
-        'notifications"', (tester) async {
-      await pumpTestApp(tester);
-      await _goToStep(tester, 4);
-      final lock = find.byKey(const Key('onboarding_set_app_lock'));
-      expect(lock, findsOneWidget);
-      expect(find.text('Set app lock'), findsOneWidget);
-      expect(
-        tester.getTopLeft(lock).dy,
-        greaterThan(tester.getTopLeft(find.byKey(_allow)).dy),
-      );
-    });
-
-    testWidgets('US9-2 setting a PIN returns to step 4 with "App lock is on"; '
-        'Get started then opens Home with no unlock', (tester) async {
-      final repo = FakeSettingsRepository();
-      final lock = TestLock(settings: repo);
-      await pumpTestApp(tester, settings: repo, lock: lock);
-      await _goToStep(tester, 4);
-      await _tap(tester, find.byKey(const Key('onboarding_set_app_lock')));
-      expect(find.byType(PinScreen), findsOneWidget);
-      await enterPin(tester, '1234');
-      await enterPin(tester, '1234');
-
-      expect(find.byType(OnboardingScreen), findsOneWidget);
-      expect(find.byKey(const Key('onboarding_app_lock_on')), findsOneWidget);
-      expect(find.text('Change PIN'), findsOneWidget);
-      expect(repo.current.lockEnabled, isTrue);
-      expect(lock.hasPin, isTrue);
-
-      // Let the "App lock is on" snackbar go before tapping under it.
-      await tester.pump(const Duration(seconds: 5));
-      await tester.pumpAndSettle();
-      await _tap(tester, find.byKey(_primary)); // Get started
-      expect(repo.current.onboardingDone, isTrue);
-      expect(find.byType(HomeScreen), findsOneWidget);
-      expect(find.byType(UnlockScreen), findsNothing);
-    });
-
-    testWidgets('US9-3 backing out of SYS-04 keeps the lock off', (
-      tester,
-    ) async {
-      final repo = await pumpTestApp(tester);
-      await _goToStep(tester, 4);
-      await _tap(tester, find.byKey(const Key('onboarding_set_app_lock')));
-      await tester.binding.handlePopRoute();
-      await tester.pumpAndSettle();
-      expect(find.byType(OnboardingScreen), findsOneWidget);
-      expect(find.text('Set app lock'), findsOneWidget);
-      expect(repo.current.lockEnabled, isFalse);
-    });
-
     testWidgets('changing language keeps the other choices', (tester) async {
       await pumpTestApp(tester);
       await _goToStep(tester, 2);
@@ -265,7 +224,7 @@ void main() {
       expect(repo.current.onboardingDone, isFalse);
 
       await _tap(tester, find.byKey(_retry));
-      expect(find.byType(HomeScreen), findsOneWidget);
+      expect(find.byType(LoginScreen), findsOneWidget);
       expect(repo.current.currencyCode, 'USD');
     });
 
@@ -278,7 +237,7 @@ void main() {
         findsOneWidget,
       );
       await _tap(tester, find.byKey(_retry));
-      expect(find.byType(HomeScreen), findsOneWidget);
+      expect(find.byType(LoginScreen), findsOneWidget);
       expect(repo.current.onboardingDone, isTrue);
     });
 
@@ -291,5 +250,62 @@ void main() {
       );
       expect(find.byType(OnboardingScreen), findsNothing);
     });
+  });
+
+  for (final (label, key) in [('"Get started"', _primary), ('Skip', _skip)]) {
+    testWidgets('SYS-02 $label marks onboarding done and opens AUTH-01; back '
+        'on AUTH-01 never returns to Intro', (tester) async {
+      final system = _recordSystemCalls(tester);
+      final repo = await pumpTestApp(tester);
+      if (key == _primary) await _goToStep(tester, 4);
+      await _tap(tester, find.byKey(key));
+      expect(repo.current.onboardingDone, isTrue);
+      expect(find.byType(LoginScreen), findsOneWidget);
+      expect(find.byType(OnboardingScreen), findsNothing);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(system, contains('SystemNavigator.pop'));
+      expect(find.byType(OnboardingScreen), findsNothing);
+      expect(find.byType(LoginScreen), findsOneWidget);
+    });
+  }
+
+  testWidgets('SYS-02 Intro shows no "Restore with Google" or "Set app lock" '
+      'option', (tester) async {
+    await pumpTestApp(tester);
+    for (var step = 1; step <= 4; step++) {
+      expect(find.byKey(const Key('sys02.restoreWithGoogle')), findsNothing);
+      expect(find.byKey(const Key('onboarding_set_app_lock')), findsNothing);
+      expect(find.text('Restore with Google'), findsNothing);
+      expect(find.text('Set app lock'), findsNothing);
+      if (step < 4) await _tap(tester, find.byKey(_primary));
+    }
+    expect(
+      find.text(
+        'Everything you log is kept on this phone. Next, you can back it up '
+        'with Google or continue as a guest.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.byKey(_allow), findsOneWidget);
+  });
+
+  testWidgets('SYS-02 closing the app during Intro shows Intro again on the '
+      'next start; closing it on AUTH-01 shows AUTH-01, not Intro', (
+    tester,
+  ) async {
+    final repo = await pumpTestApp(tester);
+    await _goToStep(tester, 3);
+    await restartTestApp(tester, settings: repo);
+    expect(find.byType(OnboardingScreen), findsOneWidget);
+    expect(repo.current.onboardingDone, isFalse);
+
+    await _tap(tester, find.byKey(_skip));
+    expect(find.byType(LoginScreen), findsOneWidget);
+    await restartTestApp(tester, settings: repo);
+    expect(find.byType(LoginScreen), findsOneWidget);
+    expect(find.byType(OnboardingScreen), findsNothing);
+    expect(repo.current.authMode, AuthMode.none);
   });
 }

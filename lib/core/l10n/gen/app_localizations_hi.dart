@@ -99,7 +99,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get onboarding_privacyBody =>
-      'आप जो भी दर्ज करते हैं, वह सिर्फ़ इसी डिवाइस पर रहता है। जब तक आप बैकअप नहीं लेते, कुछ भी अपलोड नहीं होता।';
+      'आप जो भी दर्ज करते हैं, वह इसी फ़ोन पर रहता है। अगले कदम में आप Google से इसका बैकअप ले सकते हैं या मेहमान के रूप में जारी रख सकते हैं।';
 
   @override
   String get onboarding_allowNotifications => 'सूचनाएँ चालू करें';
@@ -3448,6 +3448,14 @@ class AppLocalizationsHi extends AppLocalizations {
       'साइन इन नहीं हो सका। अपना कनेक्शन जाँचें और फिर से कोशिश करें।';
 
   @override
+  String get account_restoreOffline =>
+      'रीस्टोर करने के लिए इंटरनेट से कनेक्ट करें';
+
+  @override
+  String get account_signInOffline =>
+      'Google से साइन इन करने के लिए इंटरनेट से कनेक्ट करें';
+
+  @override
   String get account_signedInBackedUp =>
       'साइन इन हो गया। आपके डेटा का बैकअप हो गया है।';
 
@@ -3465,7 +3473,21 @@ class AppLocalizationsHi extends AppLocalizations {
   String get account_noBackupYet => 'इस खाते में अभी तक कोई बैकअप नहीं';
 
   @override
-  String get account_statusBackedUp => 'बैकअप हो गया';
+  String get account_statusBackedUp => 'Google पर बैकअप हो गया';
+
+  @override
+  String get account_statusOffline =>
+      'आप ऑफ़लाइन हैं। ऑनलाइन होने पर बैकअप फिर से शुरू होंगे।';
+
+  @override
+  String get account_statusWaitingForWifi => 'Wi-Fi का इंतज़ार है';
+
+  @override
+  String get account_statusFailedNoPassword =>
+      'बैकअप विफल रहा: बैकअप और रीस्टोर में अपना बैकअप पासवर्ड सेट करें';
+
+  @override
+  String get account_signOutBackedUp => 'बैकअप हो गया';
 
   @override
   String get account_statusBackingUp => 'बैकअप हो रहा है…';
@@ -3546,6 +3568,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backup_unknownDevice => 'अज्ञात डिवाइस';
+
+  @override
+  String get account_androidPhone => 'Android फ़ोन';
 
   @override
   String get notif_backupPausedTitle => 'बैकअप रुका है';
@@ -3666,10 +3691,100 @@ class AppLocalizationsHi extends AppLocalizations {
   String get account_removeDataHelp => 'आपका बैकअप आपके Google खाते में रहेगा।';
 
   @override
-  String get onboarding_restoreWithGoogle => 'Google से रीस्टोर करें';
+  String get auth_title => 'अपना डेटा सुरक्षित रखें';
 
   @override
-  String get onboarding_noBackupFound => 'इस खाते पर कोई बैकअप नहीं मिला';
+  String get auth_body =>
+      'अपने खर्चों और आदतों का बैकअप लेने और नए फ़ोन पर उन्हें वापस पाने के लिए Google से साइन इन करें।';
+
+  @override
+  String get auth_continueWithGoogle => 'Google के साथ जारी रखें';
+
+  @override
+  String get auth_continueAsGuest => 'मेहमान के रूप में जारी रखें';
+
+  @override
+  String get auth_guestNote =>
+      'मेहमान के रूप में, आपका डेटा सिर्फ़ इसी फ़ोन पर रहता है।';
+
+  @override
+  String get auth_signInCancelled =>
+      'साइन इन रद्द हो गया। फिर से कोशिश करें या मेहमान के रूप में जारी रखें।';
+
+  @override
+  String get auth_offline =>
+      'आप ऑफ़लाइन हैं। Google से साइन इन करने के लिए इंटरनेट से जुड़ें, या मेहमान के रूप में जारी रखें।';
+
+  @override
+  String get auth_continueWithoutRestoring => 'रीस्टोर किए बिना जारी रखें';
+
+  @override
+  String get accountCard_guestTitle =>
+      'मेहमान · डेटा सिर्फ़ इसी फ़ोन पर सेव है';
+
+  @override
+  String accountCard_backedUp(String time) {
+    return 'Google पर बैकअप हो गया · $time';
+  }
+
+  @override
+  String get accountCard_paused => 'बैकअप रुका है';
+
+  @override
+  String get accountCard_justNow => 'अभी-अभी';
+
+  @override
+  String accountCard_minutesAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count मिनट पहले',
+      one: '1 मिनट पहले',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String accountCard_hoursAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count घंटे पहले',
+      one: '1 घंटा पहले',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String accountCard_daysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count दिन पहले',
+      one: 'कल',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settings_logOutGuest => 'मेहमान मोड से लॉग आउट करें';
+
+  @override
+  String get logOutGuest_title => 'लॉग आउट करें और अपना डेटा मिटाएँ?';
+
+  @override
+  String get logOutGuest_body =>
+      'मेहमान के रूप में, आपका डेटा सिर्फ़ इसी फ़ोन पर सेव है। लॉग आउट करने से आपके सभी खर्च, आदतें, बजट, रसीदें और अनलॉक हमेशा के लिए मिट जाएँगे। इसे वापस नहीं किया जा सकता।';
+
+  @override
+  String get logOutGuest_signInInstead => 'इसके बजाय Google से साइन इन करें';
+
+  @override
+  String get logOutGuest_confirm => 'लॉग आउट करें और मिटाएँ';
+
+  @override
+  String get logOutGuest_failed =>
+      'आपका डेटा नहीं मिटाया जा सका। फिर से कोशिश करें।';
 
   @override
   String get finishSetup_title => 'सेटअप पूरा करें';

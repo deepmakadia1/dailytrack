@@ -19,6 +19,9 @@ const int notificationPermissionSdk = 33;
 Future<void> showFinishSetupSheet(BuildContext context) async {
   final container = ProviderScope.containerOf(context, listen: false);
   final sdk = (await container.read(deviceInfoSourceProvider).load()).sdkInt;
+  final askForNotifications =
+      sdk >= notificationPermissionSdk &&
+      !await container.read(notificationPermissionProvider).isGranted();
   if (!context.mounted) return;
   final settings = container.read(settingsRepositoryProvider);
   // Cleared before it shows, so a rebuild can never show it twice.
@@ -27,9 +30,7 @@ Future<void> showFinishSetupSheet(BuildContext context) async {
   await AppBottomSheet.show<void>(
     context,
     title: AppLocalizations.of(context).finishSetup_title,
-    child: FinishSetupSheet(
-      showNotifications: sdk >= notificationPermissionSdk,
-    ),
+    child: FinishSetupSheet(showNotifications: askForNotifications),
   );
 }
 
@@ -38,7 +39,8 @@ Future<void> showFinishSetupSheet(BuildContext context) async {
 class FinishSetupSheet extends ConsumerWidget {
   const new({required this.showNotifications, super.key});
 
-  /// "Allow notifications" only where Android asks for it (13+).
+  /// "Allow notifications" only where Android asks for it (13+) and the
+  /// permission isn't granted yet (spec §6 AUTH-01 "Finish setting up").
   final bool showNotifications;
 
   @override

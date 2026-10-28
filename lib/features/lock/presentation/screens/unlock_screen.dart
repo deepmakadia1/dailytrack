@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/core/account/account_providers.dart';
+import 'package:dailytrack/core/account/account_restore.dart';
 import 'package:dailytrack/core/backup/backup_providers.dart';
+import 'package:dailytrack/core/backup/domain/backup_errors.dart';
 import 'package:dailytrack/core/backup/presentation/backup_summaries.dart';
 import 'package:dailytrack/core/backup/presentation/drive_restore_flow.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
@@ -64,8 +66,29 @@ class _UnlockScreenState extends ConsumerState<UnlockScreen> {
       drive: ref.read(driveBackupStoreProvider),
       restore: ref.read(restoreServiceProvider),
       moduleSummaries: backupSummaries(ref.read(moduleRegistryProvider), l10n),
-      signIn: () async =>
-          await ref.read(accountServiceProvider).signIn() != null,
+      // Committed at once, as before feature 011 (its T050 moves the
+      // commit after the restore).
+      signIn: () async {
+        final account = ref.read(accountServiceProvider);
+        if (await account.signIn() == null) return false;
+        await account.commitSignIn();
+        return true;
+      },
+      // The account restore (feature 010 spec Edge Cases): the safety copy
+      // first, then the last known backup, the pause, and FR-019b.
+      applyFor: (entry) => (candidate, password) async {
+        final restored = await ref
+            .read(accountRestoreProvider)
+            .apply(
+              OpenedBackup(candidate, password: password),
+              entry: entry,
+              fromEmptyPhone: false,
+            );
+        return switch (restored) {
+          Restored(:final outcome) => outcome,
+          SafetyCopyFailed() => throw const BackupStorageFull(),
+        };
+      },
     );
     if (result != DriveRestoreResult.restored) return result;
     await ref.read(lockServiceProvider).reset();

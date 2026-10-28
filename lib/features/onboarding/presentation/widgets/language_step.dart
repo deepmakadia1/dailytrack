@@ -11,12 +11,8 @@ class LanguageStep extends StatelessWidget {
   const new({
     required this.languageCode,
     required this.onLanguageSelected,
-    this.restore,
     super.key,
   });
-
-  /// "Restore with Google" and its messages, when Drive is available.
-  final Widget? restore;
 
   /// Chosen language, or null when following the device.
   final String? languageCode;
@@ -53,10 +49,6 @@ class LanguageStep extends StatelessWidget {
           labelBuilder: (code) => l10nByKey(l10n, 'language_$code') ?? code,
           onChanged: (selected) => onLanguageSelected(selected.first),
         ),
-        if (restore case final restore?) ...[
-          SizedBox(height: tokens.s24),
-          restore,
-        ],
       ],
     );
   }

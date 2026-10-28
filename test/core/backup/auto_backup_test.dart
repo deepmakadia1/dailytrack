@@ -1,6 +1,7 @@
 import 'package:dailytrack/app/auto_backup_task.dart';
 import 'package:dailytrack/app/background_dispatcher.dart';
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/account/account_providers.dart';
 import 'package:dailytrack/core/background/background_providers.dart';
 import 'package:dailytrack/core/background/background_scheduler.dart';
 import 'package:dailytrack/core/backup/auto_backup_schedule.dart';
@@ -20,6 +21,7 @@ import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../helpers/backup_fakes.dart';
 import '../../helpers/fakes.dart';
 
 final class _ScriptedBackupService implements BackupService {
@@ -122,6 +124,7 @@ void main() {
       await syncAutoBackupSchedule(
         const AppSettings(
           backupAccountEmail: 'me@example.com',
+          authMode: AuthMode.google,
           autoBackupFrequency: AutoBackupFrequency.daily,
         ),
         scheduler,
@@ -137,6 +140,7 @@ void main() {
       await syncAutoBackupSchedule(
         const AppSettings(
           backupAccountEmail: 'me@example.com',
+          authMode: AuthMode.google,
           autoBackupFrequency: AutoBackupFrequency.weekly,
           autoBackupWifiOnly: false,
         ),
@@ -169,12 +173,15 @@ void main() {
     late _ScriptedBackupService backups;
     late FakeNotificationService notifications;
     late ProviderContainer container;
+    late FakeBackgroundScheduler scheduler;
 
     setUp(() {
+      scheduler = FakeBackgroundScheduler();
       settings = FakeSettingsRepository(
         initial: const AppSettings(
           locale: 'en',
           backupAccountEmail: 'me@example.com',
+          authMode: AuthMode.google,
           autoBackupFrequency: AutoBackupFrequency.daily,
         ),
       );
@@ -186,9 +193,8 @@ void main() {
           backupServiceProvider.overrideWithValue(backups),
           notificationServiceProvider.overrideWithValue(notifications),
           moduleRegistryProvider.overrideWithValue(ModuleRegistry(const [])),
-          backgroundSchedulerProvider.overrideWithValue(
-            FakeBackgroundScheduler(),
-          ),
+          backgroundSchedulerProvider.overrideWithValue(scheduler),
+          accountAuthProvider.overrideWithValue(FakeAccountAuth()),
         ],
       );
       addTearDown(container.dispose);
@@ -257,7 +263,9 @@ void main() {
         frequency: AutoBackupFrequency.daily,
         wifiOnly: true,
       );
-      await settings.setBackupAccountEmail(null);
+      // Not signed in: a guest, even with account keys left behind
+      // (feature 011 research R4).
+      await settings.setAuthMode(AuthMode.guest);
       await runAutoBackup(container.read);
       expect(backups.kinds, isEmpty);
     });
@@ -309,6 +317,40 @@ void main() {
       expect(n.title, 'Backup paused');
       expect(settings.current.autoBackupPauseNotified, isTrue);
       expect(settings.current.autoBackupFailures, 0);
+    });
+
+    test('§16 an empty phone over a backup with data is a finished run: '
+        'nothing uploads and it is not a failure (FR-038a)', () async {
+      await settings.setAutoBackupFailures(failures: 2, notified: false);
+      backups.results.add(const SkippedEmpty());
+      expect(await runAutoBackup(container.read), isTrue);
+      expect(settings.current.autoBackupFailures, 0);
+      expect(settings.current.lastAutoBackupAt, isNotNull);
+      expect(notifications.shown, isEmpty);
+    });
+
+    test(
+      '§16 FR-004 the app-open run forgets an account whose access is '
+      'gone: keys cleared, both backup jobs cancelled, not a failure',
+      () async {
+        backups.results.add(const DriveAuthRequired());
+        expect(await runAutoBackup(container.read, foreground: true), isTrue);
+        expect(settings.current.backupAccountEmail, isNull);
+        expect(settings.current.autoBackupFailures, 0);
+        expect(
+          scheduler.cancelled,
+          containsAll([autoBackupTaskName, backgroundBackupTaskName]),
+        );
+      },
+    );
+
+    test('§16 a background run that cannot sign in keeps the account and '
+        'counts a failure (signing in from the background can fail for '
+        'ordinary reasons)', () async {
+      backups.results.add(const DriveAuthRequired());
+      expect(await runAutoBackup(container.read), isTrue);
+      expect(settings.current.backupAccountEmail, 'me@example.com');
+      expect(settings.current.autoBackupFailures, 1);
     });
   });
 }

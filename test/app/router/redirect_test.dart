@@ -8,12 +8,18 @@ import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Redirect rules from contracts/routes.md, tested as a pure function.
+/// Redirect rules from contracts/routes.md (features 001, 007, 011),
+/// tested as a pure function.
 void main() {
   const ready = AsyncData<BootstrapResult>(BootstrapReady(Routes.home));
   const fresh = AppSettings();
-  const done = AppSettings(onboardingDone: true);
-  const locked = AppSettings(onboardingDone: true, lockEnabled: true);
+  const done = AppSettings(onboardingDone: true, authMode: AuthMode.guest);
+  const locked = AppSettings(
+    onboardingDone: true,
+    lockEnabled: true,
+    authMode: AuthMode.guest,
+  );
+  const noLogin = AppSettings(onboardingDone: true);
 
   final registry = ModuleRegistry(registeredModules);
 
@@ -112,8 +118,8 @@ void main() {
     expect(lockGo(Routes.lock, settings: done), Routes.home);
   });
 
-  test('rule 3: SYS-02 step 4 may open SYS-04 to set or change the PIN, '
-      'but not to turn it off', () {
+  test('rule 3: Intro no longer opens SYS-04, so every PIN mode goes to '
+      'onboarding (the settingPin exception is removed)', () {
     String? pin(String mode) => redirectFor(
       location: Routes.pin,
       uri: Uri.parse(Routes.pinPath(mode)),
@@ -121,15 +127,20 @@ void main() {
       settings: fresh,
       registry: registry,
     );
-    expect(pin(Routes.pinModeSet), isNull);
-    expect(pin(Routes.pinModeChange), isNull);
-    expect(pin(Routes.pinModeDisable), Routes.onboarding);
+    for (final mode in [
+      Routes.pinModeSet,
+      Routes.pinModeChange,
+      Routes.pinModeDisable,
+    ]) {
+      expect(pin(mode), Routes.onboarding, reason: mode);
+    }
   });
 
   test('rule 5: a disabled module route goes to Home', () {
     const habitOnly = AppSettings(
       onboardingDone: true,
       enabledModules: ['habit'],
+      authMode: AuthMode.guest,
     );
     expect(go(Routes.expenses, settings: habitOnly), Routes.home);
     expect(go('${Routes.expenses}/anything', settings: habitOnly), Routes.home);
@@ -137,9 +148,142 @@ void main() {
     expect(go(Routes.more, settings: habitOnly), isNull);
   });
 
-  test('rule 6: finished onboarding goes to Home', () {
+  test('rule 6: finished onboarding goes to Home, or to AUTH-01 with no '
+      'login chosen', () {
     expect(go(Routes.onboarding), Routes.home);
+    expect(go(Routes.onboarding, settings: noLogin), Routes.login);
     expect(go(Routes.home), isNull);
     expect(go(Routes.modules), isNull);
   });
+
+  // --- Login rules (feature 011 contracts/routes.md) ---
+
+  test('rule 3b: with authMode none every location opens AUTH-01, a '
+      'notification or deep link included', () {
+    for (final location in [
+      Routes.home,
+      Routes.more,
+      Routes.account,
+      '/expenses/123',
+      Routes.lock,
+      Routes.pin,
+      Routes.premium,
+    ]) {
+      expect(go(location, settings: noLogin), Routes.login, reason: location);
+    }
+    expect(go(Routes.login, settings: noLogin), isNull);
+  });
+
+  test('rule 3b: before onboarding, Intro still comes first', () {
+    expect(go(Routes.login, settings: fresh), Routes.onboarding);
+  });
+
+  test('rule 3c: once logged in, AUTH-01 leaves for Home', () {
+    for (final mode in [AuthMode.guest, AuthMode.google]) {
+      expect(
+        go(Routes.login, settings: noLogin.copyWith(authMode: mode)),
+        Routes.home,
+      );
+    }
+  });
+
+  test('rule 3c + 4: with app lock on, leaving AUTH-01 goes through SYS-03 '
+      'first', () {
+    expect(lockGo(Routes.login), Routes.home);
+    expect(lockGo(Routes.home), Routes.lockPath(from: Routes.home));
+  });
+
+  test('rules 4/4b: with authMode none the lock rules do not apply; AUTH-01 '
+      'shows even with app lock on', () {
+    final lockedNoLogin = locked.copyWith(authMode: AuthMode.none);
+    expect(lockGo(Routes.login, settings: lockedNoLogin), isNull);
+    expect(lockGo(Routes.home, settings: lockedNoLogin), Routes.login);
+    expect(lockGo(Routes.lock, settings: lockedNoLogin), Routes.login);
+  });
+
+  test('rule 7: ACC-01 only while signed in with Google; otherwise SET-01', () {
+    final google = done.copyWith(
+      authMode: AuthMode.google,
+      backupAccountEmail: 'me@example.com',
+    );
+    expect(go(Routes.account, settings: google), isNull);
+    expect(go(Routes.account), Routes.more);
+    expect(go('${Routes.account}/x'), Routes.more);
+    expect(go(Routes.more), isNull);
+  });
+
+  test('the authMode argument wins over settings (the router passes '
+      'authModeProvider)', () {
+    expect(
+      redirectFor(
+        location: Routes.home,
+        bootstrap: ready,
+        settings: done,
+        registry: registry,
+        authMode: AuthMode.none,
+      ),
+      Routes.login,
+    );
+  });
+
+  group('SYS-01 first screen: onboarding × authMode × lock', () {
+    for (final onboarded in [false, true]) {
+      for (final mode in AuthMode.values) {
+        for (final lock in [false, true]) {
+          final s = AppSettings(
+            onboardingDone: onboarded,
+            authMode: mode,
+            lockEnabled: lock,
+          );
+          final expected = !onboarded
+              ? Routes.onboarding
+              : mode == AuthMode.none
+              ? Routes.login
+              : lock
+              ? Routes.lockPath(from: Routes.home)
+              : Routes.home;
+          test('onboarding ${onboarded ? 'done' : 'not done'}, '
+              '${mode.name}, lock ${lock ? 'on' : 'off'} → $expected', () {
+            expect(initialLocationFor(s), expected);
+            expect(lockAtStart(s), onboarded && lock && mode != AuthMode.none);
+            // The router agrees: the splash leaves for that screen, which
+            // then stays put (the session is locked exactly when expected).
+            final start = AsyncData<BootstrapResult>(BootstrapReady(expected));
+            expect(
+              redirectFor(
+                location: Routes.splash,
+                bootstrap: start,
+                settings: s,
+                registry: registry,
+              ),
+              expected,
+            );
+            final uri = Uri.parse(expected);
+            expect(
+              redirectFor(
+                location: uri.path,
+                uri: uri,
+                bootstrap: start,
+                settings: s,
+                registry: registry,
+                sessionLocked: lockAtStart(s),
+              ),
+              isNull,
+            );
+          });
+        }
+      }
+    }
+  });
+
+  test(
+    'initialLocationFor drops a notification payload with authMode none',
+    () {
+      expect(
+        initialLocationFor(noLogin, launchPayload: '/habits'),
+        Routes.login,
+      );
+      expect(initialLocationFor(done, launchPayload: '/habits'), '/habits');
+    },
+  );
 }

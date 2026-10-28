@@ -7,10 +7,11 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../features/account/account_test_app.dart';
 import '../features/expense/expense_test_app.dart' show routerOf;
+import '../helpers/fakes.dart' show FakeNetworkStateSource;
 
-/// §15.10 for feature 010 (T100): ACC-01 (signed out, signed in with a
-/// paused backup), ACC-02, ACC-03 (failed backup, Remove chosen), SYS-02
-/// step 1 with "Restore with Google", and "Finish setting up", at 200% font
+/// §15.10 for feature 010 (T100): ACC-01 (offline, signed in with a
+/// paused backup), ACC-02, ACC-03 (failed backup, Remove chosen), and
+/// "Finish setting up", at 200% font
 /// scale on a 360×780 dp screen, in en, hi, and gu, light and dark: no
 /// overflow (reported as a test failure), 48 dp labelled tap targets, and
 /// text contrast.
@@ -22,6 +23,7 @@ void main() {
     required AppSettings initial,
     String? location = Routes.account,
     bool hasData = true,
+    FakeNetworkStateSource? network,
     void Function(AccountWorld w)? arrange,
   }) async {
     final world = await pumpAccountApp(
@@ -29,6 +31,7 @@ void main() {
       initial: initial,
       location: null,
       hasData: hasData,
+      network: network,
       arrange: arrange,
     );
     tester.view
@@ -83,17 +86,20 @@ void main() {
   for (final lang in ['en', 'hi', 'gu']) {
     for (final theme in ['light', 'dark']) {
       final name = '$lang $theme';
-      AppSettings settings({bool signedInUser = true}) => signedIn.copyWith(
+      AppSettings settings() => signedIn.copyWith(
         locale: lang,
         themeMode: theme,
-        backupAccountEmail: signedInUser
-            ? 'someone.long.name@example.com'
-            : null,
-        accountDisplayName: signedInUser ? 'Asha Patel' : null,
+        backupAccountEmail: 'someone.long.name@example.com',
+        accountDisplayName: 'Asha Patel',
       );
 
-      testWidgets('ACC-01 signed out, $name', (tester) async {
-        await pump(tester, initial: settings(signedInUser: false));
+      testWidgets('ACC-01 offline, $name', (tester) async {
+        await pump(
+          tester,
+          initial: settings().copyWith(lastBackupAt: 1792540800000),
+          network: FakeNetworkStateSource(online: false),
+        );
+        expect(find.byKey(const Key('acc01_offline')), findsOneWidget);
         await scrollAndCheck(tester, screenList());
       });
 
@@ -130,20 +136,6 @@ void main() {
         await tapKey(tester, 'acc03_remove');
         expect(find.byKey(const Key('acc03_failed')), findsOneWidget);
         await scrollAndCheck(tester, sheetList('acc03_sheet'));
-      });
-
-      testWidgets('SYS-02 step 1 with "Restore with Google", $name', (
-        tester,
-      ) async {
-        await pump(
-          tester,
-          initial: AppSettings(locale: lang, themeMode: theme),
-          location: null,
-          hasData: false,
-        );
-        await tapKey(tester, 'sys02.restoreWithGoogle');
-        expect(find.byKey(const Key('sys02_restoreMessage')), findsOneWidget);
-        await expectAccessible(tester);
       });
 
       testWidgets('Finish setting up, $name', (tester) async {

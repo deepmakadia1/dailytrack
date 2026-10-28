@@ -63,7 +63,7 @@ final class RestoreChoiceControllerProvider
 }
 
 String _$restoreChoiceControllerHash() =>
-    r'be21820c7a96a9f9e89b0038fd1fd311ad79ae0c';
+    r'd3e7c2b2f696f7444fce5e44ec843626496dd5e5';
 
 /// ACC-02 Restore choice controller for [newest].
 

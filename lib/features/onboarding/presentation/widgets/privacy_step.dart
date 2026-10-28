@@ -2,26 +2,18 @@ import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/theme/app_tokens.dart';
 import 'package:flutter/material.dart';
 
-/// SYS-02 step 4: privacy explanation, the optional notification request,
-/// and the optional app lock (opens SYS-04; feature 007 US9).
+/// SYS-02 step 4: privacy explanation and the optional notification
+/// request. App lock is offered after login (feature 011).
 class PrivacyStep extends StatelessWidget {
   const new({
     required this.notificationsGranted,
     required this.onAllowNotifications,
-    required this.appLockOn,
-    required this.onSetAppLock,
     super.key,
   });
 
   /// Null until the user has been asked.
   final bool? notificationsGranted;
   final VoidCallback onAllowNotifications;
-
-  /// The lock is on: show "App lock is on" and offer "Change PIN".
-  final bool appLockOn;
-
-  /// Opens SYS-04; receives [appLockOn] to pick set or change.
-  final ValueChanged<bool> onSetAppLock;
 
   @override
   Widget build(BuildContext context) {
@@ -75,37 +67,6 @@ class PrivacyStep extends StatelessWidget {
                     granted
                         ? l10n.onboarding_notificationsGranted
                         : l10n.onboarding_notificationsDenied,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-        SizedBox(height: tokens.s16),
-        OutlinedButton.icon(
-          key: const Key('onboarding_set_app_lock'),
-          onPressed: () => onSetAppLock(appLockOn),
-          icon: const Icon(Icons.lock_outline),
-          label: Text(
-            appLockOn ? l10n.onboarding_changePin : l10n.onboarding_setAppLock,
-          ),
-        ),
-        if (appLockOn) ...[
-          SizedBox(height: tokens.s12),
-          Semantics(
-            liveRegion: true,
-            child: Row(
-              key: const Key('onboarding_app_lock_on'),
-              children: [
-                Icon(
-                  Icons.check_circle_outline,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-                SizedBox(width: tokens.s8),
-                Expanded(
-                  child: Text(
-                    l10n.security_lockOn,
                     style: theme.textTheme.bodyMedium,
                   ),
                 ),

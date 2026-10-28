@@ -137,7 +137,13 @@ void main() {
     await home(tester, f);
     expect(find.byKey(const Key('expense_card_error')), findsOneWidget);
     f.world.failWatch = null;
-    await tester.tap(find.text('Try again'));
+    // The card's own button: Recent transactions may show its error too.
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const Key('expense_card_error')),
+        matching: find.text('Try again'),
+      ),
+    );
     await tester.pumpAndSettle();
     expect(find.text('Add your first expense'), findsOneWidget);
   });

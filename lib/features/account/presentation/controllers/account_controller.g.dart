@@ -8,21 +8,24 @@ part of 'account_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// ACC-01 Account controller (spec §16): sign in, Back up now, Switch
-/// account, and Delete my backups. Restore and Sign out open ACC-02 and
-/// ACC-03, which have their own controllers.
+/// ACC-01 Account controller (spec §16): Back up now, Switch account, and
+/// Delete my backups for a signed-in account. Restore and Sign out open
+/// ACC-02 and ACC-03, which have their own controllers. Signing in never
+/// happens on ACC-01.
 
 @ProviderFor(AccountController)
 final accountControllerProvider = AccountControllerProvider._();
 
-/// ACC-01 Account controller (spec §16): sign in, Back up now, Switch
-/// account, and Delete my backups. Restore and Sign out open ACC-02 and
-/// ACC-03, which have their own controllers.
+/// ACC-01 Account controller (spec §16): Back up now, Switch account, and
+/// Delete my backups for a signed-in account. Restore and Sign out open
+/// ACC-02 and ACC-03, which have their own controllers. Signing in never
+/// happens on ACC-01.
 final class AccountControllerProvider
     extends $AsyncNotifierProvider<AccountController, AccountScreenState> {
-  /// ACC-01 Account controller (spec §16): sign in, Back up now, Switch
-  /// account, and Delete my backups. Restore and Sign out open ACC-02 and
-  /// ACC-03, which have their own controllers.
+  /// ACC-01 Account controller (spec §16): Back up now, Switch account, and
+  /// Delete my backups for a signed-in account. Restore and Sign out open
+  /// ACC-02 and ACC-03, which have their own controllers. Signing in never
+  /// happens on ACC-01.
   AccountControllerProvider._()
     : super(
         from: null,
@@ -42,11 +45,12 @@ final class AccountControllerProvider
   AccountController create() => AccountController();
 }
 
-String _$accountControllerHash() => r'043c4dd1ad8d278c055c85bac5a12dc18bc7e284';
+String _$accountControllerHash() => r'065c4040c38090ef0e208f7b72382eaf6d259c0a';
 
-/// ACC-01 Account controller (spec §16): sign in, Back up now, Switch
-/// account, and Delete my backups. Restore and Sign out open ACC-02 and
-/// ACC-03, which have their own controllers.
+/// ACC-01 Account controller (spec §16): Back up now, Switch account, and
+/// Delete my backups for a signed-in account. Restore and Sign out open
+/// ACC-02 and ACC-03, which have their own controllers. Signing in never
+/// happens on ACC-01.
 
 abstract class _$AccountController extends $AsyncNotifier<AccountScreenState> {
   FutureOr<AccountScreenState> build();

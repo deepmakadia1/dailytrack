@@ -116,9 +116,9 @@
   "@onboarding_privacyTitle": {
     "description": "SYS-02 step 4 title."
   },
-  "onboarding_privacyBody": "Everything you log is stored only on this device. Nothing is uploaded unless you choose to back it up.",
+  "onboarding_privacyBody": "Everything you log is kept on this phone. Next, you can back it up with Google or continue as a guest.",
   "@onboarding_privacyBody": {
-    "description": "SYS-02 step 4 privacy explanation."
+    "description": "SYS-02 step 4 body: data stays on this phone; AUTH-01 comes next."
   },
   "onboarding_allowNotifications": "Allow notifications",
   "@onboarding_allowNotifications": {
@@ -4850,6 +4850,14 @@
   "@account_signInFailed": {
     "description": "Sign-in failure message."
   },
+  "account_restoreOffline": "Connect to the internet to restore",
+  "@account_restoreOffline": {
+    "description": "ACC-02 offline state; restore is disabled (spec §16)."
+  },
+  "account_signInOffline": "Connect to the internet to sign in with Google",
+  "@account_signInOffline": {
+    "description": "Shown instead of signing in while the phone is offline (spec §16)."
+  },
   "account_signedInBackedUp": "Signed in. Your data is backed up.",
   "@account_signedInBackedUp": {
     "description": "Snackbar after signing in to an account without backups."
@@ -4879,9 +4887,25 @@
   "@account_noBackupYet": {
     "description": "ACC-01 status when the account has no backups."
   },
-  "account_statusBackedUp": "Backed up",
+  "account_statusBackedUp": "Backed up to Google",
   "@account_statusBackedUp": {
-    "description": "ACC-01 state line."
+    "description": "ACC-01 state line (spec §16)."
+  },
+  "account_statusOffline": "You're offline. Backups resume when you're back online.",
+  "@account_statusOffline": {
+    "description": "ACC-01 offline state line; also why the network actions are disabled."
+  },
+  "account_statusWaitingForWifi": "Waiting for Wi-Fi",
+  "@account_statusWaitingForWifi": {
+    "description": "ACC-01 state line: a background backup waits for Wi-Fi (Wi-Fi only is on)."
+  },
+  "account_statusFailedNoPassword": "Backup failed: set your backup password in Backup and restore",
+  "@account_statusFailedNoPassword": {
+    "description": "ACC-01 state line: Encrypt backup is on but the password is missing."
+  },
+  "account_signOutBackedUp": "Backed up",
+  "@account_signOutBackedUp": {
+    "description": "ACC-03 step 1 when nothing changed since the last backup."
   },
   "account_statusBackingUp": "Backing up…",
   "@account_statusBackingUp": {
@@ -4985,6 +5009,10 @@
   "backup_unknownDevice": "Unknown device",
   "@backup_unknownDevice": {
     "description": "Device name when a backup doesn't say."
+  },
+  "account_androidPhone": "Android phone",
+  "@account_androidPhone": {
+    "description": "Device name when the phone reports neither manufacturer nor model."
   },
   "notif_backupPausedTitle": "Backup paused",
   "@notif_backupPausedTitle": {
@@ -5148,13 +5176,109 @@
   "@account_removeDataHelp": {
     "description": "ACC-03 option helper."
   },
-  "onboarding_restoreWithGoogle": "Restore with Google",
-  "@onboarding_restoreWithGoogle": {
-    "description": "SYS-02 step 1 secondary button."
+  "auth_title": "Keep your data safe",
+  "@auth_title": {
+    "description": "AUTH-01 title."
   },
-  "onboarding_noBackupFound": "No backup found on this account",
-  "@onboarding_noBackupFound": {
-    "description": "SYS-02 message when the account has no backup."
+  "auth_body": "Sign in with Google to back up your expenses and habits and get them back on a new phone.",
+  "@auth_body": {
+    "description": "AUTH-01 value line."
+  },
+  "auth_continueWithGoogle": "Continue with Google",
+  "@auth_continueWithGoogle": {
+    "description": "AUTH-01 primary button."
+  },
+  "auth_continueAsGuest": "Continue as guest",
+  "@auth_continueAsGuest": {
+    "description": "AUTH-01 secondary button."
+  },
+  "auth_guestNote": "As a guest, your data stays only on this phone.",
+  "@auth_guestNote": {
+    "description": "AUTH-01 note under the buttons."
+  },
+  "auth_signInCancelled": "Sign-in was cancelled. Try again or continue as a guest.",
+  "@auth_signInCancelled": {
+    "description": "AUTH-01 inline error after the account chooser was closed."
+  },
+  "auth_offline": "You're offline. Connect to the internet to sign in with Google, or continue as a guest.",
+  "@auth_offline": {
+    "description": "AUTH-01 inline error when offline."
+  },
+  "auth_continueWithoutRestoring": "Continue without restoring",
+  "@auth_continueWithoutRestoring": {
+    "description": "AUTH-01 restore error view secondary button."
+  },
+  "accountCard_guestTitle": "Guest · Data saved only on this phone",
+  "@accountCard_guestTitle": {
+    "description": "SET-01 account card, guest state."
+  },
+  "accountCard_backedUp": "Backed up to Google · {time}",
+  "@accountCard_backedUp": {
+    "description": "SET-01 account card status; {time} is relative, e.g. 5 min ago. Never 'Synced'.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "accountCard_paused": "Backup paused",
+  "@accountCard_paused": {
+    "description": "SET-01 account card status, warning color."
+  },
+  "accountCard_justNow": "just now",
+  "@accountCard_justNow": {
+    "description": "Relative time under a minute, in the account card status."
+  },
+  "accountCard_minutesAgo": "{count, plural, one{1 min ago} other{{count} min ago}}",
+  "@accountCard_minutesAgo": {
+    "description": "Relative time in minutes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accountCard_hoursAgo": "{count, plural, one{1 hour ago} other{{count} hours ago}}",
+  "@accountCard_hoursAgo": {
+    "description": "Relative time in hours.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accountCard_daysAgo": "{count, plural, one{yesterday} other{{count} days ago}}",
+  "@accountCard_daysAgo": {
+    "description": "Relative time in days.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_logOutGuest": "Log out of guest",
+  "@settings_logOutGuest": {
+    "description": "SET-01 Data row, guest only, error color."
+  },
+  "logOutGuest_title": "Log out and delete your data?",
+  "@logOutGuest_title": {
+    "description": "ACC-04 title."
+  },
+  "logOutGuest_body": "As a guest, your data is stored only on this phone. Logging out permanently deletes all your expenses, habits, budgets, receipts, and unlocks. This can't be undone.",
+  "@logOutGuest_body": {
+    "description": "ACC-04 body."
+  },
+  "logOutGuest_signInInstead": "Sign in with Google instead",
+  "@logOutGuest_signInInstead": {
+    "description": "ACC-04 text button."
+  },
+  "logOutGuest_confirm": "Log out and delete",
+  "@logOutGuest_confirm": {
+    "description": "ACC-04 destructive button."
+  },
+  "logOutGuest_failed": "Couldn't delete your data. Try again.",
+  "@logOutGuest_failed": {
+    "description": "ACC-04 error; nothing was deleted."
   },
   "finishSetup_title": "Finish setting up",
   "@finishSetup_title": {

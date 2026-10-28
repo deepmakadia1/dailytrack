@@ -125,9 +125,16 @@ void main() {
 
     Future<int> measure() async {
       final db = AppDatabase(NativeDatabase.memory());
-      await tester.runAsync(() => seed(db, clock));
+      await tester.runAsync(() async {
+        await seed(db, clock);
+        // SYS-01 work before Home, outside the timed window.
+        await SettingsRepositoryImpl(
+          db,
+          knownModuleIds: const ['expense', 'habit'],
+        ).migrateAuthMode();
+      });
       final watch = Stopwatch()..start();
-      await pumpRealDbApp(tester, db: db, clock: clock);
+      await pumpRealDbApp(tester, db: db, clock: clock, migrateAuthMode: false);
       bool ready() =>
           find.byKey(const Key('spent_today')).evaluate().isNotEmpty &&
           find.byKey(const Key('habit_card_ring')).evaluate().isNotEmpty &&

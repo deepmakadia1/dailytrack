@@ -44,7 +44,7 @@ final class SignOutControllerProvider
   }
 }
 
-String _$signOutControllerHash() => r'bb9f41c8b7651518844ab18d763abe4d9519c47d';
+String _$signOutControllerHash() => r'661badbec494fdb9ebf32cbc2466e2106e2b16ec';
 
 /// ACC-03 Sign out controller (spec §16).
 

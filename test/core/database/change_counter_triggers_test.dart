@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dailytrack/core/backup/domain/backup_settings_policy.dart';
 import 'package:dailytrack/core/database/app_database.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
@@ -120,5 +122,40 @@ void main() {
 
     await db.customStatement("DELETE FROM habits WHERE id = 'h1'");
     expect(await counter(), ++expected);
+  });
+
+  test('§16 a habit check-in written by a second connection (a background '
+      'isolate, a widget check) raises it too', () async {
+    final dir = await Directory.systemTemp.createTemp('counter_two');
+    addTearDown(() => dir.delete(recursive: true));
+    final file = File('${dir.path}/dailytrack.sqlite');
+    final ui = AppDatabase(NativeDatabase(file));
+    addTearDown(ui.close);
+    await ui.customStatement(
+      'INSERT INTO habits (id, name, icon_key, color_hex, kind, target_value, '
+      'schedule_type, weekdays_mask, start_date_key, sort_order, created_at, '
+      'updated_at) '
+      "VALUES ('h1', 'Walk', 'walk', '#00897B', 0, 1, 0, 127, '2026-10-26', 0, "
+      '0, 0)',
+    );
+    Future<int> uiCounter() async {
+      final row = await ui
+          .customSelect(
+            "SELECT value FROM settings WHERE key = 'dataChangeCounter'",
+          )
+          .getSingle();
+      return int.parse(row.read<String>('value'));
+    }
+
+    final before = await uiCounter();
+
+    final background = AppDatabase(NativeDatabase(file));
+    await background.customStatement(
+      'INSERT INTO habit_entries (id, habit_id, date_key, value, is_freeze, '
+      "created_at, updated_at) VALUES ('e1', 'h1', '2026-10-27', 1, 0, 0, 0)",
+    );
+    await background.close();
+
+    expect(await uiCounter(), before + 1);
   });
 }

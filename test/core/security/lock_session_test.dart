@@ -78,6 +78,7 @@ void main() {
           onboardingDone: true,
           lockEnabled: lockEnabled,
           lockAfterSeconds: lockAfterSeconds,
+          authMode: AuthMode.guest,
         ),
       );
       container = ProviderContainer(

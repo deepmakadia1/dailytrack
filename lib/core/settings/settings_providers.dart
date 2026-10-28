@@ -26,3 +26,10 @@ Stream<AppSettings> appSettings(Ref ref) =>
 FullDateFormat fullDateFormat(Ref ref) => FullDateFormat.fromStorage(
   ref.watch(appSettingsProvider.select((s) => s.value?.dateFormat ?? '')),
 );
+
+/// The sign-in mode (feature 011 research R6); `none` until settings load.
+/// The router, the lock session, and SET-01 read it.
+@Riverpod(keepAlive: true)
+AuthMode authMode(Ref ref) => ref.watch(
+  appSettingsProvider.select((s) => s.value?.authMode ?? AuthMode.none),
+);

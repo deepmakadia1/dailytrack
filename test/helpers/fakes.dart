@@ -44,6 +44,7 @@ import 'package:dailytrack/core/support/app_info_source.dart';
 import 'package:dailytrack/core/support/app_review_service.dart';
 import 'package:dailytrack/core/support/device_info_source.dart';
 import 'package:dailytrack/core/support/external_launcher.dart';
+import 'package:dailytrack/core/support/network_state_source.dart';
 import 'package:dailytrack/core/widget/domain/home_widget_bridge.dart';
 import 'package:dailytrack/core/widget/glance_refresher.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,19 @@ class FakeSettingsRepository implements SettingsRepository {
     AppSettings initial = const AppSettings(),
     this.knownModuleIds = const ['expense', 'habit'],
     this.failNextCompleteOnboarding = false,
-  }) : _settings = initial;
+    bool? authModeStored,
+  }) : _settings = initial,
+       authModeStored = authModeStored ?? initial.authMode != AuthMode.none;
+
+  /// Whether the `authMode` row exists (feature 011 research R2). By
+  /// default only a non-`none` [AppSettings.authMode] counts as stored, so
+  /// settings built without one behave like an updated install and
+  /// [migrateAuthMode] gives them `guest` or `google`. Pass true to keep a
+  /// stored `none` (AUTH-01 tests).
+  bool authModeStored;
+
+  /// How many times [migrateAuthMode] wrote the row.
+  int migrations = 0;
 
   final List<String> knownModuleIds;
 
@@ -485,6 +498,32 @@ class FakeSettingsRepository implements SettingsRepository {
   }
 
   @override
+  Future<void> setAuthMode(AuthMode mode) async {
+    _count('setAuthMode');
+    authModeStored = true;
+    _set(_settings.copyWith(authMode: mode));
+  }
+
+  @override
+  Future<void> migrateAuthMode() async {
+    // Not counted as a write: every start runs it, like the real one,
+    // whose single write tests never see.
+    if (authModeStored) return;
+    migrations++;
+    authModeStored = true;
+    final s = _settings;
+    _set(
+      s.copyWith(
+        authMode: !s.onboardingDone
+            ? AuthMode.none
+            : s.backupAccountEmail != null
+            ? AuthMode.google
+            : AuthMode.guest,
+      ),
+    );
+  }
+
+  @override
   Future<void> setAutoBackupPause({
     required bool paused,
     required bool notified,
@@ -529,6 +568,8 @@ class FakeBootstrap extends Bootstrap {
   Future<BootstrapResult> _next() async {
     runs++;
     final queue = _results;
+    // SYS-01 migrates the sign-in mode before routing (feature 011 R2).
+    await settings?.migrateAuthMode();
     final current = settings?.current ?? const AppSettings();
     final result = queue == null
         ? BootstrapReady(initialLocationFor(current))
@@ -540,7 +581,7 @@ class FakeBootstrap extends Bootstrap {
     if (result is BootstrapReady) {
       ref
           .read(lockSessionProvider.notifier)
-          .start(lockEnabled: current.onboardingDone && current.lockEnabled);
+          .start(lockEnabled: lockAtStart(current));
     }
     return result;
   }
@@ -556,9 +597,12 @@ class FakeBootstrap extends Bootstrap {
 }
 
 class FakeNotificationPermission implements NotificationPermission {
-  new({this.result = true, this.throws = false});
+  new({this.result = true, this.throws = false, this.granted = false});
 
   final bool result;
+
+  /// What [isGranted] answers.
+  bool granted;
 
   /// Simulates a broken plugin. The real implementation never throws, but
   /// onboarding must survive it anyway.
@@ -571,6 +615,9 @@ class FakeNotificationPermission implements NotificationPermission {
     if (throws) throw StateError('permission plugin failed');
     return result;
   }
+
+  @override
+  Future<bool> isGranted() async => granted;
 }
 
 class MockAdService extends Mock implements AdService;
@@ -1253,15 +1300,23 @@ class TestLock {
 class FakeAppResetService implements AppResetService {
   int calls = 0;
 
+  /// The scope of each call, in order (feature 011).
+  final List<EraseScope> scopes = [];
+
   /// What the erase does to the app, e.g. clear settings (feature 010).
   void Function()? onErase;
 
   /// When set, the next run throws it once (nothing was deleted).
   Exception? failNext;
 
+  /// Holds every run until completed, to see "deleting".
+  Completer<void>? gate;
+
   @override
-  Future<void> eraseAll() async {
+  Future<void> eraseAll({EraseScope scope = EraseScope.thisPhoneData}) async {
     calls++;
+    scopes.add(scope);
+    await gate?.future;
     if (failNext case final e?) {
       failNext = null;
       throw e;
@@ -1312,6 +1367,21 @@ class FakeDeviceIdFile implements DeviceIdFile {
   Future<void> write(String id) async {
     if (unavailable) throw StateError('no no-backup folder');
     value = id;
+  }
+}
+
+/// The phone's network as `MainActivity` would report it (feature 010).
+class FakeNetworkStateSource implements NetworkStateSource {
+  new({this.online = true, this.metered = false});
+
+  bool online;
+  bool metered;
+  int loads = 0;
+
+  @override
+  Future<NetworkState> load() async {
+    loads++;
+    return NetworkState(online: online, metered: metered);
   }
 }
 
@@ -1467,6 +1537,9 @@ class FakeDriveBackupStore implements DriveBackupStore {
   /// Ids whose delete fails once.
   final failDeleteOf = <String>{};
 
+  /// Holds [list] until completed, to see the loading state.
+  Completer<void>? listGate;
+
   void _maybeFail() {
     final failure = failNext;
     if (failure != null) {
@@ -1499,6 +1572,7 @@ class FakeDriveBackupStore implements DriveBackupStore {
   @override
   Future<List<DriveBackupEntry>> list() async {
     calls.add('list');
+    await listGate?.future;
     _maybeFail();
     return [...files]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }

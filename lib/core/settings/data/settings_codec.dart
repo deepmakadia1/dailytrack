@@ -78,6 +78,13 @@ abstract final class SettingsCodec {
   static const String autoBackupPauseNotified = 'autoBackupPauseNotified';
   static const String finishSetupPending = 'finishSetupPending';
 
+  /// Feature 011: `none`, `guest`, or `google`.
+  static const String authMode = 'authMode';
+
+  /// `BackupCoordinator.leaseKey`, declared here so the codec never imports
+  /// core/backup/data/ (read only).
+  static const String backupLeaseUntil = 'backupLeaseUntil';
+
   static String seedKey(String seederId) => 'seed.$seederId';
 
   /// A module's own state, e.g. `module.expense.budgetRolloverMonth`.
@@ -146,6 +153,7 @@ abstract final class SettingsCodec {
     final rawFrequency = read<String?>(autoBackupFrequency, null);
     final rawFailures = read<int?>(autoBackupFailures, null);
     final rawEmail = read<String?>(backupAccountEmail, null);
+    final rawAuthMode = read<String?>(authMode, null);
     final rawZone = read<String?>(deviceTimeZoneId, null);
     final rawShownToday = read<int?>(adsInterstitialsToday, null);
     final rawStreak = read<int?>(proNotOwnedStreak, null);
@@ -276,6 +284,10 @@ abstract final class SettingsCodec {
         d.autoBackupPauseNotified,
       ),
       finishSetupPending: read(finishSetupPending, d.finishSetupPending),
+      authMode:
+          AuthMode.values.where((m) => m.name == rawAuthMode).firstOrNull ??
+          d.authMode,
+      backupLeaseUntil: read<int?>(backupLeaseUntil, null),
     );
   }
 }

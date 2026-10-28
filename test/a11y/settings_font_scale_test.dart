@@ -238,10 +238,11 @@ void main() {
           await tester.pumpAndSettle();
         }
         await expectAccessible(tester);
-        // Step 4 is a lazy list; at 200% the button starts below the fold.
-        final lock = find.byKey(const Key('onboarding_set_app_lock'));
+        // Step 4 is a lazy list; at 200% the button may start below the
+        // fold.
+        final allow = find.byKey(const Key('onboarding_allow_notifications'));
         await tester.scrollUntilVisible(
-          lock,
+          allow,
           200,
           scrollable: find
               .descendant(

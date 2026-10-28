@@ -1,13 +1,3 @@
-import 'dart:async';
-
-import 'package:dailytrack/core/account/account_providers.dart';
-import 'package:dailytrack/core/account/account_restore.dart';
-import 'package:dailytrack/core/backup/backup_providers.dart';
-import 'package:dailytrack/core/backup/domain/backup_errors.dart';
-import 'package:dailytrack/core/backup/domain/drive_backup_result.dart';
-import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
-import 'package:dailytrack/core/billing/billing_providers.dart';
-import 'package:dailytrack/core/billing/pro_service.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
 import 'package:dailytrack/core/notifications/notification_providers.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
@@ -122,102 +112,6 @@ class OnboardingController extends _$OnboardingController {
     );
   }
 
-  /// Signed in during onboarding to an account without a backup: the new
-  /// data is backed up once onboarding is done (spec US1 scenario 4). In
-  /// pause mode, since there's no screen to ask on; a newer backup from
-  /// another phone pauses auto backup and shows in ACC-01.
-  void _backUpIfSignedIn() {
-    final signedIn = ref.read(appSettingsProvider).value?.backupAccountEmail;
-    if (signedIn == null) return;
-    // Read now: the router leaves onboarding, and disposes this
-    // controller, as soon as the save lands.
-    final backups = ref.read(backupServiceProvider);
-    unawaited(
-      backups
-          .backupToDrive(kind: BackupKind.manual, conflict: ConflictMode.pause)
-          .then((_) {}, onError: (Object _) {}),
-    );
-  }
-
-  /// SYS-02 "Restore with Google" (spec §2, §16): sign in; with a backup,
-  /// restore the newest one without asking (the phone has no data yet),
-  /// behind the full-screen progress view. [askPassword] asks for an
-  /// encrypted backup's password (`wrong` after a failed one; null =
-  /// cancelled). On success the restored settings mark onboarding done and
-  /// the router leaves for Home; Restore purchase runs behind it and calls
-  /// [onProRestored] when Pro is found (FR-029). Nothing is written when it
-  /// fails or is cancelled.
-  Future<void> restoreWithGoogle({
-    required Future<String?> Function({required bool wrong}) askPassword,
-    required void Function() onProRestored,
-  }) async {
-    if (state.saving ||
-        state.googleRestore == GoogleRestoreStatus.signingIn ||
-        state.googleRestore == GoogleRestoreStatus.restoring) {
-      return;
-    }
-    final account = ref.read(accountServiceProvider);
-    final drive = ref.read(driveBackupStoreProvider);
-    final restore = ref.read(accountRestoreProvider);
-    final pro = ref.read(proServiceProvider);
-    void set(GoogleRestoreStatus status, [Object? error]) {
-      if (ref.mounted) {
-        state = state.copyWith(
-          googleRestore: status,
-          googleRestoreError: error,
-        );
-      }
-    }
-
-    set(GoogleRestoreStatus.signingIn);
-    try {
-      if (await account.signIn() == null) {
-        set(GoogleRestoreStatus.idle);
-        return;
-      }
-      final backups = await account.guardAuth(drive.list);
-      if (backups.isEmpty) {
-        set(GoogleRestoreStatus.noBackup);
-        return;
-      }
-      final newest = backups.first;
-      set(GoogleRestoreStatus.restoring);
-      final bytes = await account.guardAuth(() => restore.download(newest));
-      OpenedBackup? opened;
-      String? password;
-      var wrong = false;
-      while (opened == null) {
-        try {
-          opened = await restore.open(bytes, password: password);
-        } on BackupNeedsPassword {
-          wrong = false;
-        } on BackupWrongPassword {
-          wrong = true;
-        }
-        if (opened != null) break;
-        // Step 1 shows under the password sheet; nothing spins while the
-        // user types.
-        set(GoogleRestoreStatus.idle);
-        password = await askPassword(wrong: wrong);
-        if (password == null) return;
-        set(GoogleRestoreStatus.restoring);
-      }
-      final result = await restore.apply(
-        opened,
-        entry: newest,
-        fromEmptyPhone: true,
-      );
-      if (result is SafetyCopyFailed) throw const BackupStorageFull();
-      unawaited(
-        pro.restore().then((r) {
-          if (r == RestoreResult.restored) onProRestored();
-        }),
-      );
-    } on Object catch (e) {
-      set(GoogleRestoreStatus.failed, e);
-    }
-  }
-
   /// Repeats the save that failed.
   Future<void> retrySave() => _lastSaveWasSkip ? skip() : complete();
 
@@ -226,8 +120,8 @@ class OnboardingController extends _$OnboardingController {
     state = state.copyWith(saving: true, saveErrorKey: null);
     try {
       await ref.read(settingsRepositoryProvider).completeOnboarding(choices);
-      _backUpIfSignedIn();
-      // The router leaves /onboarding once settings report it done.
+      // The router leaves /onboarding for AUTH-01 once settings report it
+      // done (feature 011).
       if (ref.mounted) state = state.copyWith(saving: false);
     } on Object {
       if (ref.mounted) {

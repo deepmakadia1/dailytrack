@@ -2,17 +2,25 @@
 
 All Technical Context unknowns are resolved below. Each decision cites the spec (FR-###) it serves. "Feature 008" is `specs/008-backup-export-notifications-widget`, whose code in `lib/core/backup/` this feature extends.
 
+Re-checked on 2026-10-27 against `docs/spec.md` as updated for feature 011. Decisions that touch what 011 owns (`authMode`, AUTH-01, the SET-01 account card, ACC-04) describe 010's interim behavior; plan.md lists each one under "Interim behavior until feature 011" with the tag **Replaced in 011**.
+
 ## R1. Where the account lives, and what it reuses
 
 **Decision**: A new `lib/core/account/` holds `AccountService` (sign in, silent sign-in, sign out, switch, `Stream<AccountState>`) and the device identity. It talks to Google only through a port, `AccountAuth`, implemented by the existing `GoogleAuth` (`lib/core/backup/data/google_auth.dart`), which stays the app's only `google_sign_in` wrapper. `GoogleAuth.connect()` is widened to return an `AccountProfile` (email, display name, photo URL) instead of an email, and gains `signOut()` next to `disconnect()`. Drive backup, restore, the engine, the coordinator, the password store, and the auto backup job stay in `lib/core/backup/` and are extended, not copied (FR-005). Screens ACC-01–ACC-03 live in `lib/features/account/`.
 
-**Rationale**: Settings (SET-02), onboarding (SYS-02), lock (SYS-03 "Forgot PIN?"), and account screens all need the same sign-in and restore rules. Features may not import each other (Constitution II), so the shared behavior must be in `core/`.
+**Rationale**: Settings (SET-02), onboarding (SYS-02, interim), lock (SYS-03 "Forgot PIN?"), and account screens all need the same sign-in and restore rules, and feature 011 adds AUTH-01, the SET-01 account card, and ACC-04 on top of them. Features may not import each other (Constitution II), so the shared behavior must be in `core/`.
 
-**Alternatives considered**: A second `google_sign_in` wrapper in `core/account` (rejected: two initializations and duplicated error mapping, FR-005). Keeping account state inside `BackupService` (rejected: sign-in is no longer just a backup setting; ACC-01 and SET-01 watch it).
+**Alternatives considered**: A second `google_sign_in` wrapper in `core/account` (rejected: two initializations and duplicated error mapping, FR-005). Keeping account state inside `BackupService` (rejected: sign-in is no longer just a backup setting; ACC-01, SET-02, and later 011's SET-01 card and router watch it).
 
 ## R2. Sign-in scopes and profile
 
-**Decision**: `GoogleSignIn.instance.authenticate()` (google_sign_in 7.2.0) already returns the account's email, display name, and photo URL with the default `openid email profile` scopes; `authorizeScopes([drive.appdata])` is then requested as today. No new scope beyond FR-002. Silent sign-in at start uses `attemptLightweightAuthentication()`; if it returns null or throws, the account shows as signed out but the stored email is kept until the user signs out, so a temporary failure (offline at start) doesn't look like a sign-out (FR-004, Edge Cases). A `DriveAuthRequired` from Drive (token revoked) clears the account (FR-004).
+**Decision**: `GoogleSignIn.instance.authenticate()` (google_sign_in 7.2.0) already returns the account's email, display name, and photo URL with the default `openid email profile` scopes; `authorizeScopes([drive.appdata])` is then requested as today. No new scope beyond FR-002. Silent sign-in at start uses `attemptLightweightAuthentication()` (FR-004, `docs/spec.md` §16 "Account state is local"):
+
+- returns a profile: signed in and verified;
+- returns null (no session: token revoked or account removed from the phone): clear the account keys and keep all data, so the user is signed out;
+- throws (offline or a transient error): stay signed in, unverified; Drive calls report offline and backups resume when the network is back.
+
+A `DriveAuthRequired` from Drive later (token revoked while running) clears the account the same way. Clearing the keys is interim I5 (**Replaced in 011**, which also sets `authMode = guest`).
 
 **Rationale**: No extra consent screen; the Play data safety and OAuth verification items in spec §13 cover exactly these scopes.
 
@@ -100,7 +108,7 @@ Every successful upload, restore, and "Keep this phone's data" writes `lastKnown
 
 ## R12. Restoring from the account, safety copy, and encryption
 
-**Decision**: A core use case `AccountRestore` (`lib/core/account/account_restore.dart`) is the one place that restores from Drive, used by ACC-02, SYS-02, SET-02's Drive list, and SYS-03:
+**Decision**: A core use case `AccountRestore` (`lib/core/account/account_restore.dart`) is the one place that restores from Drive, used by ACC-02, SYS-02 (interim), SET-02's Drive card sign-in and Drive list, and SYS-03; feature 011's AUTH-01 uses it too:
 
 1. Download, then `RestoreService.open` (existing). Password: try the saved one, else ask through the existing `backup_password_sheet.dart`.
 2. If `BackupEngine.hasUserData()`, write the safety copy (`BackupEngine.create(includeReceipts: true, password: null)`) to `<app support>/restore_safety/` with a `safety.json` sidecar (`createdAt`, counts). On failure (`BackupStorageFull`), stop before writing anything (FR-019a).
@@ -113,9 +121,9 @@ Every successful upload, restore, and "Keep this phone's data" writes `lastKnown
 
 ## R13. Post-restore steps and "Finish setting up"
 
-**Decision**: A non-restorable setting `finishSetupPending` is set by `AccountRestore` when the phone had no data (SYS-02 or FR-016) and app lock is off, and by the Android-restore path in R4. `lib/app/app.dart` listens to it and, when the router is on `/home`, shows `FinishSetupSheet` (from `lib/features/account/`) once, then clears it (FR-028). The SYS-02 path and the Android-restore path also call `ProService.restore()` in the background and show "Pro restored" only when it returns owned (FR-029).
+**Decision**: A non-restorable setting `finishSetupPending` is set by `AccountRestore` when the phone had no data (SYS-02 or FR-016) and app lock is off, and by the Android-restore path in R4. `lib/app/app.dart` listens to it and, when the router is on `/home`, shows `FinishSetupSheet` (from `lib/features/account/`) once, then clears it (FR-028). "Allow notifications" shows only on Android 13+ when the permission isn't granted. The SYS-02 path and the Android-restore path also call `ProService.restore()` in the background and show "Pro restored" only when it returns owned (FR-029). In `docs/spec.md` the sheet now follows every AUTH-01 login; 010 sets the flag only on the triggers above (interim I6, **Replaced in 011**), and 011 sets the same flag after login.
 
-The Android-restore path (R4) runs in SYS-01 before routing: turn `lockEnabled` and `biometricEnabled` off when `LockService.status()` reports no PIN; clear the account keys and try a silent sign-in; set `lastKnownDriveBackupAt` to null; set `finishSetupPending`; and reschedule notifications through the existing restore aftermath (FR-046). If `backupEncrypt` is on but the password is missing, backups fail with `BackupNeedsPassword` and ACC-01 shows "Backup failed: set your backup password in Backup and restore". They never fall back to unencrypted backups (feature 008 R4).
+The Android-restore path (R4) runs in SYS-01 before routing: turn `lockEnabled` and `biometricEnabled` off when `LockService.status()` reports no PIN; clear the account keys and try a silent sign-in; set `lastKnownDriveBackupAt` to null (§16 says 0; same meaning to the conflict check); set `finishSetupPending`; and reschedule notifications through the existing restore aftermath (FR-046). What happens to a restored `authMode` is 011's (interim I7, **Replaced in 011**). If `backupEncrypt` is on but the password is missing, backups fail with `BackupNeedsPassword` and ACC-01 shows "Backup failed: set your backup password in Backup and restore". They never fall back to unencrypted backups (feature 008 R4).
 
 ## R14. Android Auto Backup rules
 
@@ -133,7 +141,9 @@ The Android-restore path (R4) runs in SYS-01 before routing: turn `lockEnabled` 
 
 **Decision**: `DriveBackupStore.deleteAll()` lists every DailyTrack file and deletes it, continuing past individual failures and then rethrowing the first (FR-013). `AccountService.signOut()` calls `GoogleAuth.signOut()` (not `disconnect()`, so the next sign-in doesn't ask for consent again), clears the account keys and `lastKnownDriveBackup*`, and cancels `core.backgroundBackup` and the periodic job (FR-024). The SET-02 "Disconnect" button becomes "Sign out" → ACC-03 (spec Assumptions).
 
-**Erase all data** (`production_overrides.dart`) stops calling `driveBackupStore.disconnect` and keeps the account keys and the device ID (SET-01, FR-044). It still deletes the backup password, which leaves auto backup failing with `BackupNeedsPassword` if encryption was on (R13), and the safety copy.
+After sign-out, "Keep data on this phone" goes to the More tab with the snackbar, and ACC-01 closes because the account is signed out. "Remove data from this phone" runs Erase all data, which resets settings to defaults (including onboarding done), so the existing bootstrap redirect opens `/onboarding`. Both are interim I4 (**Replaced in 011**: `authMode = none` and AUTH-01 for both choices; 011 must keep onboarding done in the erase it runs here, since `docs/spec.md` §16 ACC-03 says Intro is never shown after sign-out). A cancelled Switch account chooser also returns to the More tab signed out.
+
+**Erase all data** (`production_overrides.dart`) stops calling `driveBackupStore.disconnect` and keeps the account keys and the device ID (SET-01, FR-044). It still deletes the backup password, which leaves auto backup failing with `BackupNeedsPassword` if encryption was on (R13), and the safety copy. The keys it keeps are a parameter (FR-006a), so 011's ACC-04 Log out of guest reuses the same erase with its own keep-list.
 
 ## R17. Profile photo
 
@@ -141,6 +151,6 @@ The Android-restore path (R4) runs in SYS-01 before routing: turn `lockEnabled` 
 
 ## R18. Where the "Finish setting up" sheet and the restore UI live
 
-**Decision**: `FinishSetupSheet`, `RestoreChoiceSheet` (ACC-02), and `SignOutSheet` (ACC-03) are in `lib/features/account/presentation/widgets/`. SYS-02 (onboarding feature) and SET-02 (settings feature) don't import them. They call `AccountRestore` (core) and the core password sheet, and open ACC-02 only through `lib/app/` glue (an `accountUi` provider bound in `production_overrides.dart`, like `restoreAftermathProvider`). `lib/app/app.dart` shows the Finish setting up sheet.
+**Decision**: `FinishSetupSheet`, `RestoreChoiceSheet` (ACC-02), and `SignOutSheet` (ACC-03) are in `lib/features/account/presentation/widgets/`. SYS-02 (onboarding feature) and SET-02 (settings feature) don't import them; neither will 011's AUTH-01 and SET-01 account card. They call `AccountRestore` (core) and the core password sheet, and open ACC-02 only through `lib/app/` glue (an `accountUi` provider bound in `production_overrides.dart`, like `restoreAftermathProvider`). `lib/app/app.dart` shows the Finish setting up sheet.
 
 **Rationale**: Constitution II forbids feature-to-feature imports; `lib/app/` is already where features meet.

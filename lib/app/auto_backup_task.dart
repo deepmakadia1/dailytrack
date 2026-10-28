@@ -38,8 +38,10 @@ Future<bool> runAutoBackup(
   try {
     final settings = read(settingsRepositoryProvider);
     final s = await settings.load();
+    // Never while the user is a guest or still choosing on AUTH-01
+    // (feature 011 research R4).
     if (s.autoBackupFrequency == AutoBackupFrequency.off ||
-        s.backupAccountEmail == null) {
+        s.authMode != AuthMode.google) {
       return true;
     }
     try {
@@ -125,7 +127,7 @@ Future<void> _notifyPaused(ProviderReader read, AppSettings s) async {
 bool autoBackupCatchUpDue(AppSettings s, int nowMs) =>
     AutoBackupPolicy.catchUpDue(
       frequency: s.autoBackupFrequency,
-      connected: s.backupAccountEmail != null,
+      connected: s.authMode == AuthMode.google,
       lastAutoBackupAtMs: s.lastAutoBackupAt,
       nowMs: nowMs,
     );

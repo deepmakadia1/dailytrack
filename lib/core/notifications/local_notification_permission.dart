@@ -19,4 +19,18 @@ final class LocalNotificationPermission implements NotificationPermission {
       return false;
     }
   }
+
+  @override
+  Future<bool> isGranted() async {
+    try {
+      final android = FlutterLocalNotificationsPlugin()
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      if (android == null) return true;
+      return await android.areNotificationsEnabled() ?? true;
+    } on Object {
+      return false;
+    }
+  }
 }

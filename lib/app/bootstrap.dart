@@ -45,14 +45,24 @@ final class BootstrapFailed extends BootstrapResult {
 /// A tapped notification's [launchPayload] (a go_router location) is where
 /// the user goes once onboarding is done; with app lock on, SYS-03 comes
 /// first and sends them there after unlocking (feature 007
+/// contracts/routes.md). With no login chosen yet, AUTH-01 opens and the
+/// payload is dropped, even with app lock on (feature 011
 /// contracts/routes.md).
 String initialLocationFor(AppSettings settings, {String? launchPayload}) {
   if (!settings.onboardingDone) return Routes.onboarding;
+  if (settings.authMode == AuthMode.none) return Routes.login;
   final target = launchPayload != null && launchPayload.startsWith('/')
       ? launchPayload
       : Routes.home;
   return settings.lockEnabled ? Routes.lockPath(from: target) : target;
 }
+
+/// Whether a cold start begins locked (feature 007 R7): only after login,
+/// so AUTH-01 shows before SYS-03 (feature 011 research R7).
+bool lockAtStart(AppSettings settings) =>
+    settings.onboardingDone &&
+    settings.lockEnabled &&
+    settings.authMode != AuthMode.none;
 
 /// SYS-01 startup (T080):
 ///  1. open the database (runs migrations) and load settings,
@@ -63,6 +73,7 @@ String initialLocationFor(AppSettings settings, {String? launchPayload}) {
 ///     host (never block),
 ///  5. pick the first route (a tapped notification's or the widget's
 ///     location if allowed).
+/// Feature 011: the sign-in mode is migrated once, right after seeding.
 /// Feature 010: the device ID is checked before routing, and the Google
 /// account's silent sign-in runs behind the first screen (spec §16).
 /// A failure in steps 1–2 gives [BootstrapFailed], shown with "Retry".
@@ -94,6 +105,9 @@ class Bootstrap extends _$Bootstrap {
       // on later never finds it empty (research R7).
       final registry = ref.read(moduleRegistryProvider);
       await SeedRunner(db).runAll(registry.all.expand((m) => m.seeders));
+      // Before routing and the Android-restore check, so an updated install
+      // never sees AUTH-01 (feature 011 research R2).
+      await ref.read(settingsRepositoryProvider).migrateAuthMode();
       settings = await ref.read(settingsRepositoryProvider).load();
     } on Object catch (e) {
       return BootstrapFailed(e);
@@ -140,7 +154,7 @@ class Bootstrap extends _$Bootstrap {
     // A cold start with app lock on begins locked (feature 007 R7).
     ref
         .read(lockSessionProvider.notifier)
-        .start(lockEnabled: settings.onboardingDone && settings.lockEnabled);
+        .start(lockEnabled: lockAtStart(settings));
     return BootstrapReady(initialLocationFor(settings, launchPayload: payload));
   }
 
@@ -212,11 +226,13 @@ class Bootstrap extends _$Bootstrap {
   /// backup or a device transfer (spec §16, research R13, FR-046). The PIN
   /// and backup password stayed behind (secure storage is excluded), so:
   /// app lock and biometrics go off when no PIN can be read, instead of
-  /// locking the user out; the account is cleared, then a silent sign-in
-  /// is tried; the conflict rule applies as if no backup were known; Home
-  /// shows "Finish setting up"; notifications are rescheduled and Restore
-  /// purchase runs. Onboarding is not shown again. Each step is best
-  /// effort.
+  /// locking the user out; the account keys are cleared; a restored
+  /// `google` tries a silent sign-in and becomes `guest` without one, while
+  /// a restored `guest` or `none` is kept with no Google call (feature 011
+  /// research R5, FR-010); the conflict rule applies as if no backup were
+  /// known; Home shows "Finish setting up"; notifications are rescheduled
+  /// and Restore purchase runs. Onboarding is not shown again, and AUTH-01
+  /// only for a restored `none`. Each step is best effort.
   Future<void> _afterAndroidRestore(AppSettings settings) async {
     final repo = ref.read(settingsRepositoryProvider);
     Future<void> step(Future<void> Function() body) async {
@@ -241,9 +257,15 @@ class Bootstrap extends _$Bootstrap {
     if (settings.onboardingDone) {
       await step(() => repo.setFinishSetupPending(pending: true));
     }
-    unawaited(
-      step(() => ref.read(accountServiceProvider).adoptSilentSession()),
-    );
+    if (settings.authMode == AuthMode.google) {
+      unawaited(
+        step(() async {
+          if (!await ref.read(accountServiceProvider).adoptSilentSession()) {
+            await repo.setAuthMode(AuthMode.guest);
+          }
+        }),
+      );
+    }
     unawaited(step(() => ref.read(restoreAftermathProvider)()));
     unawaited(step(() => ref.read(proServiceProvider).restore()));
   }

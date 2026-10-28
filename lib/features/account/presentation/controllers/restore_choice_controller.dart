@@ -5,6 +5,7 @@ import 'package:dailytrack/core/account/account_providers.dart';
 import 'package:dailytrack/core/account/account_restore.dart';
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
+import 'package:dailytrack/core/support/network_state_source.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -34,6 +35,10 @@ abstract class RestoreChoiceState with _$RestoreChoiceState {
 
     /// The last restore failed; this phone's data is unchanged.
     Object? failure,
+
+    /// No network: restore is disabled; "Keep this phone's data" still
+    /// works (spec §16 ACC-02 States).
+    @Default(false) bool offline,
   }) = _RestoreChoiceState;
 }
 
@@ -59,8 +64,13 @@ class RestoreChoiceController extends _$RestoreChoiceController {
     } on Object {
       id = null;
     }
+    final network = await ref.read(networkStateSourceProvider).load();
     if (!ref.mounted) return;
-    state = state.copyWith(phoneCounts: counts, thisDeviceId: id);
+    state = state.copyWith(
+      phoneCounts: counts,
+      thisDeviceId: id,
+      offline: !network.online,
+    );
   }
 
   /// "Restore from account": downloads, opens with the saved password (or

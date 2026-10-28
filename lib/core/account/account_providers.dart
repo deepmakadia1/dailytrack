@@ -6,10 +6,14 @@ import 'package:dailytrack/core/account/data/no_backup_device_id_store.dart';
 import 'package:dailytrack/core/account/device_identity_service.dart';
 import 'package:dailytrack/core/account/domain/account.dart';
 import 'package:dailytrack/core/account/domain/account_auth.dart';
+import 'package:dailytrack/core/account/domain/account_card_view.dart';
 import 'package:dailytrack/core/background/background_providers.dart';
 import 'package:dailytrack/core/backup/backup_providers.dart';
+import 'package:dailytrack/core/backup/domain/backup_status_policy.dart';
+import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/support/device_info_source.dart';
+import 'package:dailytrack/core/support/network_state_source.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
@@ -66,10 +70,36 @@ AccountRestore accountRestore(Ref ref) => AccountRestore(
 AccountUi accountUi(Ref ref) =>
     throw UnimplementedError('accountUiProvider must be overridden');
 
-/// The shared "Sign in with Google" for ACC-01 and SET-02.
+/// The shared "Sign in with Google" for ACC-01 and SET-02, and AUTH-01's
+/// [AccountSignIn.login].
 @Riverpod(keepAlive: true)
 AccountSignIn accountSignIn(Ref ref) => AccountSignIn(
   account: ref.watch(accountServiceProvider),
+  settings: ref.watch(settingsRepositoryProvider),
   drive: ref.watch(driveBackupStoreProvider),
   backup: ref.watch(backupServiceProvider),
+  network: ref.watch(networkStateSourceProvider),
 );
+
+/// The SET-01 account card (feature 011 data-model §5): a plain provider,
+/// not a Notifier, so SET-01 keeps `SettingsController` as its only one.
+/// Null while no login is chosen (the router keeps the user on AUTH-01).
+/// The card re-reads it on resume, for the network.
+@riverpod
+Future<AccountCardView?> accountCardView(Ref ref) async {
+  ref.watch(accountStateProvider);
+  final s = await ref.watch(appSettingsProvider.future);
+  if (s.authMode == AuthMode.none) return null;
+  final network = await ref.read(networkStateSourceProvider).load();
+  final account = ref.read(accountServiceProvider).stateOf(s);
+  if (account is! SignedIn) return GuestCard(offline: !network.online);
+  return GoogleCard(
+    profile: account.profile,
+    status: AccountCardPolicy.derive(
+      s: s,
+      online: network.online,
+      metered: network.metered,
+      now: ref.read(clockProvider).now(),
+    ),
+  );
+}

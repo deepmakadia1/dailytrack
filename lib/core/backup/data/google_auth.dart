@@ -81,6 +81,9 @@ final class GoogleAuth implements AccountAuth {
   }
 
   /// The account of an earlier session, without UI (SYS-01, FR-004).
+  /// Null only when there is no session (token revoked, account removed);
+  /// any other failure, such as being offline, is thrown, so it never
+  /// signs the user out (feature 010 research R2).
   @override
   Future<AccountProfile?> signInSilently() async {
     await _init();
@@ -88,8 +91,8 @@ final class GoogleAuth implements AccountAuth {
       final account = await GoogleSignIn.instance
           .attemptLightweightAuthentication();
       return account == null ? null : _profile(account);
-    } on GoogleSignInException {
-      return null;
+    } on GoogleSignInException catch (e) {
+      throw DriveUnavailable(e.code.name);
     }
   }
 

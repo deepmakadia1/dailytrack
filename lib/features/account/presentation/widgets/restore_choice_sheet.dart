@@ -8,6 +8,7 @@ import 'package:dailytrack/core/account/account_ui.dart';
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
 import 'package:dailytrack/core/backup/domain/backup_ports.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
+import 'package:dailytrack/core/backup/presentation/backup_device_name.dart';
 import 'package:dailytrack/core/backup/presentation/backup_password_sheet.dart';
 import 'package:dailytrack/core/backup/presentation/backup_summaries.dart';
 import 'package:dailytrack/core/backup/presentation/restore_flow.dart';
@@ -23,19 +24,6 @@ import 'package:dailytrack/features/account/presentation/controllers/restore_cho
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-/// The account feature's [AccountUi], bound in `production_overrides.dart`
-/// (research R18).
-final class AccountFeatureUi implements AccountUi {
-  const new();
-
-  @override
-  Future<RestoreChoiceResult> showRestoreChoice(
-    BuildContext context, {
-    required DriveBackupEntry newest,
-    required bool afterSignIn,
-  }) => showRestoreChoiceFor(context, newest: newest, afterSignIn: afterSignIn);
-}
 
 /// ACC-02 for [newest] (spec §16, contracts/screens.md). With no user data
 /// on this phone, the backup is restored at once behind a progress view
@@ -249,7 +237,7 @@ class _RestoreChoiceSheetState extends ConsumerState<RestoreChoiceSheet> {
         ? l10n.account_fromThisPhone
         : deviceName == null || deviceName.isEmpty
         ? l10n.backup_unknownDevice
-        : l10n.account_fromDevice(deviceName);
+        : l10n.account_fromDevice(backupDeviceName(l10n, deviceName));
     final kind = entry.kind == BackupKind.auto
         ? l10n.backup_kindAuto
         : l10n.backup_kindManual;
@@ -343,6 +331,14 @@ class _RestoreChoiceSheetState extends ConsumerState<RestoreChoiceSheet> {
               ),
             ),
           ],
+          if (state.offline) ...[
+            SizedBox(height: tokens.s12),
+            Text(
+              l10n.account_restoreOffline,
+              key: const Key('acc02_offline'),
+              style: theme.textTheme.bodyMedium,
+            ),
+          ],
           SizedBox(height: tokens.s16),
           if (state.working) ...[
             const LinearProgressIndicator(),
@@ -350,7 +346,9 @@ class _RestoreChoiceSheetState extends ConsumerState<RestoreChoiceSheet> {
           ],
           FilledButton(
             key: const Key('acc02_restore'),
-            onPressed: state.working ? null : () => unawaited(_restore()),
+            onPressed: state.working || state.offline
+                ? null
+                : () => unawaited(_restore()),
             child: Text(
               failure == null
                   ? l10n.account_restoreFromAccount

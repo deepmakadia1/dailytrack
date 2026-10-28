@@ -1,6 +1,6 @@
 # Contract: Services
 
-Dart signatures in outline (primary-constructor style, as in the codebase). "Pure" means no Flutter imports (Constitution II); each pure type takes an injected clock or `now` and has unit tests. R# = research.md.
+Dart signatures in outline (primary-constructor style, as in the codebase). "Pure" means no Flutter imports (Constitution II); each pure type takes an injected clock or `now` and has unit tests. R# = research.md. Matched to `docs/spec.md` as updated for feature 011; members tagged **Replaced in 011** carry interim behavior (plan.md).
 
 ## `lib/core/account/` (new)
 
@@ -23,14 +23,18 @@ abstract interface class AccountAuth {
 final class AccountService {
   new({required AccountAuth auth, required SettingsRepository settings,
        required BackgroundScheduler scheduler, required Clock clock});
-  Stream<AccountState> watch();               // from settings + this run's silent result
+  Stream<AccountState> watch();               // from settings + this run's silent result;
+                                              // signed in = backupAccountEmail set (interim I1, Replaced in 011)
   Future<AccountState> current();
-  Future<void> restoreSession();              // SYS-01, best effort, never throws (FR-004)
+  Future<void> restoreSession();              // SYS-01, best effort, never throws (FR-004):
+                                              // no session → clear keys, keep data (interim I5, Replaced in 011);
+                                              // offline/error → stay signed in, unverified
   Future<AccountProfile?> signIn();           // null when cancelled; saves profile;
                                               // autoBackupFrequency off → daily (FR-006);
                                               // syncs the periodic job
   Future<void> signOut();                     // clears keys + lastKnown*, cancels jobs (FR-024)
-  Future<void> forgetAfterAuthLoss();         // called on DriveAuthRequired (R2)
+  Future<void> forgetAfterAuthLoss();         // called on DriveAuthRequired (R2): clear keys, keep data
+                                              // (interim I5, Replaced in 011: also authMode = guest)
 }
 
 // domain/device_identity.dart (pure)
@@ -51,7 +55,8 @@ final class DeviceIdentityService {
   Future<DeviceIdentity> current();           // id + live name
 }
 
-// account_restore.dart (one restore path for ACC-02, SYS-02, SET-02 Drive list, SYS-03; R12)
+// account_restore.dart (one restore path for ACC-02, SYS-02 (interim), the SET-02 Drive card and
+// Drive list, SYS-03, and later 011's AUTH-01; R12)
 sealed class AccountRestoreResult;
 final class Restored extends AccountRestoreResult { RestoreOutcome outcome; RestorePreview preview; }
 final class RestoreCancelled extends AccountRestoreResult;   // password sheet dismissed
@@ -68,7 +73,7 @@ final class AccountRestore {
   Future<AccountRestoreResult> apply(RestoreCandidate c, {required DriveBackupEntry entry,
        required String? usedPassword, required bool fromEmptyPhone});
        // safety copy if phone has data → RestoreService.apply → counters, lastKnown*, pause cleared,
-       // FR-019b encryption, finishSetupPending when fromEmptyPhone && !lockEnabled
+       // FR-019b encryption, finishSetupPending when fromEmptyPhone && !lockEnabled (interim I6)
   Future<void> keepThisPhone(DriveBackupEntry newest);      // ACC-02 Keep (FR-020)
 }
 ```
@@ -177,5 +182,16 @@ abstract interface class BackgroundScheduler {
 
 - `auto_backup_task.dart`: `runAutoBackup` uses `backupIfChanged()` with `ConflictMode.pause`, shows the pause notice once (`stableNotificationId('backup-paused')`, payload `Routes.account`), treats `SkippedEmpty`/`Unchanged` as success, calls `AccountService.forgetAfterAuthLoss` on `DriveAuthRequired`. The background dispatcher maps both `core.autoBackup` and `core.backgroundBackup` to it.
 - `app.dart`: `onHide` → `BackgroundBackupScheduler.onAppHidden()`; shows `FinishSetupSheet` on Home when `finishSetupPending` (R13).
-- `bootstrap.dart` (SYS-01): `DeviceIdentityService.ensure()`; when `restoredFromAndroidBackup`, runs the post-Android-restore steps (R13); `AccountService.restoreSession()`; deletes an expired safety copy.
+- `bootstrap.dart` (SYS-01): `DeviceIdentityService.ensure()`; when `restoredFromAndroidBackup`, runs the post-Android-restore steps (R13; no `authMode` handling, interim I7, **Replaced in 011**); `AccountService.restoreSession()`; deletes an expired safety copy. 011 adds the `authMode` migration here, before routing.
 - `production_overrides.dart`: binds `accountAuthProvider` to `GoogleAuth`, `accountUiProvider` (opens ACC-02 / ACC-03 from other features, R18), and Erase all data changes (R16).
+
+```dart
+// lib/core/reset/domain/app_reset_service.dart — the keep-list becomes a parameter (FR-006a)
+abstract interface class AppResetService {
+  Future<void> eraseAll({Set<String> keepSettings = AppResetService.eraseAllKeeps});
+  static const Set<String> eraseAllKeeps = { /* account keys, deviceId, lastKnownDriveBackup*,
+      autoBackupFrequency, autoBackupWifiOnly (data-model §1) */ };
+}
+// 011's ACC-04 calls eraseAll(keepSettings: <device preferences, onboarding done, deviceId,
+// adsInstallAt, ad consent, Pro state>) and adds authMode to eraseAllKeeps.
+```

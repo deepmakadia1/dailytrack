@@ -2,6 +2,7 @@ import 'package:dailytrack/app/app.dart';
 import 'package:dailytrack/app/bootstrap.dart';
 import 'package:dailytrack/app/module_registry.dart';
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/account/account_providers.dart';
 import 'package:dailytrack/core/ads/ad_providers.dart';
 import 'package:dailytrack/core/ads/ad_service.dart';
 import 'package:dailytrack/core/background/background_providers.dart';
@@ -14,7 +15,9 @@ import 'package:dailytrack/core/settings/data/settings_repository_impl.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/share/image_sharer.dart';
 import 'package:dailytrack/core/share/text_sharer.dart';
+import 'package:dailytrack/core/support/network_state_source.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
+import 'package:dailytrack/features/account/presentation/account_feature_ui.dart';
 import 'package:dailytrack/features/expense/expense_bindings.dart';
 import 'package:dailytrack/features/habit/habit_bindings.dart';
 import 'package:flutter/widgets.dart';
@@ -22,6 +25,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
+import 'backup_fakes.dart';
 import 'fakes.dart';
 import 'mutable_clock.dart';
 
@@ -35,12 +39,23 @@ Future<void> pumpRealDbApp(
   required MutableClock clock,
   Size size = const Size(412, 915),
   List<Override> overrides = const [],
+  bool migrateAuthMode = true,
 }) async {
   tester.view
     ..physicalSize = size
     ..devicePixelRatio = 1;
   addTearDown(tester.view.reset);
   final registry = ModuleRegistry(registeredModules);
+  // As SYS-01 does before routing (feature 011 research R2). A test that
+  // times the first screen runs it while seeding and passes false.
+  if (migrateAuthMode) {
+    await tester.runAsync(
+      () => SettingsRepositoryImpl(
+        db,
+        knownModuleIds: registry.ids,
+      ).migrateAuthMode(),
+    );
+  }
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
@@ -67,6 +82,10 @@ Future<void> pumpRealDbApp(
           FakeBackgroundScheduler(),
         ),
         imageSharerProvider.overrideWithValue(FakeImageSharer()),
+        // SET-01's account card (feature 011) without Google.
+        accountUiProvider.overrideWithValue(const AccountFeatureUi()),
+        accountAuthProvider.overrideWithValue(FakeAccountAuth()),
+        networkStateSourceProvider.overrideWithValue(FakeNetworkStateSource()),
         ...expenseOverrides(),
         ...habitOverrides(),
         ...overrides,

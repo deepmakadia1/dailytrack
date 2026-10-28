@@ -4,8 +4,10 @@ import 'dart:typed_data';
 import 'package:dailytrack/core/backup/domain/backup_archive.dart';
 import 'package:dailytrack/core/backup/domain/backup_document.dart';
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
+import 'package:dailytrack/core/backup/domain/backup_meta.dart';
 import 'package:dailytrack/core/backup/domain/backup_migrator.dart';
 import 'package:dailytrack/core/backup/domain/backup_settings_policy.dart';
+import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// A section that renames a field between v4 and v5 (synthetic step).
@@ -108,6 +110,42 @@ void main() {
           reason: '$bad',
         );
       }
+    });
+
+    test('FR-043 a file from before feature 010 has no meta and still '
+        'decodes; writing it back adds none', () {
+      final doc = BackupDocument.decode(
+        BackupDocument.fromJson(header()).encode(),
+      );
+      expect(doc.meta, isNull);
+      expect(doc.toJson().containsKey('meta'), isFalse);
+    });
+
+    test('§16 meta is written next to format, read back, and kept by '
+        'copyWith (schema upgrades)', () {
+      const meta = BackupMeta(
+        deviceId: 'dev-1',
+        deviceName: 'Google Pixel 7',
+        appVersion: '1.4.0+23',
+        createdAt: 5,
+        kind: BackupKind.auto,
+        counts: {'expense.transactions': 2},
+        schemaVersion: 4,
+        encrypted: false,
+      );
+      final doc = BackupDocument.fromJson(header()).withMeta(meta);
+      final json = doc.toJson();
+      expect(json.keys.take(2), ['format', 'meta']);
+
+      final read = BackupDocument.decode(doc.encode());
+      expect(read.meta?.toJson(), meta.toJson());
+      expect(read.copyWith(schemaVersion: 5).meta?.toJson(), meta.toJson());
+    });
+
+    test('FR-043 a damaged meta object never makes the file unreadable', () {
+      final doc = BackupDocument.fromJson({...header(), 'meta': 'oops'});
+      expect(doc.meta, isNull);
+      expect(doc.schemaVersion, 4);
     });
 
     test('bad JSON is damaged, a JSON list is invalid', () {

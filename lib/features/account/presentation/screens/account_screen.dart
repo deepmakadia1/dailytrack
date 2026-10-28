@@ -8,6 +8,7 @@ import 'package:dailytrack/core/backup/domain/backup_status_policy.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_result.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
 import 'package:dailytrack/core/backup/presentation/backup_conflict_dialog.dart';
+import 'package:dailytrack/core/backup/presentation/backup_device_name.dart';
 import 'package:dailytrack/core/backup/presentation/restore_flow.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
@@ -22,36 +23,84 @@ import 'package:dailytrack/core/widgets/settings_section.dart';
 import 'package:dailytrack/core/widgets/skeleton.dart';
 import 'package:dailytrack/features/account/presentation/controllers/account_controller.dart';
 import 'package:dailytrack/features/account/presentation/widgets/backup_status_line.dart';
+import 'package:dailytrack/features/account/presentation/widgets/profile_avatar.dart';
 import 'package:dailytrack/features/account/presentation/widgets/restore_choice_sheet.dart';
 import 'package:dailytrack/features/account/presentation/widgets/sign_out_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// ACC-01 Account (spec §16, feature 010 contracts/screens.md): signed out
-/// is the empty state; signed in shows the account, the backup status,
-/// Back up now, Restore (ACC-02), Auto backup, Switch account, Sign out
-/// (ACC-03), and Delete my backups. No ads (FR-049).
-class AccountScreen extends ConsumerWidget {
+/// ACC-01 Account (spec §16, feature 010 contracts/screens.md), for a
+/// signed-in account only: the account, the backup status, Back up now,
+/// Restore (ACC-02), Auto backup, Switch account, Sign out (ACC-03), and
+/// Delete my backups. When the account stops being signed in while it is
+/// open (sign-out, a revoked or expired sign-in, a cancelled Switch
+/// account), the router's rule 7 closes it back to SET-01, which shows the
+/// guest card (feature 011 contracts/routes.md); `app.dart` says when the
+/// sign-in expired. No ads (FR-049).
+class AccountScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AccountScreen> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends ConsumerState<AccountScreen> {
+  late final AppLifecycleListener _lifecycle;
+  var _leaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // The network and Drive are read again on resume (data-model §7).
+    _lifecycle = AppLifecycleListener(
+      onResume: () =>
+          unawaited(ref.read(accountControllerProvider.notifier).refresh()),
+    );
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
+  /// Still `google`, but no working session this run (the silent sign-in
+  /// failed): back to SET-01. A sign-out or a lost sign-in changes
+  /// `authMode`, and the router closes the screen first (rule 7).
+  void _leave() {
+    if (_leaving) return;
+    _leaving = true;
+    final router = GoRouter.of(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) => router.go(Routes.more));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final async = ref.watch(accountControllerProvider);
+    const loading = DelayedSkeleton(child: SkeletonList(itemCount: 4));
     return AppScaffold(
       title: l10n.account_title,
       padBody: false,
       body: switch (async) {
-        AsyncValue(:final value?) when value.profile == null => _SignedOut(
+        AsyncValue(:final value?) when value.profile != null => _SignedIn(
           state: value,
         ),
-        AsyncValue(:final value?) => _SignedIn(state: value),
+        // Switch account and ACC-03 sign out on the way; they move on.
+        AsyncValue(:final value?)
+            when value.busy == AccountBusy.switching ||
+                value.busy == AccountBusy.signingOut =>
+          loading,
+        AsyncValue(value: _?) => () {
+          _leave();
+          return loading;
+        }(),
         AsyncError() => ErrorState(
           message: l10n.settings_loadError,
           onRetry: ref.read(accountControllerProvider.notifier).retry,
         ),
-        _ => const DelayedSkeleton(child: SkeletonList(itemCount: 4)),
+        _ => loading,
       },
     );
   }
@@ -64,29 +113,31 @@ String _frequencyLabel(AppLocalizations l10n, AutoBackupFrequency f) =>
       AutoBackupFrequency.weekly => l10n.backup_autoWeekly,
     };
 
-/// A failed Drive action: an expired sign-in says so (the account is then
-/// signed out, research R2); anything else is a plain-language error.
+/// A failed Drive action as a plain-language error. An expired sign-in
+/// signs the account out instead (research R2), and the screen closes
+/// saying so.
 Future<void> _showFailure(BuildContext context, Object error) async {
+  if (error is DriveAuthRequired || !context.mounted) return;
   final l10n = AppLocalizations.of(context);
-  if (error is DriveAuthRequired) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        key: const Key('acc01_sessionExpired'),
-        content: Text(l10n.account_sessionExpired),
-      ),
-    );
-    return;
-  }
   await showBackupError(context, l10n.backup_failedTitle, error);
 }
 
-/// What follows a sign-in, from "Sign in with Google" or "Switch account".
-Future<void> _afterSignIn(BuildContext context, SignInOutcome outcome) async {
+/// What follows the account chooser in Switch account (the guest sign-in
+/// steps). A cancelled chooser leaves the user a guest with all data kept;
+/// the router's rule 7 then shows SET-01 with the guest card.
+Future<void> _afterSwitch(BuildContext context, SignInOutcome outcome) async {
   final l10n = AppLocalizations.of(context);
   final messenger = ScaffoldMessenger.of(context);
   switch (outcome) {
     case SignInCancelled():
       break;
+    case SignInOffline():
+      messenger.showSnackBar(
+        SnackBar(
+          key: const Key('acc01_signInOffline'),
+          content: Text(l10n.account_signInOffline),
+        ),
+      );
     case SignedInAndBackedUp():
       messenger.showSnackBar(
         SnackBar(
@@ -98,124 +149,7 @@ Future<void> _afterSignIn(BuildContext context, SignInOutcome outcome) async {
       // ACC-02, or an immediate restore when this phone has no data.
       await showRestoreChoiceFor(context, newest: newest, afterSignIn: true);
     case SignedInBackupFailed(:final error):
-      if (context.mounted) await _showFailure(context, error);
-  }
-}
-
-/// "Sign in with Google": the outcome's next step, or "Couldn't sign in".
-Future<void> _signIn(BuildContext context, WidgetRef ref) async {
-  final l10n = AppLocalizations.of(context);
-  final messenger = ScaffoldMessenger.of(context);
-  // Signing in swaps this part of the screen, so what follows is shown
-  // from the navigator, which stays.
-  final stable = Navigator.of(context).context;
-  final SignInOutcome outcome;
-  try {
-    outcome = await ref.read(accountControllerProvider.notifier).signIn();
-  } on Object {
-    messenger.showSnackBar(
-      SnackBar(
-        key: const Key('acc01_signInFailed'),
-        content: Text(l10n.account_signInFailed),
-      ),
-    );
-    return;
-  }
-  if (stable.mounted) await _afterSignIn(stable, outcome);
-}
-
-/// The empty state: why to sign in, and the one primary button.
-class _SignedOut extends ConsumerWidget {
-  const new({required this.state});
-
-  final AccountScreenState state;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final tokens = AppTokens.of(context);
-    final theme = Theme.of(context);
-    final working = state.busy != AccountBusy.none;
-    final expired = switch (state.account) {
-      SignedOut(:final expired) => expired,
-      SignedIn() => false,
-    };
-
-    Widget point(IconData icon, String text) => Padding(
-      padding: EdgeInsets.only(bottom: tokens.s12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: tokens.iconSize, color: theme.colorScheme.primary),
-          SizedBox(width: tokens.s12),
-          Expanded(child: Text(text, style: theme.textTheme.bodyLarge)),
-        ],
-      ),
-    );
-
-    return ListView(
-      padding: EdgeInsets.all(tokens.screenPadding),
-      children: [
-        if (expired) ...[
-          Row(
-            key: const Key('acc01_expired'),
-            children: [
-              Icon(
-                Icons.error_outline,
-                size: tokens.iconSize,
-                color: tokens.warning,
-              ),
-              SizedBox(width: tokens.s8),
-              Expanded(child: Text(l10n.account_sessionExpired)),
-            ],
-          ),
-          SizedBox(height: tokens.s16),
-        ],
-        SizedBox(height: tokens.s24),
-        ExcludeSemantics(
-          child: Icon(
-            Icons.cloud_upload_outlined,
-            size: tokens.s48,
-            color: theme.colorScheme.primary,
-          ),
-        ),
-        SizedBox(height: tokens.s16),
-        Text(
-          l10n.account_signedOutTitle,
-          textAlign: TextAlign.center,
-          style: theme.textTheme.titleLarge,
-        ),
-        SizedBox(height: tokens.s24),
-        point(Icons.cloud_outlined, l10n.account_pointDrive),
-        point(Icons.phone_android, l10n.account_pointRestore),
-        point(Icons.check_circle_outline, l10n.account_pointOptional),
-        SizedBox(height: tokens.s16),
-        if (!state.driveAvailable)
-          Text(
-            l10n.backup_driveUnavailable,
-            key: const Key('acc01_driveUnavailable'),
-            textAlign: TextAlign.center,
-          )
-        else ...[
-          if (working) ...[
-            const LinearProgressIndicator(),
-            SizedBox(height: tokens.s16),
-          ],
-          FilledButton.icon(
-            key: const Key('acc01.signIn'),
-            onPressed: working ? null : () => unawaited(_signIn(context, ref)),
-            icon: const Icon(Icons.login),
-            label: Text(l10n.account_signIn),
-          ),
-        ],
-        SizedBox(height: tokens.s16),
-        Text(
-          l10n.account_pinFootnote,
-          textAlign: TextAlign.center,
-          style: theme.textTheme.bodySmall,
-        ),
-      ],
-    );
+      await _showFailure(context, error);
   }
 }
 
@@ -296,12 +230,17 @@ class _SignedIn extends ConsumerWidget {
       try {
         outcome = await controller.switchAccount();
       } on Object {
+        // Signed out by then, with data kept.
+        if (stable.mounted) GoRouter.of(stable).go(Routes.more);
         messenger.showSnackBar(
-          SnackBar(content: Text(l10n.account_signInFailed)),
+          SnackBar(
+            key: const Key('acc01_signInFailed'),
+            content: Text(l10n.account_signInFailed),
+          ),
         );
         return;
       }
-      if (stable.mounted) await _afterSignIn(stable, outcome);
+      if (stable.mounted) await _afterSwitch(stable, outcome);
     }
 
     Future<void> deleteBackups() async {
@@ -323,23 +262,15 @@ class _SignedIn extends ConsumerWidget {
       }
     }
 
-    Future<void> signOut() async {
-      final messenger = ScaffoldMessenger.of(context);
-      // Signing out swaps this part of the screen; the sheet's own context
-      // closes it.
-      final kept = await showSignOutSheet(context, email: profile.email);
-      if (kept) {
-        messenger.showSnackBar(
-          SnackBar(
-            key: const Key('acc01_signedOut'),
-            content: Text(l10n.account_signedOut),
-          ),
-        );
-      }
-    }
+    /// ACC-03: "Keep" opens the More tab and "Remove" onboarding.
+    Future<void> signOut() => controller.holdForSignOut(
+      () => showSignOutSheet(context, email: profile.email),
+    );
 
     final autoLabel = _frequencyLabel(l10n, state.autoFrequency);
-    final networkOff = working || newest == null;
+    final offline = state.offline;
+    final backUpOff = working || offline;
+    final networkOff = backUpOff || newest == null;
     return ListView(
       children: [
         _AccountCard(profile: profile),
@@ -363,7 +294,7 @@ class _SignedIn extends ConsumerWidget {
                 children: [
                   FilledButton.icon(
                     key: const Key('acc01.backUpNow'),
-                    onPressed: working ? null : () => unawaited(backUpNow()),
+                    onPressed: backUpOff ? null : () => unawaited(backUpNow()),
                     icon: state.busy == AccountBusy.backingUp
                         ? SizedBox.square(
                             dimension: tokens.chipIconSize,
@@ -405,7 +336,7 @@ class _SignedIn extends ConsumerWidget {
             children: [
               TextButton(
                 key: const Key('acc01.switch'),
-                onPressed: working ? null : () => unawaited(switchAccount()),
+                onPressed: backUpOff ? null : () => unawaited(switchAccount()),
                 child: Text(l10n.account_switch),
               ),
               TextButton(
@@ -424,6 +355,15 @@ class _SignedIn extends ConsumerWidget {
             ],
           ),
         ),
+        Padding(
+          padding: EdgeInsets.all(tokens.screenPadding),
+          child: Text(
+            l10n.account_pinFootnote,
+            key: const Key('acc01_footnote'),
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall,
+          ),
+        ),
         SizedBox(height: tokens.s24),
       ],
     );
@@ -439,50 +379,13 @@ class _AccountCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     final tokens = AppTokens.of(context);
     final theme = Theme.of(context);
     final name = profile.displayName ?? profile.email;
-    final initial = Container(
-      key: const Key('acc01_initial'),
-      width: tokens.avatarSize,
-      height: tokens.avatarSize,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer,
-        shape: BoxShape.circle,
-      ),
-      child: Text(
-        name.characters.first.toUpperCase(),
-        style: theme.textTheme.titleMedium?.copyWith(
-          color: theme.colorScheme.onPrimaryContainer,
-        ),
-      ),
-    );
-    final url = profile.photoUrl;
-    final avatar = url == null
-        ? initial
-        : ClipOval(
-            child: Image.network(
-              url,
-              key: const Key('acc01_photo'),
-              width: tokens.avatarSize,
-              height: tokens.avatarSize,
-              fit: BoxFit.cover,
-              loadingBuilder: (_, child, progress) =>
-                  progress == null ? child : initial,
-              errorBuilder: (_, _, _) => initial,
-            ),
-          );
     return ListTile(
       key: const Key('acc01_account'),
       contentPadding: EdgeInsets.all(tokens.s16),
-      leading: Semantics(
-        label: l10n.account_photoOf(name),
-        image: true,
-        excludeSemantics: true,
-        child: avatar,
-      ),
+      leading: ProfileAvatar(profile: profile, keyPrefix: 'acc01'),
       title: Text(name, style: theme.textTheme.titleMedium),
       subtitle: profile.displayName == null ? null : Text(profile.email),
     );
@@ -502,14 +405,43 @@ class _Status extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final tokens = AppTokens.of(context);
+    if (state.offline) {
+      final at = state.lastBackupAt;
+      return Column(
+        key: const Key('acc01_offline'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (at != null) ...[
+            Text(
+              l10n.account_lastBackup(
+                formatFullDateTime(
+                  Epoch.toLocal(at),
+                  FullDateFormatScope.of(context),
+                  Localizations.localeOf(context).toString(),
+                ),
+              ),
+              key: const Key('acc01_lastBackup'),
+            ),
+            SizedBox(height: tokens.s8),
+          ],
+          BackupStatusLine(status: state.status),
+        ],
+      );
+    }
     final drive = state.drive ?? const AsyncLoading<List<DriveBackupEntry>>();
     switch (drive) {
       case AsyncValue(:final value?):
         final newest = value.firstOrNull;
         if (newest == null) {
-          return Text(
-            l10n.account_noBackupYet,
-            key: const Key('acc01_noBackup'),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.account_noBackupYet, key: const Key('acc01_noBackup')),
+              if (state.status is! BackupStatusBackedUp) ...[
+                SizedBox(height: tokens.s8),
+                BackupStatusLine(status: state.status),
+              ],
+            ],
           );
         }
         final time = formatFullDateTime(
@@ -524,7 +456,10 @@ class _Status extends ConsumerWidget {
             Text(
               device == null || device.isEmpty
                   ? l10n.account_lastBackup(time)
-                  : l10n.account_lastBackupFrom(time, device),
+                  : l10n.account_lastBackupFrom(
+                      time,
+                      backupDeviceName(l10n, device),
+                    ),
               key: const Key('acc01_lastBackup'),
             ),
             SizedBox(height: tokens.s8),

@@ -1,4 +1,5 @@
 import 'package:dailytrack/core/backup/domain/drive_backup_store.dart';
+import 'package:dailytrack/core/backup/presentation/backup_device_name.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/utils/date_formats.dart';
 import 'package:dailytrack/core/utils/date_keys.dart';
@@ -47,7 +48,12 @@ class DriveBackupTile extends StatelessWidget {
       title: Text(
         l10n.backup_driveEntry(date, formatBackupSize(entry.sizeBytes, locale)),
       ),
-      subtitle: Text([kind, ?entry.device].join(' · ')),
+      subtitle: Text(
+        [
+          kind,
+          if (entry.device case final device?) backupDeviceName(l10n, device),
+        ].join(' · '),
+      ),
       trailing: trailing,
       onTap: onTap,
     );

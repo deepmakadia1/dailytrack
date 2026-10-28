@@ -48,7 +48,7 @@ final class OnboardingControllerProvider
 }
 
 String _$onboardingControllerHash() =>
-    r'7632ad93a59c9fc0cf26f8c45db973df5bd6c158';
+    r'24913dde5cd9e94414f681aa8bd36ec0eb773eaf';
 
 /// SYS-02 Onboarding controller (T066). Depends only on domain interfaces
 /// and providers.

@@ -8,6 +8,7 @@ import 'package:dailytrack/core/security/lock_session.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/features/account/presentation/screens/account_screen.dart';
+import 'package:dailytrack/features/auth/presentation/screens/login_screen.dart';
 import 'package:dailytrack/features/dashboard/presentation/screens/home_screen.dart';
 import 'package:dailytrack/features/lock/presentation/pin_flow_mode.dart';
 import 'package:dailytrack/features/lock/presentation/screens/pin_screen.dart';
@@ -40,6 +41,8 @@ GoRouter appRouter(Ref ref) {
   ref
     ..listen(bootstrapProvider, (_, _) => refresh.value++)
     ..listen(appSettingsProvider, (_, _) => refresh.value++)
+    // Login and logout move between AUTH-01 and the app (feature 011).
+    ..listen(authModeProvider, (_, _) => refresh.value++)
     // Locking and unlocking re-run the lock rules (feature 007).
     ..listen(
       lockSessionProvider.select((s) => (s.locked, s.mode)),
@@ -58,6 +61,7 @@ GoRouter appRouter(Ref ref) {
         uri: state.uri,
         bootstrap: ref.read(bootstrapProvider),
         settings: ref.read(appSettingsProvider).value,
+        authMode: ref.read(authModeProvider),
         registry: registry,
         sessionLocked: session.locked,
         sessionMode: session.mode,
@@ -75,6 +79,12 @@ GoRouter appRouter(Ref ref) {
         name: RouteNames.onboarding,
         builder: (context, state) => const OnboardingScreen(),
       ),
+      // AUTH-01, full screen; Android back closes the app (feature 011).
+      GoRoute(
+        path: Routes.login,
+        name: RouteNames.login,
+        builder: (context, state) => const LoginScreen(),
+      ),
       // SYS-03 as a route: cold start, or a navigation while locked.
       GoRoute(
         path: Routes.lock,
@@ -84,7 +94,7 @@ GoRouter appRouter(Ref ref) {
           from: state.uri.queryParameters['from'],
         ),
       ),
-      // SYS-04, full screen above everything (SET-05, SYS-02 step 4).
+      // SYS-04, full screen above everything (SET-05, "Finish setting up").
       GoRoute(
         path: Routes.pin,
         name: RouteNames.pin,
@@ -200,12 +210,15 @@ GoRouter appRouter(Ref ref) {
 /// [location] is the matched path; [uri] the full location with its query
 /// (defaults to [location]). The lock rules (feature 007 contracts/routes.md)
 /// read the session: [sessionLocked], [sessionMode], and [coveredLocation],
-/// the location the resume overlay is covering.
+/// the location the resume overlay is covering. [authMode] is the sign-in
+/// mode (feature 011 contracts/routes.md); it defaults to
+/// `settings.authMode`.
 String? redirectFor({
   required String location,
   required AsyncValue<BootstrapResult> bootstrap,
   required AppSettings? settings,
   required ModuleRegistry registry,
+  AuthMode? authMode,
   Uri? uri,
   bool sessionLocked = false,
   LockMode sessionMode = LockMode.route,
@@ -222,21 +235,29 @@ String? redirectFor({
   }
   if (location == Routes.splash) return result.initialLocation;
 
-  // Rule 3: onboarding comes first. SYS-02 step 4 may open SYS-04 to set a
-  // PIN (research R10).
-  final settingPin =
-      location == Routes.pin &&
-      const [
-        Routes.pinModeSet,
-        Routes.pinModeChange,
-      ].contains(full.queryParameters['mode']);
-  if (!settings.onboardingDone &&
-      location != Routes.onboarding &&
-      !settingPin) {
+  // Rule 3: onboarding comes first.
+  if (!settings.onboardingDone && location != Routes.onboarding) {
     return Routes.onboarding;
   }
 
-  final locked = settings.onboardingDone && settings.lockEnabled;
+  final mode = authMode ?? settings.authMode;
+  final loggedIn = mode != AuthMode.none;
+
+  // Rule 3b: no login chosen yet, so AUTH-01 replaces every location, from
+  // a sign-out, a notification, or a deep link (feature 011).
+  if (settings.onboardingDone &&
+      !loggedIn &&
+      location != Routes.login &&
+      location != Routes.onboarding) {
+    return Routes.login;
+  }
+
+  // Rule 3c: logged in, so leave AUTH-01 for Home (rule 4 puts SYS-03
+  // first when locked).
+  if (location == Routes.login && loggedIn) return Routes.home;
+
+  // The lock rules apply only after login (feature 011 research R7).
+  final locked = settings.onboardingDone && settings.lockEnabled && loggedIn;
 
   // Rule 4b: leave SYS-03 once unlocked, or when erase turned the lock off.
   if (location == Routes.lock && (!locked || !sessionLocked)) {
@@ -258,9 +279,15 @@ String? redirectFor({
     return Routes.home;
   }
 
-  // Rule 6: once onboarding is done, leave it for Home.
+  // Rule 6: once onboarding is done, leave it for AUTH-01 or Home.
   if (settings.onboardingDone && location == Routes.onboarding) {
-    return Routes.home;
+    return loggedIn ? Routes.home : Routes.login;
+  }
+  // Rule 7: ACC-01 only while signed in with Google; otherwise SET-01,
+  // which shows the guest card (feature 011 FR-028). Also covers a stale
+  // pause notification opening ACC-01.
+  if (location.startsWith(Routes.account) && mode != AuthMode.google) {
+    return Routes.more;
   }
   return null;
 }

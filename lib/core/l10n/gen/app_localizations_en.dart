@@ -98,7 +98,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboarding_privacyBody =>
-      'Everything you log is stored only on this device. Nothing is uploaded unless you choose to back it up.';
+      'Everything you log is kept on this phone. Next, you can back it up with Google or continue as a guest.';
 
   @override
   String get onboarding_allowNotifications => 'Allow notifications';
@@ -3443,6 +3443,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Couldn\'t sign in. Check your connection and try again.';
 
   @override
+  String get account_restoreOffline => 'Connect to the internet to restore';
+
+  @override
+  String get account_signInOffline =>
+      'Connect to the internet to sign in with Google';
+
+  @override
   String get account_signedInBackedUp => 'Signed in. Your data is backed up.';
 
   @override
@@ -3459,7 +3466,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get account_noBackupYet => 'No backup in this account yet';
 
   @override
-  String get account_statusBackedUp => 'Backed up';
+  String get account_statusBackedUp => 'Backed up to Google';
+
+  @override
+  String get account_statusOffline =>
+      'You\'re offline. Backups resume when you\'re back online.';
+
+  @override
+  String get account_statusWaitingForWifi => 'Waiting for Wi-Fi';
+
+  @override
+  String get account_statusFailedNoPassword =>
+      'Backup failed: set your backup password in Backup and restore';
+
+  @override
+  String get account_signOutBackedUp => 'Backed up';
 
   @override
   String get account_statusBackingUp => 'Backing up…';
@@ -3540,6 +3561,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backup_unknownDevice => 'Unknown device';
+
+  @override
+  String get account_androidPhone => 'Android phone';
 
   @override
   String get notif_backupPausedTitle => 'Backup paused';
@@ -3661,10 +3685,98 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your backup stays in your Google account.';
 
   @override
-  String get onboarding_restoreWithGoogle => 'Restore with Google';
+  String get auth_title => 'Keep your data safe';
 
   @override
-  String get onboarding_noBackupFound => 'No backup found on this account';
+  String get auth_body =>
+      'Sign in with Google to back up your expenses and habits and get them back on a new phone.';
+
+  @override
+  String get auth_continueWithGoogle => 'Continue with Google';
+
+  @override
+  String get auth_continueAsGuest => 'Continue as guest';
+
+  @override
+  String get auth_guestNote =>
+      'As a guest, your data stays only on this phone.';
+
+  @override
+  String get auth_signInCancelled =>
+      'Sign-in was cancelled. Try again or continue as a guest.';
+
+  @override
+  String get auth_offline =>
+      'You\'re offline. Connect to the internet to sign in with Google, or continue as a guest.';
+
+  @override
+  String get auth_continueWithoutRestoring => 'Continue without restoring';
+
+  @override
+  String get accountCard_guestTitle => 'Guest · Data saved only on this phone';
+
+  @override
+  String accountCard_backedUp(String time) {
+    return 'Backed up to Google · $time';
+  }
+
+  @override
+  String get accountCard_paused => 'Backup paused';
+
+  @override
+  String get accountCard_justNow => 'just now';
+
+  @override
+  String accountCard_minutesAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count min ago',
+      one: '1 min ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String accountCard_hoursAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hours ago',
+      one: '1 hour ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String accountCard_daysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days ago',
+      one: 'yesterday',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settings_logOutGuest => 'Log out of guest';
+
+  @override
+  String get logOutGuest_title => 'Log out and delete your data?';
+
+  @override
+  String get logOutGuest_body =>
+      'As a guest, your data is stored only on this phone. Logging out permanently deletes all your expenses, habits, budgets, receipts, and unlocks. This can\'t be undone.';
+
+  @override
+  String get logOutGuest_signInInstead => 'Sign in with Google instead';
+
+  @override
+  String get logOutGuest_confirm => 'Log out and delete';
+
+  @override
+  String get logOutGuest_failed => 'Couldn\'t delete your data. Try again.';
 
   @override
   String get finishSetup_title => 'Finish setting up';

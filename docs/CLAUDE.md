@@ -29,6 +29,8 @@ The master spec is `docs/spec.md` and is the source of truth for every feature.
   `google_mobile_ads` from `presentation/`.
 - `domain` is pure Dart (no Flutter imports).
 - Features never import each other's internals; shared code goes in `lib/core/`.
+- AUTH-01 Login is in `lib/features/auth/`; SET-01 and SET-02 reach the account card, guest
+  sign-in, and ACC-04 only through the `AccountUi` port (`lib/core/account/account_ui.dart`).
 - Every tracker module extends `TrackerModule` and is registered in
   `lib/app/module_registry.dart`.
 - Home reaches modules only through `TrackerModule` (`dashboardCard`,
@@ -49,9 +51,10 @@ The master spec is `docs/spec.md` and is the source of truth for every feature.
 - Money = `int` minor units (paise). Never use `double` for money.
 - Dates = UTC epoch milliseconds. Habit days = local `yyyy-MM-dd` date keys.
 - Soft delete with `deletedAt` on user data tables for ordinary deletes. There are two
-  user-confirmed exceptions (constitution III): "Erase all data" (SET-01, SYS-03) removes every
-  row permanently, and restoring a backup (SET-02, SYS-03, SYS-01) replaces all module rows with
-  the backup's rows in one transaction. Every schema change needs a Drift migration and a
+  user-confirmed exceptions (constitution III): "Erase all data" (SET-01, SYS-03, ACC-03 Remove
+  data, ACC-04) removes every user data row permanently, keeping only the settings rows listed for
+  each entry point, and restoring a backup (SET-02, SYS-03, SYS-01, ACC-02, AUTH-01) replaces all
+  module rows with the backup's rows in one transaction. Every schema change needs a Drift migration and a
   migration test.
 - User data leaves the device only through actions the user starts or schedules: Google Drive
   backups (manual, or auto while signed in) to their own account, and backup or export files

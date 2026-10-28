@@ -162,3 +162,52 @@ final class FullDateFormatProvider
 }
 
 String _$fullDateFormatHash() => r'0a763eddc4c514b457674eccd1315d2ccf760324';
+
+/// The sign-in mode (feature 011 research R6); `none` until settings load.
+/// The router, the lock session, and SET-01 read it.
+
+@ProviderFor(authMode)
+final authModeProvider = AuthModeProvider._();
+
+/// The sign-in mode (feature 011 research R6); `none` until settings load.
+/// The router, the lock session, and SET-01 read it.
+
+final class AuthModeProvider
+    extends $FunctionalProvider<AuthMode, AuthMode, AuthMode>
+    with $Provider<AuthMode> {
+  /// The sign-in mode (feature 011 research R6); `none` until settings load.
+  /// The router, the lock session, and SET-01 read it.
+  AuthModeProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authModeProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$authModeHash();
+
+  @$internal
+  @override
+  $ProviderElement<AuthMode> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  AuthMode create(Ref ref) {
+    return authMode(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AuthMode value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AuthMode>(value),
+    );
+  }
+}
+
+String _$authModeHash() => r'bd8122b12e2d47021cb8554f88bc3c6381702f8c';

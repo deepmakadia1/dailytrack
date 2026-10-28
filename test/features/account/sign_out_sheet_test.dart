@@ -5,14 +5,18 @@ import 'package:dailytrack/core/backup/domain/backup_conflict_policy.dart';
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
 import 'package:dailytrack/core/backup/domain/drive_backup_result.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
+import 'package:dailytrack/features/auth/presentation/screens/login_screen.dart';
 import 'package:dailytrack/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../helpers/test_app.dart';
+import '../auth/login_test_app.dart' show recordSystemCalls;
 import '../expense/expense_test_app.dart';
 import 'account_test_app.dart';
 
-/// ACC-03 Sign out (spec §16, feature 010 US6, T089).
+/// ACC-03 Sign out (spec §16, feature 010 US6, T089; feature 011 T051:
+/// sign-out opens AUTH-01).
 void main() {
   /// Signed in with changes not yet backed up.
   final changed = signedIn.copyWith(dataChangeCounter: 5);
@@ -97,36 +101,85 @@ void main() {
   });
 
   testWidgets('ACC-03 "Keep data on this phone" leaves every local row in '
-      'place and the app fully usable', (tester) async {
+      'place, opens AUTH-01 with the back stack cleared, and "Continue as '
+      'guest" there shows the same data', (tester) async {
+    final system = recordSystemCalls(tester);
     final world = await pumpAccountApp(tester);
     await tapKey(tester, 'acc01.signOut');
     await tapKey(tester, 'acc03_signOut');
+
+    final s = world.settings.current;
     expect(world.reset.calls, 0);
     expect(world.auth.signOuts, 1);
-    expect(world.settings.current.backupAccountEmail, isNull);
+    expect(s.authMode, AuthMode.none);
+    expect(s.backupAccountEmail, isNull);
     // The Auto backup setting is kept for the next sign-in.
-    expect(
-      world.settings.current.autoBackupFrequency,
-      AutoBackupFrequency.daily,
-    );
+    expect(s.autoBackupFrequency, AutoBackupFrequency.daily);
+    expect(find.byType(LoginScreen), findsOneWidget);
+    expect(locationOf(tester), Routes.login);
+    expect(find.byKey(const Key('auth01_signedOutKept')), findsOneWidget);
     expect(
       find.text('Signed out. Your data is still on this phone.'),
       findsOneWidget,
     );
-    expect(find.byKey(const Key('acc01.signIn')), findsOneWidget);
-    routerOf(tester).go(Routes.home);
+
+    // Back closes the app; it never returns to ACC-01 or the More tab.
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
+    expect(system, contains('SystemNavigator.pop'));
+    expect(find.byType(LoginScreen), findsOneWidget);
+
+    await tapKey(tester, 'auth01_guest');
+    expect(world.settings.current.authMode, AuthMode.guest);
     expect(locationOf(tester), Routes.home);
+    expect(world.restore.applied, isEmpty, reason: 'same data');
+  });
+
+  testWidgets('ACC-03 After sign-out with either choice, authMode is none and '
+      'the app opens AUTH-01, never Intro; a restart also opens AUTH-01', (
+    tester,
+  ) async {
+    for (final choice in ['keep', 'remove']) {
+      final world = await pumpAccountApp(
+        tester,
+        arrange: (w) => w.reset.onErase = () => w.settings.replace(
+          // What the erase keeps (feature 011 clarification Q1).
+          AppSettings(
+            locale: 'en',
+            onboardingDone: true,
+            authMode: w.settings.current.authMode,
+          ),
+        ),
+      );
+      await tapKey(tester, 'acc01.signOut');
+      if (choice == 'remove') await tapKey(tester, 'acc03_remove');
+      await tapKey(tester, 'acc03_signOut');
+      expect(world.settings.current.authMode, AuthMode.none, reason: choice);
+      expect(find.byType(LoginScreen), findsOneWidget, reason: choice);
+      expect(find.byType(OnboardingScreen), findsNothing, reason: choice);
+
+      await restartTestApp(tester, settings: world.settings);
+      expect(find.byType(LoginScreen), findsOneWidget, reason: choice);
+      expect(find.byType(OnboardingScreen), findsNothing, reason: choice);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+    }
   });
 
   testWidgets('ACC-03 "Remove data from this phone" erases local data, keeps '
-      'the Drive backups, and opens onboarding', (tester) async {
+      'the Drive backups, and opens AUTH-01', (tester) async {
     final world = await pumpAccountApp(
       tester,
       arrange: (w) {
         w.drive.seed(meta: otherPhoneMeta());
-        w.reset.onErase = () =>
-            w.settings.replace(const AppSettings(locale: 'en'));
+        // What the erase keeps (feature 011 clarification Q1).
+        w.reset.onErase = () => w.settings.replace(
+          AppSettings(
+            locale: 'en',
+            onboardingDone: true,
+            authMode: w.settings.current.authMode,
+          ),
+        );
       },
     );
     await tapKey(tester, 'acc01.signOut');
@@ -138,7 +191,9 @@ void main() {
     expect(world.reset.calls, 1);
     expect(world.drive.files, hasLength(1));
     expect(world.drive.calls, isNot(contains('deleteAll')));
-    expect(find.byType(OnboardingScreen), findsOneWidget);
+    expect(world.settings.current.authMode, AuthMode.none);
+    expect(find.byType(LoginScreen), findsOneWidget);
+    expect(find.byType(OnboardingScreen), findsNothing);
   });
 
   testWidgets('ACC-03 after a failed backup, "Remove data from this phone" '

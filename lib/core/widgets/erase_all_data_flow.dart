@@ -17,7 +17,8 @@ const String eraseConfirmWord = 'DELETE';
 ///  2. typing DELETE,
 ///  3. a progress dialog while [service] erases,
 ///  4. on failure, "Nothing was deleted" with "Try again".
-/// On success the app restarts at onboarding by itself.
+/// On success the app restarts at Home by itself (AUTH-01 after a
+/// sign-out), never at onboarding.
 Future<void> showEraseAllDataFlow(
   BuildContext context,
   AppResetService service,

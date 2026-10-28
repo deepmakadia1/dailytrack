@@ -178,11 +178,25 @@ abstract class AppSettings with _$AppSettings {
     /// The pause notification was shown for this pause.
     @Default(false) bool autoBackupPauseNotified,
 
-    /// Show the "Finish setting up" sheet once on Home: a restore onto an
-    /// empty phone skipped the app lock step (research R13).
+    /// Show the "Finish setting up" sheet once on Home: after every login
+    /// on AUTH-01 and after a restore onto an empty phone (feature 011
+    /// research R10).
     @Default(false) bool finishSetupPending,
+
+    /// How the user chose to keep their data on AUTH-01 (spec §4, feature
+    /// 011 research R1). Never backed up.
+    @Default(AuthMode.none) AuthMode authMode,
+
+    /// UTC ms until which a backup holds the lease, in any isolate: a
+    /// read-only view of `BackupCoordinator.leaseKey` ("Backing up…",
+    /// feature 011 research R11). No setter; only the coordinator writes it.
+    int? backupLeaseUntil,
   }) = _AppSettings;
 }
+
+/// The sign-in mode (spec §4): no login chosen yet (AUTH-01 shows), a
+/// guest whose data stays on this phone, or signed in with Google.
+enum AuthMode { none, guest, google }
 
 /// Where a backup was saved (SET-02 Last backup).
 enum BackupLocation { device, drive }

@@ -6,6 +6,8 @@ import 'package:dailytrack/app/flavor.dart';
 import 'package:dailytrack/app/router/app_router.dart';
 import 'package:dailytrack/app/router/lock_back_button_dispatcher.dart';
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/account/account_providers.dart';
+import 'package:dailytrack/core/account/domain/account.dart';
 import 'package:dailytrack/core/backup/backup_providers.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/module/root_navigator.dart';
@@ -52,9 +54,10 @@ class _DailyTrackAppState extends ConsumerState<DailyTrackApp> {
   /// Kept for dispose, where providers can't be read.
   late final Listenable _routerChanges;
 
-  /// "Finish setting up" once on Home, unlocked, after a restore onto an
-  /// empty phone (feature 010 research R13). Not with app lock on: that
-  /// user already has a PIN.
+  /// "Finish setting up" once on Home, unlocked, after every login on
+  /// AUTH-01 and after a restore onto an empty phone (feature 010 research
+  /// R13, feature 011 research R10). Not with app lock on: that user
+  /// already has a PIN.
   void _maybeFinishSetup() {
     if (_finishSetupShowing || !mounted) return;
     final s = ref.read(appSettingsProvider).value;
@@ -154,7 +157,42 @@ class _DailyTrackAppState extends ConsumerState<DailyTrackApp> {
       ..listenManual(secureScreenControllerProvider, (_, _) {})
       // "Finish setting up" waits for Home and an unlocked app.
       ..listenManual(appSettingsProvider, (_, _) => _scheduleFinishSetup())
-      ..listenManual(lockSessionProvider, (_, _) => _scheduleFinishSetup());
+      ..listenManual(lockSessionProvider, (_, _) => _scheduleFinishSetup())
+      // The Google sign-in expired or was revoked: the user is now a guest
+      // (rule 7 closes ACC-01), so say why, wherever they are (feature 010
+      // research R2, feature 011 FR-008).
+      ..listenManual(accountStateProvider, (previous, next) {
+        final was = previous?.value;
+        final now = next.value;
+        final expiredBefore = was is SignedOut && was.expired;
+        if (now is SignedOut && now.expired && !expiredBefore) {
+          final context = rootNavigatorKey.currentContext;
+          if (context == null) return;
+          rootMessengerKey.currentState?.showSnackBar(
+            SnackBar(
+              key: const Key('acc01_sessionExpired'),
+              content: Text(
+                AppLocalizations.of(context).account_sessionExpired,
+              ),
+            ),
+          );
+        }
+      })
+      // App lock follows login (feature 011 research R7): leaving AUTH-01
+      // with app lock on shows SYS-03 first; logging out unlocks. Only
+      // between loaded settings: startup's first load is bootstrap's.
+      ..listenManual(appSettingsProvider.select((s) => s.value?.authMode), (
+        previous,
+        next,
+      ) {
+        if (previous == null || next == null) return;
+        if (previous == AuthMode.none && next != AuthMode.none) {
+          final s = ref.read(appSettingsProvider).value;
+          _session.start(lockEnabled: s != null && s.lockEnabled);
+        } else if (previous != AuthMode.none && next == AuthMode.none) {
+          _session.reset();
+        }
+      });
     _routerChanges = ref.read(appRouterProvider).routerDelegate
       ..addListener(_scheduleFinishSetup);
   }

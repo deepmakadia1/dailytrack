@@ -2,12 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dailytrack/app/app.dart';
-import 'package:dailytrack/app/bootstrap.dart';
 import 'package:dailytrack/app/module_registry.dart';
+import 'package:dailytrack/app/production_overrides.dart';
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/account/account_providers.dart';
+import 'package:dailytrack/core/account/domain/account.dart';
 import 'package:dailytrack/core/ads/ad_providers.dart';
 import 'package:dailytrack/core/ads/ad_service.dart';
 import 'package:dailytrack/core/background/background_providers.dart';
+import 'package:dailytrack/core/backup/auto_backup_schedule.dart';
+import 'package:dailytrack/core/backup/background_backup_scheduler.dart';
+import 'package:dailytrack/core/backup/backup_providers.dart';
+import 'package:dailytrack/core/backup/domain/restore_types.dart';
+import 'package:dailytrack/core/backup/domain/safety_copy.dart';
 import 'package:dailytrack/core/database/app_database.dart';
 import 'package:dailytrack/core/database/database_provider.dart';
 import 'package:dailytrack/core/database/seed_runner.dart';
@@ -21,7 +28,6 @@ import 'package:dailytrack/core/reset/data/drift_app_reset_service.dart';
 import 'package:dailytrack/core/reset/reset_providers.dart';
 import 'package:dailytrack/core/security/data/secure_lock_service.dart';
 import 'package:dailytrack/core/security/domain/pin_hasher.dart';
-import 'package:dailytrack/core/security/lock_session.dart';
 import 'package:dailytrack/core/security/secure_screen_service.dart';
 import 'package:dailytrack/core/security/security_providers.dart';
 import 'package:dailytrack/core/settings/data/settings_repository_impl.dart';
@@ -33,7 +39,10 @@ import 'package:dailytrack/core/support/app_info_source.dart';
 import 'package:dailytrack/core/support/app_review_service.dart';
 import 'package:dailytrack/core/support/device_info_source.dart';
 import 'package:dailytrack/core/support/external_launcher.dart';
+import 'package:dailytrack/core/support/network_state_source.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
+import 'package:dailytrack/features/account/presentation/account_feature_ui.dart';
+import 'package:dailytrack/features/dashboard/presentation/screens/home_screen.dart';
 import 'package:dailytrack/features/expense/data/repositories/drift_budget_repository.dart';
 import 'package:dailytrack/features/expense/data/repositories/drift_transaction_repository.dart';
 import 'package:dailytrack/features/expense/domain/entities/budget.dart';
@@ -58,6 +67,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../features/expense/expense_test_app.dart';
+import '../helpers/backup_fakes.dart';
 import '../helpers/fakes.dart';
 import '../helpers/mutable_clock.dart';
 import '../helpers/real_app.dart';
@@ -65,7 +75,9 @@ import '../helpers/real_app.dart';
 /// Erase all data end to end (feature 007 T040, T064; US2-7, US7;
 /// FR-047, FR-048, SC-008): a real in-memory database with the production
 /// Expense and Habit bindings, the real erase service, and the real startup,
-/// which reseeds the defaults and lands on onboarding. Only device services
+/// which reseeds the defaults and lands on Home: every erase keeps
+/// onboarding and the device preferences (feature 011 clarification Q1).
+/// Only device services
 /// (notifications, secure storage, biometrics, FLAG_SECURE) are fakes.
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -76,6 +88,10 @@ void main() {
   late InMemorySecureStore secure;
   late PinHasher hasher;
   late Map<String, int> defaults;
+  late FakeAccountAuth auth;
+  late FakeBackupPasswordStore passwords;
+  late _MemorySafetyCopyStore safety;
+  late FakeBackgroundScheduler scheduler;
 
   // Hashed once outside the widget tests' fake-time zone.
   late String pinRecord;
@@ -93,6 +109,10 @@ void main() {
     notifications = FakeNotificationService();
     secure = InMemorySecureStore();
     hasher = PinHasher(iterations: 1000, runner: (f) async => await f());
+    auth = FakeAccountAuth();
+    passwords = FakeBackupPasswordStore();
+    safety = _MemorySafetyCopyStore();
+    scheduler = FakeBackgroundScheduler();
   });
   tearDown(() => db.close());
 
@@ -170,7 +190,10 @@ void main() {
     }
   }
 
-  Future<void> pumpRealApp(WidgetTester tester) async {
+  Future<void> pumpRealApp(
+    WidgetTester tester, {
+    bool driveAvailable = false,
+  }) async {
     tester.view
       ..physicalSize = const Size(412, 915)
       ..devicePixelRatio = 1;
@@ -194,9 +217,16 @@ void main() {
           featureGateProvider.overrideWithValue(FakeFeatureGate()),
           notificationServiceProvider.overrideWithValue(notifications),
           debugToolsAvailableProvider.overrideWithValue(false),
-          backgroundSchedulerProvider.overrideWithValue(
-            FakeBackgroundScheduler(),
+          backgroundSchedulerProvider.overrideWithValue(scheduler),
+          accountAuthProvider.overrideWithValue(auth),
+          // SET-01's account card (feature 011), as bound in production.
+          accountUiProvider.overrideWithValue(const AccountFeatureUi()),
+          networkStateSourceProvider.overrideWithValue(
+            FakeNetworkStateSource(),
           ),
+          driveAvailableProvider.overrideWithValue(driveAvailable),
+          backupPasswordStoreProvider.overrideWithValue(passwords),
+          safetyCopyStoreProvider.overrideWithValue(safety),
           appInfoSourceProvider.overrideWithValue(FakeAppInfoSource()),
           deviceInfoSourceProvider.overrideWithValue(FakeDeviceInfoSource()),
           appReviewServiceProvider.overrideWithValue(FakeAppReviewService()),
@@ -220,11 +250,8 @@ void main() {
               modules: registry.all,
               read: ref.read,
               notifications: notifications,
-              resetLock: () => ref.read(lockServiceProvider).reset(),
-              afterErase: () {
-                ref.read(lockSessionProvider.notifier).reset();
-                ref.invalidate(bootstrapProvider);
-              },
+              resetLock: bindEraseDeviceState(ref),
+              afterErase: bindAfterErase(ref),
             ),
           ),
           ...expenseOverrides(),
@@ -250,7 +277,8 @@ void main() {
   }
 
   /// Everything the user had is gone; only the first-launch defaults are
-  /// back, and the app is at onboarding.
+  /// back, and the app is at Home with onboarding and the device
+  /// preferences kept.
   /// Disposes the app, so no screen or provider timer outlives the test.
   Future<void> closeApp(WidgetTester tester) async {
     await tester.pumpWidget(const SizedBox());
@@ -276,7 +304,8 @@ void main() {
   }
 
   Future<void> expectEverythingCleared(WidgetTester tester) async {
-    expect(find.byType(OnboardingScreen), findsOneWidget);
+    expect(find.byType(OnboardingScreen), findsNothing);
+    expect(find.byType(HomeScreen), findsOneWidget);
     const userTables = [
       'transactions',
       'budgets',
@@ -305,18 +334,22 @@ void main() {
         knownModuleIds: const ['expense', 'habit'],
       ).load(),
     );
-    expect(settings.onboardingDone, isFalse);
+    // Kept (clarification Q1): onboarding and the device preferences. The
+    // premium theme stays selected; with its unlock gone the theme gate
+    // shows Default teal (feature 007 FR-020).
+    expect(settings.onboardingDone, isTrue);
+    expect(settings.currencyCode, 'USD');
+    expect(settings.selectedTheme, 'saffron');
+    expect(settings.moduleOrder, ['habit', 'expense']);
+    // Reset: everything else.
     expect(settings.lockEnabled, isFalse);
-    expect(settings.currencyCode, 'INR');
-    expect(settings.selectedTheme, 'default');
     expect(settings.dateFormat, 'dMMMy');
-    expect(settings.moduleOrder, ['expense', 'habit']);
     expect(secure.values.keys.where((k) => k.startsWith('lock.')), isEmpty);
     expect(notifications.cancelAllCalls, 1);
   }
 
-  testWidgets('US7 Erase all data from SET-01 clears everything and starts '
-      'again at onboarding', (tester) async {
+  testWidgets('US7 Erase all data from SET-01 clears everything and opens '
+      'Home, never Intro', (tester) async {
     await tester.runAsync(() => seedUser(lockOn: false));
     await pumpRealApp(tester);
 
@@ -379,4 +412,105 @@ void main() {
     expect(notifications.cancelAllCalls, 0);
     await closeApp(tester);
   });
+
+  // --- 010-google-account-backup (T041, T071; FR-006a, FR-019a). ---
+  testWidgets('SET-01 erase does not sign out: the account, the sign-in mode, '
+      'and Auto backup stay, the backup password and the safety copy go, both '
+      'auto backup jobs are cancelled, and the app opens Home', (tester) async {
+    await tester.runAsync(() async {
+      await seedUser(lockOn: false);
+      final settings = SettingsRepositoryImpl(
+        db,
+        knownModuleIds: const ['expense', 'habit'],
+      );
+      await settings.setAccount(
+        const AccountProfile(email: 'me@example.com', displayName: 'Asha'),
+      );
+      await settings.setAutoBackup(
+        frequency: AutoBackupFrequency.weekly,
+        wifiOnly: true,
+      );
+      await settings.setLastKnownDriveBackup(
+        at: 1792540800000,
+        deviceId: 'this-phone',
+      );
+      await settings.setDeviceIdCopy('this-phone');
+    });
+    passwords.value = 'secret';
+    safety.copy = const SafetyCopyInfo(
+      createdAt: 1792540800000,
+      counts: {'expense.transactions': 1},
+      fileName: 'safety.json',
+    );
+    await pumpRealApp(tester, driveAvailable: true);
+
+    routerOf(tester).go(Routes.more);
+    await settleRealDb(tester);
+    final row = find.byKey(const Key('settings_erase_all'));
+    await tester.scrollUntilVisible(
+      row,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.ensureVisible(row);
+    await settleRealDb(tester);
+    await tester.tap(row);
+    await settleRealDb(tester);
+    await eraseThroughDialogs(tester);
+
+    await expectEverythingCleared(tester);
+    expect(auth.signOuts, 0);
+    expect(passwords.value, isNull);
+    expect(safety.copy, isNull);
+    expect(safety.deletes, 1);
+    expect(
+      scheduler.cancelled,
+      containsAll([autoBackupTaskName, backgroundBackupTaskName]),
+    );
+    final s = await read(
+      tester,
+      () => SettingsRepositoryImpl(
+        db,
+        knownModuleIds: const ['expense', 'habit'],
+      ).load(),
+    );
+    expect(s.backupAccountEmail, 'me@example.com');
+    expect(s.autoBackupFrequency, AutoBackupFrequency.weekly);
+    expect(s.autoBackupWifiOnly, isTrue);
+    expect(s.lastKnownDriveBackupAt, 1792540800000);
+    expect(s.deviceId, 'this-phone');
+    expect(s.backedUpChangeCounter, 0);
+    await closeApp(tester);
+  });
+}
+
+/// One safety copy in memory (feature 010 FR-019a).
+final class _MemorySafetyCopyStore implements SafetyCopyStore {
+  SafetyCopyInfo? copy;
+  int deletes = 0;
+
+  @override
+  Future<void> save(
+    BackupFile file, {
+    required Map<String, int> counts,
+    required int createdAt,
+  }) async {
+    copy = SafetyCopyInfo(
+      createdAt: createdAt,
+      counts: counts,
+      fileName: file.fileName,
+    );
+  }
+
+  @override
+  Future<SafetyCopyInfo?> info() async => copy;
+
+  @override
+  Future<Uint8List?> read() async => copy == null ? null : Uint8List(0);
+
+  @override
+  Future<void> delete() async {
+    deletes++;
+    copy = null;
+  }
 }

@@ -1,10 +1,23 @@
 <!--
 Sync Impact Report
+- Version change: 1.1.1 → 1.1.2 (PATCH: clarification of an existing exception; no new rule)
+- Modified principles:
+  - III. Data Integrity and Privacy (NON-NEGOTIABLE): the "Erase all data" exception now names
+    all four entry points (SET-01, SYS-03 "Forgot PIN?", ACC-03 "Remove data from this phone",
+    ACC-04 "Log out and delete") and says it removes every user data row while keeping the
+    device and settings rows listed per entry point; the restore exception adds ACC-02 and
+    AUTH-01
+- Added sections: none
+- Removed sections: none
+- Source: specs/011-login-guest-mode (analysis finding C3)
+- Templates: none need changes (plan-template's Constitution Check reads the principles at runtime)
+- Guidance files: docs/CLAUDE.md "Data rules" updated in the same change
+- Follow-up TODOs: none
+
+Previous reports:
 - Version change: 1.1.0 → 1.1.1 (PATCH: Technology & Platform Constraints, build flavors: dev
   drops the `.dev` application ID suffix; dev and prod share `com.midexcode.dailytrack`.
   Guidance: docs/spec.md "Build flavors" updated in the same change)
-
-Previous report:
 - Version change: 1.0.3 → 1.1.0 (MINOR: materially expanded guidance in III and V; no principle
   removed or redefined)
 - Modified principles:
@@ -67,10 +80,13 @@ addition rather than modification.
 - Timestamps MUST be stored as UTC epoch milliseconds; habit days MUST use local `yyyy-MM-dd`
   date keys.
 - User data tables MUST soft-delete via `deletedAt` for ordinary deletes (so undo and backups stay
-  consistent). There are two exceptions, both confirmed by the user: "Erase all data" (SET-01,
-  SYS-03) MUST remove every row permanently, and restoring a backup (SET-02, SYS-03, SYS-01) MUST
-  replace all module rows with the backup's rows, including the backup's soft-deleted rows, in one
-  transaction.
+  consistent). There are two exceptions, both confirmed by the user:
+  - "Erase all data" MUST remove every user data row permanently. It is reached from SET-01,
+    SYS-03 "Forgot PIN?", ACC-03 "Remove data from this phone", and ACC-04 "Log out and delete",
+    and keeps only the device and settings rows that `docs/spec.md` §4 and ACC-04 list for that
+    entry point.
+  - Restoring a backup (SET-02, SYS-03, SYS-01, ACC-02, AUTH-01) MUST replace all module rows with
+    the backup's rows, including the backup's soft-deleted rows, in one transaction.
 - Every schema change MUST ship with a Drift migration and a migration test.
 - User-entered data (transactions, habits, notes, settings) MUST NOT leave the device except:
   - through actions the user starts or schedules: Google Drive backups to the user's own account
@@ -189,4 +205,4 @@ agents.
 - Versioning follows semantic versioning: MAJOR for removing or redefining a principle, MINOR for
   adding a principle or materially expanding guidance, PATCH for clarifications and wording.
 
-**Version**: 1.1.1 | **Ratified**: 2026-10-13 | **Last Amended**: 2026-10-26
+**Version**: 1.1.2 | **Ratified**: 2026-10-13 | **Last Amended**: 2026-10-27

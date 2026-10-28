@@ -334,17 +334,20 @@ final class AccountUiProvider
 
 String _$accountUiHash() => r'938b51f4befd7eb3aa2a5881f63e96e410178afd';
 
-/// The shared "Sign in with Google" for ACC-01 and SET-02.
+/// The shared "Sign in with Google" for ACC-01 and SET-02, and AUTH-01's
+/// [AccountSignIn.login].
 
 @ProviderFor(accountSignIn)
 final accountSignInProvider = AccountSignInProvider._();
 
-/// The shared "Sign in with Google" for ACC-01 and SET-02.
+/// The shared "Sign in with Google" for ACC-01 and SET-02, and AUTH-01's
+/// [AccountSignIn.login].
 
 final class AccountSignInProvider
     extends $FunctionalProvider<AccountSignIn, AccountSignIn, AccountSignIn>
     with $Provider<AccountSignIn> {
-  /// The shared "Sign in with Google" for ACC-01 and SET-02.
+  /// The shared "Sign in with Google" for ACC-01 and SET-02, and AUTH-01's
+  /// [AccountSignIn.login].
   AccountSignInProvider._()
     : super(
         from: null,
@@ -378,4 +381,57 @@ final class AccountSignInProvider
   }
 }
 
-String _$accountSignInHash() => r'b3429b0578b6c8522e0e2a6a4dd771c2a0a4d7a0';
+String _$accountSignInHash() => r'bc0edfbdff5589d3866170b2ffa9639a31a5a98d';
+
+/// The SET-01 account card (feature 011 data-model §5): a plain provider,
+/// not a Notifier, so SET-01 keeps `SettingsController` as its only one.
+/// Null while no login is chosen (the router keeps the user on AUTH-01).
+/// The card re-reads it on resume, for the network.
+
+@ProviderFor(accountCardView)
+final accountCardViewProvider = AccountCardViewProvider._();
+
+/// The SET-01 account card (feature 011 data-model §5): a plain provider,
+/// not a Notifier, so SET-01 keeps `SettingsController` as its only one.
+/// Null while no login is chosen (the router keeps the user on AUTH-01).
+/// The card re-reads it on resume, for the network.
+
+final class AccountCardViewProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<AccountCardView?>,
+          AccountCardView?,
+          FutureOr<AccountCardView?>
+        >
+    with $FutureModifier<AccountCardView?>, $FutureProvider<AccountCardView?> {
+  /// The SET-01 account card (feature 011 data-model §5): a plain provider,
+  /// not a Notifier, so SET-01 keeps `SettingsController` as its only one.
+  /// Null while no login is chosen (the router keeps the user on AUTH-01).
+  /// The card re-reads it on resume, for the network.
+  AccountCardViewProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'accountCardViewProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$accountCardViewHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<AccountCardView?> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<AccountCardView?> create(Ref ref) {
+    return accountCardView(ref);
+  }
+}
+
+String _$accountCardViewHash() => r'425a8ce7ab55c86b62f3830872cd121b5c034994';

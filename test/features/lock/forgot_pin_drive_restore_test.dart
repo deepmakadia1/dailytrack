@@ -16,14 +16,18 @@ import '../../helpers/fakes.dart';
 import 'lock_test_app.dart';
 
 /// SYS-03 "Forgot PIN?" → "Restore from Google Drive backup" (feature 008
-/// T139, T140, T143; US8-1 – US8-4; FR-024).
+/// T139, T140, T143; US8-1 – US8-4; FR-024). Feature 010 (T064, spec Edge
+/// Cases): the sign-in is the shared `AccountService.signIn` and the write
+/// goes through `AccountRestore`, so the user ends up signed in.
 void main() {
   late FakeDriveBackupStore drive;
   late FakeRestoreService restore;
   late FakeAppResetService reset;
   late FakeAccountAuth auth;
+  late FakeAccountRestore accountRestore;
 
   setUp(() {
+    accountRestore = FakeAccountRestore();
     drive = FakeDriveBackupStore();
     auth = FakeAccountAuth();
     restore = FakeRestoreService();
@@ -42,6 +46,7 @@ void main() {
         ),
         reset: reset,
         accountAuth: auth,
+        accountRestore: accountRestore,
         overrides: [
           driveAvailableProvider.overrideWithValue(available),
           driveBackupStoreProvider.overrideWithValue(drive),
@@ -115,7 +120,11 @@ void main() {
     await tester.tap(find.text('Replace data'));
     await tester.pumpAndSettle();
 
-    expect(restore.applies, 1);
+    // SYS-03 Forgot PIN restores through AccountRestore, from the picked
+    // backup, not as an empty-phone restore.
+    expect(accountRestore.applied, [('b1', false)]);
+    expect(restore.applies, 0);
+    expect(w.settings.current.backupAccountEmail, 'me@example.com');
     expect(w.settings.current.lockEnabled, isFalse);
     expect(w.settings.current.biometricEnabled, isFalse);
     expect(w.lock.store.values.containsKey(SecureLockService.pinKey), isFalse);
@@ -136,9 +145,36 @@ void main() {
     await tester.tapAt(const Offset(10, 10));
     await tester.pumpAndSettle();
     expect(restore.applies, 0);
+    expect(accountRestore.applied, isEmpty);
     expect(w.settings.current.lockEnabled, isTrue);
     expect(w.lock.store.values.containsKey(SecureLockService.pinKey), isTrue);
     expect(find.byType(UnlockScreen), findsOneWidget);
+  });
+
+  testWidgets('SYS-03 Forgot PIN: when the safety copy cannot be saved, '
+      'nothing is restored, the error says why, and the lock stays', (
+    tester,
+  ) async {
+    addBackup();
+    accountRestore
+      ..hasData = true
+      ..safetyFails = true;
+    final w = await open(tester);
+    await tapForgot(tester);
+    await tester.tap(find.byKey(const Key('forgot_pin_restore')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('drive_backup_b1')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('restore_continue')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Replace data'));
+    await tester.pumpAndSettle();
+
+    expect(accountRestore.applied, isEmpty);
+    expect(find.byKey(const Key('backup_error')), findsOneWidget);
+    expect(w.settings.current.lockEnabled, isTrue);
+    expect(w.lock.store.values.containsKey(SecureLockService.pinKey), isTrue);
+    expect(find.byType(HomeScreen), findsNothing);
   });
 
   testWidgets('US8-4 cancelling Google sign-in changes nothing and shows no '

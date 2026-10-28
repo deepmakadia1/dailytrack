@@ -5,4 +5,8 @@ abstract interface class NotificationPermission {
   /// are allowed; true on Android 12 and lower, where there is no runtime
   /// permission. Never throws: denial is a normal result.
   Future<bool> request();
+
+  /// Whether notifications are already allowed; true on Android 12 and
+  /// lower. Never throws.
+  Future<bool> isGranted();
 }

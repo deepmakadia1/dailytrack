@@ -18,6 +18,7 @@ import 'package:dailytrack/core/backup/domain/safety_copy.dart';
 import 'package:dailytrack/core/export/export_dataset.dart';
 import 'package:dailytrack/core/module/provider_reader.dart';
 import 'package:dailytrack/features/settings/domain/export/export_use_case.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 import 'fakes.dart';
 
@@ -105,11 +106,21 @@ final class FakeAccountAuth implements AccountAuth {
   /// What a silent sign-in returns, or a failure to throw.
   Object? silentResult = const AccountProfile(email: 'me@example.com');
   int signIns = 0;
+  int silentSignIns = 0;
   int signOuts = 0;
+
+  /// Every call by name, to check that nothing reached Google (feature 011
+  /// research R13).
+  final calls = <String>[];
+
+  /// Holds the next sign-ins until completed, to see "Signing in".
+  Completer<void>? signInGate;
 
   @override
   Future<AccountProfile> signIn() async {
     signIns++;
+    calls.add('signIn');
+    await signInGate?.future;
     final result = signInResult;
     if (result is BackupFailure) throw result;
     return result as AccountProfile;
@@ -117,13 +128,24 @@ final class FakeAccountAuth implements AccountAuth {
 
   @override
   Future<AccountProfile?> signInSilently() async {
+    silentSignIns++;
+    calls.add('signInSilently');
     final result = silentResult;
     if (result is BackupFailure) throw result;
     return result as AccountProfile?;
   }
 
   @override
-  Future<void> signOut() async => signOuts++;
+  Future<void> signOut() async {
+    signOuts++;
+    calls.add('signOut');
+  }
+}
+
+/// Neither Google sign-in nor Drive was called (feature 011 FR-032).
+void expectNoGoogleCalls(FakeAccountAuth auth, FakeDriveBackupStore drive) {
+  expect(auth.calls, isEmpty, reason: 'no Google sign-in call');
+  expect(drive.calls, isEmpty, reason: 'no Drive call');
 }
 
 /// SET-02 restore steps without a database: [onOpen] answers by the

@@ -3,13 +3,20 @@ import 'dart:async';
 import 'package:dailytrack/app/app_open_runner.dart';
 import 'package:dailytrack/app/bootstrap.dart';
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/account/account_providers.dart';
+import 'package:dailytrack/core/account/domain/account.dart';
+import 'package:dailytrack/core/account/domain/account_auth.dart';
 import 'package:dailytrack/core/ads/ad_providers.dart';
 import 'package:dailytrack/core/ads/domain/consent_service.dart';
+import 'package:dailytrack/core/backup/backup_providers.dart';
+import 'package:dailytrack/core/backup/domain/restore_types.dart';
+import 'package:dailytrack/core/backup/domain/safety_copy.dart';
 import 'package:dailytrack/core/billing/billing_providers.dart';
 import 'package:dailytrack/core/billing/domain/pro_store.dart';
 import 'package:dailytrack/core/database/app_database.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
+import 'package:dailytrack/core/utils/clock_provider.dart';
 import 'package:dailytrack/core/widget/glance_refresher.dart';
 import 'package:dailytrack/core/widget/widget_providers.dart';
 import 'package:dailytrack/features/expense/domain/enums.dart';
@@ -20,6 +27,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/fakes.dart';
+import '../helpers/mutable_clock.dart';
 import '../helpers/real_container.dart';
 
 void main() {
@@ -446,4 +454,193 @@ void main() {
       expect(c.read(glanceRefresherProvider).started, isTrue);
     });
   });
+
+  // --- 010-google-account-backup (T042, T071; spec §16, FR-004, FR-019a,
+  // FR-044). ---
+  group('SYS-01 account and device at startup', () {
+    late FakeDeviceIdFile file;
+    late _GatedAccountAuth auth;
+    late _MemorySafetyCopyStore safety;
+    late MutableClock clock;
+
+    setUp(() {
+      file = FakeDeviceIdFile();
+      auth = _GatedAccountAuth();
+      safety = _MemorySafetyCopyStore();
+      clock = MutableClock(DateTime.utc(2026, 10, 28, 9));
+    });
+
+    Future<ProviderContainer> start({bool signedIn = true}) async {
+      final c = makeRealContainer(
+        db,
+        ads: ads,
+        overrides: [
+          consentServiceProvider.overrideWithValue(consent),
+          deviceIdFileProvider.overrideWithValue(file),
+          accountAuthProvider.overrideWithValue(auth),
+          safetyCopyStoreProvider.overrideWithValue(safety),
+          clockProvider.overrideWithValue(clock),
+          restoreAftermathProvider.overrideWithValue(() async {}),
+        ],
+      );
+      await db.customStatement(
+        "INSERT INTO settings VALUES ('onboardingDone', 'true', 0)",
+      );
+      if (signedIn) {
+        await c
+            .read(settingsRepositoryProvider)
+            .setAccount(const AccountProfile(email: 'me@example.com'));
+      }
+      return c;
+    }
+
+    test('SYS-01 the device ID is made before routing on a fresh install and '
+        'kept in the file and the settings copy (FR-044)', () async {
+      final c = await start(signedIn: false);
+      final r = await boot(c);
+      expect((r as BootstrapReady).initialLocation, Routes.home);
+      final s = await c.read(settingsRepositoryProvider).load();
+      expect(s.deviceId, isNotNull);
+      expect(file.value, s.deviceId);
+      // A fresh ID is not an Android restore: nothing is reset.
+      expect(s.finishSetupPending, isFalse);
+    });
+
+    test('SYS-01 an existing device ID is kept as it is', () async {
+      file.value = 'this-phone';
+      final c = await start();
+      await c.read(settingsRepositoryProvider).setDeviceIdCopy('this-phone');
+      await boot(c);
+      await pumpEventQueue();
+      final s = await c.read(settingsRepositoryProvider).load();
+      expect(s.deviceId, 'this-phone');
+      expect(s.backupAccountEmail, 'me@example.com');
+    });
+
+    test('§16 the silent sign-in runs behind the first screen: a sign-in that '
+        'never answers does not delay routing', () async {
+      final c = await start();
+      final r = await boot(c).timeout(const Duration(seconds: 2));
+      expect((r as BootstrapReady).initialLocation, Routes.home);
+      await pumpEventQueue();
+      expect(auth.silentSignIns, 1);
+      expect(auth.gate.isCompleted, isFalse);
+      // Still signed in while it runs.
+      expect(
+        (await c.read(settingsRepositoryProvider).load()).backupAccountEmail,
+        'me@example.com',
+      );
+    });
+
+    test('§16 FR-004 an offline silent sign-in keeps the account; a revoked '
+        'one clears it and keeps the data', () async {
+      final c = await start();
+      auth.gate.complete();
+      auth.silentResult = StateError('offline');
+      await boot(c);
+      await pumpEventQueue();
+      final repo = c.read(settingsRepositoryProvider);
+      expect((await repo.load()).backupAccountEmail, 'me@example.com');
+
+      auth.silentResult = null;
+      await c.read(accountServiceProvider).restoreSession();
+      expect((await repo.load()).backupAccountEmail, isNull);
+      expect((await repo.load()).onboardingDone, isTrue);
+    });
+
+    test(
+      'FR-019a a safety copy 7 days old or more is deleted at startup',
+      () async {
+        auth.gate.complete();
+        safety.copy = SafetyCopyInfo(
+          createdAt: clock
+              .now()
+              .subtract(SafetyCopyPolicy.keepFor)
+              .millisecondsSinceEpoch,
+          counts: const {'expense.transactions': 3},
+          fileName: 'safety.json',
+        );
+        final c = await start();
+        await boot(c);
+        await pumpEventQueue();
+        expect(safety.copy, isNull);
+        expect(safety.deletes, 1);
+      },
+    );
+
+    test(
+      'FR-019a a safety copy younger than 7 days is kept at startup',
+      () async {
+        auth.gate.complete();
+        safety.copy = SafetyCopyInfo(
+          createdAt: clock
+              .now()
+              .subtract(const Duration(days: 6, hours: 23))
+              .millisecondsSinceEpoch,
+          counts: const {'expense.transactions': 3},
+          fileName: 'safety.json',
+        );
+        final c = await start();
+        await boot(c);
+        await pumpEventQueue();
+        expect(safety.copy, isNotNull);
+        expect(safety.deletes, 0);
+      },
+    );
+  });
+}
+
+/// A Google session whose silent sign-in waits for [gate] (feature 010).
+final class _GatedAccountAuth implements AccountAuth {
+  final gate = Completer<void>();
+
+  /// What a silent sign-in returns, or an error to throw.
+  Object? silentResult = const AccountProfile(email: 'me@example.com');
+  int silentSignIns = 0;
+
+  @override
+  Future<AccountProfile> signIn() => throw UnimplementedError();
+
+  @override
+  Future<AccountProfile?> signInSilently() async {
+    silentSignIns++;
+    await gate.future;
+    final result = silentResult;
+    if (result is Error) throw result;
+    return result as AccountProfile?;
+  }
+
+  @override
+  Future<void> signOut() async {}
+}
+
+/// One safety copy in memory (feature 010 FR-019a).
+final class _MemorySafetyCopyStore implements SafetyCopyStore {
+  SafetyCopyInfo? copy;
+  int deletes = 0;
+
+  @override
+  Future<void> save(
+    BackupFile file, {
+    required Map<String, int> counts,
+    required int createdAt,
+  }) async {
+    copy = SafetyCopyInfo(
+      createdAt: createdAt,
+      counts: counts,
+      fileName: file.fileName,
+    );
+  }
+
+  @override
+  Future<SafetyCopyInfo?> info() async => copy;
+
+  @override
+  Future<Uint8List?> read() async => copy == null ? null : Uint8List(0);
+
+  @override
+  Future<void> delete() async {
+    deletes++;
+    copy = null;
+  }
 }

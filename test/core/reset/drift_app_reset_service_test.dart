@@ -1,10 +1,13 @@
 import 'package:dailytrack/app/module_registry.dart';
+import 'package:dailytrack/core/account/domain/account.dart';
 import 'package:dailytrack/core/database/app_database.dart';
 import 'package:dailytrack/core/database/seed_runner.dart';
 import 'package:dailytrack/core/feature_gate/data/drift_unlock_repository.dart';
 import 'package:dailytrack/core/feature_gate/domain/feature_key.dart';
 import 'package:dailytrack/core/feature_gate/domain/unlock.dart';
 import 'package:dailytrack/core/reset/data/drift_app_reset_service.dart';
+import 'package:dailytrack/core/reset/domain/app_reset_service.dart';
+import 'package:dailytrack/core/settings/data/settings_codec.dart';
 import 'package:dailytrack/core/settings/data/settings_repository_impl.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/features/expense/data/repositories/drift_transaction_repository.dart';
@@ -25,7 +28,8 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../helpers/fakes.dart';
 import '../../helpers/mutable_clock.dart';
 
-/// Erase all data (T018, FR-048, data-model §6, research R16).
+/// Erase all data (T018, FR-048, data-model §6, research R16), with feature
+/// 011's two scopes (T008, data-model §3).
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
@@ -125,8 +129,9 @@ void main() {
               .read<int>('c'),
   };
 
-  test('every table is empty afterwards; modules, notifications, and the '
-      'lock are cleared; then the app restarts', () async {
+  test('every user data table is empty afterwards, and only the kept '
+      'settings rows remain; modules, notifications, and the lock are '
+      'cleared; then the app restarts', () async {
     await seedEverything();
     final before = await counts();
     for (final name in [
@@ -143,7 +148,13 @@ void main() {
 
     await service().eraseAll();
 
-    expect((await counts()).values.every((c) => c == 0), isTrue);
+    final after = await counts();
+    expect(
+      after.entries.where((e) => e.key != 'settings' && e.value > 0),
+      isEmpty,
+    );
+    final keys = {for (final r in await db.select(db.settings).get()) r.key};
+    expect(keys.difference(DriftAppResetService.keptByErase), isEmpty);
     expect([for (final m in modules) m.eraseAllCalls], [1, 1]);
     expect(notifications.cancelAllCalls, 1);
     expect(secure.values.keys, ['other']);
@@ -219,27 +230,220 @@ void main() {
   );
 
   // --- 009-ads-rewarded-pro (T011): the install time survives. ---
-  test('the interstitial install time is kept; every other ad counter and '
-      'Pro go (feature 009 research R9)', () async {
-    final settings = SettingsRepositoryImpl(
-      db,
-      knownModuleIds: const ['expense', 'habit'],
-    );
-    await settings.setAdsInstallAtIfMissing(1234);
-    await settings.recordInterstitialShown(
-      at: 5000,
-      dayKey: '2026-10-21',
-      countToday: 2,
-    );
-    await db.customStatement(
-      "INSERT INTO settings VALUES ('removeAdsPurchased', 'true', 0)",
-    );
-    await service().eraseAll();
-    final s = await settings.load();
-    expect(s.adsInstallAt, 1234);
-    expect(s.adsLastInterstitialAt, isNull);
-    expect(s.adsInterstitialsToday, 0);
-    expect(s.removeAdsPurchased, isFalse);
-    expect(await db.select(db.settings).get(), hasLength(1));
+  test(
+    'the interstitial install time and Pro are kept; every other ad '
+    'counter goes (feature 009 research R9, feature 011 analysis I2)',
+    () async {
+      final settings = SettingsRepositoryImpl(
+        db,
+        knownModuleIds: const ['expense', 'habit'],
+      );
+      await settings.setAdsInstallAtIfMissing(1234);
+      await settings.recordInterstitialShown(
+        at: 5000,
+        dayKey: '2026-10-21',
+        countToday: 2,
+      );
+      await db.customStatement(
+        "INSERT INTO settings VALUES ('removeAdsPurchased', 'true', 0)",
+      );
+      await service().eraseAll();
+      final s = await settings.load();
+      expect(s.adsInstallAt, 1234);
+      expect(s.adsLastInterstitialAt, isNull);
+      expect(s.adsInterstitialsToday, 0);
+      expect(s.removeAdsPurchased, isTrue);
+      expect(await db.select(db.settings).get(), hasLength(2));
+    },
+  );
+
+  // --- 010-google-account-backup (T041, FR-006a, data-model §1). ---
+  group('SET-01 Erase all data keeps the sign-in', () {
+    late SettingsRepositoryImpl settings;
+
+    setUp(() {
+      settings = SettingsRepositoryImpl(
+        db,
+        knownModuleIds: const ['expense', 'habit'],
+      );
+    });
+
+    /// A signed-in phone with data, a known Drive backup, Weekly auto
+    /// backups on any network, and counters that have moved.
+    Future<void> signedInWithData() async {
+      await seedEverything();
+      await settings.setAdsInstallAtIfMissing(1234);
+      await settings.setDeviceIdCopy('this-phone');
+      await settings.setAccount(
+        const AccountProfile(
+          email: 'me@example.com',
+          displayName: 'Asha Patel',
+          photoUrl: 'https://example.com/a.png',
+        ),
+      );
+      await settings.setAutoBackup(
+        frequency: AutoBackupFrequency.weekly,
+        wifiOnly: false,
+      );
+      await settings.setLastKnownDriveBackup(
+        at: 1792540800000,
+        deviceId: 'other-phone',
+      );
+      await settings.setAutoBackupPause(paused: true, notified: true);
+      await settings.setBackedUpChangeCounter(3);
+    }
+
+    test('SET-01 erase does not sign out: the account keys, sign-in mode, '
+        'Auto backup settings, device ID, install time, last known Drive '
+        'backup, onboarding, and the device preferences are kept; both change '
+        'counters go back to 0; the pause and the lock reset', () async {
+      await signedInWithData();
+      await settings.setAuthMode(AuthMode.google);
+      final before = await settings.load();
+      expect(before.dataChangeCounter, greaterThan(0));
+
+      await service().eraseAll();
+      final s = await settings.load();
+      expect(s.authMode, AuthMode.google);
+      expect(s.backupAccountEmail, 'me@example.com');
+      expect(s.accountDisplayName, 'Asha Patel');
+      expect(s.accountPhotoUrl, 'https://example.com/a.png');
+      expect(s.deviceId, 'this-phone');
+      expect(s.adsInstallAt, 1234);
+      expect(s.autoBackupFrequency, AutoBackupFrequency.weekly);
+      expect(s.autoBackupWifiOnly, isFalse);
+      expect(s.lastKnownDriveBackupAt, 1792540800000);
+      expect(s.lastKnownDriveBackupDeviceId, 'other-phone');
+      expect(s.dataChangeCounter, 0);
+      expect(s.backedUpChangeCounter, 0);
+      // Kept by every erase (clarification Q1): the app opens Home.
+      expect(s.onboardingDone, isTrue);
+      expect(s.locale, 'gu');
+      expect(s.currencyCode, 'USD');
+      // Not kept: the pause and the lock.
+      expect(s.autoBackupPausedByConflict, isFalse);
+      expect(s.lockEnabled, isFalse);
+      final keys = {
+        for (final row in await db.select(db.settings).get()) row.key,
+      };
+      expect(keys.difference(DriftAppResetService.keptByErase), isEmpty);
+    });
+  });
+
+  // --- 011-login-guest-mode (T008, data-model §3): the guest scope. ---
+  group('ACC-04 Log out of guest (EraseScope.guestLogOut)', () {
+    late SettingsRepositoryImpl settings;
+
+    setUp(() {
+      settings = SettingsRepositoryImpl(
+        db,
+        knownModuleIds: const ['expense', 'habit'],
+      );
+    });
+
+    /// A guest with data, a theme, ad consent, Pro, Backup settings, and
+    /// a known backup an earlier account left behind.
+    Future<void> guestWithData() async {
+      await seedEverything();
+      await settings.setAuthMode(AuthMode.guest);
+      await settings.setThemeMode('dark');
+      await settings.setSelectedTheme('saffron');
+      await settings.setAdsInstallAtIfMissing(1234);
+      await settings.setDeviceIdCopy('this-phone');
+      await settings.setAutoBackup(
+        frequency: AutoBackupFrequency.weekly,
+        wifiOnly: false,
+      );
+      await settings.setLastKnownDriveBackup(at: 1, deviceId: 'x');
+      await db.customStatement(
+        "INSERT INTO settings VALUES ('removeAdsPurchased', 'true', 0)",
+      );
+      await db.customStatement('INSERT INTO settings VALUES (?, ?, 0)', [
+        SettingsCodec.adConsentStatus,
+        '"obtained"',
+      ]);
+    }
+
+    test('ACC-04 "Log out and delete" removes all module rows and rewarded '
+        'unlocks, resets the change counters, and sets authMode none in the '
+        'same transaction', () async {
+      await guestWithData();
+      await service().eraseAll(scope: EraseScope.guestLogOut);
+      final after = await counts();
+      expect(
+        after.entries.where((e) => e.key != 'settings' && e.value > 0),
+        isEmpty,
+      );
+      expect(after['unlocks'], 0);
+      final s = await settings.load();
+      expect(s.authMode, AuthMode.none);
+      expect(s.dataChangeCounter, 0);
+      expect(s.backedUpChangeCounter, 0);
+    });
+
+    test('ACC-04 After "Log out and delete," language, currency, theme, '
+        'enabled modules, onboarding done, and Pro are kept; Backup settings '
+        'and the known backup go', () async {
+      await guestWithData();
+      await service().eraseAll(scope: EraseScope.guestLogOut);
+      final s = await settings.load();
+      expect(s.locale, 'gu');
+      expect(s.currencyCode, 'USD');
+      expect(s.themeMode, 'dark');
+      expect(s.selectedTheme, 'saffron');
+      expect(s.enabledModules, ['expense', 'habit']);
+      expect(s.onboardingDone, isTrue);
+      expect(s.removeAdsPurchased, isTrue);
+      expect(s.adConsentStatus, 'obtained');
+      expect(s.deviceId, 'this-phone');
+      expect(s.adsInstallAt, 1234);
+      expect(s.autoBackupFrequency, AutoBackupFrequency.off);
+      expect(s.autoBackupWifiOnly, isTrue);
+      expect(s.lastKnownDriveBackupAt, isNull);
+      expect(s.lockEnabled, isFalse);
+      final keys = {
+        for (final row in await db.select(db.settings).get()) row.key,
+      };
+      expect(
+        keys.difference({
+          ...DriftAppResetService.keptByGuestLogOut,
+          SettingsCodec.authMode,
+        }),
+        isEmpty,
+      );
+    });
+
+    test('ACC-04 "Log out and delete" deletes the PIN hash and lockout state '
+        'and cancels every scheduled notification; module files go through '
+        'onEraseAll; a failing step never stops the next', () async {
+      await guestWithData();
+      modules.first.onEraseAllBody = () async => throw StateError('x');
+      await service().eraseAll(scope: EraseScope.guestLogOut);
+      expect(secure.values.keys, ['other']);
+      expect(notifications.cancelAllCalls, 1);
+      expect([for (final m in modules) m.eraseAllCalls], [1, 1]);
+      expect(order, ['lock', 'after']);
+    });
+
+    test('ACC-04 A failed erase leaves all data and settings in place, and '
+        'the user stays a guest', () async {
+      await guestWithData();
+      final before = await counts();
+      final settingsBefore = await settings.load();
+      await db.customStatement(
+        'CREATE TRIGGER no_erase BEFORE DELETE ON habit_entries '
+        "BEGIN SELECT RAISE(ABORT, 'boom'); END;",
+      );
+      await expectLater(
+        service().eraseAll(scope: EraseScope.guestLogOut),
+        throwsA(anything),
+      );
+      expect(await counts(), before);
+      final s = await settings.load();
+      expect(s, settingsBefore);
+      expect(s.authMode, AuthMode.guest);
+      expect(secure.values.containsKey('lock.pin'), isTrue);
+      expect(notifications.cancelAllCalls, 0);
+    });
   });
 }

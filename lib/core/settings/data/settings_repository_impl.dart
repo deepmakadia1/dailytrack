@@ -339,6 +339,24 @@ class SettingsRepositoryImpl implements SettingsRepository {
   Future<void> setFinishSetupPending({required bool pending}) =>
       _put(SettingsCodec.finishSetupPending, pending);
 
+  @override
+  Future<void> setAuthMode(AuthMode mode) =>
+      _put(SettingsCodec.authMode, mode.name);
+
+  /// A stored row, even a corrupt one, is never rewritten: it decodes to
+  /// `none` and AUTH-01 shows (research R2).
+  @override
+  Future<void> migrateAuthMode() => _db.transaction(() async {
+    if (await _row(SettingsCodec.authMode) != null) return;
+    final s = await load();
+    final mode = !s.onboardingDone
+        ? AuthMode.none
+        : s.backupAccountEmail != null
+        ? AuthMode.google
+        : AuthMode.guest;
+    await _put(SettingsCodec.authMode, mode.name);
+  });
+
   Future<SettingRow?> _row(String key) => (_db.select(
     _db.settings,
   )..where((t) => t.key.equals(key))).getSingleOrNull();

@@ -50,7 +50,7 @@ final class LockSessionProvider
   }
 }
 
-String _$lockSessionHash() => r'38660e20c394b0c35eba0857bd47ade9f5c1ee2e';
+String _$lockSessionHash() => r'eced68a7ecd6f85a4d104ea657557311839ff057';
 
 /// Whether the app is locked right now (research R7). Bootstrap starts it
 /// from `settings.lockEnabled`; the app's lifecycle listener locks it again

@@ -3,6 +3,7 @@ import 'package:dailytrack/features/lock/presentation/screens/pin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../helpers/fakes.dart';
 import '../expense/expense_test_app.dart';
 import 'account_test_app.dart';
 
@@ -71,6 +72,34 @@ void main() {
     );
     expect(find.byKey(const Key('finish_setup')), findsOneWidget);
     expect(find.byKey(const Key('finish_setup_notifications')), findsNothing);
+  });
+
+  testWidgets('"Allow notifications" is hidden when notifications are '
+      'already allowed', (tester) async {
+    await pumpAccountApp(
+      tester,
+      initial: pending,
+      location: Routes.home,
+      notif: FakeNotificationPermission(granted: true),
+    );
+    expect(find.byKey(const Key('finish_setup')), findsOneWidget);
+    expect(find.byKey(const Key('finish_setup_lock')), findsOneWidget);
+    expect(find.byKey(const Key('finish_setup_notifications')), findsNothing);
+  });
+
+  testWidgets('dismissing the sheet clears the flag like any action', (
+    tester,
+  ) async {
+    final world = await pumpAccountApp(
+      tester,
+      initial: pending,
+      location: Routes.home,
+    );
+    expect(find.byKey(const Key('finish_setup')), findsOneWidget);
+    await tester.tapAt(const Offset(10, 10));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('finish_setup')), findsNothing);
+    expect(world.settings.current.finishSetupPending, isFalse);
   });
 
   testWidgets("it isn't shown when app lock is on", (tester) async {

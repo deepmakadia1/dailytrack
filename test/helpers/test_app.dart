@@ -6,6 +6,7 @@ import 'package:dailytrack/core/ads/ad_providers.dart';
 import 'package:dailytrack/core/ads/ad_service.dart';
 import 'package:dailytrack/core/ads/rewarded_unlock.dart';
 import 'package:dailytrack/core/background/background_providers.dart';
+import 'package:dailytrack/core/backup/backup_providers.dart';
 import 'package:dailytrack/core/billing/billing_providers.dart';
 import 'package:dailytrack/core/database/database_provider.dart';
 import 'package:dailytrack/core/feature_gate/feature_gate_providers.dart';
@@ -22,8 +23,9 @@ import 'package:dailytrack/core/support/app_info_source.dart';
 import 'package:dailytrack/core/support/app_review_service.dart';
 import 'package:dailytrack/core/support/device_info_source.dart';
 import 'package:dailytrack/core/support/external_launcher.dart';
+import 'package:dailytrack/core/support/network_state_source.dart';
 import 'package:dailytrack/core/widget/glance_refresher.dart';
-import 'package:dailytrack/features/account/presentation/widgets/restore_choice_sheet.dart';
+import 'package:dailytrack/features/account/presentation/account_feature_ui.dart';
 import 'package:dailytrack/features/premium/presentation/rewarded_unlock_sheet.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -73,12 +75,17 @@ Future<FakeSettingsRepository> pumpTestApp(
   FakeGlanceRefresher? glance,
   FakeAccountAuth? accountAuth,
   FakeAccountRestore? accountRestore,
+  FakeNetworkStateSource? network,
+  FakeDriveBackupStore? drive,
   int androidSdk = 34,
   bool debugTools = false,
   List<Override> overrides = const [],
   bool settle = true,
 }) async {
   final repo = settings ?? FakeSettingsRepository();
+  // As SYS-01 does before routing, also when a test scripts the bootstrap
+  // results (feature 011 research R2).
+  await repo.migrateAuthMode();
   final expenseFakes = expense ?? ExpenseFakes.empty();
   final habitFakes = habit ?? HabitFakes(expenseFakes.clock);
   final testLock = lock ?? TestLock(settings: repo, clock: expenseFakes.clock);
@@ -125,6 +132,10 @@ Future<FakeSettingsRepository> pumpTestApp(
         deviceInfoSourceProvider.overrideWithValue(
           FakeDeviceInfoSource(sdkInt: androidSdk),
         ),
+        // Online unless a test passes [network] (feature 010).
+        networkStateSourceProvider.overrideWithValue(
+          network ?? FakeNetworkStateSource(),
+        ),
         appReviewServiceProvider.overrideWithValue(
           review ?? FakeAppReviewService(),
         ),
@@ -151,6 +162,8 @@ Future<FakeSettingsRepository> pumpTestApp(
           accountRestore ?? FakeAccountRestore(settings: repo),
         ),
         accountUiProvider.overrideWithValue(const AccountFeatureUi()),
+        // Pass [drive] to record Drive calls (feature 011 research R13).
+        if (drive != null) driveBackupStoreProvider.overrideWithValue(drive),
         ...overrides,
       ],
       child: const DailyTrackApp(),
@@ -187,8 +200,8 @@ Future<FakeSettingsRepository> restartTestApp(
 }
 
 /// Scrolls SET-01 until [finder] is built and on screen. SET-01 is a lazy
-/// list and the premium card (feature 009) leads it, so lower rows are not
-/// built until scrolled to.
+/// list and the account card (feature 011) and the premium card (feature
+/// 009) lead it, so lower rows are not built until scrolled to.
 Future<void> scrollSettingsTo(WidgetTester tester, Finder finder) async {
   await tester.scrollUntilVisible(
     finder,

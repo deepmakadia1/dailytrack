@@ -20,6 +20,14 @@ const AppSettings signedIn = AppSettings(
   accountDisplayName: 'Asha Patel',
   autoBackupFrequency: AutoBackupFrequency.daily,
   deviceId: 'this-phone',
+  authMode: AuthMode.google,
+);
+
+/// The same phone as a guest: no account (feature 011).
+final AppSettings guest = signedIn.copyWith(
+  authMode: AuthMode.guest,
+  backupAccountEmail: null,
+  accountDisplayName: null,
 );
 
 /// Everything the account screens talk to, as fakes.
@@ -62,7 +70,10 @@ BackupMeta otherPhoneMeta({
 );
 
 /// Pumps the app with fakes only and opens [location] (ACC-01 by default).
-/// [arrange] sets up the fakes before the app starts.
+/// [arrange] sets up the fakes before the app starts. [authModeStored]
+/// keeps a stored `authMode` of none (AUTH-01 tests); see
+/// [FakeSettingsRepository.authModeStored]. [pin] turns on a real app lock
+/// with that PIN stored.
 Future<AccountWorld> pumpAccountApp(
   WidgetTester tester, {
   AppSettings initial = signedIn,
@@ -71,6 +82,10 @@ Future<AccountWorld> pumpAccountApp(
   int androidSdk = 34,
   FakeProStore? pro,
   FakeAdService? ads,
+  FakeNetworkStateSource? network,
+  FakeNotificationPermission? notif,
+  bool? authModeStored,
+  String? pin,
   void Function(AccountWorld world)? arrange,
   List<Override> overrides = const [],
 }) async {
@@ -78,7 +93,10 @@ Future<AccountWorld> pumpAccountApp(
     ..physicalSize = const Size(412, 1400)
     ..devicePixelRatio = 1;
   addTearDown(tester.view.reset);
-  final settings = FakeSettingsRepository(initial: initial);
+  final settings = FakeSettingsRepository(
+    initial: initial,
+    authModeStored: authModeStored,
+  );
   final world = AccountWorld(
     settings: settings,
     auth: FakeAccountAuth(),
@@ -90,19 +108,25 @@ Future<AccountWorld> pumpAccountApp(
     pro: pro ?? FakeProStore(),
   );
   arrange?.call(world);
+  // App lock with [pin] as the PIN; pair it with `lockEnabled: true`.
+  final lock = pin == null ? null : TestLock(settings: settings);
+  await lock?.seedPin(pin!);
   await pumpTestApp(
     tester,
     settings: settings,
     accountAuth: world.auth,
+    drive: world.drive,
     accountRestore: world.restore,
+    lock: lock,
     reset: world.reset,
     background: world.scheduler,
     proStore: world.pro,
     ads: ads,
+    network: network,
+    notif: notif,
     androidSdk: androidSdk,
     overrides: [
       driveAvailableProvider.overrideWithValue(true),
-      driveBackupStoreProvider.overrideWithValue(world.drive),
       backupServiceProvider.overrideWithValue(world.backup),
       restoreServiceProvider.overrideWithValue(FakeRestoreService()),
       ...overrides,

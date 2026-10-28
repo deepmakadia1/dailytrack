@@ -17,7 +17,8 @@ Future<void> syncAutoBackupSchedule(
   BackgroundScheduler scheduler,
 ) async {
   final period = s.autoBackupFrequency.period;
-  if (period == null || s.backupAccountEmail == null) {
+  // Only once the sign-in is committed (feature 011 research R4).
+  if (period == null || s.authMode != AuthMode.google) {
     await scheduler.cancel(autoBackupTaskName);
     await scheduler.cancel(backgroundBackupTaskName);
     return;

@@ -6,6 +6,7 @@ import 'package:dailytrack/app/bootstrap.dart';
 import 'package:dailytrack/app/flavor.dart';
 import 'package:dailytrack/app/module_registry.dart';
 import 'package:dailytrack/app/router/app_router.dart';
+import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/app/router_ad_screen_probe.dart';
 import 'package:dailytrack/core/account/account_providers.dart';
 import 'package:dailytrack/core/ads/ad_providers.dart';
@@ -47,7 +48,7 @@ import 'package:dailytrack/core/utils/clock_provider.dart';
 import 'package:dailytrack/core/widget/data/home_widget_plugin_bridge.dart';
 import 'package:dailytrack/core/widget/glance_refresher.dart';
 import 'package:dailytrack/core/widget/widget_providers.dart';
-import 'package:dailytrack/features/account/presentation/widgets/restore_choice_sheet.dart';
+import 'package:dailytrack/features/account/presentation/account_feature_ui.dart';
 import 'package:dailytrack/features/expense/expense_bindings.dart';
 import 'package:dailytrack/features/habit/habit_bindings.dart';
 import 'package:dailytrack/features/premium/presentation/rewarded_unlock_sheet.dart';
@@ -193,37 +194,9 @@ List<Override> productionOverrides() {
         modules: registry.all,
         read: ref.read,
         notifications: ref.watch(notificationServiceProvider),
-        // Device state outside the database: the lock and the backup
-        // password in secure storage (feature 008 research R4), the Google
-        // session, and both auto backup jobs (research R10, R11; feature
-        // 010). Keeping the sign-in through an erase is task T041. Best
-        // effort.
-        resetLock: () async {
-          await ref.read(lockServiceProvider).reset();
-          for (final step in <Future<void> Function()>[
-            ref.read(backupPasswordStoreProvider).delete,
-            // The 7-day copy of earlier data (feature 010 FR-019a).
-            ref.read(safetyCopyStoreProvider).delete,
-            () => ref
-                .read(backgroundSchedulerProvider)
-                .cancel(autoBackupTaskName),
-            () => ref
-                .read(backgroundSchedulerProvider)
-                .cancel(backgroundBackupTaskName),
-            if (ref.read(driveAvailableProvider))
-              ref.read(accountAuthProvider).signOut,
-          ]) {
-            try {
-              await step();
-            } on Object {
-              // Never blocks the erase.
-            }
-          }
-        },
-        afterErase: () {
-          ref.read(lockSessionProvider.notifier).reset();
-          ref.invalidate(bootstrapProvider);
-        },
+        // Device state outside the database (feature 010 FR-006a).
+        resetLock: bindEraseDeviceState(ref),
+        afterErase: bindAfterErase(ref),
         // The widget shows "Open DailyTrack" again (feature 008 R19).
         refreshGlance: () => ref.read(glanceRefresherProvider).refreshNow(),
       ),
@@ -253,6 +226,39 @@ AdService bindAdService(Ref ref) {
   unawaited(service.init());
   return service;
 }
+
+/// The steps of Erase all data outside the database (SET-01; feature 010
+/// FR-006a, research R16): the lock and the backup password in secure
+/// storage (feature 008 research R4), the 7-day safety copy (FR-019a), and
+/// both auto backup jobs. The Google sign-in is kept: erasing removes data
+/// from this phone only, so it never signs out. Each step is best effort
+/// and never blocks the erase.
+Future<void> Function() bindEraseDeviceState(Ref ref) => () async {
+  for (final step in <Future<void> Function()>[
+    () => ref.read(lockServiceProvider).reset(),
+    () => ref.read(backupPasswordStoreProvider).delete(),
+    () => ref.read(safetyCopyStoreProvider).delete(),
+    () => ref.read(backgroundSchedulerProvider).cancel(autoBackupTaskName),
+    () =>
+        ref.read(backgroundSchedulerProvider).cancel(backgroundBackupTaskName),
+  ]) {
+    try {
+      await step();
+    } on Object {
+      // Never blocks the erase.
+    }
+  }
+};
+
+/// After an erase: an unlocked session, startup again (it reseeds the
+/// defaults), and Home with the old stack gone (SET-01 "then opens Home";
+/// feature 011 clarification Q1). After ACC-03 or ACC-04 `authMode` is
+/// `none`, so the redirect turns Home into AUTH-01.
+void Function() bindAfterErase(Ref ref) => () {
+  ref.read(lockSessionProvider.notifier).reset();
+  ref.invalidate(bootstrapProvider);
+  ref.read(appRouterProvider).go(Routes.home);
+};
 
 /// What runs after a restore (feature 008 research R8, R18, R19): clear
 /// every notification, rerun the app-open work (it reschedules reminders),

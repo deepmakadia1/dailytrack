@@ -1,4 +1,5 @@
 import 'package:dailytrack/core/backup/domain/backup_conflict_policy.dart';
+import 'package:dailytrack/core/backup/presentation/backup_device_name.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
 import 'package:dailytrack/core/utils/date_formats.dart';
 import 'package:dailytrack/core/utils/date_keys.dart';
@@ -19,7 +20,7 @@ Future<bool> showBackupConflictDialog(
     case NewerFromOtherDevice(:final newest):
       final device = newest.deviceName.isEmpty
           ? l10n.backup_unknownDevice
-          : newest.deviceName;
+          : backupDeviceName(l10n, newest.deviceName);
       final time = formatFullDateTime(
         Epoch.toLocal(newest.createdAt),
         FullDateFormatScope.of(context),

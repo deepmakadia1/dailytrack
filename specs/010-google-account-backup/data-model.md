@@ -2,13 +2,15 @@
 
 No new tables. Drift `schemaVersion` 4 → 5 adds SQLite triggers only (research R5). New state is in the `settings` key-value table (none of it restorable, so `BackupSettingsPolicy.restorableKeys` is unchanged), in one no-backup file, in a safety-copy folder, and in Drive file properties.
 
+Matched to `docs/spec.md` §4 and §16 as updated on 2026-10-27 for feature 011. The `authMode` key (`none`, `guest`, `google`) and its migration in §4 belong to 011; until then "signed in" means `backupAccountEmail` is set (plan.md interim I1, **Replaced in 011**).
+
 ## 1. Settings keys
 
 Typed in `AppSettings` (`lib/core/settings/domain/app_settings.dart`) and encoded by `SettingsCodec`, like the existing keys.
 
 | Key | Type (JSON) | Default | Written by | Notes |
 | --- | --- | --- | --- | --- |
-| `backupAccountEmail` | string? | null | AccountService | Existing (feature 008). Now "the signed-in account". |
+| `backupAccountEmail` | string? | null | AccountService | Existing (feature 008). Now "the signed-in account" (empty when signed out); set means signed in (interim I1, **Replaced in 011** by `authMode = google`, which 011 keeps true only while this is set). |
 | `accountDisplayName` | string? | null | AccountService | Set on sign-in, cleared on sign-out (FR-003). |
 | `accountPhotoUrl` | string? | null | AccountService | Same. |
 | `deviceId` | string? | null | DeviceIdentity (SYS-01) | Copy of the no-backup file; used to detect an Android restore (R4). Kept by Erase all data. |
@@ -19,11 +21,13 @@ Typed in `AppSettings` (`lib/core/settings/domain/app_settings.dart`) and encode
 | `lastKnownDriveBackupDeviceId` | string? | null | same | Its device ID. |
 | `autoBackupPausedByConflict` | bool | false | runAutoBackup; cleared by restore, Keep, manual backup | FR-038, FR-039. |
 | `autoBackupPauseNotified` | bool | false | runAutoBackup | The pause notice was shown for this pause; reset when the pause ends. |
-| `finishSetupPending` | bool | false | AccountRestore, Android-restore path | Shows the Finish setting up sheet once on Home (R13). |
+| `finishSetupPending` | bool | false | AccountRestore, Android-restore path | Shows the Finish setting up sheet once on Home (R13), after a restore onto an empty phone or an Android Auto Backup restore (interim I6; **Replaced in 011**: also after every login). |
 
 Existing keys used as is: `autoBackupFrequency` (set to `daily` on sign-in if `off`, FR-006), `autoBackupWifiOnly`, `lastAutoBackupAt`, `autoBackupFailures`, `autoBackupFailureNotified`, `backupEncrypt` (set to true by FR-019b), `lastBackupAt`, `lastBackupLocation`, `lastBackupSizeBytes`.
 
-**Erase all data** keeps `backupAccountEmail`, `accountDisplayName`, `accountPhotoUrl`, `deviceId`, `lastKnownDriveBackup*`, and `autoBackupFrequency`/`autoBackupWifiOnly` (SET-01: erase doesn't sign out). It resets both change counters to 0, so the erased phone counts as unchanged until the user adds data. **Sign-out** clears the account keys, `lastKnownDriveBackup*`, `lastBackgroundBackupAt`, and the pause flags.
+**Erase all data** keeps `backupAccountEmail`, `accountDisplayName`, `accountPhotoUrl`, `deviceId`, `lastKnownDriveBackup*`, and `autoBackupFrequency`/`autoBackupWifiOnly` (SET-01: erase doesn't sign out). It resets both change counters to 0, so the erased phone counts as unchanged until the user adds data. The keep-list is a parameter of the erase (default: the keys above), so 011's ACC-04 can pass its own list (FR-006a); 011 also adds `authMode` to the default list. **Sign-out** clears the account keys, `lastKnownDriveBackup*`, `lastBackgroundBackupAt`, and the pause flags.
+
+**Android restore start** sets `lastKnownDriveBackupAt` to null. `docs/spec.md` §16 says "0"; both mean "no backup known" to `BackupConflictPolicy` (`lastKnownAt ?? 0`).
 
 ## 2. Change counter triggers (schema 5)
 
@@ -92,28 +96,32 @@ Transitions (`AccountService`):
 SignedOut --signIn ok--> SignedIn(verified)        [save profile; autoBackupFrequency off→daily]
 SignedOut --signIn cancel/fail--> SignedOut
 SignedIn  --app start, silent ok--> SignedIn(verified)
-SignedIn  --app start, silent fails--> SignedIn(!verified)   [shown as signed out on ACC-01; no Drive calls]
-SignedIn  --Drive DriveAuthRequired--> SignedOut   [clear keys]
+SignedIn  --app start, no session (token revoked, account removed)--> SignedOut   [clear keys; data kept]
+SignedIn  --app start, offline / transient error--> SignedIn(!verified)   [still signed in; Drive calls report offline]
+SignedIn  --Drive DriveAuthRequired--> SignedOut   [clear keys; data kept]
 SignedIn  --signOut--> SignedOut                   [clear keys + lastKnown*; cancel jobs]
 SignedIn  --switchAccount--> SignedOut --chooser ok--> SignedIn(new)
+                                       --chooser cancelled--> SignedOut   [data kept; More tab]
 ```
 
-## 7. Backup status (ACC-01, SET-01)
+"No session" is `attemptLightweightAuthentication()` returning null; a thrown network error is "offline" (research R2). The `SignedOut` results of a revoked token and a cancelled Switch account chooser are interim (I4, I5): **Replaced in 011**, where they become `authMode = guest`. ACC-01 closes whenever the state becomes `SignedOut` while it is open.
 
-Derived, not stored (`BackupStatusPolicy.derive`, pure):
+## 7. Backup status (ACC-01; the SET-01 account card in 011)
 
-| Status | When |
-| --- | --- |
-| `backingUp` | the backup coordinator lease is held |
-| `paused` | `autoBackupPausedByConflict` |
-| `failed(reason)` | `autoBackupFailures > 0`, or the last manual backup failed this session |
-| `waitingForWifi` | a background backup is pending (`lastBackgroundBackupAt` > `lastBackupAt`), Wi-Fi only is on, and the network is metered |
-| `offline` | no network, or the status read failed with `DriveOffline` |
+Derived, not stored (`BackupStatusPolicy.derive`, pure). 010 shows it on ACC-01; 011's SET-01 account card reuses it (interim I8, **Replaced in 011**).
 
-Network state comes from a new `getNetworkState` method on the existing `dailytrack/window` channel (`ConnectivityManager`: `{online, metered}`), read when ACC-01 opens and on resume. No connectivity plugin is added.
-| `backedUp` | otherwise, with `lastBackupAt` and the device name of the last backup |
+| Status | When | Text |
+| --- | --- | --- |
+| `backingUp` | the backup coordinator lease is held | "Backing up…" |
+| `paused` | `autoBackupPausedByConflict` | "Backup paused: a newer backup from another phone exists" |
+| `failed(reason)` | `autoBackupFailures > 0`, or the last manual backup failed this session | "Backup failed" + the error message |
+| `waitingForWifi` | a background backup is pending (`lastBackgroundBackupAt` > `lastBackupAt`), Wi-Fi only is on, and the network is metered | "Waiting for Wi-Fi" |
+| `offline` | no network, or the status read failed with `DriveOffline` | "You're offline. Backups resume when you're back online." |
+| `backedUp` | otherwise, with `lastBackupAt` and the device name of the last backup | "Backed up to Google" (never "Synced") |
 
 Precedence: offline > backingUp > paused > failed > waitingForWifi > backedUp.
+
+Network state comes from a new `getNetworkState` method on the existing `dailytrack/window` channel (`ConnectivityManager`: `{online, metered}`), read when ACC-01 opens and on resume. No connectivity plugin is added.
 
 ## 8. Drive backup results
 

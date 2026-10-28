@@ -32,21 +32,21 @@ flutter test test/core/backup/domain/       # trigger, change counter, conflict,
 flutter test test/core/account/             # AccountService transitions, device identity table, AccountRestore paths
 flutter test test/core/database/            # migration 4 → 5, trigger coverage test (data-model §2)
 flutter test test/features/account/         # ACC-01, ACC-02, ACC-03, Finish setting up: every copied criterion
-flutter test test/features/onboarding/      # SYS-02 Restore with Google criteria
-flutter test test/features/settings/        # SET-01 Account row, SET-02 Drive card and safety copy tile
+flutter test test/features/onboarding/      # SYS-02 Restore with Google criteria (interim, Replaced in 011)
+flutter test test/features/settings/        # SET-02 Drive card sign-in (§16 Guest sign-in criteria), ACC-01 entry, safety copy tile
 flutter test test/android/                  # backup rules XML parse test
 ```
 
 Expected: every acceptance criterion copied into `spec.md` maps to at least one named test
-(`ACC-01 …`, `ACC-02 …`, `ACC-03 …`, `SYS-02 …`, `SET-01 …`, `§16 …` in the test names).
+(`ACC-01 …`, `ACC-02 …`, `ACC-03 …`, `SYS-02 …`, `SET-02 …`, `§16 …` in the test names). Criteria marked *Deferred to 011* in spec.md have no test here.
 
 ## 4. Device checks
 
 Run `flutter run --flavor dev --dart-define=GOOGLE_SERVER_CLIENT_ID=<id>` on device A.
 
-1. **Sign in, first backup (ACC-01)**: fresh test account with no backups. More → Account → Sign in with Google.
-   Expect "Signed in. Your data is backed up.", Auto backup now Daily, and ACC-01 showing the name, photo,
-   email, and "Last backup: Today, … · <device A model>".
+1. **Sign in, first backup (SET-02)**: fresh test account with no backups. More → Backup and restore → Sign in with Google.
+   Expect "Signed in. Your data is backed up.", Auto backup now Daily, and the Drive card showing the email; tap it to open ACC-01, which shows the name, photo,
+   email, and "Last backup: Today, … · <device A model>" and "Backed up to Google".
 2. **Background backup**: add an expense, press Home. Within a minute (on Wi-Fi), the last backup time
    updates. Add another and press Home again at once: no new backup until 15 minutes have passed
    (`adb shell dumpsys jobscheduler | grep backgroundBackup` shows one pending job at most).
@@ -63,8 +63,8 @@ Run `flutter run --flavor dev --dart-define=GOOGLE_SERVER_CLIENT_ID=<id>` on dev
    SET-02 shows "Restore previous phone data"; restoring it brings A's data back.
 8. **Sign out (ACC-03)**: airplane mode, add data, Account → Sign out. Expect the failed state with
    "Sign out anyway"; choose Remove → typed DELETE dialog appears. Cancel. Back online, sign out with
-   Keep: data stays, ACC-01 signed out.
-9. **Delete my backups**: sign in again on A, Delete my backups, confirm. SET-02 Drive list is empty; local
+   Keep: data stays, the app opens the More tab with "Signed out. Your data is still on this phone.", and the Drive card shows "Sign in with Google".
+9. **Delete my backups**: sign in again on A from the SET-02 Drive card, open ACC-01, Delete my backups, confirm. SET-02 Drive list is empty; local
    data and the sign-in stay.
 10. **Android Auto Backup**: with app lock on, run
     `adb shell bmgr backupnow <applicationId>`, uninstall, reinstall (`adb install`), then

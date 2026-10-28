@@ -195,6 +195,15 @@ abstract interface class SettingsRepository {
   /// Whether Home shows the "Finish setting up" sheet (research R13).
   Future<void> setFinishSetupPending({required bool pending});
 
+  /// The sign-in mode (feature 011 research R1, R3).
+  Future<void> setAuthMode(AuthMode mode);
+
+  /// SYS-01, once per start before routing (research R2). Writes the
+  /// `authMode` row only when it is missing: google (onboarding done and an
+  /// account email), guest (onboarding done), else none. Never throws on
+  /// bad data.
+  Future<void> migrateAuthMode();
+
   /// A module's own string state, stored as `module.<key>`, or null.
   Future<String?> readModuleState(String key);
 

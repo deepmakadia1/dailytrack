@@ -21,7 +21,9 @@ mixin _$RestoreChoiceState {
  bool get passwordNeeded;/// The typed password didn't work.
  bool get passwordError;/// Restoring or keeping is running.
  bool get working;/// The last restore failed; this phone's data is unchanged.
- Object? get failure;
+ Object? get failure;/// No network: restore is disabled; "Keep this phone's data" still
+/// works (spec §16 ACC-02 States).
+ bool get offline;
 /// Create a copy of RestoreChoiceState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -33,20 +35,20 @@ $RestoreChoiceStateCopyWith<RestoreChoiceState> get copyWith => _$RestoreChoiceS
 @override
 bool operator ==(Object other) {
   final _this = this as RestoreChoiceState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RestoreChoiceState&&(identical(other.phoneCounts, _this.phoneCounts) || other.phoneCounts == _this.phoneCounts)&&(identical(other.thisDeviceId, _this.thisDeviceId) || other.thisDeviceId == _this.thisDeviceId)&&(identical(other.passwordNeeded, _this.passwordNeeded) || other.passwordNeeded == _this.passwordNeeded)&&(identical(other.passwordError, _this.passwordError) || other.passwordError == _this.passwordError)&&(identical(other.working, _this.working) || other.working == _this.working)&&const DeepCollectionEquality().equals(other.failure, _this.failure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RestoreChoiceState&&(identical(other.phoneCounts, _this.phoneCounts) || other.phoneCounts == _this.phoneCounts)&&(identical(other.thisDeviceId, _this.thisDeviceId) || other.thisDeviceId == _this.thisDeviceId)&&(identical(other.passwordNeeded, _this.passwordNeeded) || other.passwordNeeded == _this.passwordNeeded)&&(identical(other.passwordError, _this.passwordError) || other.passwordError == _this.passwordError)&&(identical(other.working, _this.working) || other.working == _this.working)&&const DeepCollectionEquality().equals(other.failure, _this.failure)&&(identical(other.offline, _this.offline) || other.offline == _this.offline));
 }
 
 
 @override
 int get hashCode {
   final _this = this as RestoreChoiceState;
-  return Object.hash(runtimeType,_this.phoneCounts,_this.thisDeviceId,_this.passwordNeeded,_this.passwordError,_this.working,const DeepCollectionEquality().hash(_this.failure));
+  return Object.hash(runtimeType,_this.phoneCounts,_this.thisDeviceId,_this.passwordNeeded,_this.passwordError,_this.working,const DeepCollectionEquality().hash(_this.failure),_this.offline);
 }
 
 @override
 String toString() {
   final _this = this as RestoreChoiceState;
-  return 'RestoreChoiceState(phoneCounts: ${_this.phoneCounts}, thisDeviceId: ${_this.thisDeviceId}, passwordNeeded: ${_this.passwordNeeded}, passwordError: ${_this.passwordError}, working: ${_this.working}, failure: ${_this.failure})';
+  return 'RestoreChoiceState(phoneCounts: ${_this.phoneCounts}, thisDeviceId: ${_this.thisDeviceId}, passwordNeeded: ${_this.passwordNeeded}, passwordError: ${_this.passwordError}, working: ${_this.working}, failure: ${_this.failure}, offline: ${_this.offline})';
 }
 
 
@@ -57,7 +59,7 @@ abstract mixin class $RestoreChoiceStateCopyWith<$Res>  {
   factory $RestoreChoiceStateCopyWith(RestoreChoiceState value, $Res Function(RestoreChoiceState) _then) = _$RestoreChoiceStateCopyWithImpl;
 @useResult
 $Res call({
- AsyncValue<Map<String, int>> phoneCounts, String? thisDeviceId, bool passwordNeeded, bool passwordError, bool working, Object? failure
+ AsyncValue<Map<String, int>> phoneCounts, String? thisDeviceId, bool passwordNeeded, bool passwordError, bool working, Object? failure, bool offline
 });
 
 
@@ -74,14 +76,15 @@ class _$RestoreChoiceStateCopyWithImpl<$Res>
 
 /// Create a copy of RestoreChoiceState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? phoneCounts = null,Object? thisDeviceId = freezed,Object? passwordNeeded = null,Object? passwordError = null,Object? working = null,Object? failure = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? phoneCounts = null,Object? thisDeviceId = freezed,Object? passwordNeeded = null,Object? passwordError = null,Object? working = null,Object? failure = freezed,Object? offline = null,}) {
   return _then(RestoreChoiceState(
 phoneCounts: null == phoneCounts ? _self.phoneCounts : phoneCounts // ignore: cast_nullable_to_non_nullable
 as AsyncValue<Map<String, int>>,thisDeviceId: freezed == thisDeviceId ? _self.thisDeviceId : thisDeviceId // ignore: cast_nullable_to_non_nullable
 as String?,passwordNeeded: null == passwordNeeded ? _self.passwordNeeded : passwordNeeded // ignore: cast_nullable_to_non_nullable
 as bool,passwordError: null == passwordError ? _self.passwordError : passwordError // ignore: cast_nullable_to_non_nullable
 as bool,working: null == working ? _self.working : working // ignore: cast_nullable_to_non_nullable
-as bool,failure: freezed == failure ? _self.failure : failure ,
+as bool,failure: freezed == failure ? _self.failure : failure ,offline: null == offline ? _self.offline : offline // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -166,10 +169,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AsyncValue<Map<String, int>> phoneCounts,  String? thisDeviceId,  bool passwordNeeded,  bool passwordError,  bool working,  Object? failure)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AsyncValue<Map<String, int>> phoneCounts,  String? thisDeviceId,  bool passwordNeeded,  bool passwordError,  bool working,  Object? failure,  bool offline)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RestoreChoiceState() when $default != null:
-return $default(_that.phoneCounts,_that.thisDeviceId,_that.passwordNeeded,_that.passwordError,_that.working,_that.failure);case _:
+return $default(_that.phoneCounts,_that.thisDeviceId,_that.passwordNeeded,_that.passwordError,_that.working,_that.failure,_that.offline);case _:
   return orElse();
 
 }
@@ -187,10 +190,10 @@ return $default(_that.phoneCounts,_that.thisDeviceId,_that.passwordNeeded,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AsyncValue<Map<String, int>> phoneCounts,  String? thisDeviceId,  bool passwordNeeded,  bool passwordError,  bool working,  Object? failure)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AsyncValue<Map<String, int>> phoneCounts,  String? thisDeviceId,  bool passwordNeeded,  bool passwordError,  bool working,  Object? failure,  bool offline)  $default,) {final _that = this;
 switch (_that) {
 case _RestoreChoiceState():
-return $default(_that.phoneCounts,_that.thisDeviceId,_that.passwordNeeded,_that.passwordError,_that.working,_that.failure);case _:
+return $default(_that.phoneCounts,_that.thisDeviceId,_that.passwordNeeded,_that.passwordError,_that.working,_that.failure,_that.offline);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -207,10 +210,10 @@ return $default(_that.phoneCounts,_that.thisDeviceId,_that.passwordNeeded,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AsyncValue<Map<String, int>> phoneCounts,  String? thisDeviceId,  bool passwordNeeded,  bool passwordError,  bool working,  Object? failure)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AsyncValue<Map<String, int>> phoneCounts,  String? thisDeviceId,  bool passwordNeeded,  bool passwordError,  bool working,  Object? failure,  bool offline)?  $default,) {final _that = this;
 switch (_that) {
 case _RestoreChoiceState() when $default != null:
-return $default(_that.phoneCounts,_that.thisDeviceId,_that.passwordNeeded,_that.passwordError,_that.working,_that.failure);case _:
+return $default(_that.phoneCounts,_that.thisDeviceId,_that.passwordNeeded,_that.passwordError,_that.working,_that.failure,_that.offline);case _:
   return null;
 
 }
@@ -222,7 +225,7 @@ return $default(_that.phoneCounts,_that.thisDeviceId,_that.passwordNeeded,_that.
 
 
 class _RestoreChoiceState implements RestoreChoiceState {
-  const _RestoreChoiceState({required this.phoneCounts, this.thisDeviceId, this.passwordNeeded = false, this.passwordError = false, this.working = false, this.failure});
+  const _RestoreChoiceState({required this.phoneCounts, this.thisDeviceId, this.passwordNeeded = false, this.passwordError = false, this.working = false, this.failure, this.offline = false});
   
 
 /// This phone's counts, keyed like `BackupMeta.counts`.
@@ -237,6 +240,9 @@ class _RestoreChoiceState implements RestoreChoiceState {
 @override@JsonKey() final  bool working;
 /// The last restore failed; this phone's data is unchanged.
 @override final  Object? failure;
+/// No network: restore is disabled; "Keep this phone's data" still
+/// works (spec §16 ACC-02 States).
+@override@JsonKey() final  bool offline;
 
 /// Create a copy of RestoreChoiceState
 /// with the given fields replaced by the non-null parameter values.
@@ -248,18 +254,18 @@ _$RestoreChoiceStateCopyWith<_RestoreChoiceState> get copyWith => __$RestoreChoi
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RestoreChoiceState&&(identical(other.phoneCounts, phoneCounts) || other.phoneCounts == phoneCounts)&&(identical(other.thisDeviceId, thisDeviceId) || other.thisDeviceId == thisDeviceId)&&(identical(other.passwordNeeded, passwordNeeded) || other.passwordNeeded == passwordNeeded)&&(identical(other.passwordError, passwordError) || other.passwordError == passwordError)&&(identical(other.working, working) || other.working == working)&&const DeepCollectionEquality().equals(other.failure, failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RestoreChoiceState&&(identical(other.phoneCounts, phoneCounts) || other.phoneCounts == phoneCounts)&&(identical(other.thisDeviceId, thisDeviceId) || other.thisDeviceId == thisDeviceId)&&(identical(other.passwordNeeded, passwordNeeded) || other.passwordNeeded == passwordNeeded)&&(identical(other.passwordError, passwordError) || other.passwordError == passwordError)&&(identical(other.working, working) || other.working == working)&&const DeepCollectionEquality().equals(other.failure, failure)&&(identical(other.offline, offline) || other.offline == offline));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,phoneCounts,thisDeviceId,passwordNeeded,passwordError,working,const DeepCollectionEquality().hash(failure));
+    return Object.hash(runtimeType,phoneCounts,thisDeviceId,passwordNeeded,passwordError,working,const DeepCollectionEquality().hash(failure),offline);
 }
 
 @override
 String toString() {
-    return 'RestoreChoiceState(phoneCounts: $phoneCounts, thisDeviceId: $thisDeviceId, passwordNeeded: $passwordNeeded, passwordError: $passwordError, working: $working, failure: $failure)';
+    return 'RestoreChoiceState(phoneCounts: $phoneCounts, thisDeviceId: $thisDeviceId, passwordNeeded: $passwordNeeded, passwordError: $passwordError, working: $working, failure: $failure, offline: $offline)';
 }
 
 
@@ -270,7 +276,7 @@ abstract mixin class _$RestoreChoiceStateCopyWith<$Res> implements $RestoreChoic
   factory _$RestoreChoiceStateCopyWith(_RestoreChoiceState value, $Res Function(_RestoreChoiceState) _then) = __$RestoreChoiceStateCopyWithImpl;
 @override @useResult
 $Res call({
- AsyncValue<Map<String, int>> phoneCounts, String? thisDeviceId, bool passwordNeeded, bool passwordError, bool working, Object? failure
+ AsyncValue<Map<String, int>> phoneCounts, String? thisDeviceId, bool passwordNeeded, bool passwordError, bool working, Object? failure, bool offline
 });
 
 
@@ -287,14 +293,15 @@ class __$RestoreChoiceStateCopyWithImpl<$Res>
 
 /// Create a copy of RestoreChoiceState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? phoneCounts = null,Object? thisDeviceId = freezed,Object? passwordNeeded = null,Object? passwordError = null,Object? working = null,Object? failure = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? phoneCounts = null,Object? thisDeviceId = freezed,Object? passwordNeeded = null,Object? passwordError = null,Object? working = null,Object? failure = freezed,Object? offline = null,}) {
   return _then(_RestoreChoiceState(
 phoneCounts: null == phoneCounts ? _self.phoneCounts : phoneCounts // ignore: cast_nullable_to_non_nullable
 as AsyncValue<Map<String, int>>,thisDeviceId: freezed == thisDeviceId ? _self.thisDeviceId : thisDeviceId // ignore: cast_nullable_to_non_nullable
 as String?,passwordNeeded: null == passwordNeeded ? _self.passwordNeeded : passwordNeeded // ignore: cast_nullable_to_non_nullable
 as bool,passwordError: null == passwordError ? _self.passwordError : passwordError // ignore: cast_nullable_to_non_nullable
 as bool,working: null == working ? _self.working : working // ignore: cast_nullable_to_non_nullable
-as bool,failure: freezed == failure ? _self.failure : failure ,
+as bool,failure: freezed == failure ? _self.failure : failure ,offline: null == offline ? _self.offline : offline // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

@@ -29,6 +29,7 @@ void main() {
       'getDeviceInfo',
       'openNotificationSettings',
       'getNoBackupDir',
+      'getNetworkState',
     ]) {
       expect(activity, contains('"$method"'), reason: method);
     }
@@ -47,6 +48,14 @@ void main() {
     );
     // test/android/backup_rules_test.dart checks the rules themselves.
     expect(manifest, contains('android:allowBackup="true"'));
+    // Online checks before sign-in (feature 010 T057).
+    expect(
+      manifest,
+      contains(
+        '<uses-permission '
+        'android:name="android.permission.ACCESS_NETWORK_STATE"/>',
+      ),
+    );
   });
 
   test('every launch and normal theme descends from Theme.AppCompat', () {

@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:dailytrack/core/account/account_providers.dart';
 import 'package:dailytrack/core/account/account_restore.dart';
-import 'package:dailytrack/core/account/account_sign_in.dart';
 import 'package:dailytrack/core/account/domain/account.dart';
 import 'package:dailytrack/core/background/background_providers.dart';
 import 'package:dailytrack/core/backup/auto_backup_schedule.dart';
@@ -63,7 +62,7 @@ abstract class BackupState with _$BackupState {
   }) = _BackupState;
 }
 
-/// SET-02 Backup and restore controller (FR-012 – FR-021).
+/// SET-02 Backup and restore controller (FR-012 â€“ FR-021).
 @riverpod
 class BackupController extends _$BackupController {
   @override
@@ -191,19 +190,6 @@ class BackupController extends _$BackupController {
       ref.read(backupPasswordStoreProvider).write(password);
 
   // ---- Google Drive (US2, US3) ------------------------------------------
-
-  /// "Sign in with Google", the same sign-in as ACC-01 (spec SET-02,
-  /// feature 010 research R1). Throws a `BackupFailure` when signing in
-  /// fails. Signing out is in ACC-01.
-  Future<SignInOutcome> signIn() async {
-    _update((s) => s.copyWith(uploading: true));
-    try {
-      return await ref.read(accountSignInProvider).run();
-    } finally {
-      _update((s) => s.copyWith(uploading: false));
-      await refreshDrive();
-    }
-  }
 
   /// "Back up now" (manual; never rotated) with the conflict rule;
   /// [overwrite] is "Back up anyway" after the warning. Throws a

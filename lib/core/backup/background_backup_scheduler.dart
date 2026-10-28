@@ -2,6 +2,7 @@ import 'package:clock/clock.dart';
 import 'package:dailytrack/core/background/background_scheduler.dart';
 import 'package:dailytrack/core/backup/domain/background_backup_trigger.dart';
 import 'package:dailytrack/core/backup/domain/change_counter.dart';
+import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/domain/settings_repository.dart';
 
 /// WorkManager name of the one-off backup started when the app goes to the
@@ -31,7 +32,7 @@ final class BackgroundBackupScheduler {
       final s = await _settings.load();
       final now = _clock.now().toUtc().millisecondsSinceEpoch;
       final enqueue = BackgroundBackupTrigger.shouldEnqueue(
-        signedIn: s.backupAccountEmail != null,
+        signedIn: s.authMode == AuthMode.google,
         frequency: s.autoBackupFrequency,
         onboardingDone: s.onboardingDone,
         changed: ChangeCounter.changed(

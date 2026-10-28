@@ -12,6 +12,7 @@ import 'package:dailytrack/core/database/app_database.dart';
 import 'package:dailytrack/core/security/data/secure_lock_service.dart';
 import 'package:dailytrack/core/security/domain/pin_hasher.dart';
 import 'package:dailytrack/core/security/security_providers.dart';
+import 'package:dailytrack/core/settings/domain/app_settings.dart';
 import 'package:dailytrack/core/settings/domain/settings_repository.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:drift/drift.dart' hide isNotNull, isNull;
@@ -86,6 +87,7 @@ void main() {
     );
     await s.setAccount(const AccountProfile(email: 'old@example.com'));
     await s.setLastKnownDriveBackup(at: 1792540800000, deviceId: 'old-phone');
+    await s.setAutoBackupPause(paused: true, notified: true);
     await s.setDeviceIdCopy('old-phone');
     return s;
   }
@@ -98,7 +100,8 @@ void main() {
   }
 
   test('§16 after an Android restore with app lock on and no PIN: a new '
-      'device ID, the lock off, the account cleared, no known backup, '
+      'device ID, the lock off, the account cleared, no known backup and no '
+      'pause (conflict reset), '
       '"Finish setting up", notifications rescheduled, Restore purchase, '
       'and no onboarding', () async {
     final c = container();
@@ -114,6 +117,9 @@ void main() {
     expect(s.biometricEnabled, isFalse);
     expect(s.backupAccountEmail, isNull);
     expect(s.lastKnownDriveBackupAt, isNull);
+    expect(s.lastKnownDriveBackupDeviceId, isNull);
+    expect(s.autoBackupPausedByConflict, isFalse);
+    expect(s.autoBackupPauseNotified, isFalse);
     expect(s.finishSetupPending, isTrue);
     expect(aftermaths, 1);
     expect(pro.ownershipQueries, greaterThan(0));
@@ -161,6 +167,9 @@ void main() {
       "INSERT INTO settings VALUES ('onboardingDone', 'true', 0)",
     );
     await repo.setAccount(const AccountProfile(email: 'me@example.com'));
+    // The Google session is still on the phone, so the silent sign-in at
+    // start keeps the account (FR-004).
+    auth.silentResult = const AccountProfile(email: 'me@example.com');
     await boot(c);
     final s = await repo.load();
     expect(s.deviceId, isNotNull);
@@ -186,5 +195,52 @@ void main() {
     expect(s.deviceId, 'this-phone');
     expect(s.finishSetupPending, isFalse);
     expect(aftermaths, 0);
+  });
+
+  // Feature 011 T032 (spec FR-010, research R5): what the restored
+  // `authMode` decides. Intro is never shown.
+  group('§16 the restored sign-in mode', () {
+    Future<(BootstrapResult, AppSettings)> start(AuthMode mode) async {
+      final c = container();
+      addTearDown(c.dispose);
+      final repo = await restoredDatabase(c);
+      await repo.setAuthMode(mode);
+      // No PIN: the lock goes off, so the first screen is plain.
+      final r = await boot(c);
+      return (r, await repo.load());
+    }
+
+    test(
+      'google with a silent session stays google with the keys back',
+      () async {
+        auth.silentResult = const AccountProfile(email: 'me@example.com');
+        final (r, s) = await start(AuthMode.google);
+        expect((r as BootstrapReady).initialLocation, Routes.home);
+        expect(s.authMode, AuthMode.google);
+        expect(s.backupAccountEmail, 'me@example.com');
+      },
+    );
+
+    test('google without a session becomes guest, data kept', () async {
+      final (r, s) = await start(AuthMode.google);
+      expect((r as BootstrapReady).initialLocation, Routes.home);
+      expect(s.authMode, AuthMode.guest);
+      expect(s.backupAccountEmail, isNull);
+      expect(s.onboardingDone, isTrue);
+    });
+
+    test('guest is kept, with no Google call', () async {
+      final (r, s) = await start(AuthMode.guest);
+      expect((r as BootstrapReady).initialLocation, Routes.home);
+      expect(s.authMode, AuthMode.guest);
+      expect(auth.calls, isEmpty);
+    });
+
+    test('none is kept and AUTH-01 shows, not Intro', () async {
+      final (r, s) = await start(AuthMode.none);
+      expect((r as BootstrapReady).initialLocation, Routes.login);
+      expect(s.authMode, AuthMode.none);
+      expect(auth.calls, isEmpty);
+    });
   });
 }

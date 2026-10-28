@@ -1,7 +1,10 @@
+import 'package:dailytrack/app/router/routes.dart';
 import 'package:dailytrack/core/backup/domain/backup_errors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../helpers/fakes.dart';
+import '../expense/expense_test_app.dart';
 import 'account_test_app.dart';
 
 /// ACC-02 Restore choice (spec §16, feature 010 US3, T065). The data-level
@@ -145,12 +148,14 @@ void main() {
 
   testWidgets("ACC-02 after sign-in it can't be dismissed by tapping "
       'outside and has no close button', (tester) async {
+    // Guest sign-in, here from the SET-02 Drive card.
     final world = await pumpAccountApp(
       tester,
-      initial: signedIn.copyWith(backupAccountEmail: null),
+      initial: guest,
+      location: Routes.backup,
     );
     world.drive.seed(meta: otherPhoneMeta());
-    await tapKey(tester, 'acc01.signIn');
+    await tapKey(tester, 'backup_signIn');
     expect(find.byKey(const Key('acc02_sheet')), findsOneWidget);
     expect(find.byKey(const Key('acc02_close')), findsNothing);
     await tester.tapAt(const Offset(10, 10));
@@ -158,6 +163,35 @@ void main() {
     expect(find.byKey(const Key('acc02_sheet')), findsOneWidget);
     await tapKey(tester, 'acc02_keep');
     expect(find.byKey(const Key('acc02_sheet')), findsNothing);
+  });
+
+  testWidgets('ACC-02 offline: "Connect to the internet to restore", restore '
+      "is disabled, and \"Keep this phone's data\" still works", (
+    tester,
+  ) async {
+    // The connection drops after ACC-01 opened.
+    final network = FakeNetworkStateSource();
+    final world = await pumpAccountApp(
+      tester,
+      network: network,
+      arrange: (w) => w.drive.seed(meta: otherPhoneMeta()),
+    );
+    network.online = false;
+    await tapKey(tester, 'acc01.restore');
+    expect(find.text('Connect to the internet to restore'), findsOneWidget);
+    final restore = tester.widget<FilledButton>(
+      find.byKey(const Key('acc02_restore')),
+    );
+    expect(restore.onPressed, isNull);
+    await tapKey(tester, 'acc02_keep');
+    expect(world.restore.applied, isEmpty);
+    expect(world.restore.kept, hasLength(1));
+    expect(world.restore.downloads, isEmpty);
+  });
+
+  testWidgets('ACC-02 online there is no offline message', (tester) async {
+    await openChoice(tester);
+    expect(find.byKey(const Key('acc02_offline')), findsNothing);
   });
 
   testWidgets('ACC-02 a backup from this phone says "From this phone"', (
@@ -185,22 +219,15 @@ void main() {
     expect(find.text('Unknown device'), findsOneWidget);
   });
 
-  testWidgets('token expiry: a download refused for an expired sign-in says so '
-      'and signs the account out', (tester) async {
+  testWidgets('token expiry: a download refused for an expired sign-in signs '
+      'the account out; ACC-01 closes to the More tab and says so', (
+    tester,
+  ) async {
     final world = await openChoice(tester);
     world.restore.failDownload = const DriveAuthRequired();
     await tapKey(tester, 'acc02_restore');
-    const expired =
-        'Your Google sign-in expired. Sign in again to keep backing up.';
-    expect(
-      find.descendant(
-        of: find.byKey(const Key('acc02_sheet')),
-        matching: find.text(expired),
-      ),
-      findsOneWidget,
-    );
-    // ACC-01 underneath already shows the account signed out.
-    expect(find.byKey(const Key('acc01_expired')), findsOneWidget);
+    expect(locationOf(tester), Routes.more);
+    expect(find.byKey(const Key('acc01_sessionExpired')), findsOneWidget);
     expect(world.settings.current.backupAccountEmail, isNull);
     expect(world.restore.applied, isEmpty);
   });

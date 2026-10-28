@@ -8,15 +8,15 @@ part of 'backup_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// SET-02 Backup and restore controller (FR-012 – FR-021).
+/// SET-02 Backup and restore controller (FR-012 â€“ FR-021).
 
 @ProviderFor(BackupController)
 final backupControllerProvider = BackupControllerProvider._();
 
-/// SET-02 Backup and restore controller (FR-012 – FR-021).
+/// SET-02 Backup and restore controller (FR-012 â€“ FR-021).
 final class BackupControllerProvider
     extends $AsyncNotifierProvider<BackupController, BackupState> {
-  /// SET-02 Backup and restore controller (FR-012 – FR-021).
+  /// SET-02 Backup and restore controller (FR-012 â€“ FR-021).
   BackupControllerProvider._()
     : super(
         from: null,
@@ -36,9 +36,9 @@ final class BackupControllerProvider
   BackupController create() => BackupController();
 }
 
-String _$backupControllerHash() => r'c77929ac3e703bd0730f5dcd1c8a9c3f2842499c';
+String _$backupControllerHash() => r'f145484eb6260d628164ea4241069681eb2e38e2';
 
-/// SET-02 Backup and restore controller (FR-012 – FR-021).
+/// SET-02 Backup and restore controller (FR-012 â€“ FR-021).
 
 abstract class _$BackupController extends $AsyncNotifier<BackupState> {
   FutureOr<BackupState> build();

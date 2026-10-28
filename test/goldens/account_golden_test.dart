@@ -9,9 +9,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../features/account/account_test_app.dart';
 import '../features/expense/expense_test_app.dart' show routerOf;
+import '../helpers/fakes.dart' show FakeNetworkStateSource;
 
-/// §15.10 / Constitution IV goldens for feature 010 (T100): ACC-01 signed
-/// out and signed in, ACC-02, ACC-03 after a failed backup, and SYS-02 step
+/// §15.10 / Constitution IV goldens for feature 010 (T100): ACC-01 offline
+/// and signed in, ACC-02, ACC-03 after a failed backup, and SYS-02 step
 /// 1 with "Restore with Google", in light/dark × English/Gujarati on a
 /// 360×800 surface with fakes only. Baselines are made and compared on
 /// Linux: `flutter test --tags golden --update-goldens`.
@@ -21,6 +22,7 @@ void main() {
     required AppSettings initial,
     String? location = Routes.account,
     bool hasData = true,
+    FakeNetworkStateSource? network,
     void Function(AccountWorld w)? arrange,
   }) async {
     await pumpAccountApp(
@@ -28,6 +30,7 @@ void main() {
       initial: initial,
       location: null,
       hasData: hasData,
+      network: network,
       arrange: arrange,
     );
     tester.view
@@ -37,18 +40,20 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  AppSettings user(String theme, String lang, {bool signedInUser = true}) =>
-      signedIn.copyWith(
-        locale: lang,
-        themeMode: theme,
-        backupAccountEmail: signedInUser ? 'me@example.com' : null,
-        accountDisplayName: signedInUser ? 'Asha Patel' : null,
-      );
+  AppSettings user(String theme, String lang) => signedIn.copyWith(
+    locale: lang,
+    themeMode: theme,
+    backupAccountEmail: 'me@example.com',
+    accountDisplayName: 'Asha Patel',
+  );
 
   final scenarios =
       <String, Future<void> Function(WidgetTester, String theme, String lang)>{
-        'ACC-01 signed out': (tester, theme, lang) =>
-            pump(tester, initial: user(theme, lang, signedInUser: false)),
+        'ACC-01 offline': (tester, theme, lang) => pump(
+          tester,
+          initial: user(theme, lang).copyWith(lastBackupAt: 1792540800000),
+          network: FakeNetworkStateSource(online: false),
+        ),
         'ACC-01 signed in': (tester, theme, lang) => pump(
           tester,
           initial: user(theme, lang),

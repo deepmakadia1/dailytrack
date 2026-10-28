@@ -99,7 +99,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get onboarding_privacyBody =>
-      'તમે જે પણ નોંધો છો તે ફક્ત આ ડિવાઇસ પર જ રહે છે. તમે બેકઅપ ન લો ત્યાં સુધી કંઈ અપલોડ થતું નથી.';
+      'તમે જે પણ નોંધો છો તે આ ફોન પર જ રહે છે. આગળના પગલામાં તમે Google થી તેનો બેકઅપ લઈ શકો છો અથવા મહેમાન તરીકે ચાલુ રાખી શકો છો.';
 
   @override
   String get onboarding_allowNotifications => 'સૂચનાઓની મંજૂરી આપો';
@@ -3429,6 +3429,14 @@ class AppLocalizationsGu extends AppLocalizations {
       'સાઇન ઇન થઈ શક્યું નહીં. તમારું કનેક્શન તપાસો અને ફરી પ્રયાસ કરો.';
 
   @override
+  String get account_restoreOffline =>
+      'રિસ્ટોર કરવા માટે ઇન્ટરનેટ સાથે કનેક્ટ કરો';
+
+  @override
+  String get account_signInOffline =>
+      'Google વડે સાઇન ઇન કરવા માટે ઇન્ટરનેટ સાથે કનેક્ટ કરો';
+
+  @override
   String get account_signedInBackedUp =>
       'સાઇન ઇન થઈ ગયું. તમારા ડેટાનું બેકઅપ થઈ ગયું છે.';
 
@@ -3446,7 +3454,21 @@ class AppLocalizationsGu extends AppLocalizations {
   String get account_noBackupYet => 'આ ખાતામાં હજી સુધી કોઈ બેકઅપ નથી';
 
   @override
-  String get account_statusBackedUp => 'બેકઅપ થઈ ગયું';
+  String get account_statusBackedUp => 'Google પર બેકઅપ થઈ ગયું';
+
+  @override
+  String get account_statusOffline =>
+      'તમે ઑફલાઇન છો. ઑનલાઇન થતાં બેકઅપ ફરી શરૂ થશે.';
+
+  @override
+  String get account_statusWaitingForWifi => 'Wi-Fi ની રાહ જોવાઈ રહી છે';
+
+  @override
+  String get account_statusFailedNoPassword =>
+      'બેકઅપ નિષ્ફળ ગયું: બેકઅપ અને રિસ્ટોરમાં તમારો બેકઅપ પાસવર્ડ સેટ કરો';
+
+  @override
+  String get account_signOutBackedUp => 'બેકઅપ થઈ ગયું';
 
   @override
   String get account_statusBackingUp => 'બેકઅપ થઈ રહ્યું છે…';
@@ -3527,6 +3549,9 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get backup_unknownDevice => 'અજાણ્યું ડિવાઇસ';
+
+  @override
+  String get account_androidPhone => 'Android ફોન';
 
   @override
   String get notif_backupPausedTitle => 'બેકઅપ અટક્યું છે';
@@ -3648,10 +3673,98 @@ class AppLocalizationsGu extends AppLocalizations {
       'તમારું બેકઅપ તમારા Google ખાતામાં રહેશે.';
 
   @override
-  String get onboarding_restoreWithGoogle => 'Google થી રિસ્ટોર કરો';
+  String get auth_title => 'તમારો ડેટા સુરક્ષિત રાખો';
 
   @override
-  String get onboarding_noBackupFound => 'આ ખાતા પર કોઈ બેકઅપ મળ્યું નથી';
+  String get auth_body =>
+      'તમારા ખર્ચ અને આદતોનો બેકઅપ લેવા અને નવા ફોન પર તેમને પાછા મેળવવા માટે Google થી સાઇન ઇન કરો.';
+
+  @override
+  String get auth_continueWithGoogle => 'Google સાથે ચાલુ રાખો';
+
+  @override
+  String get auth_continueAsGuest => 'મહેમાન તરીકે ચાલુ રાખો';
+
+  @override
+  String get auth_guestNote =>
+      'મહેમાન તરીકે, તમારો ડેટા ફક્ત આ ફોન પર જ રહે છે.';
+
+  @override
+  String get auth_signInCancelled =>
+      'સાઇન ઇન રદ થયું. ફરી પ્રયાસ કરો અથવા મહેમાન તરીકે ચાલુ રાખો.';
+
+  @override
+  String get auth_offline =>
+      'તમે ઑફલાઇન છો. Google થી સાઇન ઇન કરવા માટે ઇન્ટરનેટ સાથે જોડાઓ, અથવા મહેમાન તરીકે ચાલુ રાખો.';
+
+  @override
+  String get auth_continueWithoutRestoring => 'રિસ્ટોર કર્યા વિના ચાલુ રાખો';
+
+  @override
+  String get accountCard_guestTitle => 'મહેમાન · ડેટા ફક્ત આ ફોન પર સેવ છે';
+
+  @override
+  String accountCard_backedUp(String time) {
+    return 'Google પર બેકઅપ થઈ ગયું · $time';
+  }
+
+  @override
+  String get accountCard_paused => 'બેકઅપ અટક્યું છે';
+
+  @override
+  String get accountCard_justNow => 'હમણાં જ';
+
+  @override
+  String accountCard_minutesAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count મિનિટ પહેલાં',
+      one: '1 મિનિટ પહેલાં',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String accountCard_hoursAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count કલાક પહેલાં',
+      one: '1 કલાક પહેલાં',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String accountCard_daysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count દિવસ પહેલાં',
+      one: 'ગઈકાલે',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settings_logOutGuest => 'મહેમાન મોડમાંથી લૉગ આઉટ કરો';
+
+  @override
+  String get logOutGuest_title => 'લૉગ આઉટ કરીને તમારો ડેટા કાઢી નાખશો?';
+
+  @override
+  String get logOutGuest_body =>
+      'મહેમાન તરીકે, તમારો ડેટા ફક્ત આ ફોન પર સેવ છે. લૉગ આઉટ કરવાથી તમારા બધા ખર્ચ, આદતો, બજેટ, રસીદો અને અનલૉક કાયમ માટે કાઢી નાખવામાં આવશે. આ પાછું કરી શકાતું નથી.';
+
+  @override
+  String get logOutGuest_signInInstead => 'તેના બદલે Google થી સાઇન ઇન કરો';
+
+  @override
+  String get logOutGuest_confirm => 'લૉગ આઉટ કરો અને કાઢી નાખો';
+
+  @override
+  String get logOutGuest_failed => 'તમારો ડેટા કાઢી શકાયો નથી. ફરી પ્રયાસ કરો.';
 
   @override
   String get finishSetup_title => 'સેટઅપ પૂરું કરો';

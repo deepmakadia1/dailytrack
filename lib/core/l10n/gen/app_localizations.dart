@@ -274,10 +274,10 @@ abstract class AppLocalizations {
   /// **'Your data stays with you'**
   String get onboarding_privacyTitle;
 
-  /// SYS-02 step 4 privacy explanation.
+  /// SYS-02 step 4 body: data stays on this phone; AUTH-01 comes next.
   ///
   /// In en, this message translates to:
-  /// **'Everything you log is stored only on this device. Nothing is uploaded unless you choose to back it up.'**
+  /// **'Everything you log is kept on this phone. Next, you can back it up with Google or continue as a guest.'**
   String get onboarding_privacyBody;
 
   /// SYS-02 step 4 button.
@@ -5920,6 +5920,18 @@ abstract class AppLocalizations {
   /// **'Couldn\'t sign in. Check your connection and try again.'**
   String get account_signInFailed;
 
+  /// ACC-02 offline state; restore is disabled (spec §16).
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to the internet to restore'**
+  String get account_restoreOffline;
+
+  /// Shown instead of signing in while the phone is offline (spec §16).
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to the internet to sign in with Google'**
+  String get account_signInOffline;
+
   /// Snackbar after signing in to an account without backups.
   ///
   /// In en, this message translates to:
@@ -5944,11 +5956,35 @@ abstract class AppLocalizations {
   /// **'No backup in this account yet'**
   String get account_noBackupYet;
 
-  /// ACC-01 state line.
+  /// ACC-01 state line (spec §16).
+  ///
+  /// In en, this message translates to:
+  /// **'Backed up to Google'**
+  String get account_statusBackedUp;
+
+  /// ACC-01 offline state line; also why the network actions are disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline. Backups resume when you\'re back online.'**
+  String get account_statusOffline;
+
+  /// ACC-01 state line: a background backup waits for Wi-Fi (Wi-Fi only is on).
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for Wi-Fi'**
+  String get account_statusWaitingForWifi;
+
+  /// ACC-01 state line: Encrypt backup is on but the password is missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup failed: set your backup password in Backup and restore'**
+  String get account_statusFailedNoPassword;
+
+  /// ACC-03 step 1 when nothing changed since the last backup.
   ///
   /// In en, this message translates to:
   /// **'Backed up'**
-  String get account_statusBackedUp;
+  String get account_signOutBackedUp;
 
   /// ACC-01 state line.
   ///
@@ -6063,6 +6099,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unknown device'**
   String get backup_unknownDevice;
+
+  /// Device name when the phone reports neither manufacturer nor model.
+  ///
+  /// In en, this message translates to:
+  /// **'Android phone'**
+  String get account_androidPhone;
 
   /// Pause notification title.
   ///
@@ -6262,17 +6304,131 @@ abstract class AppLocalizations {
   /// **'Your backup stays in your Google account.'**
   String get account_removeDataHelp;
 
-  /// SYS-02 step 1 secondary button.
+  /// AUTH-01 title.
   ///
   /// In en, this message translates to:
-  /// **'Restore with Google'**
-  String get onboarding_restoreWithGoogle;
+  /// **'Keep your data safe'**
+  String get auth_title;
 
-  /// SYS-02 message when the account has no backup.
+  /// AUTH-01 value line.
   ///
   /// In en, this message translates to:
-  /// **'No backup found on this account'**
-  String get onboarding_noBackupFound;
+  /// **'Sign in with Google to back up your expenses and habits and get them back on a new phone.'**
+  String get auth_body;
+
+  /// AUTH-01 primary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get auth_continueWithGoogle;
+
+  /// AUTH-01 secondary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue as guest'**
+  String get auth_continueAsGuest;
+
+  /// AUTH-01 note under the buttons.
+  ///
+  /// In en, this message translates to:
+  /// **'As a guest, your data stays only on this phone.'**
+  String get auth_guestNote;
+
+  /// AUTH-01 inline error after the account chooser was closed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in was cancelled. Try again or continue as a guest.'**
+  String get auth_signInCancelled;
+
+  /// AUTH-01 inline error when offline.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline. Connect to the internet to sign in with Google, or continue as a guest.'**
+  String get auth_offline;
+
+  /// AUTH-01 restore error view secondary button.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue without restoring'**
+  String get auth_continueWithoutRestoring;
+
+  /// SET-01 account card, guest state.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest · Data saved only on this phone'**
+  String get accountCard_guestTitle;
+
+  /// SET-01 account card status; {time} is relative, e.g. 5 min ago. Never 'Synced'.
+  ///
+  /// In en, this message translates to:
+  /// **'Backed up to Google · {time}'**
+  String accountCard_backedUp(String time);
+
+  /// SET-01 account card status, warning color.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup paused'**
+  String get accountCard_paused;
+
+  /// Relative time under a minute, in the account card status.
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get accountCard_justNow;
+
+  /// Relative time in minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 min ago} other{{count} min ago}}'**
+  String accountCard_minutesAgo(int count);
+
+  /// Relative time in hours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 hour ago} other{{count} hours ago}}'**
+  String accountCard_hoursAgo(int count);
+
+  /// Relative time in days.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{yesterday} other{{count} days ago}}'**
+  String accountCard_daysAgo(int count);
+
+  /// SET-01 Data row, guest only, error color.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out of guest'**
+  String get settings_logOutGuest;
+
+  /// ACC-04 title.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out and delete your data?'**
+  String get logOutGuest_title;
+
+  /// ACC-04 body.
+  ///
+  /// In en, this message translates to:
+  /// **'As a guest, your data is stored only on this phone. Logging out permanently deletes all your expenses, habits, budgets, receipts, and unlocks. This can\'t be undone.'**
+  String get logOutGuest_body;
+
+  /// ACC-04 text button.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google instead'**
+  String get logOutGuest_signInInstead;
+
+  /// ACC-04 destructive button.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out and delete'**
+  String get logOutGuest_confirm;
+
+  /// ACC-04 error; nothing was deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t delete your data. Try again.'**
+  String get logOutGuest_failed;
 
   /// Finish setting up sheet title.
   ///

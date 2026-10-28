@@ -17,6 +17,7 @@ part of 'bootstrap.dart';
 ///     host (never block),
 ///  5. pick the first route (a tapped notification's or the widget's
 ///     location if allowed).
+/// Feature 011: the sign-in mode is migrated once, right after seeding.
 /// Feature 010: the device ID is checked before routing, and the Google
 /// account's silent sign-in runs behind the first screen (spec §16).
 /// A failure in steps 1–2 gives [BootstrapFailed], shown with "Retry".
@@ -33,6 +34,7 @@ final bootstrapProvider = BootstrapProvider._();
 ///     host (never block),
 ///  5. pick the first route (a tapped notification's or the widget's
 ///     location if allowed).
+/// Feature 011: the sign-in mode is migrated once, right after seeding.
 /// Feature 010: the device ID is checked before routing, and the Google
 /// account's silent sign-in runs behind the first screen (spec §16).
 /// A failure in steps 1–2 gives [BootstrapFailed], shown with "Retry".
@@ -47,6 +49,7 @@ final class BootstrapProvider
   ///     host (never block),
   ///  5. pick the first route (a tapped notification's or the widget's
   ///     location if allowed).
+  /// Feature 011: the sign-in mode is migrated once, right after seeding.
   /// Feature 010: the device ID is checked before routing, and the Google
   /// account's silent sign-in runs behind the first screen (spec §16).
   /// A failure in steps 1–2 gives [BootstrapFailed], shown with "Retry".
@@ -69,7 +72,7 @@ final class BootstrapProvider
   Bootstrap create() => Bootstrap();
 }
 
-String _$bootstrapHash() => r'2328e8a20f490ecbff43cc23f9227face42fc853';
+String _$bootstrapHash() => r'a4cd9ec4c572b89a560996ab4ef5f262cb62aaaf';
 
 /// SYS-01 startup (T080):
 ///  1. open the database (runs migrations) and load settings,
@@ -80,6 +83,7 @@ String _$bootstrapHash() => r'2328e8a20f490ecbff43cc23f9227face42fc853';
 ///     host (never block),
 ///  5. pick the first route (a tapped notification's or the widget's
 ///     location if allowed).
+/// Feature 011: the sign-in mode is migrated once, right after seeding.
 /// Feature 010: the device ID is checked before routing, and the Google
 /// account's silent sign-in runs behind the first screen (spec §16).
 /// A failure in steps 1–2 gives [BootstrapFailed], shown with "Retry".

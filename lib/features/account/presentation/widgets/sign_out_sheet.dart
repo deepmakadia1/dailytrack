@@ -11,13 +11,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// ACC-03 for [email]. True when the user signed out and kept the data on
-/// this phone; with "Remove data" the app goes to onboarding by itself.
-Future<bool> showSignOutSheet(BuildContext context, {required String email}) =>
-    AppBottomSheet.show<bool>(
-      context,
-      title: AppLocalizations.of(context).account_signOutSheetTitle(email),
-      child: const SignOutSheet(),
-    ).then((signedOut) => signedOut ?? false);
+/// this phone. Either way signing out sets `authMode = none`, and the
+/// router replaces the whole stack with AUTH-01 (feature 011 rule 3b), so
+/// back can't return to the app. With "Keep data", AUTH-01 shows "Signed
+/// out. Your data is still on this phone." from the app-wide messenger.
+Future<bool> showSignOutSheet(
+  BuildContext context, {
+  required String email,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final messenger = ScaffoldMessenger.of(context);
+  final kept =
+      await AppBottomSheet.show<bool>(
+        context,
+        title: l10n.account_signOutSheetTitle(email),
+        child: const SignOutSheet(),
+      ) ??
+      false;
+  if (kept) {
+    messenger.showSnackBar(
+      SnackBar(
+        key: const Key('auth01_signedOutKept'),
+        content: Text(l10n.account_signedOut),
+      ),
+    );
+  }
+  return kept;
+}
 
 /// ACC-03 Sign out (spec §16): back up the latest changes, then keep or
 /// remove this phone's data. No ads.
@@ -77,7 +97,7 @@ class SignOutSheet extends ConsumerWidget {
         children: [
           Icon(Icons.cloud_done_outlined, size: tokens.iconSize),
           SizedBox(width: tokens.s8),
-          Expanded(child: Text(l10n.account_statusBackedUp)),
+          Expanded(child: Text(l10n.account_signOutBackedUp)),
         ],
       ),
       SignOutBackup.failed => Column(

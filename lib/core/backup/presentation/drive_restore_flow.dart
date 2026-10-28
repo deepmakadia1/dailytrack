@@ -13,13 +13,17 @@ enum DriveRestoreResult { restored, cancelled, noBackups }
 /// PIN?" (FR-024): sign in with the shared `AccountService` sign-in
 /// ([signIn], false when cancelled; feature 010 research R1), pick a
 /// backup, then the usual password, summary, and "Replace current data?"
-/// steps. Nothing changes until the user confirms.
+/// steps. Nothing changes until the user confirms. [applyFor] writes the
+/// picked backup (feature 010: through `AccountRestore`, so the safety copy
+/// and the account's bookkeeping happen as in SET-02); without it the plain
+/// feature 008 write is used.
 Future<DriveRestoreResult> showDriveRestoreFlow(
   BuildContext context, {
   required DriveBackupStore drive,
   required RestoreService restore,
   required Map<String, String Function(Map<String, int>)> moduleSummaries,
   required Future<bool> Function() signIn,
+  RestoreApply Function(DriveBackupEntry entry)? applyFor,
 }) async {
   final l10n = AppLocalizations.of(context);
   try {
@@ -73,6 +77,7 @@ Future<DriveRestoreResult> showDriveRestoreFlow(
     source: () => drive.download(picked.id),
     progressLabel: l10n.backup_downloading,
     moduleSummaries: moduleSummaries,
+    apply: applyFor?.call(picked),
   );
   return restored ? DriveRestoreResult.restored : DriveRestoreResult.cancelled;
 }

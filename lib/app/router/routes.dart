@@ -4,6 +4,9 @@
 abstract final class Routes {
   static const String splash = '/splash';
   static const String onboarding = '/onboarding';
+
+  /// AUTH-01 Login, full screen (feature 011).
+  static const String login = '/login';
   static const String lock = '/lock';
 
   /// SYS-03 as a route, with where to go after unlocking (feature 007).
@@ -203,6 +206,7 @@ abstract final class Routes {
 abstract final class RouteNames {
   static const String splash = 'splash';
   static const String onboarding = 'onboarding';
+  static const String login = 'login';
   static const String lock = 'lock';
   static const String premium = 'premium';
   static const String home = 'home';
