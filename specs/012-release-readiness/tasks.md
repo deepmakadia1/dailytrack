@@ -494,9 +494,9 @@ description: "Task list for feature 012 Release Readiness"
 - [X] T050 [P] [US5] Create `test/core/theme/splash_colors_test.dart` (research R6). Read `pubspec.yaml` as text, and parse the `flutter_native_splash:` block's `color` and `color_dark` values (and the same under `android_12:`) with a regex. They must equal the default theme's light and dark surface colors in `lib/core/theme/app_colors.dart` (compare hex `#RRGGBB`). `icon_background_color` must equal the seed or brand constant used for the launcher background.
 
 - [X] T051 [P] [US5] Create `test/core/config/app_links_test.dart` (spec FR-028, clarification Q2). With no defines:
-  - `AppLinks.privacyPolicyUrl == 'https://dailytrack.midexcode.com/privacy'`;
-  - `AppLinks.termsUrl == 'https://dailytrack.midexcode.com/terms'`;
-  - both parse with `Uri.parse` to `scheme == 'https'` and `host == 'dailytrack.midexcode.com'`.
+  - `AppLinks.privacyPolicyUrl == 'https://daily-track-c5736.web.app/privacy'`;
+  - `AppLinks.termsUrl == 'https://daily-track-c5736.web.app/terms'`;
+  - both parse with `Uri.parse` to `scheme == 'https'` and `host == 'daily-track-c5736.web.app'`.
 
   The SET-01 link tests (find them with `grep -rn privacyPolicyUrl test/`) still pass.
 

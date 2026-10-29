@@ -106,7 +106,7 @@ Tick each item in `compliance.md`:
 - the PIN surviving a restart, and biometric unlock;
 - CSV share and PDF export;
 - the launcher icon (adaptive and themed on 13+), and the splash in light and dark with no flash;
-- Privacy and Terms opening `https://dailytrack.midexcode.com/privacy` and `/terms`.
+- Privacy and Terms opening `https://daily-track-c5736.web.app/privacy` and `/terms`.
 
 ## 7. Tag release (CI)
 

@@ -17,7 +17,7 @@
 ### Session 2026-10-28
 
 - Q: When a version tag is pushed, where should the signed App Bundle end up? → A: Attached, with its mapping file, to the workflow run and to a GitHub release for the tag; no automatic Play upload (the internal testing track upload stays manual).
-- Q: Are `https://dailytrack.midexcode.com/privacy` and `/terms` the final privacy policy and terms addresses? → A: Yes; keep both defaults unchanged.
+- Q: Are `https://daily-track-c5736.web.app/privacy` and `/terms` the final privacy policy and terms addresses? → A: Yes at first; later changed to `https://daily-track-c5736.web.app/privacy` and `/terms` on Firebase Hosting (published from `site/`), so no custom domain is needed.
 - Q: When should CI run the integration tests on an Android emulator? → A: Only on version tags, before the bundle is built; a failure stops the release. Pull requests don't run them.
 - Q: If the performance pass misses a §13 target, does that block the first release? → A: Writes under 100 ms and APK size per ABI always block; a cold start or scrolling miss of up to 20% may ship if recorded as an open item for the next version.
 - Q: How are new or changed golden images created and committed from a Windows machine? → A: A manually run CI workflow renders them on Linux and offers them as a download; the developer reviews and commits them; pull request CI compares goldens.
@@ -115,7 +115,7 @@ An end user installs the app and sees the DailyTrack icon (an adaptive icon with
 
 1. **Given** the prod or dev build, **When** it is installed, **Then** the launcher shows the DailyTrack icon generated from `assets/branding/`, adaptive on Android 8+ and with a monochrome layer for themed icons on Android 13+.
 2. **Given** a cold start, **When** the app launches, **Then** the branded splash is shown on Android 7–11 and the Android 12+ splash API, in light and dark mode, with no white flash before SYS-01.
-3. **Given** SET-01 Privacy and About, **When** the user taps the privacy policy or terms link, **Then** the final website page opens: `https://dailytrack.midexcode.com/privacy` or `https://dailytrack.midexcode.com/terms`.
+3. **Given** SET-01 Privacy and About, **When** the user taps the privacy policy or terms link, **Then** the final website page opens: `https://daily-track-c5736.web.app/privacy` or `https://daily-track-c5736.web.app/terms`.
 4. **Given** a prod build, **When** the privacy or terms URL is checked, **Then** it uses HTTPS and is not a placeholder.
 
 ---
@@ -211,7 +211,7 @@ Before tagging the first release, the maintainer runs the release audit. It repo
 
 **Links**
 
-- **FR-028**: The privacy policy and terms URLs MUST default to the final pages `https://dailytrack.midexcode.com/privacy` and `https://dailytrack.midexcode.com/terms` (today's defaults, kept unchanged), and MUST still be overridable at build time; the audit checks that both use HTTPS and are on the domain the store listing uses.
+- **FR-028**: The privacy policy and terms URLs MUST default to the final pages `https://daily-track-c5736.web.app/privacy` and `https://daily-track-c5736.web.app/terms` (Firebase Hosting, published from `site/` with `firebase deploy --only hosting`), and MUST still be overridable at build time; the audit checks that both use HTTPS and are on that host.
 
 **Release workflow**
 

@@ -8,16 +8,16 @@ void main() {
   test('the privacy policy and terms URLs are the final pages', () {
     expect(
       AppLinks.privacyPolicyUrl,
-      'https://dailytrack.midexcode.com/privacy',
+      'https://daily-track-c5736.web.app/privacy',
     );
-    expect(AppLinks.termsUrl, 'https://dailytrack.midexcode.com/terms');
+    expect(AppLinks.termsUrl, 'https://daily-track-c5736.web.app/terms');
   });
 
-  test('both use HTTPS on the site the store listing uses', () {
+  test('both use HTTPS on the Firebase Hosting site', () {
     for (final url in [AppLinks.privacyPolicyUrl, AppLinks.termsUrl]) {
       final uri = Uri.parse(url);
       expect(uri.scheme, 'https', reason: url);
-      expect(uri.host, 'dailytrack.midexcode.com', reason: url);
+      expect(uri.host, 'daily-track-c5736.web.app', reason: url);
     }
   });
 }
