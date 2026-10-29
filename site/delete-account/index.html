@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delete Your DailyTrack Account</title>
+<meta name="description" content="How to delete your DailyTrack account and data, and what is deleted or kept.">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1c1f23;
+    --muted: #5b636d;
+    --accent: #00796b;
+    --rule: #e3e6ea;
+    --card: #f5f7f8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121417;
+      --fg: #e6e8eb;
+      --muted: #9aa3ad;
+      --accent: #4db6ac;
+      --rule: #2a2f35;
+      --card: #1a1e22;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 40px 16px 64px; }
+  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 1.25rem; margin: 40px 0 8px; padding-top: 16px; border-top: 1px solid var(--rule); }
+  h3 { font-size: 1.05rem; margin: 24px 0 4px; }
+  p, li { margin: 8px 0; }
+  ul, ol { padding-left: 22px; }
+  a { color: var(--accent); }
+  .meta { color: var(--muted); margin: 0 0 24px; }
+  .summary { background: var(--card); border-radius: 12px; padding: 16px 20px; }
+  .summary ol { margin: 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95rem; }
+  th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+  th { color: var(--muted); font-weight: 600; }
+  .table-wrap { overflow-x: auto; }
+  footer { margin-top: 48px; color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+<h1>Delete your DailyTrack account and data</h1>
+<p class="meta">DailyTrack by Midexcode · Last updated: 29 October 2026</p>
+
+<p>Your DailyTrack account is your Google sign-in. We do not run a server that stores your entries: they live on your phone and, if you back up, in a hidden app folder in <strong>your own</strong> Google Drive. Deleting your account means deleting those backups, signing out and removing the app's access to your Google account. You can do all of this yourself in a few minutes, or ask us to help.</p>
+
+<div class="summary">
+<p><strong>Steps to delete your account in the app</strong></p>
+<ol>
+  <li>Open DailyTrack and go to <strong>More → Backup and restore</strong>.</li>
+  <li>Tap your email address (<strong>Manage your account</strong>) to open the <strong>Account</strong> screen.</li>
+  <li>Tap <strong>Delete my backups</strong> and confirm. This deletes every DailyTrack backup from your Google Drive.</li>
+  <li>Tap <strong>Sign out</strong> and confirm.</li>
+  <li>To delete the data on your phone too, go to <strong>More → Erase all data</strong>, or uninstall the app.</li>
+  <li>Remove DailyTrack's access to your Google account at <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a> (select DailyTrack, then <em>Delete all connections</em>).</li>
+</ol>
+</div>
+
+<h2>No longer have the app?</h2>
+<p>You can still delete your data without installing DailyTrack:</p>
+<ul>
+  <li><strong>Drive backups:</strong> open <a href="https://drive.google.com">drive.google.com</a> on a computer, go to <strong>Settings → Manage apps</strong>, find DailyTrack, then choose <strong>Options → Delete hidden app data</strong>.</li>
+  <li><strong>Google access:</strong> remove DailyTrack at <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>.</li>
+  <li><strong>Ask us:</strong> email <a href="mailto:support@midexcode.com?subject=DailyTrack%20account%20deletion%20request">support@midexcode.com</a> with the subject "DailyTrack account deletion request", sent from the Google account you used in the app. We will confirm within 30 days and delete anything we hold about you, such as your support emails. Because your backups are in your own Drive, we cannot open or delete them for you, so we will also send you the steps above.</li>
+</ul>
+
+<h2>What is deleted</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>Data</th><th>When it is deleted</th></tr>
+  <tr><td>DailyTrack backups in your Google Drive (your entries, settings, record counts, device name and any receipt photos you chose to include)</td><td>Immediately, when you tap <em>Delete my backups</em> or delete the app's hidden data in Drive.</td></tr>
+  <tr><td>Your Google name, email address and profile photo stored in the app</td><td>Immediately, when you sign out.</td></tr>
+  <tr><td>Data on your phone: transactions, budgets, habits, notes, receipt photos and settings</td><td>Immediately, with <em>Erase all data</em> or when you uninstall the app.</td></tr>
+  <tr><td>Support emails you sent us</td><td>Within 30 days of your request.</td></tr>
+</table>
+</div>
+
+<h2>What is kept, and for how long</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>Data</th><th>Why it is kept</th><th>Retention</th></tr>
+  <tr><td>Safety copy made on your phone before a restore</td><td>Lets you undo a restore.</td><td>Deleted automatically after 7 days, or at once with <em>Erase all data</em> or uninstalling.</td></tr>
+  <tr><td>Crash reports (Firebase Crashlytics)</td><td>Fixing bugs. Linked only to a random installation ID, not to your account or entries.</td><td>Up to 90 days, then deleted by Google.</td></tr>
+  <tr><td>App usage statistics (Firebase Analytics)</td><td>Understanding general app usage. Linked only to a random app instance ID, not to your account or entries.</td><td>Up to 14 months, then deleted by Google.</td></tr>
+  <tr><td>DailyTrack Pro purchase record</td><td>Held by Google Play, not by us, so you can restore Pro if you reinstall.</td><td>Kept by Google Play under <a href="https://policies.google.com/privacy">Google's privacy policy</a>.</td></tr>
+  <tr><td>Android device backup (if turned on in your phone's settings)</td><td>Managed by Android and your Google account, not by DailyTrack.</td><td>Until you delete it in Android or Google One settings.</td></tr>
+</table>
+</div>
+
+<p>For more about the data DailyTrack handles, read our <a href="../privacy/">Privacy Policy</a>.</p>
+
+<footer>
+  <p>© 2026 Midexcode · <a href="../privacy/">Privacy Policy</a> · <a href="../terms/">Terms of Use</a></p>
+</footer>
+</main>
+</body>
+</html>
