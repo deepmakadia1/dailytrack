@@ -5,17 +5,20 @@
      backup password), the no-backup folder with the device ID, receipt
      images, the restore safety copy, WorkManager's database, and caches
      never leave the device. Checked by test/android/backup_rules_test.dart. -->
-<data-extraction-rules>
+<!-- The secure storage exclude is outside the include list, so it changes
+     nothing at runtime; it stays as an explicit, tested guarantee, and
+     tools:ignore keeps release lint from failing on it (feature 012). -->
+<data-extraction-rules xmlns:tools="http://schemas.android.com/tools">
     <cloud-backup>
         <include domain="root" path="app_flutter/dailytrack.sqlite" />
         <include domain="root" path="app_flutter/dailytrack.sqlite-wal" />
         <include domain="root" path="app_flutter/dailytrack.sqlite-shm" />
-        <exclude domain="sharedpref" path="FlutterSecureStorage.xml" />
+        <exclude domain="sharedpref" path="FlutterSecureStorage.xml" tools:ignore="FullBackupContent" />
     </cloud-backup>
     <device-transfer>
         <include domain="root" path="app_flutter/dailytrack.sqlite" />
         <include domain="root" path="app_flutter/dailytrack.sqlite-wal" />
         <include domain="root" path="app_flutter/dailytrack.sqlite-shm" />
-        <exclude domain="sharedpref" path="FlutterSecureStorage.xml" />
+        <exclude domain="sharedpref" path="FlutterSecureStorage.xml" tools:ignore="FullBackupContent" />
     </device-transfer>
 </data-extraction-rules>

@@ -34,9 +34,14 @@ void main() {
     ];
   }
 
-  /// The body of `<tag>...</tag>` in [xml].
-  String section(String xml, String tag) =>
-      RegExp('<$tag>(.*?)</$tag>', dotAll: true).firstMatch(xml)![1]!;
+  /// The body of `<tag ...>...</tag>` in [xml]; the root tag may carry
+  /// namespace attributes (`xmlns:tools`).
+  String section(String xml, String tag) => RegExp(
+    '<$tag'
+    r'(?:\s[^>]*)?>(.*?)</'
+    '$tag>',
+    dotAll: true,
+  ).firstMatch(xml)![1]!;
 
   void expectDatabaseOnly(String rules, {required String reason}) {
     expect(entries(rules, 'include'), [

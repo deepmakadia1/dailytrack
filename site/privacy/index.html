@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DailyTrack Privacy Policy</title>
+<meta name="description" content="How the DailyTrack Android app handles your data.">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1c1f23;
+    --muted: #5b636d;
+    --accent: #00796b;
+    --rule: #e3e6ea;
+    --card: #f5f7f8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121417;
+      --fg: #e6e8eb;
+      --muted: #9aa3ad;
+      --accent: #4db6ac;
+      --rule: #2a2f35;
+      --card: #1a1e22;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 40px 16px 64px; }
+  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 1.25rem; margin: 40px 0 8px; padding-top: 16px; border-top: 1px solid var(--rule); }
+  h3 { font-size: 1.05rem; margin: 24px 0 4px; }
+  p, li { margin: 8px 0; }
+  ul { padding-left: 22px; }
+  a { color: var(--accent); }
+  .meta { color: var(--muted); margin: 0 0 24px; }
+  .summary { background: var(--card); border-radius: 12px; padding: 16px 20px; }
+  .summary ul { margin: 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95rem; }
+  th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+  th { color: var(--muted); font-weight: 600; }
+  .table-wrap { overflow-x: auto; }
+  footer { margin-top: 48px; color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+<h1>DailyTrack Privacy Policy</h1>
+<p class="meta">Effective date: 29 October 2026</p>
+
+<p>This policy explains how the DailyTrack Android app (package <code>com.midexcode.dailytrack</code>), made by Midexcode ("we", "us"), handles your information. DailyTrack is an expense and habit tracker that works offline. Your entries are stored on your phone, and they leave it only when you choose to back them up, export them, or share them.</p>
+
+<div class="summary">
+<p><strong>In short</strong></p>
+<ul>
+  <li>Your expenses, habits, notes and receipt photos are stored on your phone. We do not run a server that receives them.</li>
+  <li>If you sign in with Google, backups go to a hidden app folder in <strong>your own</strong> Google Drive. We cannot read them.</li>
+  <li>The free version shows ads from Google AdMob. Ad technology collects device identifiers, as explained below.</li>
+  <li>We use Firebase Crashlytics and Analytics to find crashes and understand general app usage. They never receive your entries.</li>
+  <li>We do not sell your personal data.</li>
+</ul>
+</div>
+
+<h2>1. Information stored on your phone</h2>
+<p>Everything you enter is stored in a database on your phone:</p>
+<ul>
+  <li>Transactions, amounts, categories, accounts, budgets, recurring entries and notes.</li>
+  <li>Habits, check-ins, streaks, reminders and notes.</li>
+  <li>Receipt photos you attach from your camera or gallery.</li>
+  <li>Your app settings, such as language, currency and theme.</li>
+</ul>
+<p>Your app lock PIN is stored only as a secure hash in Android's encrypted storage, together with your backup password if you set one. Neither ever leaves your phone. Fingerprint or face unlock is handled entirely by Android, so the app never receives your biometric data.</p>
+<p>You can use the whole app as a guest without signing in. In guest mode, the app sends none of your entries anywhere.</p>
+
+<h2>2. Google sign-in and Google Drive backup</h2>
+<p>Signing in with Google is optional. If you sign in:</p>
+<ul>
+  <li>We receive your Google account <strong>name, email address and profile photo</strong>. They are used only to show which account you are signed in with, and they are stored on your phone.</li>
+  <li>We request access to Google Drive's <strong>app data folder</strong> only (<code>drive.appdata</code>). This is a hidden folder that only DailyTrack can use. The app cannot see or change your other Drive files.</li>
+  <li>Backups (manual, or automatic if you turn auto backup on) are uploaded from your phone straight to that folder over an encrypted connection. They do not pass through any server of ours.</li>
+  <li>A backup contains your entries and your preferences. Receipt photos are included only if you turn on "Include receipt images". If you turn on "Encrypt backup", the file is encrypted on your phone with AES-256-GCM and a key derived from your password. Without the password, nobody can read it, including us and Google.</li>
+  <li>Each backup also stores your device name and record counts, so you can tell backups apart when restoring.</li>
+</ul>
+<p>You can delete your Drive backups in the app, under the Account screen ("Delete my backups"). You can also remove DailyTrack's access at any time at <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>.</p>
+<h3>Google API Services User Data Policy</h3>
+<p>DailyTrack's use and transfer of information received from Google APIs follows the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements. Your Google data is used only to provide backup and restore for you. It is not used for advertising, it is not sold, and it is not transferred to anyone else.</p>
+
+<h2>3. Advertising (Google AdMob)</h2>
+<p>The free version of DailyTrack shows ads through Google AdMob. When an ad is requested, Google may collect:</p>
+<ul>
+  <li>your device's advertising ID and other device identifiers,</li>
+  <li>your IP address and approximate location derived from it,</li>
+  <li>device and app information, and ad interactions such as views and taps.</li>
+</ul>
+<p>Your entries are never shared with ad networks. In the European Economic Area, the UK, Switzerland and other regions where consent is required, the app asks for your consent with Google's consent tool before it loads any ad. When this applies to you, you can change your choice later in the app under More → Privacy → Ad privacy choices. You can reset or delete your advertising ID in Android Settings → Google → Ads (or Settings → Privacy → Ads). To learn more, read <a href="https://policies.google.com/technologies/ads">how Google uses information from apps that use its services</a>.</p>
+<p>If you buy DailyTrack Pro, the app stops requesting ads.</p>
+
+<h2>4. Crash reports and analytics (Firebase)</h2>
+<p>Store versions of the app use Google Firebase:</p>
+<ul>
+  <li><strong>Firebase Crashlytics</strong> sends crash reports. They contain the error type, the technical stack trace, device model, Android version, app version and a random installation ID. Error messages are removed before sending, so your entries are not included.</li>
+  <li><strong>Firebase Analytics</strong> records only Firebase's automatic events, such as app opens, app updates, screen time and the type of device. It uses a random app instance ID. We do not send your entries, your name, your email or any user ID.</li>
+</ul>
+<p>This data helps us fix bugs and improve the app. Google processes it under the <a href="https://firebase.google.com/support/privacy">Firebase privacy terms</a>.</p>
+
+<h2>5. Purchases (Google Play)</h2>
+<p>DailyTrack Pro is a one-time purchase handled by Google Play. Google processes your payment. We never receive your card or payment details. The app receives only the purchase status from Google Play, and uses it to turn Pro on and to restore it if you reinstall the app.</p>
+
+<h2>6. Exports, shared files and device backup</h2>
+<ul>
+  <li>CSV and PDF exports and local backup files are created on your phone. They go only where you choose to save or share them. Once shared, they are handled by the app or person you shared them with.</li>
+  <li>Android's own device backup and device transfer may copy the DailyTrack database to your Google account when you have them turned on in Android settings. Your PIN and backup password are excluded.</li>
+  <li>If you send us feedback by email, we receive your email address and whatever you write. We use it only to reply to you.</li>
+</ul>
+
+<h2>7. Permissions the app uses</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>Permission</th><th>Why</th></tr>
+  <tr><td>Notifications</td><td>Habit reminders, the daily summary and backup notices.</td></tr>
+  <tr><td>Alarms &amp; reminders (exact alarms)</td><td>Delivering reminders at the time you set. If you don't allow it, reminders still arrive, just less precisely.</td></tr>
+  <tr><td>Run at startup</td><td>Rescheduling your reminders after the phone restarts.</td></tr>
+  <tr><td>Biometric</td><td>Unlocking the app lock with your fingerprint or face, if you turn it on.</td></tr>
+  <tr><td>Internet and network state</td><td>Google sign-in, Drive backup, ads, purchases and crash reports.</td></tr>
+  <tr><td>Advertising ID</td><td>Serving ads in the free version.</td></tr>
+</table>
+</div>
+<p>Photos are picked with Android's system camera or photo picker, so the app sees only the photo you choose.</p>
+
+<h2>8. How long data is kept</h2>
+<ul>
+  <li><strong>On your phone:</strong> until you delete it, use "Erase all data", log out of guest mode, or uninstall the app.</li>
+  <li><strong>Drive backups:</strong> until you delete them. Automatic backups are rotated: the newest one from today, plus the newest one from each of the 5 most recent earlier days, are kept. Older automatic backups are deleted. Manual backups are kept until you delete them.</li>
+  <li><strong>Safety copy:</strong> before a restore from Google replaces your data, a copy is kept on your phone for 7 days, then deleted.</li>
+  <li><strong>Crash and analytics data:</strong> kept by Google according to Firebase's retention periods.</li>
+</ul>
+
+<h2>9. Your choices and rights</h2>
+<ul>
+  <li>Use the app as a guest, so that no Google account data is involved.</li>
+  <li>Delete your data on the phone with More → Erase all data, and delete Drive backups from the Account screen ("Delete my backups").</li>
+  <li>Withdraw ad consent in More → Privacy → Ad privacy choices (where consent applies), or buy Pro to stop ads.</li>
+  <li>Revoke Google access at any time in your Google account settings.</li>
+</ul>
+<p>Depending on where you live (for example, under India's Digital Personal Data Protection Act 2023, the EU/UK GDPR or US state privacy laws), you may have the right to access, correct, delete or port your data, and to withdraw consent. Most of your data is stored only on your device and in your own Google Drive, which you control directly. For anything else, contact us at the address below and we will respond within 30 days.</p>
+
+<h2>10. Security</h2>
+<p>Data sent to Google (sign-in, Drive, ads, Firebase, Play) uses encrypted connections. On your phone, the app lock, the hashed PIN in Android's encrypted storage and optional backup encryption protect your data. No method is completely secure, so please keep your phone protected and your backup password safe. A lost backup password cannot be recovered.</p>
+
+<h2>11. Children</h2>
+<p>DailyTrack is intended for adults aged 18 and over, and it is not directed at children. We do not knowingly collect information from children. If you believe a child has used the app and data about them reached us, contact us and we will delete it.</p>
+
+<h2>12. Changes to this policy</h2>
+<p>We may update this policy when the app changes. We will post the new version on this page with a new effective date. For significant changes, we will also tell you in the app or in the Play Store release notes.</p>
+
+<h2>13. Contact</h2>
+<p>For questions, requests or complaints (including grievance requests under Indian law), email <a href="mailto:support@midexcode.com">support@midexcode.com</a>.</p>
+
+<footer>
+  <p>© 2026 Midexcode · <a href="../terms/">Terms of Use</a></p>
+</footer>
+</main>
+</body>
+</html>

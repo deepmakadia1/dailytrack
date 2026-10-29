@@ -30,18 +30,19 @@ description: "Task list for feature 012 Release Readiness"
 
 **Purpose**: Make the secret files impossible to commit, and document them, before any build change.
 
-- [ ] T001 Update `.gitignore` (research R1, planning input). Add these lines:
+- [X] T001 Update `.gitignore` (research R1, planning input). Add these lines:
   - `key.properties` (any folder)
   - `*.jks`
   - `config/prod.env.json`
 
   Keep the existing `/android/key.properties`, `*.keystore` and `/android/local.properties`. Then verify that `git check-ignore -v android/key.properties android/upload-keystore.jks config/prod.env.json` prints a rule for all three. Confirm that `git ls-files` lists none of them.
+  - *Done: `key.properties` (any folder) and `/config/prod.env.json` added; `*.jks` and `*.keystore` were already there. Note: `/config/dart_defines.json` is listed but the file is tracked (real Firebase client values), so the rule has no effect on it; left for the user to decide.*
 
-- [ ] T002 [P] Create `config/prod.env.example.json` with exactly the keys `ADMOB_APP_ID`, `ADMOB_BANNER_ID`, `ADMOB_NATIVE_ID`, `ADMOB_INTERSTITIAL_ID` and `ADMOB_REWARDED_ID`.
+- [X] T002 [P] Create `config/prod.env.example.json` with exactly the keys `ADMOB_APP_ID`, `ADMOB_BANNER_ID`, `ADMOB_NATIVE_ID`, `ADMOB_INTERSTITIAL_ID` and `ADMOB_REWARDED_ID`.
   - The values are placeholders: `ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX` for the App ID, and `ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX` for the four units (data-model §1).
   - It must not contain the test publisher `3940256099942544`.
 
-- [ ] T003 [P] Create `config/README.md` (data-model §1–§3). It covers:
+- [X] T003 [P] Create `config/README.md` (data-model §1–§3). It covers:
   - How to create the upload key with `keytool`, and the `android/key.properties` format (`storeFile`, `storePassword`, `keyAlias`, `keyPassword`; `storeFile` relative to `android/`).
   - How to copy `prod.env.example.json` to `prod.env.json`.
   - The App ID precedence: `config/prod.env.json`, then `local.properties admob.appId`, then the `ADMOB_APP_ID` environment variable.
@@ -56,22 +57,23 @@ description: "Task list for feature 012 Release Readiness"
 
 **⚠️ CRITICAL**: Finish this phase before US2, US3 or US6.
 
-- [ ] T004 Extend `test/core/ads/domain/ad_unit_ids_test.dart` first (research R5, contracts/audit.md). Rename the existing runtime cases to `AdUnitIds.resolveFor(...)` and keep them. Add:
+- [X] T004 Extend `test/core/ads/domain/ad_unit_ids_test.dart` first (research R5, contracts/audit.md). Rename the existing runtime cases to `AdUnitIds.resolveFor(...)` and keep them. Add:
   - **Debug or dev → test**: a dev flavor or any non-release build always returns `AdUnitIds.test`, even when `fromEnv` has real-looking IDs.
   - **Prod release, test App ID → none**: a prod release whose manifest uses the test App ID returns `AdUnitIds.none`.
   - **Prod release, real App ID → env IDs**: a prod release with a real App ID returns `fromEnv` format by format; a missing format is `null`.
 
   Confirm the new cases fail.
 
-- [ ] T005 Split ad ID resolution so the domain stays pure Dart (research R5, constitution II):
+- [X] T005 Split ad ID resolution so the domain stays pure Dart (research R5, constitution II):
   - In `lib/core/ads/domain/ad_unit_ids.dart` (pure Dart, no Flutter import), rename today's `resolve({isProd, isRelease, manifestUsesTestAppId, fromEnv})` to `resolveFor(...)`, with the same body.
   - In `lib/core/ads/ad_providers.dart` (which may import Flutter), add a top-level `AdUnitIds resolveAdUnitIds({required bool manifestUsesTestAppId, required AdUnitIds fromEnv})`. It branches only on the compile-time constant `kReleaseMode && appFlavor == 'prod'` (`kReleaseMode` from `package:flutter/foundation.dart`, `appFlavor` from `package:flutter/services.dart`).
     - **Prod-release branch**: returns `manifestUsesTestAppId ? AdUnitIds.none : fromEnv`, and never references `AdUnitIds.test`.
     - **Otherwise**: returns `AdUnitIds.test`.
   - Add a doc comment explaining that the constant condition lets the AOT tree shaker drop the test IDs from prod release, and that tests use `resolveFor`.
   - Don't call `resolveFor` from `resolveAdUnitIds`: passing `AdUnitIds.test` through it would keep the test strings reachable in prod.
+  - *Done as written. Verified on the built prod bundle: no `ca-app-pub` string in any `libapp.so`.*
 
-- [ ] T006 Wire the real IDs in `lib/app/production_overrides.dart` (research R4). Replace the `adUnitIdsProvider` override with:
+- [X] T006 Wire the real IDs in `lib/app/production_overrides.dart` (research R4). Replace the `adUnitIdsProvider` override with:
 
   ```dart
   resolveAdUnitIds(
@@ -235,7 +237,7 @@ description: "Task list for feature 012 Release Readiness"
 
 ### Implementation for User Story 3
 
-- [ ] T023 [US3] Add release signing to `android/app/build.gradle.kts` (contracts/build.md, research R1):
+- [X] T023 [US3] Add release signing to `android/app/build.gradle.kts` (contracts/build.md, research R1):
   - **Load the file**: above `android {}`, load `rootProject.file("key.properties")` into a `Properties` when it exists.
   - **Create the config**: in `android { signingConfigs { … } }`, create `release` only when the file exists. Use `storeFile = rootProject.file(props["storeFile"])` (absolute paths are left as they are), plus `storePassword`, `keyAlias` and `keyPassword`.
   - **`buildTypes.release`**: `signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")`.
@@ -246,21 +248,23 @@ description: "Task list for feature 012 Release Readiness"
     - `Release signing: keystore not found at <resolved path>`
   - **Not a store build and no file**: log a warning ("Release build signed with the debug key").
 
-- [ ] T024 [US3] Turn on R8 in `android/app/build.gradle.kts` `buildTypes.release` (research R2): `isMinifyEnabled = true`, `isShrinkResources = true`, and `proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")`.
+- [X] T024 [US3] Turn on R8 in `android/app/build.gradle.kts` `buildTypes.release` (research R2): `isMinifyEnabled = true`, `isShrinkResources = true`, and `proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")`.
 
   Create `android/app/proguard-rules.pro` with commented sections:
   - **flutter_local_notifications (Gson)**: `-keep class com.google.gson.reflect.TypeToken { *; }`, `-keep class * extends com.google.gson.reflect.TypeToken`, and `-keepattributes Signature, *Annotation*`.
   - **Flutter embedding (deferred components not used)**: `-dontwarn com.google.android.play.core.**`.
 
   Build once with `flutter build appbundle --release --flavor prod`. Add each line from `build/app/outputs/mapping/prodRelease/missing_rules.txt`, with a comment naming the plugin it comes from.
+  - *Done: the first shrunk build produced no `missing_rules.txt`, so no extra rules. The release build also needed `tools:ignore="FullBackupContent"` on the secure storage excludes in both backup rule files (release lint rejects an exclude outside the include list); the excludes stay as the tested guarantee.*
 
-- [ ] T025 [US3] Read the App ID from `config/prod.env.json` in `android/app/build.gradle.kts` (research R4, contracts/build.md):
+- [X] T025 [US3] Read the App ID from `config/prod.env.json` in `android/app/build.gradle.kts` (research R4, contracts/build.md):
   - Parse `rootProject.file("../config/prod.env.json")` with `groovy.json.JsonSlurper` when it exists.
   - The order is: `ADMOB_APP_ID` from the file, then `localProperties["admob.appId"]`, then `System.getenv("ADMOB_APP_ID")`. Blank values are skipped.
   - Update the `checkAdmobAppId` message to `AdMob App ID missing: set ADMOB_APP_ID in config/prod.env.json, admob.appId in android/local.properties, or the ADMOB_APP_ID environment variable`.
   - Update the header comment to list the three sources.
 
-- [ ] T026 [US3] Version from pubspec (research R3, spec FR-022). Leave `versionCode = flutter.versionCode` and `versionName = flutter.versionName`. Replace the template comment above them with one line: "From pubspec.yaml `version: name+code`; never pass --build-name or --build-number". Then grep `.github/workflows/` and `tool/` for `--build-name` and `--build-number`; none may remain.
+- [X] T026 [US3] Version from pubspec (research R3, spec FR-022). Leave `versionCode = flutter.versionCode` and `versionName = flutter.versionName`. Replace the template comment above them with one line: "From pubspec.yaml `version: name+code`; never pass --build-name or --build-number". Then grep `.github/workflows/` and `tool/` for `--build-name` and `--build-number`; none may remain.
+  - *Gradle part done, plus `targetSdk = maxOf(36, flutter.targetSdkVersion)` (research R13). `.github/workflows/distribute.yml` passed `--build-number=${{ github.run_number }}` (tester builds reached version code 9 while pubspec said 1). The user chose pubspec only: the flag is removed and `pubspec.yaml` is now `1.0.0+10`.*
 
 - [ ] T027 [P] [US3] Create `tool/release/check_bundle.sh <aab> <prod|dev>` (bash, `set -euo pipefail`, contracts/build.md "check_bundle.sh"):
   - **Setup**: download `bundletool-all-<pinned>.jar` from its GitHub release URL into `build/tools/`, check its SHA-256, and use the cached jar if the hash matches. Unzip the `.aab` into a temp folder.
@@ -487,9 +491,9 @@ description: "Task list for feature 012 Release Readiness"
 
 ### Tests for User Story 5
 
-- [ ] T050 [P] [US5] Create `test/core/theme/splash_colors_test.dart` (research R6). Read `pubspec.yaml` as text, and parse the `flutter_native_splash:` block's `color` and `color_dark` values (and the same under `android_12:`) with a regex. They must equal the default theme's light and dark surface colors in `lib/core/theme/app_colors.dart` (compare hex `#RRGGBB`). `icon_background_color` must equal the seed or brand constant used for the launcher background.
+- [X] T050 [P] [US5] Create `test/core/theme/splash_colors_test.dart` (research R6). Read `pubspec.yaml` as text, and parse the `flutter_native_splash:` block's `color` and `color_dark` values (and the same under `android_12:`) with a regex. They must equal the default theme's light and dark surface colors in `lib/core/theme/app_colors.dart` (compare hex `#RRGGBB`). `icon_background_color` must equal the seed or brand constant used for the launcher background.
 
-- [ ] T051 [P] [US5] Create `test/core/config/app_links_test.dart` (spec FR-028, clarification Q2). With no defines:
+- [X] T051 [P] [US5] Create `test/core/config/app_links_test.dart` (spec FR-028, clarification Q2). With no defines:
   - `AppLinks.privacyPolicyUrl == 'https://dailytrack.midexcode.com/privacy'`;
   - `AppLinks.termsUrl == 'https://dailytrack.midexcode.com/terms'`;
   - both parse with `Uri.parse` to `scheme == 'https'` and `host == 'dailytrack.midexcode.com'`.
@@ -498,13 +502,14 @@ description: "Task list for feature 012 Release Readiness"
 
 ### Implementation for User Story 5
 
-- [ ] T052 [US5] In `pubspec.yaml` `flutter_launcher_icons:`, set `min_sdk_android: 24` (research R6). Then run `dart run flutter_launcher_icons` and `dart run flutter_native_splash:create`, and commit any changed files under `android/app/src/main/res/`.
+- [X] T052 [US5] In `pubspec.yaml` `flutter_launcher_icons:`, set `min_sdk_android: 24` (research R6). Then run `dart run flutter_launcher_icons` and `dart run flutter_native_splash:create`, and commit any changed files under `android/app/src/main/res/`.
 
   Check that `res/mipmap-anydpi-v26/ic_launcher.xml` (and `ic_launcher_round.xml` if present) still has `<monochrome>`, and that `values-v31/styles.xml` and `values-night-v31/styles.xml` set the Android 12 splash icon background. If T050 fails, change the splash colors in `pubspec.yaml` to the token values, never the reverse, and regenerate.
+  - *Done: regenerating gave byte-identical files, so the committed icons and splash already match `assets/branding/`.*
 
-- [ ] T053 [US5] In `lib/core/config/app_links.dart`, update the doc comment to "Final site (feature 012 clarification Q2); override per build with --dart-define". The defaults stay unchanged. Delete the phrase "the defaults are placeholders until the site is live".
+- [X] T053 [US5] In `lib/core/config/app_links.dart`, update the doc comment to "Final site (feature 012 clarification Q2); override per build with --dart-define". The defaults stay unchanged. Delete the phrase "the defaults are placeholders until the site is live".
 
-- [ ] T054 [US5] Add a "Branding is up to date" step to `.github/workflows/ci.yml`, after Code generation (research R6, contracts/workflows.md). It runs `dart run flutter_launcher_icons`, then `dart run flutter_native_splash:create`, then `git diff --exit-code -- android/app/src/main/res ios/Runner/Assets.xcassets`. On failure it prints "Run flutter_launcher_icons and flutter_native_splash:create and commit the result".
+- [X] T054 [US5] Add a "Branding is up to date" step to `.github/workflows/ci.yml`, after Code generation (research R6, contracts/workflows.md). It runs `dart run flutter_launcher_icons`, then `dart run flutter_native_splash:create`, then `git diff --exit-code -- android/app/src/main/res ios/Runner/Assets.xcassets`. On failure it prints "Run flutter_launcher_icons and flutter_native_splash:create and commit the result".
 
 **Checkpoint**: Icons and splash can't drift from `assets/branding/`, and the links are final.
 

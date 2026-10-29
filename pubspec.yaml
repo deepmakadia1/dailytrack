@@ -2,7 +2,9 @@ name: dailytrack
 description: "Expense and habit tracker"
 publish_to: 'none'
 
-version: 1.0.0+1
+# name+code: the only place to set the version (feature 012 FR-022). The code
+# is above every App Distribution tester build so far (they reached 9).
+version: 1.0.0+10
 
 environment:
   sdk: ^3.13.5
@@ -115,7 +117,7 @@ flutter_native_splash:
 flutter_launcher_icons:
   image_path: assets/branding/app_icon.png
   android: ic_launcher
-  min_sdk_android: 21
+  min_sdk_android: 24
   adaptive_icon_background: assets/branding/icon_background.png
   adaptive_icon_foreground: assets/branding/icon_foreground.png
   adaptive_icon_monochrome: assets/branding/icon_monochrome.png

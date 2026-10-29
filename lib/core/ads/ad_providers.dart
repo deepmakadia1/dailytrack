@@ -6,6 +6,8 @@ import 'package:dailytrack/core/ads/domain/consent_service.dart';
 import 'package:dailytrack/core/ads/interstitial_coordinator.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
+import 'package:flutter/foundation.dart' show kReleaseMode;
+import 'package:flutter/services.dart' show appFlavor;
 import 'package:flutter_riverpod/flutter_riverpod.dart'
     show ProviderListenableSelect;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -23,6 +25,23 @@ AdConfig adConfig(Ref ref) => AdConfig.defaults;
 /// The ad unit IDs this build uses (feature 009 research R3).
 @Riverpod(keepAlive: true)
 AdUnitIds adUnitIds(Ref ref) => AdUnitIds.none;
+
+/// The ad unit IDs this build uses (FR-004, feature 012 research R5). The
+/// condition is a compile-time constant (`--flavor` sets `appFlavor`), so a
+/// prod release build never references [AdUnitIds.test] and the AOT tree
+/// shaker drops Google's test IDs from it. Every other build gets the test
+/// IDs. Same rules as [AdUnitIds.resolveFor], which tests use; it is not
+/// called here, because passing [AdUnitIds.test] to it would keep the test
+/// strings in the prod binary.
+AdUnitIds resolveAdUnitIds({
+  required bool manifestUsesTestAppId,
+  required AdUnitIds fromEnv,
+}) {
+  if (kReleaseMode && appFlavor == 'prod') {
+    return manifestUsesTestAppId ? AdUnitIds.none : fromEnv;
+  }
+  return AdUnitIds.test;
+}
 
 /// Ad consent (UMP). Default: no consent SDK, so ads are never allowed.
 @Riverpod(keepAlive: true)

@@ -1,3 +1,4 @@
+import groovy.json.JsonSlurper
 import java.util.Properties
 
 plugins {
@@ -5,6 +6,16 @@ plugins {
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+// Release signing (feature 012 research R1, contracts/build.md). The upload
+// key's details live in android/key.properties, which is git-ignored; see
+// config/README.md. Without it, release builds fall back to the debug key so
+// `flutter run --release` works, and store builds fail (checkReleaseSigning).
+val keyProperties = Properties().apply {
+    rootProject.file("key.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+}
+val hasReleaseSigning = rootProject.file("key.properties").exists()
+val releaseSigningKeys = listOf("storeFile", "storePassword", "keyAlias", "keyPassword")
 
 android {
     namespace = "com.midexcode.daily.track.dailytrack"
@@ -23,14 +34,14 @@ android {
         // each other on a device). The Kotlin namespace above is the code
         // package and stays as it is.
         applicationId = "com.midexcode.dailytrack"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24
-        targetSdk = flutter.targetSdkVersion
-        // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
-        // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
-        // You can force using the value of versionCode by specifying the `-P force-version-code-ignoring-abi=true`
-        // flag during build.
+        // Play requires API 36 for new apps and updates from 31 Aug 2026
+        // (developer.android.com/google/play/requirements/target-sdk; feature
+        // 012 research R13). Raise it each year; never below Flutter's default.
+        targetSdk = maxOf(36, flutter.targetSdkVersion)
+        // From pubspec.yaml `version: name+code`; never pass --build-name or
+        // --build-number (feature 012 FR-022). Split-per-ABI APKs add
+        // 1000 * ABI to the code; App Bundles keep it as is.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -52,26 +63,54 @@ android {
         }
     }
 
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                keyProperties.getProperty("storeFile")?.takeIf { it.isNotBlank() }?.let {
+                    // Relative to android/, or an absolute path.
+                    storeFile = rootProject.file(it)
+                }
+                storePassword = keyProperties.getProperty("storePassword")
+                keyAlias = keyProperties.getProperty("keyAlias")
+                keyPassword = keyProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("release")
+                ?: signingConfigs.getByName("debug")
+            // R8 code and resource shrinking (feature 012 research R2), with
+            // the keep rules the plugins don't ship in proguard-rules.pro.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }
 
-// AdMob App ID (feature 009 research R2, contracts/android.md). Google's
-// public test App ID is safe to commit; the real one never is. Prod release
-// reads it from android/local.properties (`admob.appId`, git-ignored) or the
-// ADMOB_APP_ID environment variable. Every other variant uses the test ID.
+// AdMob App ID (feature 009 research R2, contracts/android.md; feature 012
+// research R4). Google's public test App ID is safe to commit; the real one
+// never is. Prod release reads it, in order, from config/prod.env.json
+// (`ADMOB_APP_ID`, git-ignored, the same file the build passes to Dart with
+// --dart-define-from-file), android/local.properties (`admob.appId`,
+// git-ignored), or the ADMOB_APP_ID environment variable. Every other variant
+// uses the test ID.
 val admobTestAppId = "ca-app-pub-3940256099942544~3347511713"
 // Imported above: in this script `java` is the java extension, not the package.
 val localProperties = Properties().apply {
     rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
 }
+val prodEnv: Map<*, *> =
+    rootProject.file("../config/prod.env.json").takeIf { it.exists() }
+        ?.let { JsonSlurper().parse(it) as? Map<*, *> } ?: emptyMap<String, String>()
 val prodAdmobAppId: String? =
-    localProperties.getProperty("admob.appId")?.takeIf { it.isNotBlank() }
+    (prodEnv["ADMOB_APP_ID"] as? String)?.takeIf { it.isNotBlank() }
+        ?: localProperties.getProperty("admob.appId")?.takeIf { it.isNotBlank() }
         ?: System.getenv("ADMOB_APP_ID")?.takeIf { it.isNotBlank() }
 
 // A build meant for Play upload: -PstoreBuild=true, DAILYTRACK_STORE_BUILD=true,
@@ -97,13 +136,41 @@ val checkAdmobAppId by tasks.registering {
     doLast {
         if (isStoreBuild && prodAdmobAppId == null) {
             throw GradleException(
-                "AdMob App ID missing: set admob.appId in android/local.properties or ADMOB_APP_ID",
+                "AdMob App ID missing: set ADMOB_APP_ID in config/prod.env.json, " +
+                    "admob.appId in android/local.properties, or the ADMOB_APP_ID environment variable",
             )
+        }
+    }
+}
+// Store builds must be signed with the upload key (feature 012 FR-020). The
+// messages never include a password.
+val checkReleaseSigning by tasks.registering {
+    doLast {
+        if (!isStoreBuild) {
+            if (!hasReleaseSigning) {
+                logger.warn("Release build signed with the debug key (no android/key.properties)")
+            }
+            return@doLast
+        }
+        if (!hasReleaseSigning) {
+            throw GradleException(
+                "Release signing missing: create android/key.properties (see config/README.md)",
+            )
+        }
+        for (key in releaseSigningKeys) {
+            if (keyProperties.getProperty(key).isNullOrBlank()) {
+                throw GradleException("Release signing: key.properties is missing $key")
+            }
+        }
+        val store = rootProject.file(keyProperties.getProperty("storeFile"))
+        if (!store.exists()) {
+            throw GradleException("Release signing: keystore not found at ${store.absolutePath}")
         }
     }
 }
 tasks.matching { it.name == "preProdReleaseBuild" }.configureEach {
     dependsOn(checkAdmobAppId)
+    dependsOn(checkReleaseSigning)
 }
 
 kotlin {

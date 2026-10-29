@@ -30,11 +30,13 @@ final class AdUnitIds {
   final String? interstitial;
   final String? rewarded;
 
-  /// The IDs this build uses (FR-004):
+  /// The IDs a build with these facts uses (FR-004), for tests. The app
+  /// calls `resolveAdUnitIds` (ad_providers.dart), which decides the build
+  /// facts at compile time:
   ///  - dev flavor or any non-release build: always [test];
   ///  - prod release whose manifest fell back to the test App ID: [none];
   ///  - prod release otherwise: [fromEnv], format by format.
-  static AdUnitIds resolve({
+  static AdUnitIds resolveFor({
     required bool isProd,
     required bool isRelease,
     required bool manifestUsesTestAppId,

@@ -1,6 +1,6 @@
 /// Outbound links and the support address (SET-01 Privacy and About,
-/// feature 007 research R14). Set per build with `--dart-define`, like the
-/// ad unit IDs; the defaults are placeholders until the site is live.
+/// feature 007 research R14). The defaults are the final site (feature 012
+/// clarification Q2); override per build with `--dart-define`.
 abstract final class AppLinks {
   static const String privacyPolicyUrl = String.fromEnvironment(
     'PRIVACY_POLICY_URL',

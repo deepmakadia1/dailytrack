@@ -2,9 +2,12 @@
 <!-- Android 11 and lower Auto Backup (feature 010, spec §16, research R14):
      the same include list as data_extraction_rules.xml. Only the database
      is backed up; secure storage is explicitly excluded. -->
-<full-backup-content>
+<!-- The secure storage exclude is outside the include list, so it changes
+     nothing at runtime; it stays as an explicit, tested guarantee, and
+     tools:ignore keeps release lint from failing on it (feature 012). -->
+<full-backup-content xmlns:tools="http://schemas.android.com/tools">
     <include domain="root" path="app_flutter/dailytrack.sqlite" />
     <include domain="root" path="app_flutter/dailytrack.sqlite-wal" />
     <include domain="root" path="app_flutter/dailytrack.sqlite-shm" />
-    <exclude domain="sharedpref" path="FlutterSecureStorage.xml" />
+    <exclude domain="sharedpref" path="FlutterSecureStorage.xml" tools:ignore="FullBackupContent" />
 </full-backup-content>

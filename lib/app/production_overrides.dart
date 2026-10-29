@@ -54,7 +54,6 @@ import 'package:dailytrack/features/account/presentation/account_feature_ui.dart
 import 'package:dailytrack/features/expense/expense_bindings.dart';
 import 'package:dailytrack/features/habit/habit_bindings.dart';
 import 'package:dailytrack/features/premium/presentation/rewarded_unlock_sheet.dart';
-import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Ref;
 import 'package:flutter_riverpod/misc.dart' show Override;
 
@@ -73,17 +72,17 @@ List<Override> productionOverrides() {
     // ACC-02 for SET-02 (feature 010 research R18).
     accountUiProvider.overrideWithValue(const AccountFeatureUi()),
     // Feature 009: UMP consent and AdMob (research R3–R5). Prod release
-    // requests no ads until T117 wires the release IDs; dev and debug
-    // builds always use Google's test IDs.
+    // uses the IDs from config/prod.env.json (feature 012 research R4); a
+    // prod release without an App ID requests no ads; dev and debug builds
+    // always use Google's test IDs.
     consentServiceProvider.overrideWithValue(
       UmpConsentService.fromEnvironment(isProd: FlavorConfig.current.isProd),
     ),
     adUnitIdsProvider.overrideWithValue(
-      AdUnitIds.resolve(
-        isProd: FlavorConfig.current.isProd,
-        isRelease: kReleaseMode,
-        manifestUsesTestAppId: true,
-        fromEnv: AdUnitIds.none,
+      resolveAdUnitIds(
+        manifestUsesTestAppId: const String.fromEnvironment('ADMOB_APP_ID')
+            .isEmpty,
+        fromEnv: AdUnitIds.fromEnvironment(),
       ),
     ),
     adServiceProvider.overrideWith(bindAdService),

@@ -36,6 +36,17 @@ jobs:
       - name: Code generation
         run: dart run build_runner build --delete-conflicting-outputs
 
+      # The committed icons and splash must match assets/branding/ (feature
+      # 012 research R6).
+      - name: Branding is up to date
+        run: |
+          dart run flutter_launcher_icons
+          dart run flutter_native_splash:create
+          if ! git diff --exit-code -- android/app/src/main/res ios/Runner/Assets.xcassets; then
+            echo "::error::Run flutter_launcher_icons and flutter_native_splash:create and commit the result"
+            exit 1
+          fi
+
       - name: Analyze
         run: flutter analyze
 

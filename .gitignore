@@ -63,6 +63,10 @@ app.*.map.json
 *.jks
 *.keystore
 /android/key.properties
+# Release signing and production ad IDs (feature 012 research R1, R4): any
+# key.properties, and the prod-only build values. See config/README.md.
+key.properties
+/config/prod.env.json
 /android/local.properties
 
 # Universal
