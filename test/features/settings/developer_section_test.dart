@@ -72,7 +72,9 @@ void main() {
     await tapRow(tester);
     expect(find.byKey(const Key('dev_confirm')), findsOneWidget);
     expect(
-      find.textContaining('Add 10,000 sample transactions'),
+      find.textContaining(
+        'Add 10,000 sample transactions and a few sample habits',
+      ),
       findsOneWidget,
     );
     await tester.tap(find.byKey(const Key('dev_confirm_cancel')));
@@ -106,6 +108,8 @@ void main() {
     expect(tester.widget<ListTile>(find.byKey(row)).enabled, isTrue);
     expect(find.byKey(const Key('dev_done')), findsOneWidget);
     expect(find.text('Added 10,000 transactions'), findsOneWidget);
+    // Then every enabled module's sample data (e.g. a few habits).
+    expect(module.sampleRuns, 1);
   });
 
   testWidgets('SET-01 a running backup or restore: "A backup or restore is '
@@ -121,6 +125,7 @@ void main() {
       find.text('A backup or restore is running. Try again when it finishes.'),
       findsOneWidget,
     );
+    expect(module.sampleRuns, 0);
   });
 
   testWidgets('SET-01 prod build: neither the Developer section nor the seed '
@@ -151,8 +156,21 @@ void main() {
         available ? ['expense.seed10k'] : isEmpty,
         reason: 'available: $available',
       );
+      expect(actions.every((a) => a.withSampleData), isTrue);
     }
   });
+
+  test(
+    'the real Habit module adds no sample data without debug tools',
+    () async {
+      final container = ProviderContainer(
+        overrides: [debugToolsAvailableProvider.overrideWithValue(false)],
+      );
+      addTearDown(container.dispose);
+      final result = await const HabitModule().seedSampleData(container.read);
+      expect((result as DevActionDone).count, 0);
+    },
+  );
 }
 
 /// The real Expense module with its seed action swapped for one that waits
@@ -163,7 +181,14 @@ final class _GatedExpense extends TrackerModule {
   static const ExpenseModule _real = ExpenseModule();
 
   int runs = 0;
+  int sampleRuns = 0;
   final gate = Completer<DevActionResult>();
+
+  @override
+  Future<DevActionResult> seedSampleData(ProviderReader read) async {
+    sampleRuns++;
+    return const DevActionDone(0);
+  }
 
   @override
   List<DevAction> devActions(ProviderReader read) => [
@@ -173,6 +198,7 @@ final class _GatedExpense extends TrackerModule {
         labelKey: a.labelKey,
         confirmKey: a.confirmKey,
         icon: a.icon,
+        withSampleData: a.withSampleData,
         run: (read, onProgress) {
           runs++;
           onProgress(0.5);

@@ -218,6 +218,7 @@ final class ExpenseModule extends TrackerModule {
         labelKey: 'more_seedTransactions',
         confirmKey: 'more_seedConfirm',
         icon: Icons.dataset_outlined,
+        withSampleData: true,
         run: (read, onProgress) => LargeDataSeeder(
           read(appDatabaseProvider),
           read(clockProvider),

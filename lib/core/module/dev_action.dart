@@ -12,6 +12,7 @@ final class DevAction {
     required this.confirmKey,
     required this.icon,
     required this.run,
+    this.withSampleData = false,
   });
 
   /// Stable id, e.g. `expense.seed10k`; the row's key is `dev_<id>`.
@@ -24,6 +25,12 @@ final class DevAction {
   final String confirmKey;
 
   final IconData icon;
+
+  /// After [run] finishes, SET-01 also runs every enabled module's
+  /// `TrackerModule.seedSampleData`, so one bulk seed fills every module
+  /// (e.g. "Seed 10,000 transactions" also adds a few habits). Modules
+  /// never import each other for this (Constitution II).
+  final bool withSampleData;
 
   /// Runs the action, reporting progress from 0 to 1. Must not throw.
   final Future<DevActionResult> Function(

@@ -69,12 +69,25 @@ class SettingsController extends _$SettingsController {
     if (_runningDevAction != null) return const DevActionBusy();
     _showDevProgress(action.id, 0);
     try {
-      return await action.run(
+      final result = await action.run(
         ref.read,
         (fraction) => _showDevProgress(action.id, fraction),
       );
+      if (result is DevActionDone && action.withSampleData) {
+        await _seedSampleData();
+      }
+      return result;
     } finally {
       _showDevProgress(null, 0);
+    }
+  }
+
+  /// Every enabled module's sample data, one module at a time. The action's
+  /// own count is what SET-01 reports.
+  Future<void> _seedSampleData() async {
+    final settings = await ref.read(appSettingsProvider.future);
+    for (final m in ref.read(moduleRegistryProvider).visible(settings)) {
+      await m.seedSampleData(ref.read);
     }
   }
 

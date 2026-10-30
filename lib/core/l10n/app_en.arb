@@ -4822,7 +4822,7 @@
   "@more_seedTransactions": {
     "description": "Dev-only SET-01 Developer action (feature 012 FR-012)."
   },
-  "more_seedConfirm": "Add 10,000 sample transactions to test performance? They are real entries and stay until you delete them or erase all data.",
+  "more_seedConfirm": "Add 10,000 sample transactions and a few sample habits to test performance? They are real entries and stay until you delete them or erase all data.",
   "@more_seedConfirm": {
     "description": "Confirm dialog body for Seed 10,000 transactions."
   },

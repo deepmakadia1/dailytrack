@@ -1,10 +1,16 @@
 import 'package:dailytrack/app/router/routes.dart';
+import 'package:dailytrack/core/backup/backup_providers.dart';
+import 'package:dailytrack/core/database/database_provider.dart';
 import 'package:dailytrack/core/database/seeding.dart';
+import 'package:dailytrack/core/feature_gate/feature_gate_providers.dart';
 import 'package:dailytrack/core/l10n/gen/app_localizations.dart';
+import 'package:dailytrack/core/module/dev_action.dart';
 import 'package:dailytrack/core/module/root_navigator.dart';
 import 'package:dailytrack/core/module/tracker_module.dart';
 import 'package:dailytrack/core/notifications/notification_providers.dart';
+import 'package:dailytrack/core/utils/clock_provider.dart';
 import 'package:dailytrack/features/habit/data/backup/habit_backup_section.dart';
+import 'package:dailytrack/features/habit/data/dev/habit_sample_seeder.dart';
 import 'package:dailytrack/features/habit/habit_actions.dart';
 import 'package:dailytrack/features/habit/presentation/export/habits_export_dataset.dart';
 import 'package:dailytrack/features/habit/presentation/habit_providers.dart';
@@ -138,6 +144,22 @@ final class HabitModule extends TrackerModule {
 
   @override
   List<Seeder> get seeders => const [];
+
+  /// Dev flavor only: a few sample habits with a year of check-ins, added
+  /// with "Seed 10,000 transactions" (feature 012 contracts/dev-seed.md).
+  @override
+  Future<DevActionResult> seedSampleData(ProviderReader read) async {
+    if (!read(debugToolsAvailableProvider)) return const DevActionDone(0);
+    try {
+      return await HabitSampleSeeder(
+        read(appDatabaseProvider),
+        read(clockProvider),
+        read(backupCoordinatorProvider),
+      ).seed();
+    } on Object {
+      return const DevActionDone(0);
+    }
+  }
 
   /// FR-040: reschedules every active habit's reminders.
   @override

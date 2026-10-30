@@ -130,6 +130,14 @@ abstract class TrackerModule {
   /// (feature 012 contracts/dev-seed.md). Return `const []` when
   /// `debugToolsAvailableProvider` is false; never shown in prod.
   List<DevAction> devActions(ProviderReader read) => const [];
+
+  /// Dev flavor only: a small set of sample data, added after a Developer
+  /// action with `DevAction.withSampleData` (e.g. a few habits with a
+  /// year of check-ins next to "Seed 10,000 transactions"). Return
+  /// `DevActionDone(0)` when `debugToolsAvailableProvider` is false. Must
+  /// not throw.
+  Future<DevActionResult> seedSampleData(ProviderReader read) async =>
+      const DevActionDone(0);
 }
 
 final class QuickAddAction {

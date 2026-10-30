@@ -5881,7 +5881,7 @@ abstract class AppLocalizations {
   /// Confirm dialog body for Seed 10,000 transactions.
   ///
   /// In en, this message translates to:
-  /// **'Add 10,000 sample transactions to test performance? They are real entries and stay until you delete them or erase all data.'**
+  /// **'Add 10,000 sample transactions and a few sample habits to test performance? They are real entries and stay until you delete them or erase all data.'**
   String get more_seedConfirm;
 
   /// Confirm button of the seed dialog.
