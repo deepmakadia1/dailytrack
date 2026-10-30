@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dailytrack/app/app_open_runner.dart';
 import 'package:dailytrack/app/background_entry_points.dart';
-import 'package:dailytrack/app/flavor.dart';
 import 'package:dailytrack/app/router/app_router.dart';
 import 'package:dailytrack/app/router/lock_back_button_dispatcher.dart';
 import 'package:dailytrack/app/router/routes.dart';
@@ -284,7 +283,8 @@ class _DailyTrackAppState extends ConsumerState<DailyTrackApp> {
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       localeResolutionCallback: resolveLocale,
-      debugShowCheckedModeBanner: FlavorConfig.current.showDebugBanner,
+      // No "DEBUG" ribbon in any flavor.
+      debugShowCheckedModeBanner: false,
     );
   }
 }

@@ -15,6 +15,4 @@ final class FlavorConfig {
   final Flavor flavor;
 
   bool get isProd => flavor == Flavor.prod;
-
-  bool get showDebugBanner => flavor == Flavor.dev;
 }

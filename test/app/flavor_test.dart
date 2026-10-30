@@ -4,17 +4,17 @@ import 'package:dailytrack/app/flavor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('prod flavor has no debug banner', () {
+  test('prod flavor is prod', () {
     final config = FlavorConfig.fromName('prod');
     expect(config.flavor, Flavor.prod);
-    expect(config.showDebugBanner, isFalse);
+    expect(config.isProd, isTrue);
   });
 
-  test('any other flavor name is dev, with the banner', () {
+  test('any other flavor name is dev', () {
     for (final name in ['dev', null, '', 'staging']) {
       final config = FlavorConfig.fromName(name);
       expect(config.flavor, Flavor.dev, reason: '$name');
-      expect(config.showDebugBanner, isTrue);
+      expect(config.isProd, isFalse);
     }
   });
 
