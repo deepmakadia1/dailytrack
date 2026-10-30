@@ -1,5 +1,6 @@
 import 'package:dailytrack/core/billing/domain/pro_store.dart';
 import 'package:dailytrack/core/billing/pro_service.dart';
+import 'package:dailytrack/core/feature_gate/feature_gate_providers.dart';
 import 'package:dailytrack/core/security/external_activity_guard.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'
@@ -28,8 +29,17 @@ ProService proService(Ref ref) {
   return service;
 }
 
-/// Whether Pro is owned now (`removeAdsPurchased`), live.
+/// Whether the app acts as Pro now, live: Pro is owned
+/// (`removeAdsPurchased`), or dev tools are available and "Unlock all
+/// features (debug)" is on (FR-037, FR-041). False until settings load.
 @Riverpod(keepAlive: true)
-bool proOwned(Ref ref) => ref.watch(
-  appSettingsProvider.select((s) => s.value?.removeAdsPurchased ?? false),
-);
+bool proOwned(Ref ref) {
+  final debugTools = ref.watch(debugToolsAvailableProvider);
+  return ref.watch(
+    appSettingsProvider.select((s) {
+      final v = s.value;
+      if (v == null) return false;
+      return v.removeAdsPurchased || (debugTools && v.debugUnlockAll);
+    }),
+  );
+}

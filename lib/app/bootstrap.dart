@@ -10,6 +10,7 @@ import 'package:dailytrack/core/backup/backup_providers.dart';
 import 'package:dailytrack/core/billing/billing_providers.dart';
 import 'package:dailytrack/core/database/database_provider.dart';
 import 'package:dailytrack/core/database/seed_runner.dart';
+import 'package:dailytrack/core/feature_gate/feature_gate_providers.dart';
 import 'package:dailytrack/core/module/module_registry.dart';
 import 'package:dailytrack/core/notifications/notification_providers.dart';
 import 'package:dailytrack/core/security/domain/lock_types.dart';
@@ -177,6 +178,10 @@ class Bootstrap extends _$Bootstrap {
     var proOwned = settings.removeAdsPurchased;
     if (await pro.applyStagedRemoval()) proOwned = false;
     unawaited(pro.verifyOwnership());
+    // "Unlock all features (debug)" acts as Pro: no consent, no ads SDK.
+    if (ref.read(debugToolsAvailableProvider) && settings.debugUnlockAll) {
+      proOwned = true;
+    }
     final gate = ref.read(adsSessionGateProvider.notifier);
     if (proOwned) {
       gate.startedWithAds = false;

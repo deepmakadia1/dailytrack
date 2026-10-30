@@ -4,6 +4,7 @@ import 'package:dailytrack/core/ads/ad_providers.dart';
 import 'package:dailytrack/core/ads/domain/rewarded_daily_limit.dart';
 import 'package:dailytrack/core/ads/domain/rewarded_outcome.dart';
 import 'package:dailytrack/core/ads/rewarded_unlock.dart';
+import 'package:dailytrack/core/billing/billing_providers.dart';
 import 'package:dailytrack/core/feature_gate/domain/feature_key.dart';
 import 'package:dailytrack/core/security/external_activity_guard.dart';
 import 'package:dailytrack/core/settings/domain/app_settings.dart';
@@ -11,8 +12,6 @@ import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
 import 'package:dailytrack/core/utils/date_keys.dart';
 import 'package:dailytrack/core/utils/effective_clock.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'
-    show ProviderListenableSelect;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -63,13 +62,11 @@ class RewardedUnlockController extends _$RewardedUnlockController {
 
   @override
   RewardedUnlockState build(FeatureKey key) {
-    // Pro bought while the sheet is open: the feature is unlocked anyway.
-    ref.listen(
-      appSettingsProvider.select((s) => s.value?.removeAdsPurchased ?? false),
-      (_, pro) {
-        if (pro) _finish(result: true);
-      },
-    );
+    // Pro bought (or the debug unlock turned on) while the sheet is open:
+    // the feature is unlocked anyway.
+    ref.listen(proOwnedProvider, (_, pro) {
+      if (pro) _finish(result: true);
+    });
     return const RewardedUnlockState();
   }
 

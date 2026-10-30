@@ -216,22 +216,25 @@ abstract class _$AdsSessionGate extends $Notifier<bool> {
   }
 }
 
-/// Ads may be requested right now: the session started with ads and Pro is
-/// not owned (FR-002, FR-043). Unknown settings count as Pro, so nothing is
-/// requested before they load.
+/// Ads may be requested right now: the session started with ads and the
+/// app does not act as Pro (FR-002, FR-043; [proOwned] includes the debug
+/// unlock). Unknown settings count as Pro, so nothing is requested before
+/// they load.
 
 @ProviderFor(adsAllowed)
 final adsAllowedProvider = AdsAllowedProvider._();
 
-/// Ads may be requested right now: the session started with ads and Pro is
-/// not owned (FR-002, FR-043). Unknown settings count as Pro, so nothing is
-/// requested before they load.
+/// Ads may be requested right now: the session started with ads and the
+/// app does not act as Pro (FR-002, FR-043; [proOwned] includes the debug
+/// unlock). Unknown settings count as Pro, so nothing is requested before
+/// they load.
 
 final class AdsAllowedProvider extends $FunctionalProvider<bool, bool, bool>
     with $Provider<bool> {
-  /// Ads may be requested right now: the session started with ads and Pro is
-  /// not owned (FR-002, FR-043). Unknown settings count as Pro, so nothing is
-  /// requested before they load.
+  /// Ads may be requested right now: the session started with ads and the
+  /// app does not act as Pro (FR-002, FR-043; [proOwned] includes the debug
+  /// unlock). Unknown settings count as Pro, so nothing is requested before
+  /// they load.
   AdsAllowedProvider._()
     : super(
         from: null,
@@ -265,7 +268,7 @@ final class AdsAllowedProvider extends $FunctionalProvider<bool, bool, bool>
   }
 }
 
-String _$adsAllowedHash() => r'5a6687624aec03ade041f390b421769ebd8b8c7f';
+String _$adsAllowedHash() => r'c9927beff37498be45597e613b569c9f2626f1d7';
 
 /// The ad service screens use. Default `NoAdsService`; the composition root
 /// switches between AdMob and no ads from [adsAllowed].
@@ -317,19 +320,19 @@ final class AdServiceProvider
 String _$adServiceHash() => r'666a1e1e100d51d20a4ff47b2ab5905aff03db1b';
 
 /// Whether SET-01 shows "Ad privacy choices" (FR-014): only while the
-/// consent SDK requires it and Pro is not owned.
+/// consent SDK requires it and the app does not act as Pro.
 
 @ProviderFor(privacyOptionsRequired)
 final privacyOptionsRequiredProvider = PrivacyOptionsRequiredProvider._();
 
 /// Whether SET-01 shows "Ad privacy choices" (FR-014): only while the
-/// consent SDK requires it and Pro is not owned.
+/// consent SDK requires it and the app does not act as Pro.
 
 final class PrivacyOptionsRequiredProvider
     extends $FunctionalProvider<AsyncValue<bool>, bool, Stream<bool>>
     with $FutureModifier<bool>, $StreamProvider<bool> {
   /// Whether SET-01 shows "Ad privacy choices" (FR-014): only while the
-  /// consent SDK requires it and Pro is not owned.
+  /// consent SDK requires it and the app does not act as Pro.
   PrivacyOptionsRequiredProvider._()
     : super(
         from: null,
@@ -356,7 +359,7 @@ final class PrivacyOptionsRequiredProvider
 }
 
 String _$privacyOptionsRequiredHash() =>
-    r'76ff42eadf382fb29e5b9fd9d92b7a990cf40645';
+    r'fafa04824c059e451ba3631074bda53e6e0a355b';
 
 /// Whether a full-screen ad may appear now (FR-023). Default: never; the
 /// composition root binds the router- and lock-aware probe.

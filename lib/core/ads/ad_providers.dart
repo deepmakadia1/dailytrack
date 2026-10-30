@@ -4,6 +4,7 @@ import 'package:dailytrack/core/ads/domain/ad_screen_probe.dart';
 import 'package:dailytrack/core/ads/domain/ad_unit_ids.dart';
 import 'package:dailytrack/core/ads/domain/consent_service.dart';
 import 'package:dailytrack/core/ads/interstitial_coordinator.dart';
+import 'package:dailytrack/core/billing/billing_providers.dart';
 import 'package:dailytrack/core/settings/settings_providers.dart';
 import 'package:dailytrack/core/utils/clock_provider.dart';
 import 'package:flutter/foundation.dart' show kReleaseMode;
@@ -61,14 +62,14 @@ class AdsSessionGate extends _$AdsSessionGate {
   set startedWithAds(bool allowed) => state = allowed;
 }
 
-/// Ads may be requested right now: the session started with ads and Pro is
-/// not owned (FR-002, FR-043). Unknown settings count as Pro, so nothing is
-/// requested before they load.
+/// Ads may be requested right now: the session started with ads and the
+/// app does not act as Pro (FR-002, FR-043; [proOwned] includes the debug
+/// unlock). Unknown settings count as Pro, so nothing is requested before
+/// they load.
 @Riverpod(keepAlive: true)
 bool adsAllowed(Ref ref) {
-  final pro = ref.watch(
-    appSettingsProvider.select((s) => s.value?.removeAdsPurchased ?? true),
-  );
+  final loaded = ref.watch(appSettingsProvider.select((s) => s.value != null));
+  final pro = !loaded || ref.watch(proOwnedProvider);
   return ref.watch(adsSessionGateProvider) && !pro;
 }
 
@@ -78,13 +79,10 @@ bool adsAllowed(Ref ref) {
 AdService adService(Ref ref) => const NoAdsService();
 
 /// Whether SET-01 shows "Ad privacy choices" (FR-014): only while the
-/// consent SDK requires it and Pro is not owned.
+/// consent SDK requires it and the app does not act as Pro.
 @Riverpod(keepAlive: true)
 Stream<bool> privacyOptionsRequired(Ref ref) {
-  final pro = ref.watch(
-    appSettingsProvider.select((s) => s.value?.removeAdsPurchased ?? false),
-  );
-  if (pro) return Stream.value(false);
+  if (ref.watch(proOwnedProvider)) return Stream.value(false);
   return ref.watch(consentServiceProvider).privacyOptionsRequired;
 }
 

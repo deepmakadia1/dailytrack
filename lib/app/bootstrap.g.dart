@@ -72,7 +72,7 @@ final class BootstrapProvider
   Bootstrap create() => Bootstrap();
 }
 
-String _$bootstrapHash() => r'a4cd9ec4c572b89a560996ab4ef5f262cb62aaaf';
+String _$bootstrapHash() => r'1e059aab3e870ddd06f75fe380988edf3d5e427a';
 
 /// SYS-01 startup (T080):
 ///  1. open the database (runs migrations) and load settings,

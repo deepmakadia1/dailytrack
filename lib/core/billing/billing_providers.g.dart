@@ -100,16 +100,22 @@ final class ProServiceProvider
 
 String _$proServiceHash() => r'7e3641d0214b2f4eedcb875b91aa4655452c2b2e';
 
-/// Whether Pro is owned now (`removeAdsPurchased`), live.
+/// Whether the app acts as Pro now, live: Pro is owned
+/// (`removeAdsPurchased`), or dev tools are available and "Unlock all
+/// features (debug)" is on (FR-037, FR-041). False until settings load.
 
 @ProviderFor(proOwned)
 final proOwnedProvider = ProOwnedProvider._();
 
-/// Whether Pro is owned now (`removeAdsPurchased`), live.
+/// Whether the app acts as Pro now, live: Pro is owned
+/// (`removeAdsPurchased`), or dev tools are available and "Unlock all
+/// features (debug)" is on (FR-037, FR-041). False until settings load.
 
 final class ProOwnedProvider extends $FunctionalProvider<bool, bool, bool>
     with $Provider<bool> {
-  /// Whether Pro is owned now (`removeAdsPurchased`), live.
+  /// Whether the app acts as Pro now, live: Pro is owned
+  /// (`removeAdsPurchased`), or dev tools are available and "Unlock all
+  /// features (debug)" is on (FR-037, FR-041). False until settings load.
   ProOwnedProvider._()
     : super(
         from: null,
@@ -143,4 +149,4 @@ final class ProOwnedProvider extends $FunctionalProvider<bool, bool, bool>
   }
 }
 
-String _$proOwnedHash() => r'a52a143a794595146d1da38bf1fbae602445e7b5';
+String _$proOwnedHash() => r'f0bc86234cf4a9c890bfa44cfa2ec596a89981b1';

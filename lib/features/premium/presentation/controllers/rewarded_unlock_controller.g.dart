@@ -69,7 +69,7 @@ final class RewardedUnlockControllerProvider
 }
 
 String _$rewardedUnlockControllerHash() =>
-    r'f7308a5ecdf13abbc2bb3720bd8fa2825aa18a59';
+    r'ca25cf67917534aabb9a14da62f23f69654de64c';
 
 /// PRM-02 (spec §10, feature 009 research R11): loads one rewarded ad when
 /// the sheet opens, shows it on request, and grants only from the reward
